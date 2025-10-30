@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AuthProvider {
+  LOCAL
+  GOOGLE
+  GITHUB
+}
+
+model User {
+  id           Int           @id @default(autoincrement())
+  email        String        @unique
+  passwordHash String?
+  createdAt    DateTime      @default(now())
+  profile      UserProfile?
+  roles        UserRole[]
+  accounts     Account[]
+  assignedTasks Task[]
+
+  @@index([email])
+}
+
+model Role {
+  id    Int        @id @default(autoincrement())
+  name  String     @unique
+  users UserRole[]
+}
+
+model UserRole {
+  userId Int
+  roleId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+}
+
+model UserProfile {
+  id        Int     @id @default(autoincrement())
+  userId    Int     @unique
+  fullName  String?
+  avatarUrl String?
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Account {
+  id                Int          @id @default(autoincrement())
+  userId            Int
+  provider          AuthProvider
+  providerAccountId String
+  createdAt         DateTime     @default(now())
+  user              User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Task {
+  id          Int      @id @default(autoincrement())
+  title       String
+  done        Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  assignedToId Int?
+  assignedTo   User?    @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
+
+  @@index([done, createdAt])
+  @@index([assignedToId])
+}

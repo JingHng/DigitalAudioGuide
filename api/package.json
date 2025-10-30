@@ -1,0 +1,46 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "start:test": "NODE_ENV=test PORT=5175 node dist/index.js",
+    "db:migrate:dev": "prisma migrate dev",
+    "db:migrate:test": "prisma migrate deploy",
+    "db:seed:dev": "SEED_DISABLE=0 ts-node -r dotenv/config prisma/seed.ts",
+    "db:seed:off": "SEED_DISABLE=1 ts-node -r dotenv/config prisma/seed.ts",
+    "test": "vitest --run",
+    "lint": "eslint ."
+  },
+  "prisma": {
+    "seed": "ts-node -r dotenv/config prisma/seed.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "prisma": "^5.22.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.7.0",
+    "@vitest/coverage-v8": "^3.2.4",
+    "eslint": "^9.37.0",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}
