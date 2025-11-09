@@ -1,0 +1,55 @@
+name: E2E Playwright Tests
+
+# This tells the workflow to run whenever code is pushed to any branch
+# or when a Pull Request is opened/updated.
+on: [push, pull_request]
+
+jobs:
+  # This is the single job that runs all your E2E tests
+  e2e:
+    # Use a standard Linux environment (Ubuntu)
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Step 1: Check out the code from your repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          
+      # Step 3: Install all project dependencies
+      - name: Install dependencies
+        run: npm install
+        
+      # Step 4: Install Playwright browsers (Chromium, Firefox, WebKit)
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+        
+      # Step 5: Build the React application for production
+      - name: Build application
+        run: npm run build
+        
+      # Step 6: Start the production server in the background
+      # The 'npm run preview' command serves the built assets (default is port 4173)
+      - name: Start server (Background process)
+        run: npm run preview &
+        
+      # Step 7: Run the E2E tests against the live server
+      # Uses the official Playwright Action for simplicity and test results reporting
+      - name: Run Playwright tests
+        uses: playwright-community/action-test-results@v1
+        with:
+          # This command automatically finds and runs all your .spec.ts files
+          command: npx playwright test
+        
+      # Step 8: Upload test results (Optional, but good practice for reports)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 3
