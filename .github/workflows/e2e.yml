@@ -1,52 +1,45 @@
 name: E2E Playwright Tests
 
-# This tells the workflow to run whenever code is pushed to any branch
-# or when a Pull Request is opened/updated.
+# Runs on every push and pull request targeting any branch
 on: [push, pull_request]
 
 jobs:
-  # This is the single job that runs all your E2E tests
   e2e:
-    # Use a standard Linux environment (Ubuntu)
     runs-on: ubuntu-latest
     
     steps:
-      # Step 1: Check out the code from your repository
       - name: Checkout code
         uses: actions/checkout@v4
       
-      # Step 2: Set up Node.js environment
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           
-      # Step 3: Install all project dependencies
+      # Install project dependencies, including 'wait-on' for server stability
       - name: Install dependencies
         run: npm install
         
-      # Step 4: Install Playwright browsers (Chromium, Firefox, WebKit)
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
         
-      # Step 5: Build the React application for production
+      # Build the production version of the React application
       - name: Build application
         run: npm run build
         
-      # Step 6: Start the production server in the background
-      # The 'npm run preview' command serves the built assets (default is port 4173)
+      # Start the built application in the background (runs on port 4173 by default)
       - name: Start server (Background process)
         run: npm run preview &
         
-      # Step 7: Run the E2E tests against the live server
-      # Uses the official Playwright Action for simplicity and test results reporting
-      - name: Run Playwright tests
-        uses: playwright-community/action-test-results@v1
-        with:
-          # This command automatically finds and runs all your .spec.ts files
-          command: npx playwright test
+      # CRITICAL: Wait for the server at port 5173 to become available
+      - name: Wait for server to be ready
+        run: npx wait-on http://localhost:5173
         
-      # Step 8: Upload test results (Optional, but good practice for reports)
+      # Run all your .spec.ts files now that the server is confirmed running
+      - name: Run Playwright tests
+        run: npx playwright test
+        
+      # Upload test artifacts (playwright-report)
       - uses: actions/upload-artifact@v4
         if: always()
         with:
