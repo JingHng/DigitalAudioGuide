@@ -1,11 +1,7 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
+  output   = "../generated/prisma"
+  binaryTargets = ["native", "windows"]
 }
 
 datasource db {
@@ -13,67 +9,371 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum AuthProvider {
-  LOCAL
-  GOOGLE
-  GITHUB
+model Audio {
+  audioId      Int       @id @default(autoincrement()) @map("audio_id")
+  exhibitId    BigInt?   @map("exhibit_id")
+  languageId   BigInt?   @map("language_id")
+  fileUrl      String?   @db.VarChar(512) @map("file_url")
+  title        String?
+  description  String?
+  createdAt    DateTime? @default(now()) @db.Timestamptz(6) @map("created_at")
+  updatedAt    DateTime? @default(now()) @db.Timestamptz(6) @map("updated_at")
+
+  exhibit      Exhibit?  @relation(fields: [exhibitId], references: [exhibitId], onDelete: Cascade)
+  language     Language? @relation(fields: [languageId], references: [languageId])
+  playbackLogs AudioPlaybackLog[]
+  subtitles    Subtitle[]
+
+  @@index([exhibitId], map: "idx_audio_exhibit_id")
+  @@index([languageId], map: "idx_audio_language_id")
+  @@index([title], map: "idx_audio_title")
+  @@index([createdAt], map: "idx_audio_created_at")
+  @@index([exhibitId, languageId], map: "idx_audio_exhibit_language")
+  @@map("audio")
 }
 
-model User {
-  id           Int           @id @default(autoincrement())
-  email        String        @unique
-  passwordHash String?
-  createdAt    DateTime      @default(now())
-  profile      UserProfile?
-  roles        UserRole[]
-  accounts     Account[]
-  assignedTasks Task[]
+model AudioPlaybackLog {
+  audioLogsId      Int       @id @default(autoincrement()) @map("audio_logs_id")
+  userId           BigInt?   @map("user_id")
+  audioId          Int?      @map("audio_id")
+  audioStart       DateTime? @db.Timestamptz(6) @map("audio_start")
+  audioEnd         DateTime? @db.Timestamptz(6) @map("audio_end")
+  durationListened Int?      @map("duration_listened")
+  createdAt        DateTime? @default(now()) @db.Timestamptz(6) @map("created_at")
+  updatedAt        DateTime? @default(now()) @db.Timestamptz(6) @map("updated_at")
 
-  @@index([email])
+  user             User?     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  audio            Audio?    @relation(fields: [audioId], references: [audioId], onDelete: Cascade)
+
+  @@index([userId], map: "idx_audio_playback_logs_user_id")
+  @@index([audioId], map: "idx_audio_playback_logs_audio_id")
+  @@index([createdAt], map: "idx_audio_playback_logs_created_at")
+  @@index([audioStart], map: "idx_audio_playback_logs_audio_start")
+  @@map("audio_playback_logs")
+}
+
+model Exhibition {
+  exhibitionId BigInt     @id @default(autoincrement()) @map("exhibition_id")
+  title        String     @unique
+  description  String?
+  statusId     Int?       @map("status_id")
+  createdAt    DateTime   @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime   @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  status       Status?    @relation(fields: [statusId], references: [statusId])
+  exhibits     Exhibit[]          // 1:M with Exhibit
+  images       Image[]            // 1:M with Image (optional)
+
+  @@map("exhibitions")
+}
+
+model Exhibit {
+  exhibitId     BigInt     @id @default(autoincrement()) @map("exhibit_id")
+  exhibitionId  BigInt     @map("exhibition_id")
+  badgeId      BigInt?   @unique @map("badge_id") // newly updated Field
+  title         String
+  description   String?
+  statusId      Int?       @map("status_id")
+  createdAt     DateTime?  @default(now()) @db.Timestamptz(6) @map("created_at")
+  updatedAt     DateTime?  @default(now()) @db.Timestamptz(6) @map("updated_at")
+
+  exhibition    Exhibition @relation(fields: [exhibitionId], references: [exhibitionId], onDelete: Cascade)
+  status        Status?    @relation(fields: [statusId], references: [statusId])
+  badge        Badge?    @relation("ExhibitToBadge", fields: [badgeId], references: [badgeId]) //Newly added field
+
+  audio         Audio[]
+  feedbacks     Feedback[]
+  images        Image[]
+  qrCodes       QRCode[]
+
+  @@index([title], map: "idx_exhibit_title")
+  @@index([createdAt], map: "idx_exhibit_created_at")
+  @@index([exhibitionId])
+  @@index([statusId])
+  @@map("exhibit")
+}
+
+
+model Feedback {
+  feedbackId  BigInt    @id @default(autoincrement()) @map("feedback_id")
+  userId      BigInt?   @map("user_id")
+  exhibitId   BigInt?   @map("exhibit_id")
+  rating      Int?
+  description String?
+  createdAt   DateTime? @default(now()) @db.Timestamptz(6) @map("created_at")
+  updatedAt   DateTime? @default(now()) @db.Timestamptz(6) @map("updated_at")
+
+  user        User?     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  exhibit     Exhibit?  @relation(fields: [exhibitId], references: [exhibitId], onDelete: Cascade)
+
+  @@index([userId], map: "idx_feedback_user_id")
+  @@index([exhibitId], map: "idx_feedback_exhibit_id")
+  @@index([rating], map: "idx_feedback_rating")
+  @@index([createdAt], map: "idx_feedback_created_at")
+  @@index([userId, exhibitId], map: "idx_feedback_user_exhibit")
+  @@map("feedback")
+}
+
+model Image {
+  imageId       BigInt     @id @default(autoincrement()) @map("image_id")
+  exhibitId     BigInt?    @map("exhibit_id")
+  exhibitionId  BigInt?    @map("exhibition_id")
+  title         String?
+  description   String?
+  fileUrl       String?    @map("file_url")
+  isPrimary     Boolean    @default(false) @map("is_primary")
+  createdAt     DateTime?  @default(now()) @db.Timestamptz(6) @map("created_at")
+  updatedAt     DateTime?  @default(now()) @db.Timestamptz(6) @map("updated_at")
+
+  exhibit       Exhibit?   @relation(fields: [exhibitId], references: [exhibitId], onDelete: Cascade)
+  exhibition    Exhibition? @relation(fields: [exhibitionId], references: [exhibitionId], onDelete: Cascade)
+
+  @@index([exhibitId])
+  @@index([exhibitionId])
+  @@map("images")
+}
+
+
+model Language {
+  languageId BigInt     @id @default(autoincrement()) @map("language_id")
+  statusId   Int?       @map("status_id")
+  title      String
+  code       String     @unique @map("lang_code")
+  isDefault  Boolean?   @default(false) @map("is_default")
+  createdAt  DateTime?  @default(now()) @db.Timestamptz(6) @map("created_at")
+  updatedAt  DateTime?  @default(now()) @db.Timestamptz(6) @map("updated_at")
+
+  status     Status?    @relation(fields: [statusId], references: [statusId])
+  audio      Audio[]
+  subtitles  Subtitle[]
+
+  @@index([statusId], map: "idx_language_status")
+  @@index([code], map: "idx_language_code")
+  @@index([isDefault], map: "idx_language_is_default")
+  @@index([title], map: "idx_language_title")
+  @@unique([isDefault], name: "unique_default_language", map: "idx_language_is_default_unique")
+  @@map("language")
+}
+
+model Permission {
+  permissionId    Int       @id @default(autoincrement()) @map("permission_id")
+  permissionName  String    @unique @db.VarChar(100) @map("permission_name") //UNIQUE AND NOT NULL BY DEFAULT
+  description     String?
+  createdAt       DateTime? @default(now()) @db.Timestamptz(6) @map("created_at")
+  updatedAt       DateTime? @default(now()) @db.Timestamptz(6) @map("updated_at")
+
+  rolePermissions RolePermission[]
+
+  @@index([permissionName], map: "idx_permissions_name")
+  @@map("permissions")
+}
+
+model QRCode {
+  qrId      Int       @id @default(autoincrement()) @map("qr_id")
+  exhibitId BigInt    @map("exhibit_id")
+  qrUrl     String    @map("qr_url")
+  createdAt DateTime? @default(now()) @db.Timestamptz(6) @map("created_at")
+  updatedAt DateTime? @default(now()) @db.Timestamptz(6) @map("updated_at")
+
+  exhibit   Exhibit   @relation(fields: [exhibitId], references: [exhibitId], onDelete: Cascade)
+
+  @@index([exhibitId], map: "idx_qr_code_exhibit_id")
+  @@index([qrUrl], map: "idx_qr_code_url")
+  @@map("qr_code")
 }
 
 model Role {
-  id    Int        @id @default(autoincrement())
-  name  String     @unique
-  users UserRole[]
+  roleId      Int       @id @default(autoincrement()) @map("role_id")
+  roleName    String    @unique @db.VarChar(50) @map("role_name")
+  description String?
+  createdAt   DateTime? @default(now()) @db.Timestamptz(6) @map("created_at")
+  updatedAt   DateTime? @default(now()) @db.Timestamptz(6) @map("updated_at")
+
+  rolePermissions RolePermission[]
+  userRoles       UserRole[]
+
+  @@index([roleName], map: "idx_roles_name")
+  @@map("roles")
+}
+
+model RolePermission {
+  roleId       Int @map("role_id")
+  permissionId Int @map("permission_id")
+
+  role         Role       @relation(fields: [roleId], references: [roleId], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [permissionId], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@index([roleId], map: "idx_roles_permission_role_id")
+  @@index([permissionId], map: "idx_roles_permission_permission_id")
+  @@map("roles_permission")
+}
+
+model Session {
+  sessionId String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("session_id")
+  userId    BigInt    @map("user_id")
+  createdAt DateTime? @default(now()) @db.Timestamptz(6) @map("created_at")
+
+  user      User      @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@index([userId], map: "idx_sessions_user_id")
+  @@index([createdAt], map: "idx_sessions_created_at")
+  @@map("sessions")
+}
+
+model Status {
+  statusId   Int    @id @default(autoincrement()) @map("status_id")
+  statusName String @unique @db.VarChar(30) @map("status_name")
+
+  users        User[]
+  languages    Language[]
+  exhibitions  Exhibition[]
+  exhibits     Exhibit[]
+
+  @@map("status")
+}
+
+model Subtitle {
+  subtitleId BigInt    @id @default(autoincrement()) @map("subtitle_id")
+  audioId    Int?      @map("audio_id")
+  languageId BigInt?   @map("language_id")
+  text       Json?
+  createdBy  BigInt?   @map("created_by")
+  createdAt  DateTime? @default(now()) @db.Timestamptz(6) @map("created_at")
+  updatedAt  DateTime? @default(now()) @db.Timestamptz(6) @map("updated_at")
+
+  audio      Audio?    @relation(fields: [audioId], references: [audioId], onDelete: Cascade)
+  language   Language? @relation(fields: [languageId], references: [languageId], onDelete: SetNull)
+  user       User?     @relation(fields: [createdBy], references: [userId], onDelete: SetNull)
+
+  @@index([audioId], map: "idx_subtitle_audio_id")
+  @@index([languageId], map: "idx_subtitle_language_id")
+  @@index([createdBy], map: "idx_subtitle_created_by")
+  @@index([createdAt], map: "idx_subtitle_created_at")
+  @@index([audioId, languageId], map: "idx_subtitle_audio_language")
+  @@map("subtitle")
+}
+
+model User {
+  userId           BigInt    @id @default(autoincrement()) @map("user_id")
+  username         String    @unique @db.VarChar(100)
+  email            String    @unique @db.VarChar(100)
+  passwordHash     String    @db.VarChar(72) @map("password_hash")
+  emailVerified    Boolean   @default(false) @map("email_verified")
+  statusId         Int?      @map("status_id")
+  lastLoginAt      DateTime? @db.Timestamptz(6) @map("last_login_at")
+  createdAt        DateTime? @default(now()) @db.Timestamptz(6) @map("created_at")
+  updatedAt        DateTime? @default(now()) @db.Timestamptz(6) @map("updated_at")
+
+  status                Status?                @relation(fields: [statusId], references: [statusId])
+  feedbacks             Feedback[]
+  roles                 UserRole[]
+  sessions              Session[]
+  subtitles             Subtitle[]
+  playbackLogs          AudioPlaybackLog[]
+  adminAudits           AuditLog[]            @relation("AdminUserAudits")
+  targetAudits          AuditLog[]            @relation("TargetUserAudits")
+  passwordResetTokens   PasswordResetToken[]
+  emailVerificationTokens EmailVerificationToken[]
+  userBadges              UserBadge[] //Newly Added Field
+
+  @@index([statusId], map: "idx_user_status")
+  @@index([username], map: "idx_user_username")
+  @@index([email], map: "idx_user_email")
+  @@index([createdAt], map: "idx_user_created_at")
+  @@index([lastLoginAt], map: "idx_user_last_login")
+  @@index([email, statusId], map: "idx_user_email_status")
+  @@map("user")
 }
 
 model UserRole {
-  userId Int
-  roleId Int
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  role   Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  userId    BigInt    @map("user_id")
+  roleId    Int       @map("role_id")
+  createdAt DateTime? @default(now()) @db.Timestamptz(6) @map("created_at")
+
+  user      User      @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  role      Role      @relation(fields: [roleId], references: [roleId], onDelete: Cascade)
 
   @@id([userId, roleId])
+  @@index([userId], map: "idx_userroles_user_id")
+  @@index([roleId], map: "idx_userroles_role_id")
+  @@map("userroles")
 }
 
-model UserProfile {
-  id        Int     @id @default(autoincrement())
-  userId    Int     @unique
-  fullName  String?
-  avatarUrl String?
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+model AuditLog {
+  auditLogId   BigInt    @id @default(autoincrement()) @map("audit_log_id")
+  adminUserId  BigInt?   @map("admin_user_id")
+  targetUserId BigInt?   @map("target_user_id")
+  resource     String    @db.VarChar(50)
+  action       String    @db.VarChar(50)
+  changes      String?   @db.Text
+  metadata     String?   @db.Text
+  timestamp    DateTime  @default(now()) @db.Timestamptz(6)
+
+  adminUser    User?     @relation("AdminUserAudits", fields: [adminUserId], references: [userId], onDelete: SetNull)
+  targetUser   User?     @relation("TargetUserAudits", fields: [targetUserId], references: [userId], onDelete: SetNull)
+
+  @@index([adminUserId], map: "idx_audit_logs_admin_user_id")
+  @@index([targetUserId], map: "idx_audit_logs_target_user_id")
+  @@index([resource], map: "idx_audit_logs_resource")
+  @@index([action], map: "idx_audit_logs_action")
+  @@index([timestamp], map: "idx_audit_logs_timestamp")
+  @@map("audit_logs")
 }
 
-model Account {
-  id                Int          @id @default(autoincrement())
-  userId            Int
-  provider          AuthProvider
-  providerAccountId String
-  createdAt         DateTime     @default(now())
-  user              User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
+// Password reset token model
+model PasswordResetToken {
+  passwordResetId BigInt    @id @default(autoincrement()) @map("password_reset_id")
+  userId          BigInt    @map("user_id")
+  token           String    @unique @db.VarChar(255)
+  createdAt       DateTime  @default(now()) @db.Timestamptz(6) @map("created_at")
+  expiresAt       DateTime  @db.Timestamptz(6) @map("expires_at")
+  
+  user            User      @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  @@map("password_reset_token")
 }
 
-model Task {
-  id          Int      @id @default(autoincrement())
-  title       String
-  done        Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  assignedToId Int?
-  assignedTo   User?    @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
+// Email verification token model
+model EmailVerificationToken {
+  emailVerificationId BigInt    @id @default(autoincrement()) @map("email_verification_id")
+  userId              BigInt    @map("user_id") 
+  token               String    @unique @db.VarChar(255)
+  createdAt           DateTime  @default(now()) @db.Timestamptz(6) @map("created_at")
+  expiresAt           DateTime  @db.Timestamptz(6) @map("expires_at")
 
-  @@index([done, createdAt])
-  @@index([assignedToId])
+  user                User      @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@map("email_verification_token")
+}
+
+
+// Updated Tables starting from this point
+
+model Badge {
+  badgeId     BigInt    @id @default(autoincrement()) @map("badge_id")
+  name        String?   @db.Text
+  description String?   @db.Text
+  imageUrl    String?   @db.VarChar(512) @map("image_url")
+  createdAt   DateTime? @default(now()) @db.Timestamptz(6) @map("created_at")
+  updatedAt   DateTime? @default(now()) @db.Timestamptz(6) @map("updated_at")
+
+  exhibit     Exhibit?  @relation("ExhibitToBadge")
+  userBadges  UserBadge[]
+
+  @@map("badge")
+}
+
+
+model UserBadge {
+  userId      BigInt    @map("user_id")
+  badgeId     BigInt    @map("badge_id")
+  createdAt   DateTime? @default(now()) @db.Timestamptz(6) @map("created_at")
+
+  user        User      @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  badge       Badge     @relation(fields: [badgeId], references: [badgeId], onDelete: Cascade)
+
+  @@id([userId, badgeId]) 
+  @@index([userId], map: "idx_user_badge_user_id")
+  @@index([badgeId], map: "idx_user_badge_badge_id")
+  @@map("user_badge")
 }
