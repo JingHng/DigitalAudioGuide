@@ -2,12 +2,12 @@
   "name": "api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "dev": "nodemon src/index.ts",
+    "dev": "nodemon --exec ts-node server.js",
     "build": "tsc",
-    "start": "node dist/index.js",
-    "start:test": "NODE_ENV=test PORT=5175 node dist/index.js",
+    "start": "node server.js",
+    "start:test": "NODE_ENV=test PORT=5175 node dist/server.js",
     "db:migrate:dev": "prisma migrate dev",
     "db:migrate:test": "prisma migrate deploy",
     "db:seed:dev": "SEED_DISABLE=0 ts-node -r dotenv/config prisma/seed.ts",
@@ -27,8 +27,12 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "google-tts-api": "^2.0.2",
     "jsonwebtoken": "^9.0.2",
-    "prisma": "^5.22.0"
+    "lucide-react": "^0.553.0",
+    "pg": "^8.16.3",
+    "prisma": "^5.22.0",
+    "qr-image": "^3.2.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",

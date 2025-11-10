@@ -1,0 +1,143 @@
+# .github/workflows/ci.yml
+
+name: CI Pipeline - Full Stack Integration Test
+
+on: [push, pull_request]
+
+jobs:
+  test_fullstack:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: test_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    
+    env:
+      # Test database configuration
+      DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test_db?schema=public"
+      NODE_ENV: "test"
+      PORT: 5175
+      VITE_API_TARGET: http://localhost:5175
+      JWT_SECRET: "test-jwt-secret-key"
+      JWT_REFRESH_SECRET: "test-refresh-secret-key"
+      
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🛠️ Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # --- Backend Setup ---
+      - name: 📦 Install API Dependencies
+        run: |
+          cd api
+          npm install
+
+      - name: 🗄️ Setup Database Schema
+        run: |
+          cd api
+          npx prisma migrate deploy
+
+      - name: 🌱 Seed Test Database
+        run: |
+          cd api
+          node prisma/seed.js
+        env:
+          SEED_DISABLE: 0
+
+      - name: 🔧 Build API (if needed)
+        run: |
+          cd api
+          npm run build
+
+      - name: 🚀 Start API Server
+        run: |
+          cd api
+          echo "Starting API server..."
+          npm start > api.log 2>&1 &
+          echo "API server process started"
+          sleep 5
+          echo "API logs after 5 seconds:"
+          cat api.log || echo "No log file yet"
+        env:
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test_db?schema=public"
+          NODE_ENV: "test"
+          PORT: 5175
+
+      - name: ⏳ Wait for API to be ready
+        run: |
+          echo "Waiting for API exhibits endpoint..."
+          npx wait-on http://localhost:5175/api/exhibits -t 60000 || {
+            echo "API health check failed. Debugging information:"
+            echo "=== API Server Logs ==="
+            cat api/api.log || echo "No API log file found"
+            echo "=== Process List ==="
+            ps aux | grep node || echo "No node processes found"
+            echo "=== Port Usage ==="
+            netstat -tlnp | grep 5175 || echo "Port 5175 not in use"
+            echo "=== Testing basic connectivity ==="
+            curl -v http://localhost:5175/ || echo "Server not responding at all"
+            echo "=== Testing API base path ==="
+            curl -v http://localhost:5175/api/ || echo "API base path not responding"
+            exit 1
+          }
+          echo "API server is ready!"
+
+      # --- Frontend Setup ---
+      - name: 📦 Install Web Dependencies
+        run: |
+          cd web
+          npm install
+
+      - name: 🌐 Install Playwright Browsers
+        run: |
+          cd web
+          npx playwright install --with-deps
+
+      # --- Integration Tests ---
+      - name: 🧪 Run Full Stack Integration Tests
+        run: |
+          cd web
+          npx playwright test
+        env:
+          VITE_API_TARGET: http://localhost:5175
+
+      - name: 📝 Upload Test Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: web/playwright-report/
+          retention-days: 7
+
+      # --- Optional: API-only tests ---
+      - name: 🔍 Run API Unit Tests (if available)
+        run: |
+          cd api
+          npm test
+        continue-on-error: true  # Don't fail if no tests exist yet
+
+      # --- Debug Information (only runs on failure) ---
+      - name: 🐛 Debug API Server (on failure)
+        if: failure()
+        run: |
+          echo "=== Final API Server Logs ==="
+          cat api/api.log || echo "No API log file found"
+          echo "=== Final Process List ==="
+          ps aux | grep node || echo "No node processes found"
+          echo "=== Final Port Usage ==="
+          netstat -tlnp | grep 5175 || echo "Port 5175 not in use"
