@@ -73,7 +73,7 @@ jobs:
           npm run build 
 
           # 2. Start the compiled JavaScript server in the background
-          npm start & 
+          node dist/server.js & 
         
       # --- 6. Start Frontend Service (Web) ---
       - name: 🏃 Start Frontend App (on port 5173)
