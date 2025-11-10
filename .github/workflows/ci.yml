@@ -20,9 +20,6 @@ jobs:
         with:
           node-version: '20'
 
-      - name: 📦 Install Global Tools (wait-on)
-        run: npm install -g wait-on 
-
       - name: 📦 Install Web Dependencies
         run: |
           cd web
@@ -33,13 +30,9 @@ jobs:
           cd web
           npx playwright install --with-deps
 
-      - name: 🏃 Start Frontend App (on port 5173)
-        run: |
-          cd web
-          npm run dev -- --port 5173 &
-        
-      - name: ⏳ Wait for Frontend Endpoint to be Ready
-        run: npx wait-on tcp:5173 -t 30000 
+      # Remove these manual server steps since Playwright handles it:
+      # - Start Frontend App 
+      # - Wait for Frontend Endpoint
         
       - name: 🧪 Run Playwright Tests (Frontend/Page Load Check)
         run: |
