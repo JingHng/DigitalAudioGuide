@@ -55,7 +55,7 @@ jobs:
       - name: 🌱 Seed Test Database
         run: |
           cd api
-          npm run db:seed:dev
+          node prisma/seed.js
         env:
           SEED_DISABLE: 0
 
