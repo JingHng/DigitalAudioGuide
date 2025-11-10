@@ -8,9 +8,8 @@ jobs:
   test_frontend:
     runs-on: ubuntu-latest
     
-    # ----------------------------------------------------------------
-    # 1. ENVIRONMENT VARIABLES (Minimal)
-    # ----------------------------------------------------------------
+    # Removed Database service setup
+    
     env:
       # Use a dummy API target since we won't start the real API
       VITE_API_TARGET: http://localhost:5175 
@@ -24,35 +23,38 @@ jobs:
         with:
           node-version: '20'
 
-      - name: 🌐 Install Playwright Browsers
-        run: npx playwright install --with-deps
+      # --- 1. Install Global Tools ---
+      - name: 📦 Install Global Tools (wait-on)
+        run: npm install -g wait-on 
 
-      # --- 2. Install Dependencies and Build Frontend (Web directory) ---
-      - name: 📦 Install and Build Frontend
+      # --- 2. Install Frontend Dependencies (Web directory) ---
+      # NEW: Install project dependencies first
+      - name: 📦 Install Web Dependencies
         run: |
           cd web
           npm install
-          # Optional: Run build to ensure successful compilation
-          # npm run build 
 
-      # --- 3. Start Frontend Service (Web) ---
+      # --- 3. Install Playwright Browsers ---
+      # This MUST run AFTER npm install in the web directory
+      - name: 🌐 Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      # --- 4. Start Frontend Service (Web) ---
       - name: 🏃 Start Frontend App (on port 5173)
-        # We start the dev server in the background
         run: |
           cd web
           npm run dev &
         
-      # --- 4. Wait for Frontend ---
+      # --- 5. Wait for Frontend ---
       - name: ⏳ Wait for Frontend Endpoint to be Ready
-        # Only wait for the frontend port 5173 to be open
         run: npx wait-on tcp:5173 -t 30000 
         
-      # --- 5. Run Tests ---
+      # --- 6. Run Tests ---
       - name: 🧪 Run Playwright Tests (Frontend/Page Load Check)
         run: |
           cd web
-          # Set the base-url to the frontend port for E2E tests
-          npx playwright test --base-url=http://localhost:5173
+          # FIX: Added space between flag and URL
+          npx playwright test --base-url http://localhost:5173
         
       - name: 📝 Upload Test Report
         if: always()
