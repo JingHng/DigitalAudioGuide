@@ -1,15 +1,36 @@
 # .github/workflows/ci.yml
 
-name: CI Pipeline - Frontend Test (Quick)
+name: CI Pipeline - Full Stack Integration Test
 
 on: [push, pull_request]
 
 jobs:
-  test_frontend:
+  test_fullstack:
     runs-on: ubuntu-latest
     
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: test_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    
     env:
-      VITE_API_TARGET: http://localhost:5175 
+      # Test database configuration
+      DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test_db?schema=public"
+      NODE_ENV: "test"
+      PORT: 5175
+      VITE_API_TARGET: http://localhost:5175
+      JWT_SECRET: "test-jwt-secret-key"
+      JWT_REFRESH_SECRET: "test-refresh-secret-key"
       
     steps:
       - name: ⬇️ Checkout code
@@ -20,6 +41,44 @@ jobs:
         with:
           node-version: '20'
 
+      # --- Backend Setup ---
+      - name: 📦 Install API Dependencies
+        run: |
+          cd api
+          npm install
+
+      - name: 🗄️ Setup Database Schema
+        run: |
+          cd api
+          npx prisma migrate deploy
+
+      - name: 🌱 Seed Test Database
+        run: |
+          cd api
+          npm run db:seed:dev
+        env:
+          SEED_DISABLE: 0
+
+      - name: 🔧 Build API (if needed)
+        run: |
+          cd api
+          npm run build
+
+      - name: 🚀 Start API Server
+        run: |
+          cd api
+          npm start &
+        env:
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test_db?schema=public"
+          NODE_ENV: "test"
+          PORT: 5175
+
+      - name: ⏳ Wait for API to be ready
+        run: |
+          npx wait-on http://localhost:5175/api/health -t 60000
+          echo "API server is ready!"
+
+      # --- Frontend Setup ---
       - name: 📦 Install Web Dependencies
         run: |
           cd web
@@ -30,15 +89,14 @@ jobs:
           cd web
           npx playwright install --with-deps
 
-      # Remove these manual server steps since Playwright handles it:
-      # - Start Frontend App 
-      # - Wait for Frontend Endpoint
-        
-      - name: 🧪 Run Playwright Tests (Frontend/Page Load Check)
+      # --- Integration Tests ---
+      - name: 🧪 Run Full Stack Integration Tests
         run: |
           cd web
           npx playwright test
-        
+        env:
+          VITE_API_TARGET: http://localhost:5175
+
       - name: 📝 Upload Test Report
         if: always()
         uses: actions/upload-artifact@v4
@@ -46,3 +104,10 @@ jobs:
           name: playwright-report
           path: web/playwright-report/
           retention-days: 7
+
+      # --- Optional: API-only tests ---
+      - name: 🔍 Run API Unit Tests (if available)
+        run: |
+          cd api
+          npm test
+        continue-on-error: true  # Don't fail if no tests exist yet
