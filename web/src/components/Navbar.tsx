@@ -7,7 +7,7 @@ import {
   UserPlus,
 } from "lucide-react";
 // Removed: import { useAuth } from "../contexts/AuthContext";
-import "../css/Navbar.css";
+import "../css/NavBar.css";
 
 const Navbar: React.FC = () => {
   // Removed auth variables: user, isAuthenticated, isAdmin, isSuperAdmin, logout
