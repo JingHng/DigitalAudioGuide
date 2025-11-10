@@ -8,10 +8,7 @@ jobs:
   test_frontend:
     runs-on: ubuntu-latest
     
-    # Removed Database service setup
-    
     env:
-      # Use a dummy API target since we won't start the real API
       VITE_API_TARGET: http://localhost:5175 
       
     steps:
@@ -23,38 +20,31 @@ jobs:
         with:
           node-version: '20'
 
-      # --- 1. Install Global Tools ---
       - name: 📦 Install Global Tools (wait-on)
         run: npm install -g wait-on 
 
-      # --- 2. Install Frontend Dependencies (Web directory) ---
-      # NEW: Install project dependencies first
       - name: 📦 Install Web Dependencies
         run: |
           cd web
           npm install
 
-      # --- 3. Install Playwright Browsers ---
-      # This MUST run AFTER npm install in the web directory
       - name: 🌐 Install Playwright Browsers
-        run: npx playwright install --with-deps
+        run: |
+          cd web
+          npx playwright install --with-deps
 
-      # --- 4. Start Frontend Service (Web) ---
       - name: 🏃 Start Frontend App (on port 5173)
         run: |
           cd web
-          npm run dev &
+          npm run dev -- --port 5173 &
         
-      # --- 5. Wait for Frontend ---
       - name: ⏳ Wait for Frontend Endpoint to be Ready
         run: npx wait-on tcp:5173 -t 30000 
         
-      # --- 6. Run Tests ---
       - name: 🧪 Run Playwright Tests (Frontend/Page Load Check)
         run: |
           cd web
-          # FIX: Added space between flag and URL
-          npx playwright test --base-url http://localhost:5173
+          npx playwright test
         
       - name: 📝 Upload Test Report
         if: always()
