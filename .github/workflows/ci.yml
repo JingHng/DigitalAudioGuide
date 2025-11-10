@@ -28,6 +28,7 @@ jobs:
 
     # ----------------------------------------------------------------
     # 2. ENVIRONMENT VARIABLES
+    # This sets the correct DATABASE_URL for the CI job
     # ----------------------------------------------------------------
     env:
       PORT: 5175
@@ -57,23 +58,30 @@ jobs:
           cd api
           npm install
           
+          
+          sed -i 's/require("dotenv").config();/\/\/ require("dotenv").config();/' prisma/seed.js
+
           # 1. Apply test database migrations
           npm run db:migrate:test 
           
-          # 2. Seed the database (using direct node execution as confirmed for your JS file)
+          # 2. Seed the database
           echo "Seeding database with initial exhibit data..."
           node prisma/seed.js
           echo "Seeding complete."
+          
+          # Clean up the seed file change (restores the original file)
+          git checkout prisma/seed.js
 
       # --- 5. Start Backend Service (API) ---
       - name: 🏃 Build and Start Backend API (on port 5175)
         run: |
           cd api
           
+          # 1. Build the TypeScript code (now app.js does NOT conflict)
           npm run build 
 
-          # 2. Start the compiled JavaScript server in the background
-          node dist/server.js & 
+          # 2. Start the compiled JavaScript server (npm start is 'node server.js')
+          npm start & 
         
       # --- 6. Start Frontend Service (Web) ---
       - name: 🏃 Start Frontend App (on port 5173)

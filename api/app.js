@@ -1,4 +1,4 @@
-require('dotenv').config();
+// require('dotenv').config();
 const express = require('express');
 const mainRoutes = require('../api/src/routes/mainRoutes');
 // const qrCodeRoute = require('./routes/qrCodeRoutes');
