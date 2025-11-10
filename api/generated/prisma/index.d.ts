@@ -108,6 +108,16 @@ export type PasswordResetToken = $Result.DefaultSelection<Prisma.$PasswordResetT
  * 
  */
 export type EmailVerificationToken = $Result.DefaultSelection<Prisma.$EmailVerificationTokenPayload>
+/**
+ * Model Badge
+ * 
+ */
+export type Badge = $Result.DefaultSelection<Prisma.$BadgePayload>
+/**
+ * Model UserBadge
+ * 
+ */
+export type UserBadge = $Result.DefaultSelection<Prisma.$UserBadgePayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -421,6 +431,26 @@ export class PrismaClient<
     * ```
     */
   get emailVerificationToken(): Prisma.EmailVerificationTokenDelegate<ExtArgs>;
+
+  /**
+   * `prisma.badge`: Exposes CRUD operations for the **Badge** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Badges
+    * const badges = await prisma.badge.findMany()
+    * ```
+    */
+  get badge(): Prisma.BadgeDelegate<ExtArgs>;
+
+  /**
+   * `prisma.userBadge`: Exposes CRUD operations for the **UserBadge** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more UserBadges
+    * const userBadges = await prisma.userBadge.findMany()
+    * ```
+    */
+  get userBadge(): Prisma.UserBadgeDelegate<ExtArgs>;
 }
 
 export namespace Prisma {
@@ -880,7 +910,9 @@ export namespace Prisma {
     UserRole: 'UserRole',
     AuditLog: 'AuditLog',
     PasswordResetToken: 'PasswordResetToken',
-    EmailVerificationToken: 'EmailVerificationToken'
+    EmailVerificationToken: 'EmailVerificationToken',
+    Badge: 'Badge',
+    UserBadge: 'UserBadge'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -896,7 +928,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "audio" | "audioPlaybackLog" | "exhibition" | "exhibit" | "feedback" | "image" | "language" | "permission" | "qRCode" | "role" | "rolePermission" | "session" | "status" | "subtitle" | "user" | "userRole" | "auditLog" | "passwordResetToken" | "emailVerificationToken"
+      modelProps: "audio" | "audioPlaybackLog" | "exhibition" | "exhibit" | "feedback" | "image" | "language" | "permission" | "qRCode" | "role" | "rolePermission" | "session" | "status" | "subtitle" | "user" | "userRole" | "auditLog" | "passwordResetToken" | "emailVerificationToken" | "badge" | "userBadge"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2230,6 +2262,146 @@ export namespace Prisma {
           }
         }
       }
+      Badge: {
+        payload: Prisma.$BadgePayload<ExtArgs>
+        fields: Prisma.BadgeFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.BadgeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BadgePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.BadgeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BadgePayload>
+          }
+          findFirst: {
+            args: Prisma.BadgeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BadgePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.BadgeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BadgePayload>
+          }
+          findMany: {
+            args: Prisma.BadgeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BadgePayload>[]
+          }
+          create: {
+            args: Prisma.BadgeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BadgePayload>
+          }
+          createMany: {
+            args: Prisma.BadgeCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.BadgeCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BadgePayload>[]
+          }
+          delete: {
+            args: Prisma.BadgeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BadgePayload>
+          }
+          update: {
+            args: Prisma.BadgeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BadgePayload>
+          }
+          deleteMany: {
+            args: Prisma.BadgeDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.BadgeUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.BadgeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BadgePayload>
+          }
+          aggregate: {
+            args: Prisma.BadgeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBadge>
+          }
+          groupBy: {
+            args: Prisma.BadgeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BadgeGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.BadgeCountArgs<ExtArgs>
+            result: $Utils.Optional<BadgeCountAggregateOutputType> | number
+          }
+        }
+      }
+      UserBadge: {
+        payload: Prisma.$UserBadgePayload<ExtArgs>
+        fields: Prisma.UserBadgeFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UserBadgeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserBadgePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UserBadgeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserBadgePayload>
+          }
+          findFirst: {
+            args: Prisma.UserBadgeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserBadgePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UserBadgeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserBadgePayload>
+          }
+          findMany: {
+            args: Prisma.UserBadgeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserBadgePayload>[]
+          }
+          create: {
+            args: Prisma.UserBadgeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserBadgePayload>
+          }
+          createMany: {
+            args: Prisma.UserBadgeCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.UserBadgeCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserBadgePayload>[]
+          }
+          delete: {
+            args: Prisma.UserBadgeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserBadgePayload>
+          }
+          update: {
+            args: Prisma.UserBadgeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserBadgePayload>
+          }
+          deleteMany: {
+            args: Prisma.UserBadgeDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UserBadgeUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.UserBadgeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserBadgePayload>
+          }
+          aggregate: {
+            args: Prisma.UserBadgeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUserBadge>
+          }
+          groupBy: {
+            args: Prisma.UserBadgeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UserBadgeGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UserBadgeCountArgs<ExtArgs>
+            result: $Utils.Optional<UserBadgeCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2640,17 +2812,17 @@ export namespace Prisma {
    */
 
   export type StatusCountOutputType = {
-    exhibits: number
-    exhibitions: number
-    languages: number
     users: number
+    languages: number
+    exhibitions: number
+    exhibits: number
   }
 
   export type StatusCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    exhibits?: boolean | StatusCountOutputTypeCountExhibitsArgs
-    exhibitions?: boolean | StatusCountOutputTypeCountExhibitionsArgs
-    languages?: boolean | StatusCountOutputTypeCountLanguagesArgs
     users?: boolean | StatusCountOutputTypeCountUsersArgs
+    languages?: boolean | StatusCountOutputTypeCountLanguagesArgs
+    exhibitions?: boolean | StatusCountOutputTypeCountExhibitionsArgs
+    exhibits?: boolean | StatusCountOutputTypeCountExhibitsArgs
   }
 
   // Custom InputTypes
@@ -2667,15 +2839,8 @@ export namespace Prisma {
   /**
    * StatusCountOutputType without action
    */
-  export type StatusCountOutputTypeCountExhibitsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ExhibitWhereInput
-  }
-
-  /**
-   * StatusCountOutputType without action
-   */
-  export type StatusCountOutputTypeCountExhibitionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ExhibitionWhereInput
+  export type StatusCountOutputTypeCountUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserWhereInput
   }
 
   /**
@@ -2688,8 +2853,15 @@ export namespace Prisma {
   /**
    * StatusCountOutputType without action
    */
-  export type StatusCountOutputTypeCountUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: UserWhereInput
+  export type StatusCountOutputTypeCountExhibitionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExhibitionWhereInput
+  }
+
+  /**
+   * StatusCountOutputType without action
+   */
+  export type StatusCountOutputTypeCountExhibitsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExhibitWhereInput
   }
 
 
@@ -2698,27 +2870,29 @@ export namespace Prisma {
    */
 
   export type UserCountOutputType = {
+    feedbacks: number
+    roles: number
+    sessions: number
+    subtitles: number
     playbackLogs: number
     adminAudits: number
     targetAudits: number
-    emailVerificationTokens: number
-    feedbacks: number
     passwordResetTokens: number
-    sessions: number
-    subtitles: number
-    roles: number
+    emailVerificationTokens: number
+    userBadges: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    feedbacks?: boolean | UserCountOutputTypeCountFeedbacksArgs
+    roles?: boolean | UserCountOutputTypeCountRolesArgs
+    sessions?: boolean | UserCountOutputTypeCountSessionsArgs
+    subtitles?: boolean | UserCountOutputTypeCountSubtitlesArgs
     playbackLogs?: boolean | UserCountOutputTypeCountPlaybackLogsArgs
     adminAudits?: boolean | UserCountOutputTypeCountAdminAuditsArgs
     targetAudits?: boolean | UserCountOutputTypeCountTargetAuditsArgs
-    emailVerificationTokens?: boolean | UserCountOutputTypeCountEmailVerificationTokensArgs
-    feedbacks?: boolean | UserCountOutputTypeCountFeedbacksArgs
     passwordResetTokens?: boolean | UserCountOutputTypeCountPasswordResetTokensArgs
-    sessions?: boolean | UserCountOutputTypeCountSessionsArgs
-    subtitles?: boolean | UserCountOutputTypeCountSubtitlesArgs
-    roles?: boolean | UserCountOutputTypeCountRolesArgs
+    emailVerificationTokens?: boolean | UserCountOutputTypeCountEmailVerificationTokensArgs
+    userBadges?: boolean | UserCountOutputTypeCountUserBadgesArgs
   }
 
   // Custom InputTypes
@@ -2730,6 +2904,34 @@ export namespace Prisma {
      * Select specific fields to fetch from the UserCountOutputType
      */
     select?: UserCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountFeedbacksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FeedbackWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountRolesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserRoleWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SessionWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountSubtitlesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SubtitleWhereInput
   }
 
   /**
@@ -2756,20 +2958,6 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountEmailVerificationTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: EmailVerificationTokenWhereInput
-  }
-
-  /**
-   * UserCountOutputType without action
-   */
-  export type UserCountOutputTypeCountFeedbacksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: FeedbackWhereInput
-  }
-
-  /**
-   * UserCountOutputType without action
-   */
   export type UserCountOutputTypeCountPasswordResetTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PasswordResetTokenWhereInput
   }
@@ -2777,22 +2965,46 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: SessionWhereInput
+  export type UserCountOutputTypeCountEmailVerificationTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EmailVerificationTokenWhereInput
   }
 
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountSubtitlesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: SubtitleWhereInput
+  export type UserCountOutputTypeCountUserBadgesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserBadgeWhereInput
+  }
+
+
+  /**
+   * Count Type BadgeCountOutputType
+   */
+
+  export type BadgeCountOutputType = {
+    userBadges: number
+  }
+
+  export type BadgeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    userBadges?: boolean | BadgeCountOutputTypeCountUserBadgesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * BadgeCountOutputType without action
+   */
+  export type BadgeCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BadgeCountOutputType
+     */
+    select?: BadgeCountOutputTypeSelect<ExtArgs> | null
   }
 
   /**
-   * UserCountOutputType without action
+   * BadgeCountOutputType without action
    */
-  export type UserCountOutputTypeCountRolesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: UserRoleWhereInput
+  export type BadgeCountOutputTypeCountUserBadgesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserBadgeWhereInput
   }
 
 
@@ -4131,8 +4343,8 @@ export namespace Prisma {
     durationListened?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    audio?: boolean | AudioPlaybackLog$audioArgs<ExtArgs>
     user?: boolean | AudioPlaybackLog$userArgs<ExtArgs>
+    audio?: boolean | AudioPlaybackLog$audioArgs<ExtArgs>
   }, ExtArgs["result"]["audioPlaybackLog"]>
 
   export type AudioPlaybackLogSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -4144,8 +4356,8 @@ export namespace Prisma {
     durationListened?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    audio?: boolean | AudioPlaybackLog$audioArgs<ExtArgs>
     user?: boolean | AudioPlaybackLog$userArgs<ExtArgs>
+    audio?: boolean | AudioPlaybackLog$audioArgs<ExtArgs>
   }, ExtArgs["result"]["audioPlaybackLog"]>
 
   export type AudioPlaybackLogSelectScalar = {
@@ -4160,19 +4372,19 @@ export namespace Prisma {
   }
 
   export type AudioPlaybackLogInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    audio?: boolean | AudioPlaybackLog$audioArgs<ExtArgs>
     user?: boolean | AudioPlaybackLog$userArgs<ExtArgs>
+    audio?: boolean | AudioPlaybackLog$audioArgs<ExtArgs>
   }
   export type AudioPlaybackLogIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    audio?: boolean | AudioPlaybackLog$audioArgs<ExtArgs>
     user?: boolean | AudioPlaybackLog$userArgs<ExtArgs>
+    audio?: boolean | AudioPlaybackLog$audioArgs<ExtArgs>
   }
 
   export type $AudioPlaybackLogPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "AudioPlaybackLog"
     objects: {
-      audio: Prisma.$AudioPayload<ExtArgs> | null
       user: Prisma.$UserPayload<ExtArgs> | null
+      audio: Prisma.$AudioPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       audioLogsId: number
@@ -4547,8 +4759,8 @@ export namespace Prisma {
    */
   export interface Prisma__AudioPlaybackLogClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    audio<T extends AudioPlaybackLog$audioArgs<ExtArgs> = {}>(args?: Subset<T, AudioPlaybackLog$audioArgs<ExtArgs>>): Prisma__AudioClient<$Result.GetResult<Prisma.$AudioPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     user<T extends AudioPlaybackLog$userArgs<ExtArgs> = {}>(args?: Subset<T, AudioPlaybackLog$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    audio<T extends AudioPlaybackLog$audioArgs<ExtArgs> = {}>(args?: Subset<T, AudioPlaybackLog$audioArgs<ExtArgs>>): Prisma__AudioClient<$Result.GetResult<Prisma.$AudioPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4904,21 +5116,6 @@ export namespace Prisma {
   }
 
   /**
-   * AudioPlaybackLog.audio
-   */
-  export type AudioPlaybackLog$audioArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Audio
-     */
-    select?: AudioSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AudioInclude<ExtArgs> | null
-    where?: AudioWhereInput
-  }
-
-  /**
    * AudioPlaybackLog.user
    */
   export type AudioPlaybackLog$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4931,6 +5128,21 @@ export namespace Prisma {
      */
     include?: UserInclude<ExtArgs> | null
     where?: UserWhereInput
+  }
+
+  /**
+   * AudioPlaybackLog.audio
+   */
+  export type AudioPlaybackLog$audioArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Audio
+     */
+    select?: AudioSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AudioInclude<ExtArgs> | null
+    where?: AudioWhereInput
   }
 
   /**
@@ -5128,8 +5340,8 @@ export namespace Prisma {
     title: string
     description: string | null
     statusId: number | null
-    createdAt: Date | null
-    updatedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
     _count: ExhibitionCountAggregateOutputType | null
     _avg: ExhibitionAvgAggregateOutputType | null
     _sum: ExhibitionSumAggregateOutputType | null
@@ -5158,8 +5370,8 @@ export namespace Prisma {
     statusId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    exhibits?: boolean | Exhibition$exhibitsArgs<ExtArgs>
     status?: boolean | Exhibition$statusArgs<ExtArgs>
+    exhibits?: boolean | Exhibition$exhibitsArgs<ExtArgs>
     images?: boolean | Exhibition$imagesArgs<ExtArgs>
     _count?: boolean | ExhibitionCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["exhibition"]>
@@ -5184,8 +5396,8 @@ export namespace Prisma {
   }
 
   export type ExhibitionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    exhibits?: boolean | Exhibition$exhibitsArgs<ExtArgs>
     status?: boolean | Exhibition$statusArgs<ExtArgs>
+    exhibits?: boolean | Exhibition$exhibitsArgs<ExtArgs>
     images?: boolean | Exhibition$imagesArgs<ExtArgs>
     _count?: boolean | ExhibitionCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -5196,8 +5408,8 @@ export namespace Prisma {
   export type $ExhibitionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Exhibition"
     objects: {
-      exhibits: Prisma.$ExhibitPayload<ExtArgs>[]
       status: Prisma.$StatusPayload<ExtArgs> | null
+      exhibits: Prisma.$ExhibitPayload<ExtArgs>[]
       images: Prisma.$ImagePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -5205,8 +5417,8 @@ export namespace Prisma {
       title: string
       description: string | null
       statusId: number | null
-      createdAt: Date | null
-      updatedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["exhibition"]>
     composites: {}
   }
@@ -5571,8 +5783,8 @@ export namespace Prisma {
    */
   export interface Prisma__ExhibitionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    exhibits<T extends Exhibition$exhibitsArgs<ExtArgs> = {}>(args?: Subset<T, Exhibition$exhibitsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findMany"> | Null>
     status<T extends Exhibition$statusArgs<ExtArgs> = {}>(args?: Subset<T, Exhibition$statusArgs<ExtArgs>>): Prisma__StatusClient<$Result.GetResult<Prisma.$StatusPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    exhibits<T extends Exhibition$exhibitsArgs<ExtArgs> = {}>(args?: Subset<T, Exhibition$exhibitsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findMany"> | Null>
     images<T extends Exhibition$imagesArgs<ExtArgs> = {}>(args?: Subset<T, Exhibition$imagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImagePayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -5927,6 +6139,21 @@ export namespace Prisma {
   }
 
   /**
+   * Exhibition.status
+   */
+  export type Exhibition$statusArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Status
+     */
+    select?: StatusSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusInclude<ExtArgs> | null
+    where?: StatusWhereInput
+  }
+
+  /**
    * Exhibition.exhibits
    */
   export type Exhibition$exhibitsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5944,21 +6171,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ExhibitScalarFieldEnum | ExhibitScalarFieldEnum[]
-  }
-
-  /**
-   * Exhibition.status
-   */
-  export type Exhibition$statusArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Status
-     */
-    select?: StatusSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: StatusInclude<ExtArgs> | null
-    where?: StatusWhereInput
   }
 
   /**
@@ -6011,21 +6223,24 @@ export namespace Prisma {
   export type ExhibitAvgAggregateOutputType = {
     exhibitId: number | null
     exhibitionId: number | null
+    badgeId: number | null
     statusId: number | null
   }
 
   export type ExhibitSumAggregateOutputType = {
     exhibitId: bigint | null
     exhibitionId: bigint | null
+    badgeId: bigint | null
     statusId: number | null
   }
 
   export type ExhibitMinAggregateOutputType = {
     exhibitId: bigint | null
     exhibitionId: bigint | null
+    badgeId: bigint | null
     title: string | null
-    statusId: number | null
     description: string | null
+    statusId: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -6033,9 +6248,10 @@ export namespace Prisma {
   export type ExhibitMaxAggregateOutputType = {
     exhibitId: bigint | null
     exhibitionId: bigint | null
+    badgeId: bigint | null
     title: string | null
-    statusId: number | null
     description: string | null
+    statusId: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -6043,9 +6259,10 @@ export namespace Prisma {
   export type ExhibitCountAggregateOutputType = {
     exhibitId: number
     exhibitionId: number
+    badgeId: number
     title: number
-    statusId: number
     description: number
+    statusId: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -6055,21 +6272,24 @@ export namespace Prisma {
   export type ExhibitAvgAggregateInputType = {
     exhibitId?: true
     exhibitionId?: true
+    badgeId?: true
     statusId?: true
   }
 
   export type ExhibitSumAggregateInputType = {
     exhibitId?: true
     exhibitionId?: true
+    badgeId?: true
     statusId?: true
   }
 
   export type ExhibitMinAggregateInputType = {
     exhibitId?: true
     exhibitionId?: true
+    badgeId?: true
     title?: true
-    statusId?: true
     description?: true
+    statusId?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -6077,9 +6297,10 @@ export namespace Prisma {
   export type ExhibitMaxAggregateInputType = {
     exhibitId?: true
     exhibitionId?: true
+    badgeId?: true
     title?: true
-    statusId?: true
     description?: true
+    statusId?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -6087,9 +6308,10 @@ export namespace Prisma {
   export type ExhibitCountAggregateInputType = {
     exhibitId?: true
     exhibitionId?: true
+    badgeId?: true
     title?: true
-    statusId?: true
     description?: true
+    statusId?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -6183,10 +6405,11 @@ export namespace Prisma {
 
   export type ExhibitGroupByOutputType = {
     exhibitId: bigint
-    exhibitionId: bigint | null
+    exhibitionId: bigint
+    badgeId: bigint | null
     title: string
-    statusId: number | null
     description: string | null
+    statusId: number | null
     createdAt: Date | null
     updatedAt: Date | null
     _count: ExhibitCountAggregateOutputType | null
@@ -6213,14 +6436,16 @@ export namespace Prisma {
   export type ExhibitSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     exhibitId?: boolean
     exhibitionId?: boolean
+    badgeId?: boolean
     title?: boolean
-    statusId?: boolean
     description?: boolean
+    statusId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    audio?: boolean | Exhibit$audioArgs<ExtArgs>
-    exhibition?: boolean | Exhibit$exhibitionArgs<ExtArgs>
+    exhibition?: boolean | ExhibitionDefaultArgs<ExtArgs>
     status?: boolean | Exhibit$statusArgs<ExtArgs>
+    badge?: boolean | Exhibit$badgeArgs<ExtArgs>
+    audio?: boolean | Exhibit$audioArgs<ExtArgs>
     feedbacks?: boolean | Exhibit$feedbacksArgs<ExtArgs>
     images?: boolean | Exhibit$imagesArgs<ExtArgs>
     qrCodes?: boolean | Exhibit$qrCodesArgs<ExtArgs>
@@ -6230,55 +6455,62 @@ export namespace Prisma {
   export type ExhibitSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     exhibitId?: boolean
     exhibitionId?: boolean
+    badgeId?: boolean
     title?: boolean
-    statusId?: boolean
     description?: boolean
+    statusId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    exhibition?: boolean | Exhibit$exhibitionArgs<ExtArgs>
+    exhibition?: boolean | ExhibitionDefaultArgs<ExtArgs>
     status?: boolean | Exhibit$statusArgs<ExtArgs>
+    badge?: boolean | Exhibit$badgeArgs<ExtArgs>
   }, ExtArgs["result"]["exhibit"]>
 
   export type ExhibitSelectScalar = {
     exhibitId?: boolean
     exhibitionId?: boolean
+    badgeId?: boolean
     title?: boolean
-    statusId?: boolean
     description?: boolean
+    statusId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
   export type ExhibitInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    audio?: boolean | Exhibit$audioArgs<ExtArgs>
-    exhibition?: boolean | Exhibit$exhibitionArgs<ExtArgs>
+    exhibition?: boolean | ExhibitionDefaultArgs<ExtArgs>
     status?: boolean | Exhibit$statusArgs<ExtArgs>
+    badge?: boolean | Exhibit$badgeArgs<ExtArgs>
+    audio?: boolean | Exhibit$audioArgs<ExtArgs>
     feedbacks?: boolean | Exhibit$feedbacksArgs<ExtArgs>
     images?: boolean | Exhibit$imagesArgs<ExtArgs>
     qrCodes?: boolean | Exhibit$qrCodesArgs<ExtArgs>
     _count?: boolean | ExhibitCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ExhibitIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    exhibition?: boolean | Exhibit$exhibitionArgs<ExtArgs>
+    exhibition?: boolean | ExhibitionDefaultArgs<ExtArgs>
     status?: boolean | Exhibit$statusArgs<ExtArgs>
+    badge?: boolean | Exhibit$badgeArgs<ExtArgs>
   }
 
   export type $ExhibitPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Exhibit"
     objects: {
-      audio: Prisma.$AudioPayload<ExtArgs>[]
-      exhibition: Prisma.$ExhibitionPayload<ExtArgs> | null
+      exhibition: Prisma.$ExhibitionPayload<ExtArgs>
       status: Prisma.$StatusPayload<ExtArgs> | null
+      badge: Prisma.$BadgePayload<ExtArgs> | null
+      audio: Prisma.$AudioPayload<ExtArgs>[]
       feedbacks: Prisma.$FeedbackPayload<ExtArgs>[]
       images: Prisma.$ImagePayload<ExtArgs>[]
       qrCodes: Prisma.$QRCodePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       exhibitId: bigint
-      exhibitionId: bigint | null
+      exhibitionId: bigint
+      badgeId: bigint | null
       title: string
-      statusId: number | null
       description: string | null
+      statusId: number | null
       createdAt: Date | null
       updatedAt: Date | null
     }, ExtArgs["result"]["exhibit"]>
@@ -6645,9 +6877,10 @@ export namespace Prisma {
    */
   export interface Prisma__ExhibitClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    audio<T extends Exhibit$audioArgs<ExtArgs> = {}>(args?: Subset<T, Exhibit$audioArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AudioPayload<ExtArgs>, T, "findMany"> | Null>
-    exhibition<T extends Exhibit$exhibitionArgs<ExtArgs> = {}>(args?: Subset<T, Exhibit$exhibitionArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    exhibition<T extends ExhibitionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ExhibitionDefaultArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
     status<T extends Exhibit$statusArgs<ExtArgs> = {}>(args?: Subset<T, Exhibit$statusArgs<ExtArgs>>): Prisma__StatusClient<$Result.GetResult<Prisma.$StatusPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    badge<T extends Exhibit$badgeArgs<ExtArgs> = {}>(args?: Subset<T, Exhibit$badgeArgs<ExtArgs>>): Prisma__BadgeClient<$Result.GetResult<Prisma.$BadgePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    audio<T extends Exhibit$audioArgs<ExtArgs> = {}>(args?: Subset<T, Exhibit$audioArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AudioPayload<ExtArgs>, T, "findMany"> | Null>
     feedbacks<T extends Exhibit$feedbacksArgs<ExtArgs> = {}>(args?: Subset<T, Exhibit$feedbacksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FeedbackPayload<ExtArgs>, T, "findMany"> | Null>
     images<T extends Exhibit$imagesArgs<ExtArgs> = {}>(args?: Subset<T, Exhibit$imagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImagePayload<ExtArgs>, T, "findMany"> | Null>
     qrCodes<T extends Exhibit$qrCodesArgs<ExtArgs> = {}>(args?: Subset<T, Exhibit$qrCodesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QRCodePayload<ExtArgs>, T, "findMany"> | Null>
@@ -6682,9 +6915,10 @@ export namespace Prisma {
   interface ExhibitFieldRefs {
     readonly exhibitId: FieldRef<"Exhibit", 'BigInt'>
     readonly exhibitionId: FieldRef<"Exhibit", 'BigInt'>
+    readonly badgeId: FieldRef<"Exhibit", 'BigInt'>
     readonly title: FieldRef<"Exhibit", 'String'>
-    readonly statusId: FieldRef<"Exhibit", 'Int'>
     readonly description: FieldRef<"Exhibit", 'String'>
+    readonly statusId: FieldRef<"Exhibit", 'Int'>
     readonly createdAt: FieldRef<"Exhibit", 'DateTime'>
     readonly updatedAt: FieldRef<"Exhibit", 'DateTime'>
   }
@@ -7005,6 +7239,36 @@ export namespace Prisma {
   }
 
   /**
+   * Exhibit.status
+   */
+  export type Exhibit$statusArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Status
+     */
+    select?: StatusSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusInclude<ExtArgs> | null
+    where?: StatusWhereInput
+  }
+
+  /**
+   * Exhibit.badge
+   */
+  export type Exhibit$badgeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Badge
+     */
+    select?: BadgeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BadgeInclude<ExtArgs> | null
+    where?: BadgeWhereInput
+  }
+
+  /**
    * Exhibit.audio
    */
   export type Exhibit$audioArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7022,36 +7286,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: AudioScalarFieldEnum | AudioScalarFieldEnum[]
-  }
-
-  /**
-   * Exhibit.exhibition
-   */
-  export type Exhibit$exhibitionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Exhibition
-     */
-    select?: ExhibitionSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ExhibitionInclude<ExtArgs> | null
-    where?: ExhibitionWhereInput
-  }
-
-  /**
-   * Exhibit.status
-   */
-  export type Exhibit$statusArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Status
-     */
-    select?: StatusSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: StatusInclude<ExtArgs> | null
-    where?: StatusWhereInput
   }
 
   /**
@@ -7355,8 +7589,8 @@ export namespace Prisma {
     description?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    exhibit?: boolean | Feedback$exhibitArgs<ExtArgs>
     user?: boolean | Feedback$userArgs<ExtArgs>
+    exhibit?: boolean | Feedback$exhibitArgs<ExtArgs>
   }, ExtArgs["result"]["feedback"]>
 
   export type FeedbackSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -7367,8 +7601,8 @@ export namespace Prisma {
     description?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    exhibit?: boolean | Feedback$exhibitArgs<ExtArgs>
     user?: boolean | Feedback$userArgs<ExtArgs>
+    exhibit?: boolean | Feedback$exhibitArgs<ExtArgs>
   }, ExtArgs["result"]["feedback"]>
 
   export type FeedbackSelectScalar = {
@@ -7382,19 +7616,19 @@ export namespace Prisma {
   }
 
   export type FeedbackInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    exhibit?: boolean | Feedback$exhibitArgs<ExtArgs>
     user?: boolean | Feedback$userArgs<ExtArgs>
+    exhibit?: boolean | Feedback$exhibitArgs<ExtArgs>
   }
   export type FeedbackIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    exhibit?: boolean | Feedback$exhibitArgs<ExtArgs>
     user?: boolean | Feedback$userArgs<ExtArgs>
+    exhibit?: boolean | Feedback$exhibitArgs<ExtArgs>
   }
 
   export type $FeedbackPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Feedback"
     objects: {
-      exhibit: Prisma.$ExhibitPayload<ExtArgs> | null
       user: Prisma.$UserPayload<ExtArgs> | null
+      exhibit: Prisma.$ExhibitPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       feedbackId: bigint
@@ -7768,8 +8002,8 @@ export namespace Prisma {
    */
   export interface Prisma__FeedbackClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    exhibit<T extends Feedback$exhibitArgs<ExtArgs> = {}>(args?: Subset<T, Feedback$exhibitArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     user<T extends Feedback$userArgs<ExtArgs> = {}>(args?: Subset<T, Feedback$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    exhibit<T extends Feedback$exhibitArgs<ExtArgs> = {}>(args?: Subset<T, Feedback$exhibitArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8124,21 +8358,6 @@ export namespace Prisma {
   }
 
   /**
-   * Feedback.exhibit
-   */
-  export type Feedback$exhibitArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Exhibit
-     */
-    select?: ExhibitSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ExhibitInclude<ExtArgs> | null
-    where?: ExhibitWhereInput
-  }
-
-  /**
    * Feedback.user
    */
   export type Feedback$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8151,6 +8370,21 @@ export namespace Prisma {
      */
     include?: UserInclude<ExtArgs> | null
     where?: UserWhereInput
+  }
+
+  /**
+   * Feedback.exhibit
+   */
+  export type Feedback$exhibitArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Exhibit
+     */
+    select?: ExhibitSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExhibitInclude<ExtArgs> | null
+    where?: ExhibitWhereInput
   }
 
   /**
@@ -8372,7 +8606,7 @@ export namespace Prisma {
     title: string | null
     description: string | null
     fileUrl: string | null
-    isPrimary: boolean | null
+    isPrimary: boolean
     createdAt: Date | null
     updatedAt: Date | null
     _count: ImageCountAggregateOutputType | null
@@ -8458,7 +8692,7 @@ export namespace Prisma {
       title: string | null
       description: string | null
       fileUrl: string | null
-      isPrimary: boolean | null
+      isPrimary: boolean
       createdAt: Date | null
       updatedAt: Date | null
     }, ExtArgs["result"]["image"]>
@@ -9445,8 +9679,8 @@ export namespace Prisma {
     isDefault?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    audio?: boolean | Language$audioArgs<ExtArgs>
     status?: boolean | Language$statusArgs<ExtArgs>
+    audio?: boolean | Language$audioArgs<ExtArgs>
     subtitles?: boolean | Language$subtitlesArgs<ExtArgs>
     _count?: boolean | LanguageCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["language"]>
@@ -9473,8 +9707,8 @@ export namespace Prisma {
   }
 
   export type LanguageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    audio?: boolean | Language$audioArgs<ExtArgs>
     status?: boolean | Language$statusArgs<ExtArgs>
+    audio?: boolean | Language$audioArgs<ExtArgs>
     subtitles?: boolean | Language$subtitlesArgs<ExtArgs>
     _count?: boolean | LanguageCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -9485,8 +9719,8 @@ export namespace Prisma {
   export type $LanguagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Language"
     objects: {
-      audio: Prisma.$AudioPayload<ExtArgs>[]
       status: Prisma.$StatusPayload<ExtArgs> | null
+      audio: Prisma.$AudioPayload<ExtArgs>[]
       subtitles: Prisma.$SubtitlePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -9861,8 +10095,8 @@ export namespace Prisma {
    */
   export interface Prisma__LanguageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    audio<T extends Language$audioArgs<ExtArgs> = {}>(args?: Subset<T, Language$audioArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AudioPayload<ExtArgs>, T, "findMany"> | Null>
     status<T extends Language$statusArgs<ExtArgs> = {}>(args?: Subset<T, Language$statusArgs<ExtArgs>>): Prisma__StatusClient<$Result.GetResult<Prisma.$StatusPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    audio<T extends Language$audioArgs<ExtArgs> = {}>(args?: Subset<T, Language$audioArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AudioPayload<ExtArgs>, T, "findMany"> | Null>
     subtitles<T extends Language$subtitlesArgs<ExtArgs> = {}>(args?: Subset<T, Language$subtitlesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SubtitlePayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -10218,6 +10452,21 @@ export namespace Prisma {
   }
 
   /**
+   * Language.status
+   */
+  export type Language$statusArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Status
+     */
+    select?: StatusSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusInclude<ExtArgs> | null
+    where?: StatusWhereInput
+  }
+
+  /**
    * Language.audio
    */
   export type Language$audioArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10235,21 +10484,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: AudioScalarFieldEnum | AudioScalarFieldEnum[]
-  }
-
-  /**
-   * Language.status
-   */
-  export type Language$statusArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Status
-     */
-    select?: StatusSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: StatusInclude<ExtArgs> | null
-    where?: StatusWhereInput
   }
 
   /**
@@ -13424,15 +13658,15 @@ export namespace Prisma {
   export type RolePermissionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     roleId?: boolean
     permissionId?: boolean
-    permission?: boolean | PermissionDefaultArgs<ExtArgs>
     role?: boolean | RoleDefaultArgs<ExtArgs>
+    permission?: boolean | PermissionDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["rolePermission"]>
 
   export type RolePermissionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     roleId?: boolean
     permissionId?: boolean
-    permission?: boolean | PermissionDefaultArgs<ExtArgs>
     role?: boolean | RoleDefaultArgs<ExtArgs>
+    permission?: boolean | PermissionDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["rolePermission"]>
 
   export type RolePermissionSelectScalar = {
@@ -13441,19 +13675,19 @@ export namespace Prisma {
   }
 
   export type RolePermissionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    permission?: boolean | PermissionDefaultArgs<ExtArgs>
     role?: boolean | RoleDefaultArgs<ExtArgs>
+    permission?: boolean | PermissionDefaultArgs<ExtArgs>
   }
   export type RolePermissionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    permission?: boolean | PermissionDefaultArgs<ExtArgs>
     role?: boolean | RoleDefaultArgs<ExtArgs>
+    permission?: boolean | PermissionDefaultArgs<ExtArgs>
   }
 
   export type $RolePermissionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "RolePermission"
     objects: {
-      permission: Prisma.$PermissionPayload<ExtArgs>
       role: Prisma.$RolePayload<ExtArgs>
+      permission: Prisma.$PermissionPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       roleId: number
@@ -13822,8 +14056,8 @@ export namespace Prisma {
    */
   export interface Prisma__RolePermissionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    permission<T extends PermissionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PermissionDefaultArgs<ExtArgs>>): Prisma__PermissionClient<$Result.GetResult<Prisma.$PermissionPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
     role<T extends RoleDefaultArgs<ExtArgs> = {}>(args?: Subset<T, RoleDefaultArgs<ExtArgs>>): Prisma__RoleClient<$Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    permission<T extends PermissionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PermissionDefaultArgs<ExtArgs>>): Prisma__PermissionClient<$Result.GetResult<Prisma.$PermissionPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -15304,10 +15538,10 @@ export namespace Prisma {
   export type StatusSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     statusId?: boolean
     statusName?: boolean
-    exhibits?: boolean | Status$exhibitsArgs<ExtArgs>
-    exhibitions?: boolean | Status$exhibitionsArgs<ExtArgs>
-    languages?: boolean | Status$languagesArgs<ExtArgs>
     users?: boolean | Status$usersArgs<ExtArgs>
+    languages?: boolean | Status$languagesArgs<ExtArgs>
+    exhibitions?: boolean | Status$exhibitionsArgs<ExtArgs>
+    exhibits?: boolean | Status$exhibitsArgs<ExtArgs>
     _count?: boolean | StatusCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["status"]>
 
@@ -15322,10 +15556,10 @@ export namespace Prisma {
   }
 
   export type StatusInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    exhibits?: boolean | Status$exhibitsArgs<ExtArgs>
-    exhibitions?: boolean | Status$exhibitionsArgs<ExtArgs>
-    languages?: boolean | Status$languagesArgs<ExtArgs>
     users?: boolean | Status$usersArgs<ExtArgs>
+    languages?: boolean | Status$languagesArgs<ExtArgs>
+    exhibitions?: boolean | Status$exhibitionsArgs<ExtArgs>
+    exhibits?: boolean | Status$exhibitsArgs<ExtArgs>
     _count?: boolean | StatusCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type StatusIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -15333,10 +15567,10 @@ export namespace Prisma {
   export type $StatusPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Status"
     objects: {
-      exhibits: Prisma.$ExhibitPayload<ExtArgs>[]
-      exhibitions: Prisma.$ExhibitionPayload<ExtArgs>[]
-      languages: Prisma.$LanguagePayload<ExtArgs>[]
       users: Prisma.$UserPayload<ExtArgs>[]
+      languages: Prisma.$LanguagePayload<ExtArgs>[]
+      exhibitions: Prisma.$ExhibitionPayload<ExtArgs>[]
+      exhibits: Prisma.$ExhibitPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       statusId: number
@@ -15705,10 +15939,10 @@ export namespace Prisma {
    */
   export interface Prisma__StatusClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    exhibits<T extends Status$exhibitsArgs<ExtArgs> = {}>(args?: Subset<T, Status$exhibitsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findMany"> | Null>
-    exhibitions<T extends Status$exhibitionsArgs<ExtArgs> = {}>(args?: Subset<T, Status$exhibitionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "findMany"> | Null>
-    languages<T extends Status$languagesArgs<ExtArgs> = {}>(args?: Subset<T, Status$languagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LanguagePayload<ExtArgs>, T, "findMany"> | Null>
     users<T extends Status$usersArgs<ExtArgs> = {}>(args?: Subset<T, Status$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany"> | Null>
+    languages<T extends Status$languagesArgs<ExtArgs> = {}>(args?: Subset<T, Status$languagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LanguagePayload<ExtArgs>, T, "findMany"> | Null>
+    exhibitions<T extends Status$exhibitionsArgs<ExtArgs> = {}>(args?: Subset<T, Status$exhibitionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "findMany"> | Null>
+    exhibits<T extends Status$exhibitsArgs<ExtArgs> = {}>(args?: Subset<T, Status$exhibitsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -16054,43 +16288,23 @@ export namespace Prisma {
   }
 
   /**
-   * Status.exhibits
+   * Status.users
    */
-  export type Status$exhibitsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Status$usersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Exhibit
+     * Select specific fields to fetch from the User
      */
-    select?: ExhibitSelect<ExtArgs> | null
+    select?: UserSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ExhibitInclude<ExtArgs> | null
-    where?: ExhibitWhereInput
-    orderBy?: ExhibitOrderByWithRelationInput | ExhibitOrderByWithRelationInput[]
-    cursor?: ExhibitWhereUniqueInput
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    cursor?: UserWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: ExhibitScalarFieldEnum | ExhibitScalarFieldEnum[]
-  }
-
-  /**
-   * Status.exhibitions
-   */
-  export type Status$exhibitionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Exhibition
-     */
-    select?: ExhibitionSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ExhibitionInclude<ExtArgs> | null
-    where?: ExhibitionWhereInput
-    orderBy?: ExhibitionOrderByWithRelationInput | ExhibitionOrderByWithRelationInput[]
-    cursor?: ExhibitionWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ExhibitionScalarFieldEnum | ExhibitionScalarFieldEnum[]
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
   }
 
   /**
@@ -16114,23 +16328,43 @@ export namespace Prisma {
   }
 
   /**
-   * Status.users
+   * Status.exhibitions
    */
-  export type Status$usersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Status$exhibitionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the User
+     * Select specific fields to fetch from the Exhibition
      */
-    select?: UserSelect<ExtArgs> | null
+    select?: ExhibitionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: UserInclude<ExtArgs> | null
-    where?: UserWhereInput
-    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
-    cursor?: UserWhereUniqueInput
+    include?: ExhibitionInclude<ExtArgs> | null
+    where?: ExhibitionWhereInput
+    orderBy?: ExhibitionOrderByWithRelationInput | ExhibitionOrderByWithRelationInput[]
+    cursor?: ExhibitionWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+    distinct?: ExhibitionScalarFieldEnum | ExhibitionScalarFieldEnum[]
+  }
+
+  /**
+   * Status.exhibits
+   */
+  export type Status$exhibitsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Exhibit
+     */
+    select?: ExhibitSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExhibitInclude<ExtArgs> | null
+    where?: ExhibitWhereInput
+    orderBy?: ExhibitOrderByWithRelationInput | ExhibitOrderByWithRelationInput[]
+    cursor?: ExhibitWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ExhibitScalarFieldEnum | ExhibitScalarFieldEnum[]
   }
 
   /**
@@ -16371,8 +16605,8 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     audio?: boolean | Subtitle$audioArgs<ExtArgs>
-    user?: boolean | Subtitle$userArgs<ExtArgs>
     language?: boolean | Subtitle$languageArgs<ExtArgs>
+    user?: boolean | Subtitle$userArgs<ExtArgs>
   }, ExtArgs["result"]["subtitle"]>
 
   export type SubtitleSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -16384,8 +16618,8 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     audio?: boolean | Subtitle$audioArgs<ExtArgs>
-    user?: boolean | Subtitle$userArgs<ExtArgs>
     language?: boolean | Subtitle$languageArgs<ExtArgs>
+    user?: boolean | Subtitle$userArgs<ExtArgs>
   }, ExtArgs["result"]["subtitle"]>
 
   export type SubtitleSelectScalar = {
@@ -16400,21 +16634,21 @@ export namespace Prisma {
 
   export type SubtitleInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     audio?: boolean | Subtitle$audioArgs<ExtArgs>
-    user?: boolean | Subtitle$userArgs<ExtArgs>
     language?: boolean | Subtitle$languageArgs<ExtArgs>
+    user?: boolean | Subtitle$userArgs<ExtArgs>
   }
   export type SubtitleIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     audio?: boolean | Subtitle$audioArgs<ExtArgs>
-    user?: boolean | Subtitle$userArgs<ExtArgs>
     language?: boolean | Subtitle$languageArgs<ExtArgs>
+    user?: boolean | Subtitle$userArgs<ExtArgs>
   }
 
   export type $SubtitlePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Subtitle"
     objects: {
       audio: Prisma.$AudioPayload<ExtArgs> | null
-      user: Prisma.$UserPayload<ExtArgs> | null
       language: Prisma.$LanguagePayload<ExtArgs> | null
+      user: Prisma.$UserPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       subtitleId: bigint
@@ -16789,8 +17023,8 @@ export namespace Prisma {
   export interface Prisma__SubtitleClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     audio<T extends Subtitle$audioArgs<ExtArgs> = {}>(args?: Subset<T, Subtitle$audioArgs<ExtArgs>>): Prisma__AudioClient<$Result.GetResult<Prisma.$AudioPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
-    user<T extends Subtitle$userArgs<ExtArgs> = {}>(args?: Subset<T, Subtitle$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     language<T extends Subtitle$languageArgs<ExtArgs> = {}>(args?: Subset<T, Subtitle$languageArgs<ExtArgs>>): Prisma__LanguageClient<$Result.GetResult<Prisma.$LanguagePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    user<T extends Subtitle$userArgs<ExtArgs> = {}>(args?: Subset<T, Subtitle$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -17160,21 +17394,6 @@ export namespace Prisma {
   }
 
   /**
-   * Subtitle.user
-   */
-  export type Subtitle$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the User
-     */
-    select?: UserSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
-    where?: UserWhereInput
-  }
-
-  /**
    * Subtitle.language
    */
   export type Subtitle$languageArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -17187,6 +17406,21 @@ export namespace Prisma {
      */
     include?: LanguageInclude<ExtArgs> | null
     where?: LanguageWhereInput
+  }
+
+  /**
+   * Subtitle.user
+   */
+  export type Subtitle$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
   }
 
   /**
@@ -17402,7 +17636,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
-    emailVerified: boolean | null
+    emailVerified: boolean
     statusId: number | null
     lastLoginAt: Date | null
     createdAt: Date | null
@@ -17438,16 +17672,17 @@ export namespace Prisma {
     lastLoginAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    status?: boolean | User$statusArgs<ExtArgs>
+    feedbacks?: boolean | User$feedbacksArgs<ExtArgs>
+    roles?: boolean | User$rolesArgs<ExtArgs>
+    sessions?: boolean | User$sessionsArgs<ExtArgs>
+    subtitles?: boolean | User$subtitlesArgs<ExtArgs>
     playbackLogs?: boolean | User$playbackLogsArgs<ExtArgs>
     adminAudits?: boolean | User$adminAuditsArgs<ExtArgs>
     targetAudits?: boolean | User$targetAuditsArgs<ExtArgs>
-    emailVerificationTokens?: boolean | User$emailVerificationTokensArgs<ExtArgs>
-    feedbacks?: boolean | User$feedbacksArgs<ExtArgs>
     passwordResetTokens?: boolean | User$passwordResetTokensArgs<ExtArgs>
-    sessions?: boolean | User$sessionsArgs<ExtArgs>
-    subtitles?: boolean | User$subtitlesArgs<ExtArgs>
-    status?: boolean | User$statusArgs<ExtArgs>
-    roles?: boolean | User$rolesArgs<ExtArgs>
+    emailVerificationTokens?: boolean | User$emailVerificationTokensArgs<ExtArgs>
+    userBadges?: boolean | User$userBadgesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -17477,16 +17712,17 @@ export namespace Prisma {
   }
 
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    status?: boolean | User$statusArgs<ExtArgs>
+    feedbacks?: boolean | User$feedbacksArgs<ExtArgs>
+    roles?: boolean | User$rolesArgs<ExtArgs>
+    sessions?: boolean | User$sessionsArgs<ExtArgs>
+    subtitles?: boolean | User$subtitlesArgs<ExtArgs>
     playbackLogs?: boolean | User$playbackLogsArgs<ExtArgs>
     adminAudits?: boolean | User$adminAuditsArgs<ExtArgs>
     targetAudits?: boolean | User$targetAuditsArgs<ExtArgs>
-    emailVerificationTokens?: boolean | User$emailVerificationTokensArgs<ExtArgs>
-    feedbacks?: boolean | User$feedbacksArgs<ExtArgs>
     passwordResetTokens?: boolean | User$passwordResetTokensArgs<ExtArgs>
-    sessions?: boolean | User$sessionsArgs<ExtArgs>
-    subtitles?: boolean | User$subtitlesArgs<ExtArgs>
-    status?: boolean | User$statusArgs<ExtArgs>
-    roles?: boolean | User$rolesArgs<ExtArgs>
+    emailVerificationTokens?: boolean | User$emailVerificationTokensArgs<ExtArgs>
+    userBadges?: boolean | User$userBadgesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -17496,23 +17732,24 @@ export namespace Prisma {
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {
+      status: Prisma.$StatusPayload<ExtArgs> | null
+      feedbacks: Prisma.$FeedbackPayload<ExtArgs>[]
+      roles: Prisma.$UserRolePayload<ExtArgs>[]
+      sessions: Prisma.$SessionPayload<ExtArgs>[]
+      subtitles: Prisma.$SubtitlePayload<ExtArgs>[]
       playbackLogs: Prisma.$AudioPlaybackLogPayload<ExtArgs>[]
       adminAudits: Prisma.$AuditLogPayload<ExtArgs>[]
       targetAudits: Prisma.$AuditLogPayload<ExtArgs>[]
-      emailVerificationTokens: Prisma.$EmailVerificationTokenPayload<ExtArgs>[]
-      feedbacks: Prisma.$FeedbackPayload<ExtArgs>[]
       passwordResetTokens: Prisma.$PasswordResetTokenPayload<ExtArgs>[]
-      sessions: Prisma.$SessionPayload<ExtArgs>[]
-      subtitles: Prisma.$SubtitlePayload<ExtArgs>[]
-      status: Prisma.$StatusPayload<ExtArgs> | null
-      roles: Prisma.$UserRolePayload<ExtArgs>[]
+      emailVerificationTokens: Prisma.$EmailVerificationTokenPayload<ExtArgs>[]
+      userBadges: Prisma.$UserBadgePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       userId: bigint
       username: string
       email: string
       passwordHash: string
-      emailVerified: boolean | null
+      emailVerified: boolean
       statusId: number | null
       lastLoginAt: Date | null
       createdAt: Date | null
@@ -17881,16 +18118,17 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    status<T extends User$statusArgs<ExtArgs> = {}>(args?: Subset<T, User$statusArgs<ExtArgs>>): Prisma__StatusClient<$Result.GetResult<Prisma.$StatusPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    feedbacks<T extends User$feedbacksArgs<ExtArgs> = {}>(args?: Subset<T, User$feedbacksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FeedbackPayload<ExtArgs>, T, "findMany"> | Null>
+    roles<T extends User$rolesArgs<ExtArgs> = {}>(args?: Subset<T, User$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserRolePayload<ExtArgs>, T, "findMany"> | Null>
+    sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany"> | Null>
+    subtitles<T extends User$subtitlesArgs<ExtArgs> = {}>(args?: Subset<T, User$subtitlesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SubtitlePayload<ExtArgs>, T, "findMany"> | Null>
     playbackLogs<T extends User$playbackLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$playbackLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AudioPlaybackLogPayload<ExtArgs>, T, "findMany"> | Null>
     adminAudits<T extends User$adminAuditsArgs<ExtArgs> = {}>(args?: Subset<T, User$adminAuditsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany"> | Null>
     targetAudits<T extends User$targetAuditsArgs<ExtArgs> = {}>(args?: Subset<T, User$targetAuditsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany"> | Null>
-    emailVerificationTokens<T extends User$emailVerificationTokensArgs<ExtArgs> = {}>(args?: Subset<T, User$emailVerificationTokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailVerificationTokenPayload<ExtArgs>, T, "findMany"> | Null>
-    feedbacks<T extends User$feedbacksArgs<ExtArgs> = {}>(args?: Subset<T, User$feedbacksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FeedbackPayload<ExtArgs>, T, "findMany"> | Null>
     passwordResetTokens<T extends User$passwordResetTokensArgs<ExtArgs> = {}>(args?: Subset<T, User$passwordResetTokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "findMany"> | Null>
-    sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany"> | Null>
-    subtitles<T extends User$subtitlesArgs<ExtArgs> = {}>(args?: Subset<T, User$subtitlesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SubtitlePayload<ExtArgs>, T, "findMany"> | Null>
-    status<T extends User$statusArgs<ExtArgs> = {}>(args?: Subset<T, User$statusArgs<ExtArgs>>): Prisma__StatusClient<$Result.GetResult<Prisma.$StatusPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
-    roles<T extends User$rolesArgs<ExtArgs> = {}>(args?: Subset<T, User$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserRolePayload<ExtArgs>, T, "findMany"> | Null>
+    emailVerificationTokens<T extends User$emailVerificationTokensArgs<ExtArgs> = {}>(args?: Subset<T, User$emailVerificationTokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailVerificationTokenPayload<ExtArgs>, T, "findMany"> | Null>
+    userBadges<T extends User$userBadgesArgs<ExtArgs> = {}>(args?: Subset<T, User$userBadgesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserBadgePayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -18247,6 +18485,101 @@ export namespace Prisma {
   }
 
   /**
+   * User.status
+   */
+  export type User$statusArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Status
+     */
+    select?: StatusSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusInclude<ExtArgs> | null
+    where?: StatusWhereInput
+  }
+
+  /**
+   * User.feedbacks
+   */
+  export type User$feedbacksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Feedback
+     */
+    select?: FeedbackSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeedbackInclude<ExtArgs> | null
+    where?: FeedbackWhereInput
+    orderBy?: FeedbackOrderByWithRelationInput | FeedbackOrderByWithRelationInput[]
+    cursor?: FeedbackWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FeedbackScalarFieldEnum | FeedbackScalarFieldEnum[]
+  }
+
+  /**
+   * User.roles
+   */
+  export type User$rolesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserRole
+     */
+    select?: UserRoleSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserRoleInclude<ExtArgs> | null
+    where?: UserRoleWhereInput
+    orderBy?: UserRoleOrderByWithRelationInput | UserRoleOrderByWithRelationInput[]
+    cursor?: UserRoleWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserRoleScalarFieldEnum | UserRoleScalarFieldEnum[]
+  }
+
+  /**
+   * User.sessions
+   */
+  export type User$sessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SessionInclude<ExtArgs> | null
+    where?: SessionWhereInput
+    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
+    cursor?: SessionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
+  }
+
+  /**
+   * User.subtitles
+   */
+  export type User$subtitlesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Subtitle
+     */
+    select?: SubtitleSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubtitleInclude<ExtArgs> | null
+    where?: SubtitleWhereInput
+    orderBy?: SubtitleOrderByWithRelationInput | SubtitleOrderByWithRelationInput[]
+    cursor?: SubtitleWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SubtitleScalarFieldEnum | SubtitleScalarFieldEnum[]
+  }
+
+  /**
    * User.playbackLogs
    */
   export type User$playbackLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -18307,46 +18640,6 @@ export namespace Prisma {
   }
 
   /**
-   * User.emailVerificationTokens
-   */
-  export type User$emailVerificationTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the EmailVerificationToken
-     */
-    select?: EmailVerificationTokenSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: EmailVerificationTokenInclude<ExtArgs> | null
-    where?: EmailVerificationTokenWhereInput
-    orderBy?: EmailVerificationTokenOrderByWithRelationInput | EmailVerificationTokenOrderByWithRelationInput[]
-    cursor?: EmailVerificationTokenWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: EmailVerificationTokenScalarFieldEnum | EmailVerificationTokenScalarFieldEnum[]
-  }
-
-  /**
-   * User.feedbacks
-   */
-  export type User$feedbacksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Feedback
-     */
-    select?: FeedbackSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: FeedbackInclude<ExtArgs> | null
-    where?: FeedbackWhereInput
-    orderBy?: FeedbackOrderByWithRelationInput | FeedbackOrderByWithRelationInput[]
-    cursor?: FeedbackWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: FeedbackScalarFieldEnum | FeedbackScalarFieldEnum[]
-  }
-
-  /**
    * User.passwordResetTokens
    */
   export type User$passwordResetTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -18367,78 +18660,43 @@ export namespace Prisma {
   }
 
   /**
-   * User.sessions
+   * User.emailVerificationTokens
    */
-  export type User$sessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$emailVerificationTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Session
+     * Select specific fields to fetch from the EmailVerificationToken
      */
-    select?: SessionSelect<ExtArgs> | null
+    select?: EmailVerificationTokenSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SessionInclude<ExtArgs> | null
-    where?: SessionWhereInput
-    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
-    cursor?: SessionWhereUniqueInput
+    include?: EmailVerificationTokenInclude<ExtArgs> | null
+    where?: EmailVerificationTokenWhereInput
+    orderBy?: EmailVerificationTokenOrderByWithRelationInput | EmailVerificationTokenOrderByWithRelationInput[]
+    cursor?: EmailVerificationTokenWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
+    distinct?: EmailVerificationTokenScalarFieldEnum | EmailVerificationTokenScalarFieldEnum[]
   }
 
   /**
-   * User.subtitles
+   * User.userBadges
    */
-  export type User$subtitlesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$userBadgesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Subtitle
+     * Select specific fields to fetch from the UserBadge
      */
-    select?: SubtitleSelect<ExtArgs> | null
+    select?: UserBadgeSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SubtitleInclude<ExtArgs> | null
-    where?: SubtitleWhereInput
-    orderBy?: SubtitleOrderByWithRelationInput | SubtitleOrderByWithRelationInput[]
-    cursor?: SubtitleWhereUniqueInput
+    include?: UserBadgeInclude<ExtArgs> | null
+    where?: UserBadgeWhereInput
+    orderBy?: UserBadgeOrderByWithRelationInput | UserBadgeOrderByWithRelationInput[]
+    cursor?: UserBadgeWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: SubtitleScalarFieldEnum | SubtitleScalarFieldEnum[]
-  }
-
-  /**
-   * User.status
-   */
-  export type User$statusArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Status
-     */
-    select?: StatusSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: StatusInclude<ExtArgs> | null
-    where?: StatusWhereInput
-  }
-
-  /**
-   * User.roles
-   */
-  export type User$rolesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the UserRole
-     */
-    select?: UserRoleSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserRoleInclude<ExtArgs> | null
-    where?: UserRoleWhereInput
-    orderBy?: UserRoleOrderByWithRelationInput | UserRoleOrderByWithRelationInput[]
-    cursor?: UserRoleWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: UserRoleScalarFieldEnum | UserRoleScalarFieldEnum[]
+    distinct?: UserBadgeScalarFieldEnum | UserBadgeScalarFieldEnum[]
   }
 
   /**
@@ -18642,16 +18900,16 @@ export namespace Prisma {
     userId?: boolean
     roleId?: boolean
     createdAt?: boolean
-    role?: boolean | RoleDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    role?: boolean | RoleDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["userRole"]>
 
   export type UserRoleSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     userId?: boolean
     roleId?: boolean
     createdAt?: boolean
-    role?: boolean | RoleDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    role?: boolean | RoleDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["userRole"]>
 
   export type UserRoleSelectScalar = {
@@ -18661,19 +18919,19 @@ export namespace Prisma {
   }
 
   export type UserRoleInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    role?: boolean | RoleDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    role?: boolean | RoleDefaultArgs<ExtArgs>
   }
   export type UserRoleIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    role?: boolean | RoleDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    role?: boolean | RoleDefaultArgs<ExtArgs>
   }
 
   export type $UserRolePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "UserRole"
     objects: {
-      role: Prisma.$RolePayload<ExtArgs>
       user: Prisma.$UserPayload<ExtArgs>
+      role: Prisma.$RolePayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       userId: bigint
@@ -19043,8 +19301,8 @@ export namespace Prisma {
    */
   export interface Prisma__UserRoleClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    role<T extends RoleDefaultArgs<ExtArgs> = {}>(args?: Subset<T, RoleDefaultArgs<ExtArgs>>): Prisma__RoleClient<$Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    role<T extends RoleDefaultArgs<ExtArgs> = {}>(args?: Subset<T, RoleDefaultArgs<ExtArgs>>): Prisma__RoleClient<$Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -19608,7 +19866,7 @@ export namespace Prisma {
     action: string
     changes: string | null
     metadata: string | null
-    timestamp: Date | null
+    timestamp: Date
     _count: AuditLogCountAggregateOutputType | null
     _avg: AuditLogAvgAggregateOutputType | null
     _sum: AuditLogSumAggregateOutputType | null
@@ -19690,7 +19948,7 @@ export namespace Prisma {
       action: string
       changes: string | null
       metadata: string | null
-      timestamp: Date | null
+      timestamp: Date
     }, ExtArgs["result"]["auditLog"]>
     composites: {}
   }
@@ -20629,7 +20887,7 @@ export namespace Prisma {
     passwordResetId: bigint
     userId: bigint
     token: string
-    createdAt: Date | null
+    createdAt: Date
     expiresAt: Date
     _count: PasswordResetTokenCountAggregateOutputType | null
     _avg: PasswordResetTokenAvgAggregateOutputType | null
@@ -20694,7 +20952,7 @@ export namespace Prisma {
       passwordResetId: bigint
       userId: bigint
       token: string
-      createdAt: Date | null
+      createdAt: Date
       expiresAt: Date
     }, ExtArgs["result"]["passwordResetToken"]>
     composites: {}
@@ -21600,7 +21858,7 @@ export namespace Prisma {
     emailVerificationId: bigint
     userId: bigint
     token: string
-    createdAt: Date | null
+    createdAt: Date
     expiresAt: Date
     _count: EmailVerificationTokenCountAggregateOutputType | null
     _avg: EmailVerificationTokenAvgAggregateOutputType | null
@@ -21665,7 +21923,7 @@ export namespace Prisma {
       emailVerificationId: bigint
       userId: bigint
       token: string
-      createdAt: Date | null
+      createdAt: Date
       expiresAt: Date
     }, ExtArgs["result"]["emailVerificationToken"]>
     composites: {}
@@ -22399,6 +22657,1972 @@ export namespace Prisma {
 
 
   /**
+   * Model Badge
+   */
+
+  export type AggregateBadge = {
+    _count: BadgeCountAggregateOutputType | null
+    _avg: BadgeAvgAggregateOutputType | null
+    _sum: BadgeSumAggregateOutputType | null
+    _min: BadgeMinAggregateOutputType | null
+    _max: BadgeMaxAggregateOutputType | null
+  }
+
+  export type BadgeAvgAggregateOutputType = {
+    badgeId: number | null
+  }
+
+  export type BadgeSumAggregateOutputType = {
+    badgeId: bigint | null
+  }
+
+  export type BadgeMinAggregateOutputType = {
+    badgeId: bigint | null
+    name: string | null
+    description: string | null
+    imageUrl: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BadgeMaxAggregateOutputType = {
+    badgeId: bigint | null
+    name: string | null
+    description: string | null
+    imageUrl: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BadgeCountAggregateOutputType = {
+    badgeId: number
+    name: number
+    description: number
+    imageUrl: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type BadgeAvgAggregateInputType = {
+    badgeId?: true
+  }
+
+  export type BadgeSumAggregateInputType = {
+    badgeId?: true
+  }
+
+  export type BadgeMinAggregateInputType = {
+    badgeId?: true
+    name?: true
+    description?: true
+    imageUrl?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BadgeMaxAggregateInputType = {
+    badgeId?: true
+    name?: true
+    description?: true
+    imageUrl?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BadgeCountAggregateInputType = {
+    badgeId?: true
+    name?: true
+    description?: true
+    imageUrl?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type BadgeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Badge to aggregate.
+     */
+    where?: BadgeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Badges to fetch.
+     */
+    orderBy?: BadgeOrderByWithRelationInput | BadgeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: BadgeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Badges from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Badges.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Badges
+    **/
+    _count?: true | BadgeCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: BadgeAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: BadgeSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: BadgeMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: BadgeMaxAggregateInputType
+  }
+
+  export type GetBadgeAggregateType<T extends BadgeAggregateArgs> = {
+        [P in keyof T & keyof AggregateBadge]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBadge[P]>
+      : GetScalarType<T[P], AggregateBadge[P]>
+  }
+
+
+
+
+  export type BadgeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BadgeWhereInput
+    orderBy?: BadgeOrderByWithAggregationInput | BadgeOrderByWithAggregationInput[]
+    by: BadgeScalarFieldEnum[] | BadgeScalarFieldEnum
+    having?: BadgeScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: BadgeCountAggregateInputType | true
+    _avg?: BadgeAvgAggregateInputType
+    _sum?: BadgeSumAggregateInputType
+    _min?: BadgeMinAggregateInputType
+    _max?: BadgeMaxAggregateInputType
+  }
+
+  export type BadgeGroupByOutputType = {
+    badgeId: bigint
+    name: string | null
+    description: string | null
+    imageUrl: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    _count: BadgeCountAggregateOutputType | null
+    _avg: BadgeAvgAggregateOutputType | null
+    _sum: BadgeSumAggregateOutputType | null
+    _min: BadgeMinAggregateOutputType | null
+    _max: BadgeMaxAggregateOutputType | null
+  }
+
+  type GetBadgeGroupByPayload<T extends BadgeGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<BadgeGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof BadgeGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], BadgeGroupByOutputType[P]>
+            : GetScalarType<T[P], BadgeGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type BadgeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    badgeId?: boolean
+    name?: boolean
+    description?: boolean
+    imageUrl?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    exhibit?: boolean | Badge$exhibitArgs<ExtArgs>
+    userBadges?: boolean | Badge$userBadgesArgs<ExtArgs>
+    _count?: boolean | BadgeCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["badge"]>
+
+  export type BadgeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    badgeId?: boolean
+    name?: boolean
+    description?: boolean
+    imageUrl?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["badge"]>
+
+  export type BadgeSelectScalar = {
+    badgeId?: boolean
+    name?: boolean
+    description?: boolean
+    imageUrl?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type BadgeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    exhibit?: boolean | Badge$exhibitArgs<ExtArgs>
+    userBadges?: boolean | Badge$userBadgesArgs<ExtArgs>
+    _count?: boolean | BadgeCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type BadgeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $BadgePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Badge"
+    objects: {
+      exhibit: Prisma.$ExhibitPayload<ExtArgs> | null
+      userBadges: Prisma.$UserBadgePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      badgeId: bigint
+      name: string | null
+      description: string | null
+      imageUrl: string | null
+      createdAt: Date | null
+      updatedAt: Date | null
+    }, ExtArgs["result"]["badge"]>
+    composites: {}
+  }
+
+  type BadgeGetPayload<S extends boolean | null | undefined | BadgeDefaultArgs> = $Result.GetResult<Prisma.$BadgePayload, S>
+
+  type BadgeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<BadgeFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: BadgeCountAggregateInputType | true
+    }
+
+  export interface BadgeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Badge'], meta: { name: 'Badge' } }
+    /**
+     * Find zero or one Badge that matches the filter.
+     * @param {BadgeFindUniqueArgs} args - Arguments to find a Badge
+     * @example
+     * // Get one Badge
+     * const badge = await prisma.badge.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends BadgeFindUniqueArgs>(args: SelectSubset<T, BadgeFindUniqueArgs<ExtArgs>>): Prisma__BadgeClient<$Result.GetResult<Prisma.$BadgePayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one Badge that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {BadgeFindUniqueOrThrowArgs} args - Arguments to find a Badge
+     * @example
+     * // Get one Badge
+     * const badge = await prisma.badge.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends BadgeFindUniqueOrThrowArgs>(args: SelectSubset<T, BadgeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BadgeClient<$Result.GetResult<Prisma.$BadgePayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first Badge that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BadgeFindFirstArgs} args - Arguments to find a Badge
+     * @example
+     * // Get one Badge
+     * const badge = await prisma.badge.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends BadgeFindFirstArgs>(args?: SelectSubset<T, BadgeFindFirstArgs<ExtArgs>>): Prisma__BadgeClient<$Result.GetResult<Prisma.$BadgePayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first Badge that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BadgeFindFirstOrThrowArgs} args - Arguments to find a Badge
+     * @example
+     * // Get one Badge
+     * const badge = await prisma.badge.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends BadgeFindFirstOrThrowArgs>(args?: SelectSubset<T, BadgeFindFirstOrThrowArgs<ExtArgs>>): Prisma__BadgeClient<$Result.GetResult<Prisma.$BadgePayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more Badges that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BadgeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Badges
+     * const badges = await prisma.badge.findMany()
+     * 
+     * // Get first 10 Badges
+     * const badges = await prisma.badge.findMany({ take: 10 })
+     * 
+     * // Only select the `badgeId`
+     * const badgeWithBadgeIdOnly = await prisma.badge.findMany({ select: { badgeId: true } })
+     * 
+     */
+    findMany<T extends BadgeFindManyArgs>(args?: SelectSubset<T, BadgeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BadgePayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a Badge.
+     * @param {BadgeCreateArgs} args - Arguments to create a Badge.
+     * @example
+     * // Create one Badge
+     * const Badge = await prisma.badge.create({
+     *   data: {
+     *     // ... data to create a Badge
+     *   }
+     * })
+     * 
+     */
+    create<T extends BadgeCreateArgs>(args: SelectSubset<T, BadgeCreateArgs<ExtArgs>>): Prisma__BadgeClient<$Result.GetResult<Prisma.$BadgePayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many Badges.
+     * @param {BadgeCreateManyArgs} args - Arguments to create many Badges.
+     * @example
+     * // Create many Badges
+     * const badge = await prisma.badge.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends BadgeCreateManyArgs>(args?: SelectSubset<T, BadgeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Badges and returns the data saved in the database.
+     * @param {BadgeCreateManyAndReturnArgs} args - Arguments to create many Badges.
+     * @example
+     * // Create many Badges
+     * const badge = await prisma.badge.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Badges and only return the `badgeId`
+     * const badgeWithBadgeIdOnly = await prisma.badge.createManyAndReturn({ 
+     *   select: { badgeId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends BadgeCreateManyAndReturnArgs>(args?: SelectSubset<T, BadgeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BadgePayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a Badge.
+     * @param {BadgeDeleteArgs} args - Arguments to delete one Badge.
+     * @example
+     * // Delete one Badge
+     * const Badge = await prisma.badge.delete({
+     *   where: {
+     *     // ... filter to delete one Badge
+     *   }
+     * })
+     * 
+     */
+    delete<T extends BadgeDeleteArgs>(args: SelectSubset<T, BadgeDeleteArgs<ExtArgs>>): Prisma__BadgeClient<$Result.GetResult<Prisma.$BadgePayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one Badge.
+     * @param {BadgeUpdateArgs} args - Arguments to update one Badge.
+     * @example
+     * // Update one Badge
+     * const badge = await prisma.badge.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends BadgeUpdateArgs>(args: SelectSubset<T, BadgeUpdateArgs<ExtArgs>>): Prisma__BadgeClient<$Result.GetResult<Prisma.$BadgePayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more Badges.
+     * @param {BadgeDeleteManyArgs} args - Arguments to filter Badges to delete.
+     * @example
+     * // Delete a few Badges
+     * const { count } = await prisma.badge.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends BadgeDeleteManyArgs>(args?: SelectSubset<T, BadgeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Badges.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BadgeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Badges
+     * const badge = await prisma.badge.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends BadgeUpdateManyArgs>(args: SelectSubset<T, BadgeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Badge.
+     * @param {BadgeUpsertArgs} args - Arguments to update or create a Badge.
+     * @example
+     * // Update or create a Badge
+     * const badge = await prisma.badge.upsert({
+     *   create: {
+     *     // ... data to create a Badge
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Badge we want to update
+     *   }
+     * })
+     */
+    upsert<T extends BadgeUpsertArgs>(args: SelectSubset<T, BadgeUpsertArgs<ExtArgs>>): Prisma__BadgeClient<$Result.GetResult<Prisma.$BadgePayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of Badges.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BadgeCountArgs} args - Arguments to filter Badges to count.
+     * @example
+     * // Count the number of Badges
+     * const count = await prisma.badge.count({
+     *   where: {
+     *     // ... the filter for the Badges we want to count
+     *   }
+     * })
+    **/
+    count<T extends BadgeCountArgs>(
+      args?: Subset<T, BadgeCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], BadgeCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Badge.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BadgeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BadgeAggregateArgs>(args: Subset<T, BadgeAggregateArgs>): Prisma.PrismaPromise<GetBadgeAggregateType<T>>
+
+    /**
+     * Group by Badge.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BadgeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends BadgeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: BadgeGroupByArgs['orderBy'] }
+        : { orderBy?: BadgeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, BadgeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBadgeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Badge model
+   */
+  readonly fields: BadgeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Badge.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__BadgeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    exhibit<T extends Badge$exhibitArgs<ExtArgs> = {}>(args?: Subset<T, Badge$exhibitArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    userBadges<T extends Badge$userBadgesArgs<ExtArgs> = {}>(args?: Subset<T, Badge$userBadgesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserBadgePayload<ExtArgs>, T, "findMany"> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Badge model
+   */ 
+  interface BadgeFieldRefs {
+    readonly badgeId: FieldRef<"Badge", 'BigInt'>
+    readonly name: FieldRef<"Badge", 'String'>
+    readonly description: FieldRef<"Badge", 'String'>
+    readonly imageUrl: FieldRef<"Badge", 'String'>
+    readonly createdAt: FieldRef<"Badge", 'DateTime'>
+    readonly updatedAt: FieldRef<"Badge", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Badge findUnique
+   */
+  export type BadgeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Badge
+     */
+    select?: BadgeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BadgeInclude<ExtArgs> | null
+    /**
+     * Filter, which Badge to fetch.
+     */
+    where: BadgeWhereUniqueInput
+  }
+
+  /**
+   * Badge findUniqueOrThrow
+   */
+  export type BadgeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Badge
+     */
+    select?: BadgeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BadgeInclude<ExtArgs> | null
+    /**
+     * Filter, which Badge to fetch.
+     */
+    where: BadgeWhereUniqueInput
+  }
+
+  /**
+   * Badge findFirst
+   */
+  export type BadgeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Badge
+     */
+    select?: BadgeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BadgeInclude<ExtArgs> | null
+    /**
+     * Filter, which Badge to fetch.
+     */
+    where?: BadgeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Badges to fetch.
+     */
+    orderBy?: BadgeOrderByWithRelationInput | BadgeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Badges.
+     */
+    cursor?: BadgeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Badges from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Badges.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Badges.
+     */
+    distinct?: BadgeScalarFieldEnum | BadgeScalarFieldEnum[]
+  }
+
+  /**
+   * Badge findFirstOrThrow
+   */
+  export type BadgeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Badge
+     */
+    select?: BadgeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BadgeInclude<ExtArgs> | null
+    /**
+     * Filter, which Badge to fetch.
+     */
+    where?: BadgeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Badges to fetch.
+     */
+    orderBy?: BadgeOrderByWithRelationInput | BadgeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Badges.
+     */
+    cursor?: BadgeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Badges from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Badges.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Badges.
+     */
+    distinct?: BadgeScalarFieldEnum | BadgeScalarFieldEnum[]
+  }
+
+  /**
+   * Badge findMany
+   */
+  export type BadgeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Badge
+     */
+    select?: BadgeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BadgeInclude<ExtArgs> | null
+    /**
+     * Filter, which Badges to fetch.
+     */
+    where?: BadgeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Badges to fetch.
+     */
+    orderBy?: BadgeOrderByWithRelationInput | BadgeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Badges.
+     */
+    cursor?: BadgeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Badges from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Badges.
+     */
+    skip?: number
+    distinct?: BadgeScalarFieldEnum | BadgeScalarFieldEnum[]
+  }
+
+  /**
+   * Badge create
+   */
+  export type BadgeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Badge
+     */
+    select?: BadgeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BadgeInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Badge.
+     */
+    data?: XOR<BadgeCreateInput, BadgeUncheckedCreateInput>
+  }
+
+  /**
+   * Badge createMany
+   */
+  export type BadgeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Badges.
+     */
+    data: BadgeCreateManyInput | BadgeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Badge createManyAndReturn
+   */
+  export type BadgeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Badge
+     */
+    select?: BadgeSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many Badges.
+     */
+    data: BadgeCreateManyInput | BadgeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Badge update
+   */
+  export type BadgeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Badge
+     */
+    select?: BadgeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BadgeInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Badge.
+     */
+    data: XOR<BadgeUpdateInput, BadgeUncheckedUpdateInput>
+    /**
+     * Choose, which Badge to update.
+     */
+    where: BadgeWhereUniqueInput
+  }
+
+  /**
+   * Badge updateMany
+   */
+  export type BadgeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Badges.
+     */
+    data: XOR<BadgeUpdateManyMutationInput, BadgeUncheckedUpdateManyInput>
+    /**
+     * Filter which Badges to update
+     */
+    where?: BadgeWhereInput
+  }
+
+  /**
+   * Badge upsert
+   */
+  export type BadgeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Badge
+     */
+    select?: BadgeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BadgeInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Badge to update in case it exists.
+     */
+    where: BadgeWhereUniqueInput
+    /**
+     * In case the Badge found by the `where` argument doesn't exist, create a new Badge with this data.
+     */
+    create: XOR<BadgeCreateInput, BadgeUncheckedCreateInput>
+    /**
+     * In case the Badge was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<BadgeUpdateInput, BadgeUncheckedUpdateInput>
+  }
+
+  /**
+   * Badge delete
+   */
+  export type BadgeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Badge
+     */
+    select?: BadgeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BadgeInclude<ExtArgs> | null
+    /**
+     * Filter which Badge to delete.
+     */
+    where: BadgeWhereUniqueInput
+  }
+
+  /**
+   * Badge deleteMany
+   */
+  export type BadgeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Badges to delete
+     */
+    where?: BadgeWhereInput
+  }
+
+  /**
+   * Badge.exhibit
+   */
+  export type Badge$exhibitArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Exhibit
+     */
+    select?: ExhibitSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExhibitInclude<ExtArgs> | null
+    where?: ExhibitWhereInput
+  }
+
+  /**
+   * Badge.userBadges
+   */
+  export type Badge$userBadgesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserBadge
+     */
+    select?: UserBadgeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserBadgeInclude<ExtArgs> | null
+    where?: UserBadgeWhereInput
+    orderBy?: UserBadgeOrderByWithRelationInput | UserBadgeOrderByWithRelationInput[]
+    cursor?: UserBadgeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserBadgeScalarFieldEnum | UserBadgeScalarFieldEnum[]
+  }
+
+  /**
+   * Badge without action
+   */
+  export type BadgeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Badge
+     */
+    select?: BadgeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BadgeInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model UserBadge
+   */
+
+  export type AggregateUserBadge = {
+    _count: UserBadgeCountAggregateOutputType | null
+    _avg: UserBadgeAvgAggregateOutputType | null
+    _sum: UserBadgeSumAggregateOutputType | null
+    _min: UserBadgeMinAggregateOutputType | null
+    _max: UserBadgeMaxAggregateOutputType | null
+  }
+
+  export type UserBadgeAvgAggregateOutputType = {
+    userId: number | null
+    badgeId: number | null
+  }
+
+  export type UserBadgeSumAggregateOutputType = {
+    userId: bigint | null
+    badgeId: bigint | null
+  }
+
+  export type UserBadgeMinAggregateOutputType = {
+    userId: bigint | null
+    badgeId: bigint | null
+    createdAt: Date | null
+  }
+
+  export type UserBadgeMaxAggregateOutputType = {
+    userId: bigint | null
+    badgeId: bigint | null
+    createdAt: Date | null
+  }
+
+  export type UserBadgeCountAggregateOutputType = {
+    userId: number
+    badgeId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type UserBadgeAvgAggregateInputType = {
+    userId?: true
+    badgeId?: true
+  }
+
+  export type UserBadgeSumAggregateInputType = {
+    userId?: true
+    badgeId?: true
+  }
+
+  export type UserBadgeMinAggregateInputType = {
+    userId?: true
+    badgeId?: true
+    createdAt?: true
+  }
+
+  export type UserBadgeMaxAggregateInputType = {
+    userId?: true
+    badgeId?: true
+    createdAt?: true
+  }
+
+  export type UserBadgeCountAggregateInputType = {
+    userId?: true
+    badgeId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type UserBadgeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserBadge to aggregate.
+     */
+    where?: UserBadgeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserBadges to fetch.
+     */
+    orderBy?: UserBadgeOrderByWithRelationInput | UserBadgeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UserBadgeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserBadges from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserBadges.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned UserBadges
+    **/
+    _count?: true | UserBadgeCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: UserBadgeAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: UserBadgeSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UserBadgeMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UserBadgeMaxAggregateInputType
+  }
+
+  export type GetUserBadgeAggregateType<T extends UserBadgeAggregateArgs> = {
+        [P in keyof T & keyof AggregateUserBadge]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUserBadge[P]>
+      : GetScalarType<T[P], AggregateUserBadge[P]>
+  }
+
+
+
+
+  export type UserBadgeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserBadgeWhereInput
+    orderBy?: UserBadgeOrderByWithAggregationInput | UserBadgeOrderByWithAggregationInput[]
+    by: UserBadgeScalarFieldEnum[] | UserBadgeScalarFieldEnum
+    having?: UserBadgeScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UserBadgeCountAggregateInputType | true
+    _avg?: UserBadgeAvgAggregateInputType
+    _sum?: UserBadgeSumAggregateInputType
+    _min?: UserBadgeMinAggregateInputType
+    _max?: UserBadgeMaxAggregateInputType
+  }
+
+  export type UserBadgeGroupByOutputType = {
+    userId: bigint
+    badgeId: bigint
+    createdAt: Date | null
+    _count: UserBadgeCountAggregateOutputType | null
+    _avg: UserBadgeAvgAggregateOutputType | null
+    _sum: UserBadgeSumAggregateOutputType | null
+    _min: UserBadgeMinAggregateOutputType | null
+    _max: UserBadgeMaxAggregateOutputType | null
+  }
+
+  type GetUserBadgeGroupByPayload<T extends UserBadgeGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UserBadgeGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UserBadgeGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UserBadgeGroupByOutputType[P]>
+            : GetScalarType<T[P], UserBadgeGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UserBadgeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    userId?: boolean
+    badgeId?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    badge?: boolean | BadgeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userBadge"]>
+
+  export type UserBadgeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    userId?: boolean
+    badgeId?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    badge?: boolean | BadgeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userBadge"]>
+
+  export type UserBadgeSelectScalar = {
+    userId?: boolean
+    badgeId?: boolean
+    createdAt?: boolean
+  }
+
+  export type UserBadgeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    badge?: boolean | BadgeDefaultArgs<ExtArgs>
+  }
+  export type UserBadgeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    badge?: boolean | BadgeDefaultArgs<ExtArgs>
+  }
+
+  export type $UserBadgePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "UserBadge"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      badge: Prisma.$BadgePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      userId: bigint
+      badgeId: bigint
+      createdAt: Date | null
+    }, ExtArgs["result"]["userBadge"]>
+    composites: {}
+  }
+
+  type UserBadgeGetPayload<S extends boolean | null | undefined | UserBadgeDefaultArgs> = $Result.GetResult<Prisma.$UserBadgePayload, S>
+
+  type UserBadgeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<UserBadgeFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: UserBadgeCountAggregateInputType | true
+    }
+
+  export interface UserBadgeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['UserBadge'], meta: { name: 'UserBadge' } }
+    /**
+     * Find zero or one UserBadge that matches the filter.
+     * @param {UserBadgeFindUniqueArgs} args - Arguments to find a UserBadge
+     * @example
+     * // Get one UserBadge
+     * const userBadge = await prisma.userBadge.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends UserBadgeFindUniqueArgs>(args: SelectSubset<T, UserBadgeFindUniqueArgs<ExtArgs>>): Prisma__UserBadgeClient<$Result.GetResult<Prisma.$UserBadgePayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one UserBadge that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {UserBadgeFindUniqueOrThrowArgs} args - Arguments to find a UserBadge
+     * @example
+     * // Get one UserBadge
+     * const userBadge = await prisma.userBadge.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends UserBadgeFindUniqueOrThrowArgs>(args: SelectSubset<T, UserBadgeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UserBadgeClient<$Result.GetResult<Prisma.$UserBadgePayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first UserBadge that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserBadgeFindFirstArgs} args - Arguments to find a UserBadge
+     * @example
+     * // Get one UserBadge
+     * const userBadge = await prisma.userBadge.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends UserBadgeFindFirstArgs>(args?: SelectSubset<T, UserBadgeFindFirstArgs<ExtArgs>>): Prisma__UserBadgeClient<$Result.GetResult<Prisma.$UserBadgePayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first UserBadge that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserBadgeFindFirstOrThrowArgs} args - Arguments to find a UserBadge
+     * @example
+     * // Get one UserBadge
+     * const userBadge = await prisma.userBadge.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends UserBadgeFindFirstOrThrowArgs>(args?: SelectSubset<T, UserBadgeFindFirstOrThrowArgs<ExtArgs>>): Prisma__UserBadgeClient<$Result.GetResult<Prisma.$UserBadgePayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more UserBadges that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserBadgeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all UserBadges
+     * const userBadges = await prisma.userBadge.findMany()
+     * 
+     * // Get first 10 UserBadges
+     * const userBadges = await prisma.userBadge.findMany({ take: 10 })
+     * 
+     * // Only select the `userId`
+     * const userBadgeWithUserIdOnly = await prisma.userBadge.findMany({ select: { userId: true } })
+     * 
+     */
+    findMany<T extends UserBadgeFindManyArgs>(args?: SelectSubset<T, UserBadgeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserBadgePayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a UserBadge.
+     * @param {UserBadgeCreateArgs} args - Arguments to create a UserBadge.
+     * @example
+     * // Create one UserBadge
+     * const UserBadge = await prisma.userBadge.create({
+     *   data: {
+     *     // ... data to create a UserBadge
+     *   }
+     * })
+     * 
+     */
+    create<T extends UserBadgeCreateArgs>(args: SelectSubset<T, UserBadgeCreateArgs<ExtArgs>>): Prisma__UserBadgeClient<$Result.GetResult<Prisma.$UserBadgePayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many UserBadges.
+     * @param {UserBadgeCreateManyArgs} args - Arguments to create many UserBadges.
+     * @example
+     * // Create many UserBadges
+     * const userBadge = await prisma.userBadge.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends UserBadgeCreateManyArgs>(args?: SelectSubset<T, UserBadgeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many UserBadges and returns the data saved in the database.
+     * @param {UserBadgeCreateManyAndReturnArgs} args - Arguments to create many UserBadges.
+     * @example
+     * // Create many UserBadges
+     * const userBadge = await prisma.userBadge.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many UserBadges and only return the `userId`
+     * const userBadgeWithUserIdOnly = await prisma.userBadge.createManyAndReturn({ 
+     *   select: { userId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends UserBadgeCreateManyAndReturnArgs>(args?: SelectSubset<T, UserBadgeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserBadgePayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a UserBadge.
+     * @param {UserBadgeDeleteArgs} args - Arguments to delete one UserBadge.
+     * @example
+     * // Delete one UserBadge
+     * const UserBadge = await prisma.userBadge.delete({
+     *   where: {
+     *     // ... filter to delete one UserBadge
+     *   }
+     * })
+     * 
+     */
+    delete<T extends UserBadgeDeleteArgs>(args: SelectSubset<T, UserBadgeDeleteArgs<ExtArgs>>): Prisma__UserBadgeClient<$Result.GetResult<Prisma.$UserBadgePayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one UserBadge.
+     * @param {UserBadgeUpdateArgs} args - Arguments to update one UserBadge.
+     * @example
+     * // Update one UserBadge
+     * const userBadge = await prisma.userBadge.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends UserBadgeUpdateArgs>(args: SelectSubset<T, UserBadgeUpdateArgs<ExtArgs>>): Prisma__UserBadgeClient<$Result.GetResult<Prisma.$UserBadgePayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more UserBadges.
+     * @param {UserBadgeDeleteManyArgs} args - Arguments to filter UserBadges to delete.
+     * @example
+     * // Delete a few UserBadges
+     * const { count } = await prisma.userBadge.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends UserBadgeDeleteManyArgs>(args?: SelectSubset<T, UserBadgeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserBadges.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserBadgeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many UserBadges
+     * const userBadge = await prisma.userBadge.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends UserBadgeUpdateManyArgs>(args: SelectSubset<T, UserBadgeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one UserBadge.
+     * @param {UserBadgeUpsertArgs} args - Arguments to update or create a UserBadge.
+     * @example
+     * // Update or create a UserBadge
+     * const userBadge = await prisma.userBadge.upsert({
+     *   create: {
+     *     // ... data to create a UserBadge
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the UserBadge we want to update
+     *   }
+     * })
+     */
+    upsert<T extends UserBadgeUpsertArgs>(args: SelectSubset<T, UserBadgeUpsertArgs<ExtArgs>>): Prisma__UserBadgeClient<$Result.GetResult<Prisma.$UserBadgePayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of UserBadges.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserBadgeCountArgs} args - Arguments to filter UserBadges to count.
+     * @example
+     * // Count the number of UserBadges
+     * const count = await prisma.userBadge.count({
+     *   where: {
+     *     // ... the filter for the UserBadges we want to count
+     *   }
+     * })
+    **/
+    count<T extends UserBadgeCountArgs>(
+      args?: Subset<T, UserBadgeCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UserBadgeCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a UserBadge.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserBadgeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UserBadgeAggregateArgs>(args: Subset<T, UserBadgeAggregateArgs>): Prisma.PrismaPromise<GetUserBadgeAggregateType<T>>
+
+    /**
+     * Group by UserBadge.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserBadgeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UserBadgeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UserBadgeGroupByArgs['orderBy'] }
+        : { orderBy?: UserBadgeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UserBadgeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserBadgeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the UserBadge model
+   */
+  readonly fields: UserBadgeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for UserBadge.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UserBadgeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    badge<T extends BadgeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, BadgeDefaultArgs<ExtArgs>>): Prisma__BadgeClient<$Result.GetResult<Prisma.$BadgePayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the UserBadge model
+   */ 
+  interface UserBadgeFieldRefs {
+    readonly userId: FieldRef<"UserBadge", 'BigInt'>
+    readonly badgeId: FieldRef<"UserBadge", 'BigInt'>
+    readonly createdAt: FieldRef<"UserBadge", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * UserBadge findUnique
+   */
+  export type UserBadgeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserBadge
+     */
+    select?: UserBadgeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserBadgeInclude<ExtArgs> | null
+    /**
+     * Filter, which UserBadge to fetch.
+     */
+    where: UserBadgeWhereUniqueInput
+  }
+
+  /**
+   * UserBadge findUniqueOrThrow
+   */
+  export type UserBadgeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserBadge
+     */
+    select?: UserBadgeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserBadgeInclude<ExtArgs> | null
+    /**
+     * Filter, which UserBadge to fetch.
+     */
+    where: UserBadgeWhereUniqueInput
+  }
+
+  /**
+   * UserBadge findFirst
+   */
+  export type UserBadgeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserBadge
+     */
+    select?: UserBadgeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserBadgeInclude<ExtArgs> | null
+    /**
+     * Filter, which UserBadge to fetch.
+     */
+    where?: UserBadgeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserBadges to fetch.
+     */
+    orderBy?: UserBadgeOrderByWithRelationInput | UserBadgeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserBadges.
+     */
+    cursor?: UserBadgeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserBadges from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserBadges.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserBadges.
+     */
+    distinct?: UserBadgeScalarFieldEnum | UserBadgeScalarFieldEnum[]
+  }
+
+  /**
+   * UserBadge findFirstOrThrow
+   */
+  export type UserBadgeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserBadge
+     */
+    select?: UserBadgeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserBadgeInclude<ExtArgs> | null
+    /**
+     * Filter, which UserBadge to fetch.
+     */
+    where?: UserBadgeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserBadges to fetch.
+     */
+    orderBy?: UserBadgeOrderByWithRelationInput | UserBadgeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserBadges.
+     */
+    cursor?: UserBadgeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserBadges from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserBadges.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserBadges.
+     */
+    distinct?: UserBadgeScalarFieldEnum | UserBadgeScalarFieldEnum[]
+  }
+
+  /**
+   * UserBadge findMany
+   */
+  export type UserBadgeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserBadge
+     */
+    select?: UserBadgeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserBadgeInclude<ExtArgs> | null
+    /**
+     * Filter, which UserBadges to fetch.
+     */
+    where?: UserBadgeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserBadges to fetch.
+     */
+    orderBy?: UserBadgeOrderByWithRelationInput | UserBadgeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing UserBadges.
+     */
+    cursor?: UserBadgeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserBadges from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserBadges.
+     */
+    skip?: number
+    distinct?: UserBadgeScalarFieldEnum | UserBadgeScalarFieldEnum[]
+  }
+
+  /**
+   * UserBadge create
+   */
+  export type UserBadgeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserBadge
+     */
+    select?: UserBadgeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserBadgeInclude<ExtArgs> | null
+    /**
+     * The data needed to create a UserBadge.
+     */
+    data: XOR<UserBadgeCreateInput, UserBadgeUncheckedCreateInput>
+  }
+
+  /**
+   * UserBadge createMany
+   */
+  export type UserBadgeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many UserBadges.
+     */
+    data: UserBadgeCreateManyInput | UserBadgeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * UserBadge createManyAndReturn
+   */
+  export type UserBadgeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserBadge
+     */
+    select?: UserBadgeSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many UserBadges.
+     */
+    data: UserBadgeCreateManyInput | UserBadgeCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserBadgeIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserBadge update
+   */
+  export type UserBadgeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserBadge
+     */
+    select?: UserBadgeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserBadgeInclude<ExtArgs> | null
+    /**
+     * The data needed to update a UserBadge.
+     */
+    data: XOR<UserBadgeUpdateInput, UserBadgeUncheckedUpdateInput>
+    /**
+     * Choose, which UserBadge to update.
+     */
+    where: UserBadgeWhereUniqueInput
+  }
+
+  /**
+   * UserBadge updateMany
+   */
+  export type UserBadgeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update UserBadges.
+     */
+    data: XOR<UserBadgeUpdateManyMutationInput, UserBadgeUncheckedUpdateManyInput>
+    /**
+     * Filter which UserBadges to update
+     */
+    where?: UserBadgeWhereInput
+  }
+
+  /**
+   * UserBadge upsert
+   */
+  export type UserBadgeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserBadge
+     */
+    select?: UserBadgeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserBadgeInclude<ExtArgs> | null
+    /**
+     * The filter to search for the UserBadge to update in case it exists.
+     */
+    where: UserBadgeWhereUniqueInput
+    /**
+     * In case the UserBadge found by the `where` argument doesn't exist, create a new UserBadge with this data.
+     */
+    create: XOR<UserBadgeCreateInput, UserBadgeUncheckedCreateInput>
+    /**
+     * In case the UserBadge was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<UserBadgeUpdateInput, UserBadgeUncheckedUpdateInput>
+  }
+
+  /**
+   * UserBadge delete
+   */
+  export type UserBadgeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserBadge
+     */
+    select?: UserBadgeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserBadgeInclude<ExtArgs> | null
+    /**
+     * Filter which UserBadge to delete.
+     */
+    where: UserBadgeWhereUniqueInput
+  }
+
+  /**
+   * UserBadge deleteMany
+   */
+  export type UserBadgeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserBadges to delete
+     */
+    where?: UserBadgeWhereInput
+  }
+
+  /**
+   * UserBadge without action
+   */
+  export type UserBadgeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserBadge
+     */
+    select?: UserBadgeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserBadgeInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -22455,9 +24679,10 @@ export namespace Prisma {
   export const ExhibitScalarFieldEnum: {
     exhibitId: 'exhibitId',
     exhibitionId: 'exhibitionId',
+    badgeId: 'badgeId',
     title: 'title',
-    statusId: 'statusId',
     description: 'description',
+    statusId: 'statusId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -22635,6 +24860,27 @@ export namespace Prisma {
   };
 
   export type EmailVerificationTokenScalarFieldEnum = (typeof EmailVerificationTokenScalarFieldEnum)[keyof typeof EmailVerificationTokenScalarFieldEnum]
+
+
+  export const BadgeScalarFieldEnum: {
+    badgeId: 'badgeId',
+    name: 'name',
+    description: 'description',
+    imageUrl: 'imageUrl',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type BadgeScalarFieldEnum = (typeof BadgeScalarFieldEnum)[keyof typeof BadgeScalarFieldEnum]
+
+
+  export const UserBadgeScalarFieldEnum: {
+    userId: 'userId',
+    badgeId: 'badgeId',
+    createdAt: 'createdAt'
+  };
+
+  export type UserBadgeScalarFieldEnum = (typeof UserBadgeScalarFieldEnum)[keyof typeof UserBadgeScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -22863,8 +25109,8 @@ export namespace Prisma {
     durationListened?: IntNullableFilter<"AudioPlaybackLog"> | number | null
     createdAt?: DateTimeNullableFilter<"AudioPlaybackLog"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"AudioPlaybackLog"> | Date | string | null
-    audio?: XOR<AudioNullableRelationFilter, AudioWhereInput> | null
     user?: XOR<UserNullableRelationFilter, UserWhereInput> | null
+    audio?: XOR<AudioNullableRelationFilter, AudioWhereInput> | null
   }
 
   export type AudioPlaybackLogOrderByWithRelationInput = {
@@ -22876,8 +25122,8 @@ export namespace Prisma {
     durationListened?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrderInput | SortOrder
-    audio?: AudioOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
+    audio?: AudioOrderByWithRelationInput
   }
 
   export type AudioPlaybackLogWhereUniqueInput = Prisma.AtLeast<{
@@ -22892,8 +25138,8 @@ export namespace Prisma {
     durationListened?: IntNullableFilter<"AudioPlaybackLog"> | number | null
     createdAt?: DateTimeNullableFilter<"AudioPlaybackLog"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"AudioPlaybackLog"> | Date | string | null
-    audio?: XOR<AudioNullableRelationFilter, AudioWhereInput> | null
     user?: XOR<UserNullableRelationFilter, UserWhereInput> | null
+    audio?: XOR<AudioNullableRelationFilter, AudioWhereInput> | null
   }, "audioLogsId">
 
   export type AudioPlaybackLogOrderByWithAggregationInput = {
@@ -22934,10 +25180,10 @@ export namespace Prisma {
     title?: StringFilter<"Exhibition"> | string
     description?: StringNullableFilter<"Exhibition"> | string | null
     statusId?: IntNullableFilter<"Exhibition"> | number | null
-    createdAt?: DateTimeNullableFilter<"Exhibition"> | Date | string | null
-    updatedAt?: DateTimeNullableFilter<"Exhibition"> | Date | string | null
-    exhibits?: ExhibitListRelationFilter
+    createdAt?: DateTimeFilter<"Exhibition"> | Date | string
+    updatedAt?: DateTimeFilter<"Exhibition"> | Date | string
     status?: XOR<StatusNullableRelationFilter, StatusWhereInput> | null
+    exhibits?: ExhibitListRelationFilter
     images?: ImageListRelationFilter
   }
 
@@ -22946,10 +25192,10 @@ export namespace Prisma {
     title?: SortOrder
     description?: SortOrderInput | SortOrder
     statusId?: SortOrderInput | SortOrder
-    createdAt?: SortOrderInput | SortOrder
-    updatedAt?: SortOrderInput | SortOrder
-    exhibits?: ExhibitOrderByRelationAggregateInput
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     status?: StatusOrderByWithRelationInput
+    exhibits?: ExhibitOrderByRelationAggregateInput
     images?: ImageOrderByRelationAggregateInput
   }
 
@@ -22961,10 +25207,10 @@ export namespace Prisma {
     NOT?: ExhibitionWhereInput | ExhibitionWhereInput[]
     description?: StringNullableFilter<"Exhibition"> | string | null
     statusId?: IntNullableFilter<"Exhibition"> | number | null
-    createdAt?: DateTimeNullableFilter<"Exhibition"> | Date | string | null
-    updatedAt?: DateTimeNullableFilter<"Exhibition"> | Date | string | null
-    exhibits?: ExhibitListRelationFilter
+    createdAt?: DateTimeFilter<"Exhibition"> | Date | string
+    updatedAt?: DateTimeFilter<"Exhibition"> | Date | string
     status?: XOR<StatusNullableRelationFilter, StatusWhereInput> | null
+    exhibits?: ExhibitListRelationFilter
     images?: ImageListRelationFilter
   }, "exhibitionId" | "title">
 
@@ -22973,8 +25219,8 @@ export namespace Prisma {
     title?: SortOrder
     description?: SortOrderInput | SortOrder
     statusId?: SortOrderInput | SortOrder
-    createdAt?: SortOrderInput | SortOrder
-    updatedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: ExhibitionCountOrderByAggregateInput
     _avg?: ExhibitionAvgOrderByAggregateInput
     _max?: ExhibitionMaxOrderByAggregateInput
@@ -22990,8 +25236,8 @@ export namespace Prisma {
     title?: StringWithAggregatesFilter<"Exhibition"> | string
     description?: StringNullableWithAggregatesFilter<"Exhibition"> | string | null
     statusId?: IntNullableWithAggregatesFilter<"Exhibition"> | number | null
-    createdAt?: DateTimeNullableWithAggregatesFilter<"Exhibition"> | Date | string | null
-    updatedAt?: DateTimeNullableWithAggregatesFilter<"Exhibition"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Exhibition"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Exhibition"> | Date | string
   }
 
   export type ExhibitWhereInput = {
@@ -22999,15 +25245,17 @@ export namespace Prisma {
     OR?: ExhibitWhereInput[]
     NOT?: ExhibitWhereInput | ExhibitWhereInput[]
     exhibitId?: BigIntFilter<"Exhibit"> | bigint | number
-    exhibitionId?: BigIntNullableFilter<"Exhibit"> | bigint | number | null
+    exhibitionId?: BigIntFilter<"Exhibit"> | bigint | number
+    badgeId?: BigIntNullableFilter<"Exhibit"> | bigint | number | null
     title?: StringFilter<"Exhibit"> | string
-    statusId?: IntNullableFilter<"Exhibit"> | number | null
     description?: StringNullableFilter<"Exhibit"> | string | null
+    statusId?: IntNullableFilter<"Exhibit"> | number | null
     createdAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
-    audio?: AudioListRelationFilter
-    exhibition?: XOR<ExhibitionNullableRelationFilter, ExhibitionWhereInput> | null
+    exhibition?: XOR<ExhibitionRelationFilter, ExhibitionWhereInput>
     status?: XOR<StatusNullableRelationFilter, StatusWhereInput> | null
+    badge?: XOR<BadgeNullableRelationFilter, BadgeWhereInput> | null
+    audio?: AudioListRelationFilter
     feedbacks?: FeedbackListRelationFilter
     images?: ImageListRelationFilter
     qrCodes?: QRCodeListRelationFilter
@@ -23015,15 +25263,17 @@ export namespace Prisma {
 
   export type ExhibitOrderByWithRelationInput = {
     exhibitId?: SortOrder
-    exhibitionId?: SortOrderInput | SortOrder
+    exhibitionId?: SortOrder
+    badgeId?: SortOrderInput | SortOrder
     title?: SortOrder
-    statusId?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
+    statusId?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrderInput | SortOrder
-    audio?: AudioOrderByRelationAggregateInput
     exhibition?: ExhibitionOrderByWithRelationInput
     status?: StatusOrderByWithRelationInput
+    badge?: BadgeOrderByWithRelationInput
+    audio?: AudioOrderByRelationAggregateInput
     feedbacks?: FeedbackOrderByRelationAggregateInput
     images?: ImageOrderByRelationAggregateInput
     qrCodes?: QRCodeOrderByRelationAggregateInput
@@ -23031,29 +25281,32 @@ export namespace Prisma {
 
   export type ExhibitWhereUniqueInput = Prisma.AtLeast<{
     exhibitId?: bigint | number
+    badgeId?: bigint | number
     AND?: ExhibitWhereInput | ExhibitWhereInput[]
     OR?: ExhibitWhereInput[]
     NOT?: ExhibitWhereInput | ExhibitWhereInput[]
-    exhibitionId?: BigIntNullableFilter<"Exhibit"> | bigint | number | null
+    exhibitionId?: BigIntFilter<"Exhibit"> | bigint | number
     title?: StringFilter<"Exhibit"> | string
-    statusId?: IntNullableFilter<"Exhibit"> | number | null
     description?: StringNullableFilter<"Exhibit"> | string | null
+    statusId?: IntNullableFilter<"Exhibit"> | number | null
     createdAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
-    audio?: AudioListRelationFilter
-    exhibition?: XOR<ExhibitionNullableRelationFilter, ExhibitionWhereInput> | null
+    exhibition?: XOR<ExhibitionRelationFilter, ExhibitionWhereInput>
     status?: XOR<StatusNullableRelationFilter, StatusWhereInput> | null
+    badge?: XOR<BadgeNullableRelationFilter, BadgeWhereInput> | null
+    audio?: AudioListRelationFilter
     feedbacks?: FeedbackListRelationFilter
     images?: ImageListRelationFilter
     qrCodes?: QRCodeListRelationFilter
-  }, "exhibitId">
+  }, "exhibitId" | "badgeId">
 
   export type ExhibitOrderByWithAggregationInput = {
     exhibitId?: SortOrder
-    exhibitionId?: SortOrderInput | SortOrder
+    exhibitionId?: SortOrder
+    badgeId?: SortOrderInput | SortOrder
     title?: SortOrder
-    statusId?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
+    statusId?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrderInput | SortOrder
     _count?: ExhibitCountOrderByAggregateInput
@@ -23068,10 +25321,11 @@ export namespace Prisma {
     OR?: ExhibitScalarWhereWithAggregatesInput[]
     NOT?: ExhibitScalarWhereWithAggregatesInput | ExhibitScalarWhereWithAggregatesInput[]
     exhibitId?: BigIntWithAggregatesFilter<"Exhibit"> | bigint | number
-    exhibitionId?: BigIntNullableWithAggregatesFilter<"Exhibit"> | bigint | number | null
+    exhibitionId?: BigIntWithAggregatesFilter<"Exhibit"> | bigint | number
+    badgeId?: BigIntNullableWithAggregatesFilter<"Exhibit"> | bigint | number | null
     title?: StringWithAggregatesFilter<"Exhibit"> | string
-    statusId?: IntNullableWithAggregatesFilter<"Exhibit"> | number | null
     description?: StringNullableWithAggregatesFilter<"Exhibit"> | string | null
+    statusId?: IntNullableWithAggregatesFilter<"Exhibit"> | number | null
     createdAt?: DateTimeNullableWithAggregatesFilter<"Exhibit"> | Date | string | null
     updatedAt?: DateTimeNullableWithAggregatesFilter<"Exhibit"> | Date | string | null
   }
@@ -23087,8 +25341,8 @@ export namespace Prisma {
     description?: StringNullableFilter<"Feedback"> | string | null
     createdAt?: DateTimeNullableFilter<"Feedback"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Feedback"> | Date | string | null
-    exhibit?: XOR<ExhibitNullableRelationFilter, ExhibitWhereInput> | null
     user?: XOR<UserNullableRelationFilter, UserWhereInput> | null
+    exhibit?: XOR<ExhibitNullableRelationFilter, ExhibitWhereInput> | null
   }
 
   export type FeedbackOrderByWithRelationInput = {
@@ -23099,8 +25353,8 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrderInput | SortOrder
-    exhibit?: ExhibitOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
+    exhibit?: ExhibitOrderByWithRelationInput
   }
 
   export type FeedbackWhereUniqueInput = Prisma.AtLeast<{
@@ -23114,8 +25368,8 @@ export namespace Prisma {
     description?: StringNullableFilter<"Feedback"> | string | null
     createdAt?: DateTimeNullableFilter<"Feedback"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Feedback"> | Date | string | null
-    exhibit?: XOR<ExhibitNullableRelationFilter, ExhibitWhereInput> | null
     user?: XOR<UserNullableRelationFilter, UserWhereInput> | null
+    exhibit?: XOR<ExhibitNullableRelationFilter, ExhibitWhereInput> | null
   }, "feedbackId">
 
   export type FeedbackOrderByWithAggregationInput = {
@@ -23156,7 +25410,7 @@ export namespace Prisma {
     title?: StringNullableFilter<"Image"> | string | null
     description?: StringNullableFilter<"Image"> | string | null
     fileUrl?: StringNullableFilter<"Image"> | string | null
-    isPrimary?: BoolNullableFilter<"Image"> | boolean | null
+    isPrimary?: BoolFilter<"Image"> | boolean
     createdAt?: DateTimeNullableFilter<"Image"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Image"> | Date | string | null
     exhibit?: XOR<ExhibitNullableRelationFilter, ExhibitWhereInput> | null
@@ -23170,7 +25424,7 @@ export namespace Prisma {
     title?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
     fileUrl?: SortOrderInput | SortOrder
-    isPrimary?: SortOrderInput | SortOrder
+    isPrimary?: SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrderInput | SortOrder
     exhibit?: ExhibitOrderByWithRelationInput
@@ -23187,7 +25441,7 @@ export namespace Prisma {
     title?: StringNullableFilter<"Image"> | string | null
     description?: StringNullableFilter<"Image"> | string | null
     fileUrl?: StringNullableFilter<"Image"> | string | null
-    isPrimary?: BoolNullableFilter<"Image"> | boolean | null
+    isPrimary?: BoolFilter<"Image"> | boolean
     createdAt?: DateTimeNullableFilter<"Image"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Image"> | Date | string | null
     exhibit?: XOR<ExhibitNullableRelationFilter, ExhibitWhereInput> | null
@@ -23201,7 +25455,7 @@ export namespace Prisma {
     title?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
     fileUrl?: SortOrderInput | SortOrder
-    isPrimary?: SortOrderInput | SortOrder
+    isPrimary?: SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrderInput | SortOrder
     _count?: ImageCountOrderByAggregateInput
@@ -23221,7 +25475,7 @@ export namespace Prisma {
     title?: StringNullableWithAggregatesFilter<"Image"> | string | null
     description?: StringNullableWithAggregatesFilter<"Image"> | string | null
     fileUrl?: StringNullableWithAggregatesFilter<"Image"> | string | null
-    isPrimary?: BoolNullableWithAggregatesFilter<"Image"> | boolean | null
+    isPrimary?: BoolWithAggregatesFilter<"Image"> | boolean
     createdAt?: DateTimeNullableWithAggregatesFilter<"Image"> | Date | string | null
     updatedAt?: DateTimeNullableWithAggregatesFilter<"Image"> | Date | string | null
   }
@@ -23237,8 +25491,8 @@ export namespace Prisma {
     isDefault?: BoolNullableFilter<"Language"> | boolean | null
     createdAt?: DateTimeNullableFilter<"Language"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Language"> | Date | string | null
-    audio?: AudioListRelationFilter
     status?: XOR<StatusNullableRelationFilter, StatusWhereInput> | null
+    audio?: AudioListRelationFilter
     subtitles?: SubtitleListRelationFilter
   }
 
@@ -23250,26 +25504,26 @@ export namespace Prisma {
     isDefault?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrderInput | SortOrder
-    audio?: AudioOrderByRelationAggregateInput
     status?: StatusOrderByWithRelationInput
+    audio?: AudioOrderByRelationAggregateInput
     subtitles?: SubtitleOrderByRelationAggregateInput
   }
 
   export type LanguageWhereUniqueInput = Prisma.AtLeast<{
     languageId?: bigint | number
     code?: string
+    isDefault?: boolean
     AND?: LanguageWhereInput | LanguageWhereInput[]
     OR?: LanguageWhereInput[]
     NOT?: LanguageWhereInput | LanguageWhereInput[]
     statusId?: IntNullableFilter<"Language"> | number | null
     title?: StringFilter<"Language"> | string
-    isDefault?: BoolNullableFilter<"Language"> | boolean | null
     createdAt?: DateTimeNullableFilter<"Language"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Language"> | Date | string | null
-    audio?: AudioListRelationFilter
     status?: XOR<StatusNullableRelationFilter, StatusWhereInput> | null
+    audio?: AudioListRelationFilter
     subtitles?: SubtitleListRelationFilter
-  }, "languageId" | "code">
+  }, "languageId" | "code" | "unique_default_language">
 
   export type LanguageOrderByWithAggregationInput = {
     languageId?: SortOrder
@@ -23479,15 +25733,15 @@ export namespace Prisma {
     NOT?: RolePermissionWhereInput | RolePermissionWhereInput[]
     roleId?: IntFilter<"RolePermission"> | number
     permissionId?: IntFilter<"RolePermission"> | number
-    permission?: XOR<PermissionRelationFilter, PermissionWhereInput>
     role?: XOR<RoleRelationFilter, RoleWhereInput>
+    permission?: XOR<PermissionRelationFilter, PermissionWhereInput>
   }
 
   export type RolePermissionOrderByWithRelationInput = {
     roleId?: SortOrder
     permissionId?: SortOrder
-    permission?: PermissionOrderByWithRelationInput
     role?: RoleOrderByWithRelationInput
+    permission?: PermissionOrderByWithRelationInput
   }
 
   export type RolePermissionWhereUniqueInput = Prisma.AtLeast<{
@@ -23497,8 +25751,8 @@ export namespace Prisma {
     NOT?: RolePermissionWhereInput | RolePermissionWhereInput[]
     roleId?: IntFilter<"RolePermission"> | number
     permissionId?: IntFilter<"RolePermission"> | number
-    permission?: XOR<PermissionRelationFilter, PermissionWhereInput>
     role?: XOR<RoleRelationFilter, RoleWhereInput>
+    permission?: XOR<PermissionRelationFilter, PermissionWhereInput>
   }, "roleId_permissionId">
 
   export type RolePermissionOrderByWithAggregationInput = {
@@ -23572,19 +25826,19 @@ export namespace Prisma {
     NOT?: StatusWhereInput | StatusWhereInput[]
     statusId?: IntFilter<"Status"> | number
     statusName?: StringFilter<"Status"> | string
-    exhibits?: ExhibitListRelationFilter
-    exhibitions?: ExhibitionListRelationFilter
-    languages?: LanguageListRelationFilter
     users?: UserListRelationFilter
+    languages?: LanguageListRelationFilter
+    exhibitions?: ExhibitionListRelationFilter
+    exhibits?: ExhibitListRelationFilter
   }
 
   export type StatusOrderByWithRelationInput = {
     statusId?: SortOrder
     statusName?: SortOrder
-    exhibits?: ExhibitOrderByRelationAggregateInput
-    exhibitions?: ExhibitionOrderByRelationAggregateInput
-    languages?: LanguageOrderByRelationAggregateInput
     users?: UserOrderByRelationAggregateInput
+    languages?: LanguageOrderByRelationAggregateInput
+    exhibitions?: ExhibitionOrderByRelationAggregateInput
+    exhibits?: ExhibitOrderByRelationAggregateInput
   }
 
   export type StatusWhereUniqueInput = Prisma.AtLeast<{
@@ -23593,10 +25847,10 @@ export namespace Prisma {
     AND?: StatusWhereInput | StatusWhereInput[]
     OR?: StatusWhereInput[]
     NOT?: StatusWhereInput | StatusWhereInput[]
-    exhibits?: ExhibitListRelationFilter
-    exhibitions?: ExhibitionListRelationFilter
-    languages?: LanguageListRelationFilter
     users?: UserListRelationFilter
+    languages?: LanguageListRelationFilter
+    exhibitions?: ExhibitionListRelationFilter
+    exhibits?: ExhibitListRelationFilter
   }, "statusId" | "statusName">
 
   export type StatusOrderByWithAggregationInput = {
@@ -23629,8 +25883,8 @@ export namespace Prisma {
     createdAt?: DateTimeNullableFilter<"Subtitle"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Subtitle"> | Date | string | null
     audio?: XOR<AudioNullableRelationFilter, AudioWhereInput> | null
-    user?: XOR<UserNullableRelationFilter, UserWhereInput> | null
     language?: XOR<LanguageNullableRelationFilter, LanguageWhereInput> | null
+    user?: XOR<UserNullableRelationFilter, UserWhereInput> | null
   }
 
   export type SubtitleOrderByWithRelationInput = {
@@ -23642,8 +25896,8 @@ export namespace Prisma {
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrderInput | SortOrder
     audio?: AudioOrderByWithRelationInput
-    user?: UserOrderByWithRelationInput
     language?: LanguageOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
   }
 
   export type SubtitleWhereUniqueInput = Prisma.AtLeast<{
@@ -23658,8 +25912,8 @@ export namespace Prisma {
     createdAt?: DateTimeNullableFilter<"Subtitle"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Subtitle"> | Date | string | null
     audio?: XOR<AudioNullableRelationFilter, AudioWhereInput> | null
-    user?: XOR<UserNullableRelationFilter, UserWhereInput> | null
     language?: XOR<LanguageNullableRelationFilter, LanguageWhereInput> | null
+    user?: XOR<UserNullableRelationFilter, UserWhereInput> | null
   }, "subtitleId">
 
   export type SubtitleOrderByWithAggregationInput = {
@@ -23698,21 +25952,22 @@ export namespace Prisma {
     username?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
     passwordHash?: StringFilter<"User"> | string
-    emailVerified?: BoolNullableFilter<"User"> | boolean | null
+    emailVerified?: BoolFilter<"User"> | boolean
     statusId?: IntNullableFilter<"User"> | number | null
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeNullableFilter<"User"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    status?: XOR<StatusNullableRelationFilter, StatusWhereInput> | null
+    feedbacks?: FeedbackListRelationFilter
+    roles?: UserRoleListRelationFilter
+    sessions?: SessionListRelationFilter
+    subtitles?: SubtitleListRelationFilter
     playbackLogs?: AudioPlaybackLogListRelationFilter
     adminAudits?: AuditLogListRelationFilter
     targetAudits?: AuditLogListRelationFilter
-    emailVerificationTokens?: EmailVerificationTokenListRelationFilter
-    feedbacks?: FeedbackListRelationFilter
     passwordResetTokens?: PasswordResetTokenListRelationFilter
-    sessions?: SessionListRelationFilter
-    subtitles?: SubtitleListRelationFilter
-    status?: XOR<StatusNullableRelationFilter, StatusWhereInput> | null
-    roles?: UserRoleListRelationFilter
+    emailVerificationTokens?: EmailVerificationTokenListRelationFilter
+    userBadges?: UserBadgeListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -23720,21 +25975,22 @@ export namespace Prisma {
     username?: SortOrder
     email?: SortOrder
     passwordHash?: SortOrder
-    emailVerified?: SortOrderInput | SortOrder
+    emailVerified?: SortOrder
     statusId?: SortOrderInput | SortOrder
     lastLoginAt?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrderInput | SortOrder
+    status?: StatusOrderByWithRelationInput
+    feedbacks?: FeedbackOrderByRelationAggregateInput
+    roles?: UserRoleOrderByRelationAggregateInput
+    sessions?: SessionOrderByRelationAggregateInput
+    subtitles?: SubtitleOrderByRelationAggregateInput
     playbackLogs?: AudioPlaybackLogOrderByRelationAggregateInput
     adminAudits?: AuditLogOrderByRelationAggregateInput
     targetAudits?: AuditLogOrderByRelationAggregateInput
-    emailVerificationTokens?: EmailVerificationTokenOrderByRelationAggregateInput
-    feedbacks?: FeedbackOrderByRelationAggregateInput
     passwordResetTokens?: PasswordResetTokenOrderByRelationAggregateInput
-    sessions?: SessionOrderByRelationAggregateInput
-    subtitles?: SubtitleOrderByRelationAggregateInput
-    status?: StatusOrderByWithRelationInput
-    roles?: UserRoleOrderByRelationAggregateInput
+    emailVerificationTokens?: EmailVerificationTokenOrderByRelationAggregateInput
+    userBadges?: UserBadgeOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -23745,21 +26001,22 @@ export namespace Prisma {
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     passwordHash?: StringFilter<"User"> | string
-    emailVerified?: BoolNullableFilter<"User"> | boolean | null
+    emailVerified?: BoolFilter<"User"> | boolean
     statusId?: IntNullableFilter<"User"> | number | null
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeNullableFilter<"User"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    status?: XOR<StatusNullableRelationFilter, StatusWhereInput> | null
+    feedbacks?: FeedbackListRelationFilter
+    roles?: UserRoleListRelationFilter
+    sessions?: SessionListRelationFilter
+    subtitles?: SubtitleListRelationFilter
     playbackLogs?: AudioPlaybackLogListRelationFilter
     adminAudits?: AuditLogListRelationFilter
     targetAudits?: AuditLogListRelationFilter
-    emailVerificationTokens?: EmailVerificationTokenListRelationFilter
-    feedbacks?: FeedbackListRelationFilter
     passwordResetTokens?: PasswordResetTokenListRelationFilter
-    sessions?: SessionListRelationFilter
-    subtitles?: SubtitleListRelationFilter
-    status?: XOR<StatusNullableRelationFilter, StatusWhereInput> | null
-    roles?: UserRoleListRelationFilter
+    emailVerificationTokens?: EmailVerificationTokenListRelationFilter
+    userBadges?: UserBadgeListRelationFilter
   }, "userId" | "username" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -23767,7 +26024,7 @@ export namespace Prisma {
     username?: SortOrder
     email?: SortOrder
     passwordHash?: SortOrder
-    emailVerified?: SortOrderInput | SortOrder
+    emailVerified?: SortOrder
     statusId?: SortOrderInput | SortOrder
     lastLoginAt?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
@@ -23787,7 +26044,7 @@ export namespace Prisma {
     username?: StringWithAggregatesFilter<"User"> | string
     email?: StringWithAggregatesFilter<"User"> | string
     passwordHash?: StringWithAggregatesFilter<"User"> | string
-    emailVerified?: BoolNullableWithAggregatesFilter<"User"> | boolean | null
+    emailVerified?: BoolWithAggregatesFilter<"User"> | boolean
     statusId?: IntNullableWithAggregatesFilter<"User"> | number | null
     lastLoginAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     createdAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
@@ -23801,16 +26058,16 @@ export namespace Prisma {
     userId?: BigIntFilter<"UserRole"> | bigint | number
     roleId?: IntFilter<"UserRole"> | number
     createdAt?: DateTimeNullableFilter<"UserRole"> | Date | string | null
-    role?: XOR<RoleRelationFilter, RoleWhereInput>
     user?: XOR<UserRelationFilter, UserWhereInput>
+    role?: XOR<RoleRelationFilter, RoleWhereInput>
   }
 
   export type UserRoleOrderByWithRelationInput = {
     userId?: SortOrder
     roleId?: SortOrder
     createdAt?: SortOrderInput | SortOrder
-    role?: RoleOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
+    role?: RoleOrderByWithRelationInput
   }
 
   export type UserRoleWhereUniqueInput = Prisma.AtLeast<{
@@ -23821,8 +26078,8 @@ export namespace Prisma {
     userId?: BigIntFilter<"UserRole"> | bigint | number
     roleId?: IntFilter<"UserRole"> | number
     createdAt?: DateTimeNullableFilter<"UserRole"> | Date | string | null
-    role?: XOR<RoleRelationFilter, RoleWhereInput>
     user?: XOR<UserRelationFilter, UserWhereInput>
+    role?: XOR<RoleRelationFilter, RoleWhereInput>
   }, "userId_roleId">
 
   export type UserRoleOrderByWithAggregationInput = {
@@ -23856,7 +26113,7 @@ export namespace Prisma {
     action?: StringFilter<"AuditLog"> | string
     changes?: StringNullableFilter<"AuditLog"> | string | null
     metadata?: StringNullableFilter<"AuditLog"> | string | null
-    timestamp?: DateTimeNullableFilter<"AuditLog"> | Date | string | null
+    timestamp?: DateTimeFilter<"AuditLog"> | Date | string
     adminUser?: XOR<UserNullableRelationFilter, UserWhereInput> | null
     targetUser?: XOR<UserNullableRelationFilter, UserWhereInput> | null
   }
@@ -23869,7 +26126,7 @@ export namespace Prisma {
     action?: SortOrder
     changes?: SortOrderInput | SortOrder
     metadata?: SortOrderInput | SortOrder
-    timestamp?: SortOrderInput | SortOrder
+    timestamp?: SortOrder
     adminUser?: UserOrderByWithRelationInput
     targetUser?: UserOrderByWithRelationInput
   }
@@ -23885,7 +26142,7 @@ export namespace Prisma {
     action?: StringFilter<"AuditLog"> | string
     changes?: StringNullableFilter<"AuditLog"> | string | null
     metadata?: StringNullableFilter<"AuditLog"> | string | null
-    timestamp?: DateTimeNullableFilter<"AuditLog"> | Date | string | null
+    timestamp?: DateTimeFilter<"AuditLog"> | Date | string
     adminUser?: XOR<UserNullableRelationFilter, UserWhereInput> | null
     targetUser?: XOR<UserNullableRelationFilter, UserWhereInput> | null
   }, "auditLogId">
@@ -23898,7 +26155,7 @@ export namespace Prisma {
     action?: SortOrder
     changes?: SortOrderInput | SortOrder
     metadata?: SortOrderInput | SortOrder
-    timestamp?: SortOrderInput | SortOrder
+    timestamp?: SortOrder
     _count?: AuditLogCountOrderByAggregateInput
     _avg?: AuditLogAvgOrderByAggregateInput
     _max?: AuditLogMaxOrderByAggregateInput
@@ -23917,7 +26174,7 @@ export namespace Prisma {
     action?: StringWithAggregatesFilter<"AuditLog"> | string
     changes?: StringNullableWithAggregatesFilter<"AuditLog"> | string | null
     metadata?: StringNullableWithAggregatesFilter<"AuditLog"> | string | null
-    timestamp?: DateTimeNullableWithAggregatesFilter<"AuditLog"> | Date | string | null
+    timestamp?: DateTimeWithAggregatesFilter<"AuditLog"> | Date | string
   }
 
   export type PasswordResetTokenWhereInput = {
@@ -23927,7 +26184,7 @@ export namespace Prisma {
     passwordResetId?: BigIntFilter<"PasswordResetToken"> | bigint | number
     userId?: BigIntFilter<"PasswordResetToken"> | bigint | number
     token?: StringFilter<"PasswordResetToken"> | string
-    createdAt?: DateTimeNullableFilter<"PasswordResetToken"> | Date | string | null
+    createdAt?: DateTimeFilter<"PasswordResetToken"> | Date | string
     expiresAt?: DateTimeFilter<"PasswordResetToken"> | Date | string
     user?: XOR<UserRelationFilter, UserWhereInput>
   }
@@ -23936,7 +26193,7 @@ export namespace Prisma {
     passwordResetId?: SortOrder
     userId?: SortOrder
     token?: SortOrder
-    createdAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
     expiresAt?: SortOrder
     user?: UserOrderByWithRelationInput
   }
@@ -23948,7 +26205,7 @@ export namespace Prisma {
     OR?: PasswordResetTokenWhereInput[]
     NOT?: PasswordResetTokenWhereInput | PasswordResetTokenWhereInput[]
     userId?: BigIntFilter<"PasswordResetToken"> | bigint | number
-    createdAt?: DateTimeNullableFilter<"PasswordResetToken"> | Date | string | null
+    createdAt?: DateTimeFilter<"PasswordResetToken"> | Date | string
     expiresAt?: DateTimeFilter<"PasswordResetToken"> | Date | string
     user?: XOR<UserRelationFilter, UserWhereInput>
   }, "passwordResetId" | "token">
@@ -23957,7 +26214,7 @@ export namespace Prisma {
     passwordResetId?: SortOrder
     userId?: SortOrder
     token?: SortOrder
-    createdAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
     expiresAt?: SortOrder
     _count?: PasswordResetTokenCountOrderByAggregateInput
     _avg?: PasswordResetTokenAvgOrderByAggregateInput
@@ -23973,7 +26230,7 @@ export namespace Prisma {
     passwordResetId?: BigIntWithAggregatesFilter<"PasswordResetToken"> | bigint | number
     userId?: BigIntWithAggregatesFilter<"PasswordResetToken"> | bigint | number
     token?: StringWithAggregatesFilter<"PasswordResetToken"> | string
-    createdAt?: DateTimeNullableWithAggregatesFilter<"PasswordResetToken"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"PasswordResetToken"> | Date | string
     expiresAt?: DateTimeWithAggregatesFilter<"PasswordResetToken"> | Date | string
   }
 
@@ -23984,7 +26241,7 @@ export namespace Prisma {
     emailVerificationId?: BigIntFilter<"EmailVerificationToken"> | bigint | number
     userId?: BigIntFilter<"EmailVerificationToken"> | bigint | number
     token?: StringFilter<"EmailVerificationToken"> | string
-    createdAt?: DateTimeNullableFilter<"EmailVerificationToken"> | Date | string | null
+    createdAt?: DateTimeFilter<"EmailVerificationToken"> | Date | string
     expiresAt?: DateTimeFilter<"EmailVerificationToken"> | Date | string
     user?: XOR<UserRelationFilter, UserWhereInput>
   }
@@ -23993,7 +26250,7 @@ export namespace Prisma {
     emailVerificationId?: SortOrder
     userId?: SortOrder
     token?: SortOrder
-    createdAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
     expiresAt?: SortOrder
     user?: UserOrderByWithRelationInput
   }
@@ -24005,7 +26262,7 @@ export namespace Prisma {
     OR?: EmailVerificationTokenWhereInput[]
     NOT?: EmailVerificationTokenWhereInput | EmailVerificationTokenWhereInput[]
     userId?: BigIntFilter<"EmailVerificationToken"> | bigint | number
-    createdAt?: DateTimeNullableFilter<"EmailVerificationToken"> | Date | string | null
+    createdAt?: DateTimeFilter<"EmailVerificationToken"> | Date | string
     expiresAt?: DateTimeFilter<"EmailVerificationToken"> | Date | string
     user?: XOR<UserRelationFilter, UserWhereInput>
   }, "emailVerificationId" | "token">
@@ -24014,7 +26271,7 @@ export namespace Prisma {
     emailVerificationId?: SortOrder
     userId?: SortOrder
     token?: SortOrder
-    createdAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
     expiresAt?: SortOrder
     _count?: EmailVerificationTokenCountOrderByAggregateInput
     _avg?: EmailVerificationTokenAvgOrderByAggregateInput
@@ -24030,8 +26287,124 @@ export namespace Prisma {
     emailVerificationId?: BigIntWithAggregatesFilter<"EmailVerificationToken"> | bigint | number
     userId?: BigIntWithAggregatesFilter<"EmailVerificationToken"> | bigint | number
     token?: StringWithAggregatesFilter<"EmailVerificationToken"> | string
-    createdAt?: DateTimeNullableWithAggregatesFilter<"EmailVerificationToken"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"EmailVerificationToken"> | Date | string
     expiresAt?: DateTimeWithAggregatesFilter<"EmailVerificationToken"> | Date | string
+  }
+
+  export type BadgeWhereInput = {
+    AND?: BadgeWhereInput | BadgeWhereInput[]
+    OR?: BadgeWhereInput[]
+    NOT?: BadgeWhereInput | BadgeWhereInput[]
+    badgeId?: BigIntFilter<"Badge"> | bigint | number
+    name?: StringNullableFilter<"Badge"> | string | null
+    description?: StringNullableFilter<"Badge"> | string | null
+    imageUrl?: StringNullableFilter<"Badge"> | string | null
+    createdAt?: DateTimeNullableFilter<"Badge"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"Badge"> | Date | string | null
+    exhibit?: XOR<ExhibitNullableRelationFilter, ExhibitWhereInput> | null
+    userBadges?: UserBadgeListRelationFilter
+  }
+
+  export type BadgeOrderByWithRelationInput = {
+    badgeId?: SortOrder
+    name?: SortOrderInput | SortOrder
+    description?: SortOrderInput | SortOrder
+    imageUrl?: SortOrderInput | SortOrder
+    createdAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrderInput | SortOrder
+    exhibit?: ExhibitOrderByWithRelationInput
+    userBadges?: UserBadgeOrderByRelationAggregateInput
+  }
+
+  export type BadgeWhereUniqueInput = Prisma.AtLeast<{
+    badgeId?: bigint | number
+    AND?: BadgeWhereInput | BadgeWhereInput[]
+    OR?: BadgeWhereInput[]
+    NOT?: BadgeWhereInput | BadgeWhereInput[]
+    name?: StringNullableFilter<"Badge"> | string | null
+    description?: StringNullableFilter<"Badge"> | string | null
+    imageUrl?: StringNullableFilter<"Badge"> | string | null
+    createdAt?: DateTimeNullableFilter<"Badge"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"Badge"> | Date | string | null
+    exhibit?: XOR<ExhibitNullableRelationFilter, ExhibitWhereInput> | null
+    userBadges?: UserBadgeListRelationFilter
+  }, "badgeId">
+
+  export type BadgeOrderByWithAggregationInput = {
+    badgeId?: SortOrder
+    name?: SortOrderInput | SortOrder
+    description?: SortOrderInput | SortOrder
+    imageUrl?: SortOrderInput | SortOrder
+    createdAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrderInput | SortOrder
+    _count?: BadgeCountOrderByAggregateInput
+    _avg?: BadgeAvgOrderByAggregateInput
+    _max?: BadgeMaxOrderByAggregateInput
+    _min?: BadgeMinOrderByAggregateInput
+    _sum?: BadgeSumOrderByAggregateInput
+  }
+
+  export type BadgeScalarWhereWithAggregatesInput = {
+    AND?: BadgeScalarWhereWithAggregatesInput | BadgeScalarWhereWithAggregatesInput[]
+    OR?: BadgeScalarWhereWithAggregatesInput[]
+    NOT?: BadgeScalarWhereWithAggregatesInput | BadgeScalarWhereWithAggregatesInput[]
+    badgeId?: BigIntWithAggregatesFilter<"Badge"> | bigint | number
+    name?: StringNullableWithAggregatesFilter<"Badge"> | string | null
+    description?: StringNullableWithAggregatesFilter<"Badge"> | string | null
+    imageUrl?: StringNullableWithAggregatesFilter<"Badge"> | string | null
+    createdAt?: DateTimeNullableWithAggregatesFilter<"Badge"> | Date | string | null
+    updatedAt?: DateTimeNullableWithAggregatesFilter<"Badge"> | Date | string | null
+  }
+
+  export type UserBadgeWhereInput = {
+    AND?: UserBadgeWhereInput | UserBadgeWhereInput[]
+    OR?: UserBadgeWhereInput[]
+    NOT?: UserBadgeWhereInput | UserBadgeWhereInput[]
+    userId?: BigIntFilter<"UserBadge"> | bigint | number
+    badgeId?: BigIntFilter<"UserBadge"> | bigint | number
+    createdAt?: DateTimeNullableFilter<"UserBadge"> | Date | string | null
+    user?: XOR<UserRelationFilter, UserWhereInput>
+    badge?: XOR<BadgeRelationFilter, BadgeWhereInput>
+  }
+
+  export type UserBadgeOrderByWithRelationInput = {
+    userId?: SortOrder
+    badgeId?: SortOrder
+    createdAt?: SortOrderInput | SortOrder
+    user?: UserOrderByWithRelationInput
+    badge?: BadgeOrderByWithRelationInput
+  }
+
+  export type UserBadgeWhereUniqueInput = Prisma.AtLeast<{
+    userId_badgeId?: UserBadgeUserIdBadgeIdCompoundUniqueInput
+    AND?: UserBadgeWhereInput | UserBadgeWhereInput[]
+    OR?: UserBadgeWhereInput[]
+    NOT?: UserBadgeWhereInput | UserBadgeWhereInput[]
+    userId?: BigIntFilter<"UserBadge"> | bigint | number
+    badgeId?: BigIntFilter<"UserBadge"> | bigint | number
+    createdAt?: DateTimeNullableFilter<"UserBadge"> | Date | string | null
+    user?: XOR<UserRelationFilter, UserWhereInput>
+    badge?: XOR<BadgeRelationFilter, BadgeWhereInput>
+  }, "userId_badgeId">
+
+  export type UserBadgeOrderByWithAggregationInput = {
+    userId?: SortOrder
+    badgeId?: SortOrder
+    createdAt?: SortOrderInput | SortOrder
+    _count?: UserBadgeCountOrderByAggregateInput
+    _avg?: UserBadgeAvgOrderByAggregateInput
+    _max?: UserBadgeMaxOrderByAggregateInput
+    _min?: UserBadgeMinOrderByAggregateInput
+    _sum?: UserBadgeSumOrderByAggregateInput
+  }
+
+  export type UserBadgeScalarWhereWithAggregatesInput = {
+    AND?: UserBadgeScalarWhereWithAggregatesInput | UserBadgeScalarWhereWithAggregatesInput[]
+    OR?: UserBadgeScalarWhereWithAggregatesInput[]
+    NOT?: UserBadgeScalarWhereWithAggregatesInput | UserBadgeScalarWhereWithAggregatesInput[]
+    userId?: BigIntWithAggregatesFilter<"UserBadge"> | bigint | number
+    badgeId?: BigIntWithAggregatesFilter<"UserBadge"> | bigint | number
+    createdAt?: DateTimeNullableWithAggregatesFilter<"UserBadge"> | Date | string | null
   }
 
   export type AudioCreateInput = {
@@ -24120,8 +26493,8 @@ export namespace Prisma {
     durationListened?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    audio?: AudioCreateNestedOneWithoutPlaybackLogsInput
     user?: UserCreateNestedOneWithoutPlaybackLogsInput
+    audio?: AudioCreateNestedOneWithoutPlaybackLogsInput
   }
 
   export type AudioPlaybackLogUncheckedCreateInput = {
@@ -24141,8 +26514,8 @@ export namespace Prisma {
     durationListened?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    audio?: AudioUpdateOneWithoutPlaybackLogsNestedInput
     user?: UserUpdateOneWithoutPlaybackLogsNestedInput
+    audio?: AudioUpdateOneWithoutPlaybackLogsNestedInput
   }
 
   export type AudioPlaybackLogUncheckedUpdateInput = {
@@ -24190,10 +26563,10 @@ export namespace Prisma {
     exhibitionId?: bigint | number
     title: string
     description?: string | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    exhibits?: ExhibitCreateNestedManyWithoutExhibitionInput
+    createdAt?: Date | string
+    updatedAt?: Date | string
     status?: StatusCreateNestedOneWithoutExhibitionsInput
+    exhibits?: ExhibitCreateNestedManyWithoutExhibitionInput
     images?: ImageCreateNestedManyWithoutExhibitionInput
   }
 
@@ -24202,8 +26575,8 @@ export namespace Prisma {
     title: string
     description?: string | null
     statusId?: number | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     exhibits?: ExhibitUncheckedCreateNestedManyWithoutExhibitionInput
     images?: ImageUncheckedCreateNestedManyWithoutExhibitionInput
   }
@@ -24212,10 +26585,10 @@ export namespace Prisma {
     exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    exhibits?: ExhibitUpdateManyWithoutExhibitionNestedInput
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: StatusUpdateOneWithoutExhibitionsNestedInput
+    exhibits?: ExhibitUpdateManyWithoutExhibitionNestedInput
     images?: ImageUpdateManyWithoutExhibitionNestedInput
   }
 
@@ -24224,8 +26597,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     exhibits?: ExhibitUncheckedUpdateManyWithoutExhibitionNestedInput
     images?: ImageUncheckedUpdateManyWithoutExhibitionNestedInput
   }
@@ -24235,16 +26608,16 @@ export namespace Prisma {
     title: string
     description?: string | null
     statusId?: number | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ExhibitionUpdateManyMutationInput = {
     exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ExhibitionUncheckedUpdateManyInput = {
@@ -24252,8 +26625,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ExhibitCreateInput = {
@@ -24262,9 +26635,10 @@ export namespace Prisma {
     description?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    audio?: AudioCreateNestedManyWithoutExhibitInput
-    exhibition?: ExhibitionCreateNestedOneWithoutExhibitsInput
+    exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
     status?: StatusCreateNestedOneWithoutExhibitsInput
+    badge?: BadgeCreateNestedOneWithoutExhibitInput
+    audio?: AudioCreateNestedManyWithoutExhibitInput
     feedbacks?: FeedbackCreateNestedManyWithoutExhibitInput
     images?: ImageCreateNestedManyWithoutExhibitInput
     qrCodes?: QRCodeCreateNestedManyWithoutExhibitInput
@@ -24272,10 +26646,11 @@ export namespace Prisma {
 
   export type ExhibitUncheckedCreateInput = {
     exhibitId?: bigint | number
-    exhibitionId?: bigint | number | null
+    exhibitionId: bigint | number
+    badgeId?: bigint | number | null
     title: string
-    statusId?: number | null
     description?: string | null
+    statusId?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
@@ -24290,9 +26665,10 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    audio?: AudioUpdateManyWithoutExhibitNestedInput
-    exhibition?: ExhibitionUpdateOneWithoutExhibitsNestedInput
+    exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
     status?: StatusUpdateOneWithoutExhibitsNestedInput
+    badge?: BadgeUpdateOneWithoutExhibitNestedInput
+    audio?: AudioUpdateManyWithoutExhibitNestedInput
     feedbacks?: FeedbackUpdateManyWithoutExhibitNestedInput
     images?: ImageUpdateManyWithoutExhibitNestedInput
     qrCodes?: QRCodeUpdateManyWithoutExhibitNestedInput
@@ -24300,10 +26676,11 @@ export namespace Prisma {
 
   export type ExhibitUncheckedUpdateInput = {
     exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
-    exhibitionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
-    statusId?: NullableIntFieldUpdateOperationsInput | number | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
@@ -24314,10 +26691,11 @@ export namespace Prisma {
 
   export type ExhibitCreateManyInput = {
     exhibitId?: bigint | number
-    exhibitionId?: bigint | number | null
+    exhibitionId: bigint | number
+    badgeId?: bigint | number | null
     title: string
-    statusId?: number | null
     description?: string | null
+    statusId?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
   }
@@ -24332,10 +26710,11 @@ export namespace Prisma {
 
   export type ExhibitUncheckedUpdateManyInput = {
     exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
-    exhibitionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
-    statusId?: NullableIntFieldUpdateOperationsInput | number | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -24346,8 +26725,8 @@ export namespace Prisma {
     description?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    exhibit?: ExhibitCreateNestedOneWithoutFeedbacksInput
     user?: UserCreateNestedOneWithoutFeedbacksInput
+    exhibit?: ExhibitCreateNestedOneWithoutFeedbacksInput
   }
 
   export type FeedbackUncheckedCreateInput = {
@@ -24366,8 +26745,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    exhibit?: ExhibitUpdateOneWithoutFeedbacksNestedInput
     user?: UserUpdateOneWithoutFeedbacksNestedInput
+    exhibit?: ExhibitUpdateOneWithoutFeedbacksNestedInput
   }
 
   export type FeedbackUncheckedUpdateInput = {
@@ -24413,7 +26792,7 @@ export namespace Prisma {
     title?: string | null
     description?: string | null
     fileUrl?: string | null
-    isPrimary?: boolean | null
+    isPrimary?: boolean
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     exhibit?: ExhibitCreateNestedOneWithoutImagesInput
@@ -24427,7 +26806,7 @@ export namespace Prisma {
     title?: string | null
     description?: string | null
     fileUrl?: string | null
-    isPrimary?: boolean | null
+    isPrimary?: boolean
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
   }
@@ -24437,7 +26816,7 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    isPrimary?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     exhibit?: ExhibitUpdateOneWithoutImagesNestedInput
@@ -24451,7 +26830,7 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    isPrimary?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -24463,7 +26842,7 @@ export namespace Prisma {
     title?: string | null
     description?: string | null
     fileUrl?: string | null
-    isPrimary?: boolean | null
+    isPrimary?: boolean
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
   }
@@ -24473,7 +26852,7 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    isPrimary?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -24485,7 +26864,7 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    isPrimary?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -24497,8 +26876,8 @@ export namespace Prisma {
     isDefault?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    audio?: AudioCreateNestedManyWithoutLanguageInput
     status?: StatusCreateNestedOneWithoutLanguagesInput
+    audio?: AudioCreateNestedManyWithoutLanguageInput
     subtitles?: SubtitleCreateNestedManyWithoutLanguageInput
   }
 
@@ -24521,8 +26900,8 @@ export namespace Prisma {
     isDefault?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    audio?: AudioUpdateManyWithoutLanguageNestedInput
     status?: StatusUpdateOneWithoutLanguagesNestedInput
+    audio?: AudioUpdateManyWithoutLanguageNestedInput
     subtitles?: SubtitleUpdateManyWithoutLanguageNestedInput
   }
 
@@ -24738,8 +27117,8 @@ export namespace Prisma {
   }
 
   export type RolePermissionCreateInput = {
-    permission: PermissionCreateNestedOneWithoutRolePermissionsInput
     role: RoleCreateNestedOneWithoutRolePermissionsInput
+    permission: PermissionCreateNestedOneWithoutRolePermissionsInput
   }
 
   export type RolePermissionUncheckedCreateInput = {
@@ -24748,8 +27127,8 @@ export namespace Prisma {
   }
 
   export type RolePermissionUpdateInput = {
-    permission?: PermissionUpdateOneRequiredWithoutRolePermissionsNestedInput
     role?: RoleUpdateOneRequiredWithoutRolePermissionsNestedInput
+    permission?: PermissionUpdateOneRequiredWithoutRolePermissionsNestedInput
   }
 
   export type RolePermissionUncheckedUpdateInput = {
@@ -24814,36 +27193,36 @@ export namespace Prisma {
 
   export type StatusCreateInput = {
     statusName: string
-    exhibits?: ExhibitCreateNestedManyWithoutStatusInput
-    exhibitions?: ExhibitionCreateNestedManyWithoutStatusInput
-    languages?: LanguageCreateNestedManyWithoutStatusInput
     users?: UserCreateNestedManyWithoutStatusInput
+    languages?: LanguageCreateNestedManyWithoutStatusInput
+    exhibitions?: ExhibitionCreateNestedManyWithoutStatusInput
+    exhibits?: ExhibitCreateNestedManyWithoutStatusInput
   }
 
   export type StatusUncheckedCreateInput = {
     statusId?: number
     statusName: string
-    exhibits?: ExhibitUncheckedCreateNestedManyWithoutStatusInput
-    exhibitions?: ExhibitionUncheckedCreateNestedManyWithoutStatusInput
-    languages?: LanguageUncheckedCreateNestedManyWithoutStatusInput
     users?: UserUncheckedCreateNestedManyWithoutStatusInput
+    languages?: LanguageUncheckedCreateNestedManyWithoutStatusInput
+    exhibitions?: ExhibitionUncheckedCreateNestedManyWithoutStatusInput
+    exhibits?: ExhibitUncheckedCreateNestedManyWithoutStatusInput
   }
 
   export type StatusUpdateInput = {
     statusName?: StringFieldUpdateOperationsInput | string
-    exhibits?: ExhibitUpdateManyWithoutStatusNestedInput
-    exhibitions?: ExhibitionUpdateManyWithoutStatusNestedInput
-    languages?: LanguageUpdateManyWithoutStatusNestedInput
     users?: UserUpdateManyWithoutStatusNestedInput
+    languages?: LanguageUpdateManyWithoutStatusNestedInput
+    exhibitions?: ExhibitionUpdateManyWithoutStatusNestedInput
+    exhibits?: ExhibitUpdateManyWithoutStatusNestedInput
   }
 
   export type StatusUncheckedUpdateInput = {
     statusId?: IntFieldUpdateOperationsInput | number
     statusName?: StringFieldUpdateOperationsInput | string
-    exhibits?: ExhibitUncheckedUpdateManyWithoutStatusNestedInput
-    exhibitions?: ExhibitionUncheckedUpdateManyWithoutStatusNestedInput
-    languages?: LanguageUncheckedUpdateManyWithoutStatusNestedInput
     users?: UserUncheckedUpdateManyWithoutStatusNestedInput
+    languages?: LanguageUncheckedUpdateManyWithoutStatusNestedInput
+    exhibitions?: ExhibitionUncheckedUpdateManyWithoutStatusNestedInput
+    exhibits?: ExhibitUncheckedUpdateManyWithoutStatusNestedInput
   }
 
   export type StatusCreateManyInput = {
@@ -24866,8 +27245,8 @@ export namespace Prisma {
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioCreateNestedOneWithoutSubtitlesInput
-    user?: UserCreateNestedOneWithoutSubtitlesInput
     language?: LanguageCreateNestedOneWithoutSubtitlesInput
+    user?: UserCreateNestedOneWithoutSubtitlesInput
   }
 
   export type SubtitleUncheckedCreateInput = {
@@ -24886,8 +27265,8 @@ export namespace Prisma {
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUpdateOneWithoutSubtitlesNestedInput
-    user?: UserUpdateOneWithoutSubtitlesNestedInput
     language?: LanguageUpdateOneWithoutSubtitlesNestedInput
+    user?: UserUpdateOneWithoutSubtitlesNestedInput
   }
 
   export type SubtitleUncheckedUpdateInput = {
@@ -24932,20 +27311,21 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
-    emailVerified?: boolean | null
+    emailVerified?: boolean
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    status?: StatusCreateNestedOneWithoutUsersInput
+    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
+    roles?: UserRoleCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    subtitles?: SubtitleCreateNestedManyWithoutUserInput
     playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
-    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
-    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
-    subtitles?: SubtitleCreateNestedManyWithoutUserInput
-    status?: StatusCreateNestedOneWithoutUsersInput
-    roles?: UserRoleCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
+    userBadges?: UserBadgeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -24953,20 +27333,21 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
-    emailVerified?: boolean | null
+    emailVerified?: boolean
     statusId?: number | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
+    roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    subtitles?: SubtitleUncheckedCreateNestedManyWithoutUserInput
     playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
-    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
-    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
-    subtitles?: SubtitleUncheckedCreateNestedManyWithoutUserInput
-    roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+    userBadges?: UserBadgeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -24974,20 +27355,21 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
-    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StatusUpdateOneWithoutUsersNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
+    roles?: UserRoleUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    subtitles?: SubtitleUpdateManyWithoutUserNestedInput
     playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
-    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
-    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
-    subtitles?: SubtitleUpdateManyWithoutUserNestedInput
-    status?: StatusUpdateOneWithoutUsersNestedInput
-    roles?: UserRoleUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
+    userBadges?: UserBadgeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -24995,20 +27377,21 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
-    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
+    roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    subtitles?: SubtitleUncheckedUpdateManyWithoutUserNestedInput
     playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
-    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
-    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
-    subtitles?: SubtitleUncheckedUpdateManyWithoutUserNestedInput
-    roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+    userBadges?: UserBadgeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -25016,7 +27399,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
-    emailVerified?: boolean | null
+    emailVerified?: boolean
     statusId?: number | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -25028,7 +27411,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
-    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -25039,7 +27422,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
-    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -25048,8 +27431,8 @@ export namespace Prisma {
 
   export type UserRoleCreateInput = {
     createdAt?: Date | string | null
-    role: RoleCreateNestedOneWithoutUserRolesInput
     user: UserCreateNestedOneWithoutRolesInput
+    role: RoleCreateNestedOneWithoutUserRolesInput
   }
 
   export type UserRoleUncheckedCreateInput = {
@@ -25060,8 +27443,8 @@ export namespace Prisma {
 
   export type UserRoleUpdateInput = {
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    role?: RoleUpdateOneRequiredWithoutUserRolesNestedInput
     user?: UserUpdateOneRequiredWithoutRolesNestedInput
+    role?: RoleUpdateOneRequiredWithoutUserRolesNestedInput
   }
 
   export type UserRoleUncheckedUpdateInput = {
@@ -25092,7 +27475,7 @@ export namespace Prisma {
     action: string
     changes?: string | null
     metadata?: string | null
-    timestamp?: Date | string | null
+    timestamp?: Date | string
     adminUser?: UserCreateNestedOneWithoutAdminAuditsInput
     targetUser?: UserCreateNestedOneWithoutTargetAuditsInput
   }
@@ -25105,7 +27488,7 @@ export namespace Prisma {
     action: string
     changes?: string | null
     metadata?: string | null
-    timestamp?: Date | string | null
+    timestamp?: Date | string
   }
 
   export type AuditLogUpdateInput = {
@@ -25114,7 +27497,7 @@ export namespace Prisma {
     action?: StringFieldUpdateOperationsInput | string
     changes?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableStringFieldUpdateOperationsInput | string | null
-    timestamp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
     adminUser?: UserUpdateOneWithoutAdminAuditsNestedInput
     targetUser?: UserUpdateOneWithoutTargetAuditsNestedInput
   }
@@ -25127,7 +27510,7 @@ export namespace Prisma {
     action?: StringFieldUpdateOperationsInput | string
     changes?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableStringFieldUpdateOperationsInput | string | null
-    timestamp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AuditLogCreateManyInput = {
@@ -25138,7 +27521,7 @@ export namespace Prisma {
     action: string
     changes?: string | null
     metadata?: string | null
-    timestamp?: Date | string | null
+    timestamp?: Date | string
   }
 
   export type AuditLogUpdateManyMutationInput = {
@@ -25147,7 +27530,7 @@ export namespace Prisma {
     action?: StringFieldUpdateOperationsInput | string
     changes?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableStringFieldUpdateOperationsInput | string | null
-    timestamp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AuditLogUncheckedUpdateManyInput = {
@@ -25158,13 +27541,13 @@ export namespace Prisma {
     action?: StringFieldUpdateOperationsInput | string
     changes?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableStringFieldUpdateOperationsInput | string | null
-    timestamp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PasswordResetTokenCreateInput = {
     passwordResetId?: bigint | number
     token: string
-    createdAt?: Date | string | null
+    createdAt?: Date | string
     expiresAt: Date | string
     user: UserCreateNestedOneWithoutPasswordResetTokensInput
   }
@@ -25173,14 +27556,14 @@ export namespace Prisma {
     passwordResetId?: bigint | number
     userId: bigint | number
     token: string
-    createdAt?: Date | string | null
+    createdAt?: Date | string
     expiresAt: Date | string
   }
 
   export type PasswordResetTokenUpdateInput = {
     passwordResetId?: BigIntFieldUpdateOperationsInput | bigint | number
     token?: StringFieldUpdateOperationsInput | string
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutPasswordResetTokensNestedInput
   }
@@ -25189,7 +27572,7 @@ export namespace Prisma {
     passwordResetId?: BigIntFieldUpdateOperationsInput | bigint | number
     userId?: BigIntFieldUpdateOperationsInput | bigint | number
     token?: StringFieldUpdateOperationsInput | string
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -25197,14 +27580,14 @@ export namespace Prisma {
     passwordResetId?: bigint | number
     userId: bigint | number
     token: string
-    createdAt?: Date | string | null
+    createdAt?: Date | string
     expiresAt: Date | string
   }
 
   export type PasswordResetTokenUpdateManyMutationInput = {
     passwordResetId?: BigIntFieldUpdateOperationsInput | bigint | number
     token?: StringFieldUpdateOperationsInput | string
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -25212,14 +27595,14 @@ export namespace Prisma {
     passwordResetId?: BigIntFieldUpdateOperationsInput | bigint | number
     userId?: BigIntFieldUpdateOperationsInput | bigint | number
     token?: StringFieldUpdateOperationsInput | string
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type EmailVerificationTokenCreateInput = {
     emailVerificationId?: bigint | number
     token: string
-    createdAt?: Date | string | null
+    createdAt?: Date | string
     expiresAt: Date | string
     user: UserCreateNestedOneWithoutEmailVerificationTokensInput
   }
@@ -25228,14 +27611,14 @@ export namespace Prisma {
     emailVerificationId?: bigint | number
     userId: bigint | number
     token: string
-    createdAt?: Date | string | null
+    createdAt?: Date | string
     expiresAt: Date | string
   }
 
   export type EmailVerificationTokenUpdateInput = {
     emailVerificationId?: BigIntFieldUpdateOperationsInput | bigint | number
     token?: StringFieldUpdateOperationsInput | string
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutEmailVerificationTokensNestedInput
   }
@@ -25244,7 +27627,7 @@ export namespace Prisma {
     emailVerificationId?: BigIntFieldUpdateOperationsInput | bigint | number
     userId?: BigIntFieldUpdateOperationsInput | bigint | number
     token?: StringFieldUpdateOperationsInput | string
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -25252,14 +27635,14 @@ export namespace Prisma {
     emailVerificationId?: bigint | number
     userId: bigint | number
     token: string
-    createdAt?: Date | string | null
+    createdAt?: Date | string
     expiresAt: Date | string
   }
 
   export type EmailVerificationTokenUpdateManyMutationInput = {
     emailVerificationId?: BigIntFieldUpdateOperationsInput | bigint | number
     token?: StringFieldUpdateOperationsInput | string
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -25267,8 +27650,119 @@ export namespace Prisma {
     emailVerificationId?: BigIntFieldUpdateOperationsInput | bigint | number
     userId?: BigIntFieldUpdateOperationsInput | bigint | number
     token?: StringFieldUpdateOperationsInput | string
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BadgeCreateInput = {
+    badgeId?: bigint | number
+    name?: string | null
+    description?: string | null
+    imageUrl?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    exhibit?: ExhibitCreateNestedOneWithoutBadgeInput
+    userBadges?: UserBadgeCreateNestedManyWithoutBadgeInput
+  }
+
+  export type BadgeUncheckedCreateInput = {
+    badgeId?: bigint | number
+    name?: string | null
+    description?: string | null
+    imageUrl?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    exhibit?: ExhibitUncheckedCreateNestedOneWithoutBadgeInput
+    userBadges?: UserBadgeUncheckedCreateNestedManyWithoutBadgeInput
+  }
+
+  export type BadgeUpdateInput = {
+    badgeId?: BigIntFieldUpdateOperationsInput | bigint | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exhibit?: ExhibitUpdateOneWithoutBadgeNestedInput
+    userBadges?: UserBadgeUpdateManyWithoutBadgeNestedInput
+  }
+
+  export type BadgeUncheckedUpdateInput = {
+    badgeId?: BigIntFieldUpdateOperationsInput | bigint | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exhibit?: ExhibitUncheckedUpdateOneWithoutBadgeNestedInput
+    userBadges?: UserBadgeUncheckedUpdateManyWithoutBadgeNestedInput
+  }
+
+  export type BadgeCreateManyInput = {
+    badgeId?: bigint | number
+    name?: string | null
+    description?: string | null
+    imageUrl?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+  }
+
+  export type BadgeUpdateManyMutationInput = {
+    badgeId?: BigIntFieldUpdateOperationsInput | bigint | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type BadgeUncheckedUpdateManyInput = {
+    badgeId?: BigIntFieldUpdateOperationsInput | bigint | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type UserBadgeCreateInput = {
+    createdAt?: Date | string | null
+    user: UserCreateNestedOneWithoutUserBadgesInput
+    badge: BadgeCreateNestedOneWithoutUserBadgesInput
+  }
+
+  export type UserBadgeUncheckedCreateInput = {
+    userId: bigint | number
+    badgeId: bigint | number
+    createdAt?: Date | string | null
+  }
+
+  export type UserBadgeUpdateInput = {
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    user?: UserUpdateOneRequiredWithoutUserBadgesNestedInput
+    badge?: BadgeUpdateOneRequiredWithoutUserBadgesNestedInput
+  }
+
+  export type UserBadgeUncheckedUpdateInput = {
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
+    badgeId?: BigIntFieldUpdateOperationsInput | bigint | number
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type UserBadgeCreateManyInput = {
+    userId: bigint | number
+    badgeId: bigint | number
+    createdAt?: Date | string | null
+  }
+
+  export type UserBadgeUpdateManyMutationInput = {
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type UserBadgeUncheckedUpdateManyInput = {
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
+    badgeId?: BigIntFieldUpdateOperationsInput | bigint | number
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -25474,14 +27968,14 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
-  export type AudioNullableRelationFilter = {
-    is?: AudioWhereInput | null
-    isNot?: AudioWhereInput | null
-  }
-
   export type UserNullableRelationFilter = {
     is?: UserWhereInput | null
     isNot?: UserWhereInput | null
+  }
+
+  export type AudioNullableRelationFilter = {
+    is?: AudioWhereInput | null
+    isNot?: AudioWhereInput | null
   }
 
   export type AudioPlaybackLogCountOrderByAggregateInput = {
@@ -25573,15 +28067,26 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
-  export type ExhibitListRelationFilter = {
-    every?: ExhibitWhereInput
-    some?: ExhibitWhereInput
-    none?: ExhibitWhereInput
+  export type DateTimeFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
   export type StatusNullableRelationFilter = {
     is?: StatusWhereInput | null
     isNot?: StatusWhereInput | null
+  }
+
+  export type ExhibitListRelationFilter = {
+    every?: ExhibitWhereInput
+    some?: ExhibitWhereInput
+    none?: ExhibitWhereInput
   }
 
   export type ImageListRelationFilter = {
@@ -25669,15 +28174,34 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
+  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type ExhibitionRelationFilter = {
+    is?: ExhibitionWhereInput
+    isNot?: ExhibitionWhereInput
+  }
+
+  export type BadgeNullableRelationFilter = {
+    is?: BadgeWhereInput | null
+    isNot?: BadgeWhereInput | null
+  }
+
   export type AudioListRelationFilter = {
     every?: AudioWhereInput
     some?: AudioWhereInput
     none?: AudioWhereInput
-  }
-
-  export type ExhibitionNullableRelationFilter = {
-    is?: ExhibitionWhereInput | null
-    isNot?: ExhibitionWhereInput | null
   }
 
   export type FeedbackListRelationFilter = {
@@ -25707,9 +28231,10 @@ export namespace Prisma {
   export type ExhibitCountOrderByAggregateInput = {
     exhibitId?: SortOrder
     exhibitionId?: SortOrder
+    badgeId?: SortOrder
     title?: SortOrder
-    statusId?: SortOrder
     description?: SortOrder
+    statusId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -25717,15 +28242,17 @@ export namespace Prisma {
   export type ExhibitAvgOrderByAggregateInput = {
     exhibitId?: SortOrder
     exhibitionId?: SortOrder
+    badgeId?: SortOrder
     statusId?: SortOrder
   }
 
   export type ExhibitMaxOrderByAggregateInput = {
     exhibitId?: SortOrder
     exhibitionId?: SortOrder
+    badgeId?: SortOrder
     title?: SortOrder
-    statusId?: SortOrder
     description?: SortOrder
+    statusId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -25733,9 +28260,10 @@ export namespace Prisma {
   export type ExhibitMinOrderByAggregateInput = {
     exhibitId?: SortOrder
     exhibitionId?: SortOrder
+    badgeId?: SortOrder
     title?: SortOrder
-    statusId?: SortOrder
     description?: SortOrder
+    statusId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -25743,6 +28271,7 @@ export namespace Prisma {
   export type ExhibitSumOrderByAggregateInput = {
     exhibitId?: SortOrder
     exhibitionId?: SortOrder
+    badgeId?: SortOrder
     statusId?: SortOrder
   }
 
@@ -25790,9 +28319,14 @@ export namespace Prisma {
     rating?: SortOrder
   }
 
-  export type BoolNullableFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
-    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type ExhibitionNullableRelationFilter = {
+    is?: ExhibitionWhereInput | null
+    isNot?: ExhibitionWhereInput | null
   }
 
   export type ImageCountOrderByAggregateInput = {
@@ -25843,12 +28377,17 @@ export namespace Prisma {
     exhibitionId?: SortOrder
   }
 
-  export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type BoolNullableFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
-    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedBoolNullableFilter<$PrismaModel>
-    _max?: NestedBoolNullableFilter<$PrismaModel>
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
   }
 
   export type LanguageCountOrderByAggregateInput = {
@@ -25889,6 +28428,14 @@ export namespace Prisma {
   export type LanguageSumOrderByAggregateInput = {
     languageId?: SortOrder
     statusId?: SortOrder
+  }
+
+  export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBoolNullableFilter<$PrismaModel>
+    _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
   export type RolePermissionListRelationFilter = {
@@ -26014,14 +28561,14 @@ export namespace Prisma {
     roleId?: SortOrder
   }
 
-  export type PermissionRelationFilter = {
-    is?: PermissionWhereInput
-    isNot?: PermissionWhereInput
-  }
-
   export type RoleRelationFilter = {
     is?: RoleWhereInput
     isNot?: RoleWhereInput
+  }
+
+  export type PermissionRelationFilter = {
+    is?: PermissionWhereInput
+    isNot?: PermissionWhereInput
   }
 
   export type RolePermissionRoleIdPermissionIdCompoundUniqueInput = {
@@ -26112,10 +28659,10 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
-  export type ExhibitionListRelationFilter = {
-    every?: ExhibitionWhereInput
-    some?: ExhibitionWhereInput
-    none?: ExhibitionWhereInput
+  export type UserListRelationFilter = {
+    every?: UserWhereInput
+    some?: UserWhereInput
+    none?: UserWhereInput
   }
 
   export type LanguageListRelationFilter = {
@@ -26124,13 +28671,13 @@ export namespace Prisma {
     none?: LanguageWhereInput
   }
 
-  export type UserListRelationFilter = {
-    every?: UserWhereInput
-    some?: UserWhereInput
-    none?: UserWhereInput
+  export type ExhibitionListRelationFilter = {
+    every?: ExhibitionWhereInput
+    some?: ExhibitionWhereInput
+    none?: ExhibitionWhereInput
   }
 
-  export type ExhibitionOrderByRelationAggregateInput = {
+  export type UserOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -26138,7 +28685,7 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type UserOrderByRelationAggregateInput = {
+  export type ExhibitionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -26254,16 +28801,16 @@ export namespace Prisma {
     _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
+  export type SessionListRelationFilter = {
+    every?: SessionWhereInput
+    some?: SessionWhereInput
+    none?: SessionWhereInput
+  }
+
   export type AuditLogListRelationFilter = {
     every?: AuditLogWhereInput
     some?: AuditLogWhereInput
     none?: AuditLogWhereInput
-  }
-
-  export type EmailVerificationTokenListRelationFilter = {
-    every?: EmailVerificationTokenWhereInput
-    some?: EmailVerificationTokenWhereInput
-    none?: EmailVerificationTokenWhereInput
   }
 
   export type PasswordResetTokenListRelationFilter = {
@@ -26272,17 +28819,23 @@ export namespace Prisma {
     none?: PasswordResetTokenWhereInput
   }
 
-  export type SessionListRelationFilter = {
-    every?: SessionWhereInput
-    some?: SessionWhereInput
-    none?: SessionWhereInput
+  export type EmailVerificationTokenListRelationFilter = {
+    every?: EmailVerificationTokenWhereInput
+    some?: EmailVerificationTokenWhereInput
+    none?: EmailVerificationTokenWhereInput
   }
 
-  export type AuditLogOrderByRelationAggregateInput = {
+  export type UserBadgeListRelationFilter = {
+    every?: UserBadgeWhereInput
+    some?: UserBadgeWhereInput
+    none?: UserBadgeWhereInput
+  }
+
+  export type SessionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
-  export type EmailVerificationTokenOrderByRelationAggregateInput = {
+  export type AuditLogOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -26290,7 +28843,11 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type SessionOrderByRelationAggregateInput = {
+  export type EmailVerificationTokenOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type UserBadgeOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -26418,17 +28975,6 @@ export namespace Prisma {
     targetUserId?: SortOrder
   }
 
-  export type DateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
-  }
-
   export type PasswordResetTokenCountOrderByAggregateInput = {
     passwordResetId?: SortOrder
     userId?: SortOrder
@@ -26463,20 +29009,6 @@ export namespace Prisma {
     userId?: SortOrder
   }
 
-  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
-  }
-
   export type EmailVerificationTokenCountOrderByAggregateInput = {
     emailVerificationId?: SortOrder
     userId?: SortOrder
@@ -26509,6 +29041,79 @@ export namespace Prisma {
   export type EmailVerificationTokenSumOrderByAggregateInput = {
     emailVerificationId?: SortOrder
     userId?: SortOrder
+  }
+
+  export type BadgeCountOrderByAggregateInput = {
+    badgeId?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    imageUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BadgeAvgOrderByAggregateInput = {
+    badgeId?: SortOrder
+  }
+
+  export type BadgeMaxOrderByAggregateInput = {
+    badgeId?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    imageUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BadgeMinOrderByAggregateInput = {
+    badgeId?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    imageUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BadgeSumOrderByAggregateInput = {
+    badgeId?: SortOrder
+  }
+
+  export type BadgeRelationFilter = {
+    is?: BadgeWhereInput
+    isNot?: BadgeWhereInput
+  }
+
+  export type UserBadgeUserIdBadgeIdCompoundUniqueInput = {
+    userId: bigint | number
+    badgeId: bigint | number
+  }
+
+  export type UserBadgeCountOrderByAggregateInput = {
+    userId?: SortOrder
+    badgeId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type UserBadgeAvgOrderByAggregateInput = {
+    userId?: SortOrder
+    badgeId?: SortOrder
+  }
+
+  export type UserBadgeMaxOrderByAggregateInput = {
+    userId?: SortOrder
+    badgeId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type UserBadgeMinOrderByAggregateInput = {
+    userId?: SortOrder
+    badgeId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type UserBadgeSumOrderByAggregateInput = {
+    userId?: SortOrder
+    badgeId?: SortOrder
   }
 
   export type ExhibitCreateNestedOneWithoutAudioInput = {
@@ -26651,16 +29256,16 @@ export namespace Prisma {
     deleteMany?: SubtitleScalarWhereInput | SubtitleScalarWhereInput[]
   }
 
-  export type AudioCreateNestedOneWithoutPlaybackLogsInput = {
-    create?: XOR<AudioCreateWithoutPlaybackLogsInput, AudioUncheckedCreateWithoutPlaybackLogsInput>
-    connectOrCreate?: AudioCreateOrConnectWithoutPlaybackLogsInput
-    connect?: AudioWhereUniqueInput
-  }
-
   export type UserCreateNestedOneWithoutPlaybackLogsInput = {
     create?: XOR<UserCreateWithoutPlaybackLogsInput, UserUncheckedCreateWithoutPlaybackLogsInput>
     connectOrCreate?: UserCreateOrConnectWithoutPlaybackLogsInput
     connect?: UserWhereUniqueInput
+  }
+
+  export type AudioCreateNestedOneWithoutPlaybackLogsInput = {
+    create?: XOR<AudioCreateWithoutPlaybackLogsInput, AudioUncheckedCreateWithoutPlaybackLogsInput>
+    connectOrCreate?: AudioCreateOrConnectWithoutPlaybackLogsInput
+    connect?: AudioWhereUniqueInput
   }
 
   export type NullableIntFieldUpdateOperationsInput = {
@@ -26669,16 +29274,6 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
-  }
-
-  export type AudioUpdateOneWithoutPlaybackLogsNestedInput = {
-    create?: XOR<AudioCreateWithoutPlaybackLogsInput, AudioUncheckedCreateWithoutPlaybackLogsInput>
-    connectOrCreate?: AudioCreateOrConnectWithoutPlaybackLogsInput
-    upsert?: AudioUpsertWithoutPlaybackLogsInput
-    disconnect?: AudioWhereInput | boolean
-    delete?: AudioWhereInput | boolean
-    connect?: AudioWhereUniqueInput
-    update?: XOR<XOR<AudioUpdateToOneWithWhereWithoutPlaybackLogsInput, AudioUpdateWithoutPlaybackLogsInput>, AudioUncheckedUpdateWithoutPlaybackLogsInput>
   }
 
   export type UserUpdateOneWithoutPlaybackLogsNestedInput = {
@@ -26691,17 +29286,27 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPlaybackLogsInput, UserUpdateWithoutPlaybackLogsInput>, UserUncheckedUpdateWithoutPlaybackLogsInput>
   }
 
-  export type ExhibitCreateNestedManyWithoutExhibitionInput = {
-    create?: XOR<ExhibitCreateWithoutExhibitionInput, ExhibitUncheckedCreateWithoutExhibitionInput> | ExhibitCreateWithoutExhibitionInput[] | ExhibitUncheckedCreateWithoutExhibitionInput[]
-    connectOrCreate?: ExhibitCreateOrConnectWithoutExhibitionInput | ExhibitCreateOrConnectWithoutExhibitionInput[]
-    createMany?: ExhibitCreateManyExhibitionInputEnvelope
-    connect?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
+  export type AudioUpdateOneWithoutPlaybackLogsNestedInput = {
+    create?: XOR<AudioCreateWithoutPlaybackLogsInput, AudioUncheckedCreateWithoutPlaybackLogsInput>
+    connectOrCreate?: AudioCreateOrConnectWithoutPlaybackLogsInput
+    upsert?: AudioUpsertWithoutPlaybackLogsInput
+    disconnect?: AudioWhereInput | boolean
+    delete?: AudioWhereInput | boolean
+    connect?: AudioWhereUniqueInput
+    update?: XOR<XOR<AudioUpdateToOneWithWhereWithoutPlaybackLogsInput, AudioUpdateWithoutPlaybackLogsInput>, AudioUncheckedUpdateWithoutPlaybackLogsInput>
   }
 
   export type StatusCreateNestedOneWithoutExhibitionsInput = {
     create?: XOR<StatusCreateWithoutExhibitionsInput, StatusUncheckedCreateWithoutExhibitionsInput>
     connectOrCreate?: StatusCreateOrConnectWithoutExhibitionsInput
     connect?: StatusWhereUniqueInput
+  }
+
+  export type ExhibitCreateNestedManyWithoutExhibitionInput = {
+    create?: XOR<ExhibitCreateWithoutExhibitionInput, ExhibitUncheckedCreateWithoutExhibitionInput> | ExhibitCreateWithoutExhibitionInput[] | ExhibitUncheckedCreateWithoutExhibitionInput[]
+    connectOrCreate?: ExhibitCreateOrConnectWithoutExhibitionInput | ExhibitCreateOrConnectWithoutExhibitionInput[]
+    createMany?: ExhibitCreateManyExhibitionInputEnvelope
+    connect?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
   }
 
   export type ImageCreateNestedManyWithoutExhibitionInput = {
@@ -26737,6 +29342,20 @@ export namespace Prisma {
     set?: string
   }
 
+  export type DateTimeFieldUpdateOperationsInput = {
+    set?: Date | string
+  }
+
+  export type StatusUpdateOneWithoutExhibitionsNestedInput = {
+    create?: XOR<StatusCreateWithoutExhibitionsInput, StatusUncheckedCreateWithoutExhibitionsInput>
+    connectOrCreate?: StatusCreateOrConnectWithoutExhibitionsInput
+    upsert?: StatusUpsertWithoutExhibitionsInput
+    disconnect?: StatusWhereInput | boolean
+    delete?: StatusWhereInput | boolean
+    connect?: StatusWhereUniqueInput
+    update?: XOR<XOR<StatusUpdateToOneWithWhereWithoutExhibitionsInput, StatusUpdateWithoutExhibitionsInput>, StatusUncheckedUpdateWithoutExhibitionsInput>
+  }
+
   export type ExhibitUpdateManyWithoutExhibitionNestedInput = {
     create?: XOR<ExhibitCreateWithoutExhibitionInput, ExhibitUncheckedCreateWithoutExhibitionInput> | ExhibitCreateWithoutExhibitionInput[] | ExhibitUncheckedCreateWithoutExhibitionInput[]
     connectOrCreate?: ExhibitCreateOrConnectWithoutExhibitionInput | ExhibitCreateOrConnectWithoutExhibitionInput[]
@@ -26749,16 +29368,6 @@ export namespace Prisma {
     update?: ExhibitUpdateWithWhereUniqueWithoutExhibitionInput | ExhibitUpdateWithWhereUniqueWithoutExhibitionInput[]
     updateMany?: ExhibitUpdateManyWithWhereWithoutExhibitionInput | ExhibitUpdateManyWithWhereWithoutExhibitionInput[]
     deleteMany?: ExhibitScalarWhereInput | ExhibitScalarWhereInput[]
-  }
-
-  export type StatusUpdateOneWithoutExhibitionsNestedInput = {
-    create?: XOR<StatusCreateWithoutExhibitionsInput, StatusUncheckedCreateWithoutExhibitionsInput>
-    connectOrCreate?: StatusCreateOrConnectWithoutExhibitionsInput
-    upsert?: StatusUpsertWithoutExhibitionsInput
-    disconnect?: StatusWhereInput | boolean
-    delete?: StatusWhereInput | boolean
-    connect?: StatusWhereUniqueInput
-    update?: XOR<XOR<StatusUpdateToOneWithWhereWithoutExhibitionsInput, StatusUpdateWithoutExhibitionsInput>, StatusUncheckedUpdateWithoutExhibitionsInput>
   }
 
   export type ImageUpdateManyWithoutExhibitionNestedInput = {
@@ -26803,13 +29412,6 @@ export namespace Prisma {
     deleteMany?: ImageScalarWhereInput | ImageScalarWhereInput[]
   }
 
-  export type AudioCreateNestedManyWithoutExhibitInput = {
-    create?: XOR<AudioCreateWithoutExhibitInput, AudioUncheckedCreateWithoutExhibitInput> | AudioCreateWithoutExhibitInput[] | AudioUncheckedCreateWithoutExhibitInput[]
-    connectOrCreate?: AudioCreateOrConnectWithoutExhibitInput | AudioCreateOrConnectWithoutExhibitInput[]
-    createMany?: AudioCreateManyExhibitInputEnvelope
-    connect?: AudioWhereUniqueInput | AudioWhereUniqueInput[]
-  }
-
   export type ExhibitionCreateNestedOneWithoutExhibitsInput = {
     create?: XOR<ExhibitionCreateWithoutExhibitsInput, ExhibitionUncheckedCreateWithoutExhibitsInput>
     connectOrCreate?: ExhibitionCreateOrConnectWithoutExhibitsInput
@@ -26820,6 +29422,19 @@ export namespace Prisma {
     create?: XOR<StatusCreateWithoutExhibitsInput, StatusUncheckedCreateWithoutExhibitsInput>
     connectOrCreate?: StatusCreateOrConnectWithoutExhibitsInput
     connect?: StatusWhereUniqueInput
+  }
+
+  export type BadgeCreateNestedOneWithoutExhibitInput = {
+    create?: XOR<BadgeCreateWithoutExhibitInput, BadgeUncheckedCreateWithoutExhibitInput>
+    connectOrCreate?: BadgeCreateOrConnectWithoutExhibitInput
+    connect?: BadgeWhereUniqueInput
+  }
+
+  export type AudioCreateNestedManyWithoutExhibitInput = {
+    create?: XOR<AudioCreateWithoutExhibitInput, AudioUncheckedCreateWithoutExhibitInput> | AudioCreateWithoutExhibitInput[] | AudioUncheckedCreateWithoutExhibitInput[]
+    connectOrCreate?: AudioCreateOrConnectWithoutExhibitInput | AudioCreateOrConnectWithoutExhibitInput[]
+    createMany?: AudioCreateManyExhibitInputEnvelope
+    connect?: AudioWhereUniqueInput | AudioWhereUniqueInput[]
   }
 
   export type FeedbackCreateNestedManyWithoutExhibitInput = {
@@ -26871,26 +29486,10 @@ export namespace Prisma {
     connect?: QRCodeWhereUniqueInput | QRCodeWhereUniqueInput[]
   }
 
-  export type AudioUpdateManyWithoutExhibitNestedInput = {
-    create?: XOR<AudioCreateWithoutExhibitInput, AudioUncheckedCreateWithoutExhibitInput> | AudioCreateWithoutExhibitInput[] | AudioUncheckedCreateWithoutExhibitInput[]
-    connectOrCreate?: AudioCreateOrConnectWithoutExhibitInput | AudioCreateOrConnectWithoutExhibitInput[]
-    upsert?: AudioUpsertWithWhereUniqueWithoutExhibitInput | AudioUpsertWithWhereUniqueWithoutExhibitInput[]
-    createMany?: AudioCreateManyExhibitInputEnvelope
-    set?: AudioWhereUniqueInput | AudioWhereUniqueInput[]
-    disconnect?: AudioWhereUniqueInput | AudioWhereUniqueInput[]
-    delete?: AudioWhereUniqueInput | AudioWhereUniqueInput[]
-    connect?: AudioWhereUniqueInput | AudioWhereUniqueInput[]
-    update?: AudioUpdateWithWhereUniqueWithoutExhibitInput | AudioUpdateWithWhereUniqueWithoutExhibitInput[]
-    updateMany?: AudioUpdateManyWithWhereWithoutExhibitInput | AudioUpdateManyWithWhereWithoutExhibitInput[]
-    deleteMany?: AudioScalarWhereInput | AudioScalarWhereInput[]
-  }
-
-  export type ExhibitionUpdateOneWithoutExhibitsNestedInput = {
+  export type ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput = {
     create?: XOR<ExhibitionCreateWithoutExhibitsInput, ExhibitionUncheckedCreateWithoutExhibitsInput>
     connectOrCreate?: ExhibitionCreateOrConnectWithoutExhibitsInput
     upsert?: ExhibitionUpsertWithoutExhibitsInput
-    disconnect?: ExhibitionWhereInput | boolean
-    delete?: ExhibitionWhereInput | boolean
     connect?: ExhibitionWhereUniqueInput
     update?: XOR<XOR<ExhibitionUpdateToOneWithWhereWithoutExhibitsInput, ExhibitionUpdateWithoutExhibitsInput>, ExhibitionUncheckedUpdateWithoutExhibitsInput>
   }
@@ -26903,6 +29502,30 @@ export namespace Prisma {
     delete?: StatusWhereInput | boolean
     connect?: StatusWhereUniqueInput
     update?: XOR<XOR<StatusUpdateToOneWithWhereWithoutExhibitsInput, StatusUpdateWithoutExhibitsInput>, StatusUncheckedUpdateWithoutExhibitsInput>
+  }
+
+  export type BadgeUpdateOneWithoutExhibitNestedInput = {
+    create?: XOR<BadgeCreateWithoutExhibitInput, BadgeUncheckedCreateWithoutExhibitInput>
+    connectOrCreate?: BadgeCreateOrConnectWithoutExhibitInput
+    upsert?: BadgeUpsertWithoutExhibitInput
+    disconnect?: BadgeWhereInput | boolean
+    delete?: BadgeWhereInput | boolean
+    connect?: BadgeWhereUniqueInput
+    update?: XOR<XOR<BadgeUpdateToOneWithWhereWithoutExhibitInput, BadgeUpdateWithoutExhibitInput>, BadgeUncheckedUpdateWithoutExhibitInput>
+  }
+
+  export type AudioUpdateManyWithoutExhibitNestedInput = {
+    create?: XOR<AudioCreateWithoutExhibitInput, AudioUncheckedCreateWithoutExhibitInput> | AudioCreateWithoutExhibitInput[] | AudioUncheckedCreateWithoutExhibitInput[]
+    connectOrCreate?: AudioCreateOrConnectWithoutExhibitInput | AudioCreateOrConnectWithoutExhibitInput[]
+    upsert?: AudioUpsertWithWhereUniqueWithoutExhibitInput | AudioUpsertWithWhereUniqueWithoutExhibitInput[]
+    createMany?: AudioCreateManyExhibitInputEnvelope
+    set?: AudioWhereUniqueInput | AudioWhereUniqueInput[]
+    disconnect?: AudioWhereUniqueInput | AudioWhereUniqueInput[]
+    delete?: AudioWhereUniqueInput | AudioWhereUniqueInput[]
+    connect?: AudioWhereUniqueInput | AudioWhereUniqueInput[]
+    update?: AudioUpdateWithWhereUniqueWithoutExhibitInput | AudioUpdateWithWhereUniqueWithoutExhibitInput[]
+    updateMany?: AudioUpdateManyWithWhereWithoutExhibitInput | AudioUpdateManyWithWhereWithoutExhibitInput[]
+    deleteMany?: AudioScalarWhereInput | AudioScalarWhereInput[]
   }
 
   export type FeedbackUpdateManyWithoutExhibitNestedInput = {
@@ -27003,26 +29626,16 @@ export namespace Prisma {
     deleteMany?: QRCodeScalarWhereInput | QRCodeScalarWhereInput[]
   }
 
-  export type ExhibitCreateNestedOneWithoutFeedbacksInput = {
-    create?: XOR<ExhibitCreateWithoutFeedbacksInput, ExhibitUncheckedCreateWithoutFeedbacksInput>
-    connectOrCreate?: ExhibitCreateOrConnectWithoutFeedbacksInput
-    connect?: ExhibitWhereUniqueInput
-  }
-
   export type UserCreateNestedOneWithoutFeedbacksInput = {
     create?: XOR<UserCreateWithoutFeedbacksInput, UserUncheckedCreateWithoutFeedbacksInput>
     connectOrCreate?: UserCreateOrConnectWithoutFeedbacksInput
     connect?: UserWhereUniqueInput
   }
 
-  export type ExhibitUpdateOneWithoutFeedbacksNestedInput = {
+  export type ExhibitCreateNestedOneWithoutFeedbacksInput = {
     create?: XOR<ExhibitCreateWithoutFeedbacksInput, ExhibitUncheckedCreateWithoutFeedbacksInput>
     connectOrCreate?: ExhibitCreateOrConnectWithoutFeedbacksInput
-    upsert?: ExhibitUpsertWithoutFeedbacksInput
-    disconnect?: ExhibitWhereInput | boolean
-    delete?: ExhibitWhereInput | boolean
     connect?: ExhibitWhereUniqueInput
-    update?: XOR<XOR<ExhibitUpdateToOneWithWhereWithoutFeedbacksInput, ExhibitUpdateWithoutFeedbacksInput>, ExhibitUncheckedUpdateWithoutFeedbacksInput>
   }
 
   export type UserUpdateOneWithoutFeedbacksNestedInput = {
@@ -27033,6 +29646,16 @@ export namespace Prisma {
     delete?: UserWhereInput | boolean
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutFeedbacksInput, UserUpdateWithoutFeedbacksInput>, UserUncheckedUpdateWithoutFeedbacksInput>
+  }
+
+  export type ExhibitUpdateOneWithoutFeedbacksNestedInput = {
+    create?: XOR<ExhibitCreateWithoutFeedbacksInput, ExhibitUncheckedCreateWithoutFeedbacksInput>
+    connectOrCreate?: ExhibitCreateOrConnectWithoutFeedbacksInput
+    upsert?: ExhibitUpsertWithoutFeedbacksInput
+    disconnect?: ExhibitWhereInput | boolean
+    delete?: ExhibitWhereInput | boolean
+    connect?: ExhibitWhereUniqueInput
+    update?: XOR<XOR<ExhibitUpdateToOneWithWhereWithoutFeedbacksInput, ExhibitUpdateWithoutFeedbacksInput>, ExhibitUncheckedUpdateWithoutFeedbacksInput>
   }
 
   export type ExhibitCreateNestedOneWithoutImagesInput = {
@@ -27047,8 +29670,8 @@ export namespace Prisma {
     connect?: ExhibitionWhereUniqueInput
   }
 
-  export type NullableBoolFieldUpdateOperationsInput = {
-    set?: boolean | null
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
   }
 
   export type ExhibitUpdateOneWithoutImagesNestedInput = {
@@ -27071,17 +29694,17 @@ export namespace Prisma {
     update?: XOR<XOR<ExhibitionUpdateToOneWithWhereWithoutImagesInput, ExhibitionUpdateWithoutImagesInput>, ExhibitionUncheckedUpdateWithoutImagesInput>
   }
 
+  export type StatusCreateNestedOneWithoutLanguagesInput = {
+    create?: XOR<StatusCreateWithoutLanguagesInput, StatusUncheckedCreateWithoutLanguagesInput>
+    connectOrCreate?: StatusCreateOrConnectWithoutLanguagesInput
+    connect?: StatusWhereUniqueInput
+  }
+
   export type AudioCreateNestedManyWithoutLanguageInput = {
     create?: XOR<AudioCreateWithoutLanguageInput, AudioUncheckedCreateWithoutLanguageInput> | AudioCreateWithoutLanguageInput[] | AudioUncheckedCreateWithoutLanguageInput[]
     connectOrCreate?: AudioCreateOrConnectWithoutLanguageInput | AudioCreateOrConnectWithoutLanguageInput[]
     createMany?: AudioCreateManyLanguageInputEnvelope
     connect?: AudioWhereUniqueInput | AudioWhereUniqueInput[]
-  }
-
-  export type StatusCreateNestedOneWithoutLanguagesInput = {
-    create?: XOR<StatusCreateWithoutLanguagesInput, StatusUncheckedCreateWithoutLanguagesInput>
-    connectOrCreate?: StatusCreateOrConnectWithoutLanguagesInput
-    connect?: StatusWhereUniqueInput
   }
 
   export type SubtitleCreateNestedManyWithoutLanguageInput = {
@@ -27105,6 +29728,20 @@ export namespace Prisma {
     connect?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
   }
 
+  export type NullableBoolFieldUpdateOperationsInput = {
+    set?: boolean | null
+  }
+
+  export type StatusUpdateOneWithoutLanguagesNestedInput = {
+    create?: XOR<StatusCreateWithoutLanguagesInput, StatusUncheckedCreateWithoutLanguagesInput>
+    connectOrCreate?: StatusCreateOrConnectWithoutLanguagesInput
+    upsert?: StatusUpsertWithoutLanguagesInput
+    disconnect?: StatusWhereInput | boolean
+    delete?: StatusWhereInput | boolean
+    connect?: StatusWhereUniqueInput
+    update?: XOR<XOR<StatusUpdateToOneWithWhereWithoutLanguagesInput, StatusUpdateWithoutLanguagesInput>, StatusUncheckedUpdateWithoutLanguagesInput>
+  }
+
   export type AudioUpdateManyWithoutLanguageNestedInput = {
     create?: XOR<AudioCreateWithoutLanguageInput, AudioUncheckedCreateWithoutLanguageInput> | AudioCreateWithoutLanguageInput[] | AudioUncheckedCreateWithoutLanguageInput[]
     connectOrCreate?: AudioCreateOrConnectWithoutLanguageInput | AudioCreateOrConnectWithoutLanguageInput[]
@@ -27117,16 +29754,6 @@ export namespace Prisma {
     update?: AudioUpdateWithWhereUniqueWithoutLanguageInput | AudioUpdateWithWhereUniqueWithoutLanguageInput[]
     updateMany?: AudioUpdateManyWithWhereWithoutLanguageInput | AudioUpdateManyWithWhereWithoutLanguageInput[]
     deleteMany?: AudioScalarWhereInput | AudioScalarWhereInput[]
-  }
-
-  export type StatusUpdateOneWithoutLanguagesNestedInput = {
-    create?: XOR<StatusCreateWithoutLanguagesInput, StatusUncheckedCreateWithoutLanguagesInput>
-    connectOrCreate?: StatusCreateOrConnectWithoutLanguagesInput
-    upsert?: StatusUpsertWithoutLanguagesInput
-    disconnect?: StatusWhereInput | boolean
-    delete?: StatusWhereInput | boolean
-    connect?: StatusWhereUniqueInput
-    update?: XOR<XOR<StatusUpdateToOneWithWhereWithoutLanguagesInput, StatusUpdateWithoutLanguagesInput>, StatusUncheckedUpdateWithoutLanguagesInput>
   }
 
   export type SubtitleUpdateManyWithoutLanguageNestedInput = {
@@ -27311,24 +29938,16 @@ export namespace Prisma {
     deleteMany?: UserRoleScalarWhereInput | UserRoleScalarWhereInput[]
   }
 
-  export type PermissionCreateNestedOneWithoutRolePermissionsInput = {
-    create?: XOR<PermissionCreateWithoutRolePermissionsInput, PermissionUncheckedCreateWithoutRolePermissionsInput>
-    connectOrCreate?: PermissionCreateOrConnectWithoutRolePermissionsInput
-    connect?: PermissionWhereUniqueInput
-  }
-
   export type RoleCreateNestedOneWithoutRolePermissionsInput = {
     create?: XOR<RoleCreateWithoutRolePermissionsInput, RoleUncheckedCreateWithoutRolePermissionsInput>
     connectOrCreate?: RoleCreateOrConnectWithoutRolePermissionsInput
     connect?: RoleWhereUniqueInput
   }
 
-  export type PermissionUpdateOneRequiredWithoutRolePermissionsNestedInput = {
+  export type PermissionCreateNestedOneWithoutRolePermissionsInput = {
     create?: XOR<PermissionCreateWithoutRolePermissionsInput, PermissionUncheckedCreateWithoutRolePermissionsInput>
     connectOrCreate?: PermissionCreateOrConnectWithoutRolePermissionsInput
-    upsert?: PermissionUpsertWithoutRolePermissionsInput
     connect?: PermissionWhereUniqueInput
-    update?: XOR<XOR<PermissionUpdateToOneWithWhereWithoutRolePermissionsInput, PermissionUpdateWithoutRolePermissionsInput>, PermissionUncheckedUpdateWithoutRolePermissionsInput>
   }
 
   export type RoleUpdateOneRequiredWithoutRolePermissionsNestedInput = {
@@ -27337,6 +29956,14 @@ export namespace Prisma {
     upsert?: RoleUpsertWithoutRolePermissionsInput
     connect?: RoleWhereUniqueInput
     update?: XOR<XOR<RoleUpdateToOneWithWhereWithoutRolePermissionsInput, RoleUpdateWithoutRolePermissionsInput>, RoleUncheckedUpdateWithoutRolePermissionsInput>
+  }
+
+  export type PermissionUpdateOneRequiredWithoutRolePermissionsNestedInput = {
+    create?: XOR<PermissionCreateWithoutRolePermissionsInput, PermissionUncheckedCreateWithoutRolePermissionsInput>
+    connectOrCreate?: PermissionCreateOrConnectWithoutRolePermissionsInput
+    upsert?: PermissionUpsertWithoutRolePermissionsInput
+    connect?: PermissionWhereUniqueInput
+    update?: XOR<XOR<PermissionUpdateToOneWithWhereWithoutRolePermissionsInput, PermissionUpdateWithoutRolePermissionsInput>, PermissionUncheckedUpdateWithoutRolePermissionsInput>
   }
 
   export type UserCreateNestedOneWithoutSessionsInput = {
@@ -27353,18 +29980,11 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSessionsInput, UserUpdateWithoutSessionsInput>, UserUncheckedUpdateWithoutSessionsInput>
   }
 
-  export type ExhibitCreateNestedManyWithoutStatusInput = {
-    create?: XOR<ExhibitCreateWithoutStatusInput, ExhibitUncheckedCreateWithoutStatusInput> | ExhibitCreateWithoutStatusInput[] | ExhibitUncheckedCreateWithoutStatusInput[]
-    connectOrCreate?: ExhibitCreateOrConnectWithoutStatusInput | ExhibitCreateOrConnectWithoutStatusInput[]
-    createMany?: ExhibitCreateManyStatusInputEnvelope
-    connect?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
-  }
-
-  export type ExhibitionCreateNestedManyWithoutStatusInput = {
-    create?: XOR<ExhibitionCreateWithoutStatusInput, ExhibitionUncheckedCreateWithoutStatusInput> | ExhibitionCreateWithoutStatusInput[] | ExhibitionUncheckedCreateWithoutStatusInput[]
-    connectOrCreate?: ExhibitionCreateOrConnectWithoutStatusInput | ExhibitionCreateOrConnectWithoutStatusInput[]
-    createMany?: ExhibitionCreateManyStatusInputEnvelope
-    connect?: ExhibitionWhereUniqueInput | ExhibitionWhereUniqueInput[]
+  export type UserCreateNestedManyWithoutStatusInput = {
+    create?: XOR<UserCreateWithoutStatusInput, UserUncheckedCreateWithoutStatusInput> | UserCreateWithoutStatusInput[] | UserUncheckedCreateWithoutStatusInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutStatusInput | UserCreateOrConnectWithoutStatusInput[]
+    createMany?: UserCreateManyStatusInputEnvelope
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
   export type LanguageCreateNestedManyWithoutStatusInput = {
@@ -27374,32 +29994,18 @@ export namespace Prisma {
     connect?: LanguageWhereUniqueInput | LanguageWhereUniqueInput[]
   }
 
-  export type UserCreateNestedManyWithoutStatusInput = {
-    create?: XOR<UserCreateWithoutStatusInput, UserUncheckedCreateWithoutStatusInput> | UserCreateWithoutStatusInput[] | UserUncheckedCreateWithoutStatusInput[]
-    connectOrCreate?: UserCreateOrConnectWithoutStatusInput | UserCreateOrConnectWithoutStatusInput[]
-    createMany?: UserCreateManyStatusInputEnvelope
-    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
-  }
-
-  export type ExhibitUncheckedCreateNestedManyWithoutStatusInput = {
-    create?: XOR<ExhibitCreateWithoutStatusInput, ExhibitUncheckedCreateWithoutStatusInput> | ExhibitCreateWithoutStatusInput[] | ExhibitUncheckedCreateWithoutStatusInput[]
-    connectOrCreate?: ExhibitCreateOrConnectWithoutStatusInput | ExhibitCreateOrConnectWithoutStatusInput[]
-    createMany?: ExhibitCreateManyStatusInputEnvelope
-    connect?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
-  }
-
-  export type ExhibitionUncheckedCreateNestedManyWithoutStatusInput = {
+  export type ExhibitionCreateNestedManyWithoutStatusInput = {
     create?: XOR<ExhibitionCreateWithoutStatusInput, ExhibitionUncheckedCreateWithoutStatusInput> | ExhibitionCreateWithoutStatusInput[] | ExhibitionUncheckedCreateWithoutStatusInput[]
     connectOrCreate?: ExhibitionCreateOrConnectWithoutStatusInput | ExhibitionCreateOrConnectWithoutStatusInput[]
     createMany?: ExhibitionCreateManyStatusInputEnvelope
     connect?: ExhibitionWhereUniqueInput | ExhibitionWhereUniqueInput[]
   }
 
-  export type LanguageUncheckedCreateNestedManyWithoutStatusInput = {
-    create?: XOR<LanguageCreateWithoutStatusInput, LanguageUncheckedCreateWithoutStatusInput> | LanguageCreateWithoutStatusInput[] | LanguageUncheckedCreateWithoutStatusInput[]
-    connectOrCreate?: LanguageCreateOrConnectWithoutStatusInput | LanguageCreateOrConnectWithoutStatusInput[]
-    createMany?: LanguageCreateManyStatusInputEnvelope
-    connect?: LanguageWhereUniqueInput | LanguageWhereUniqueInput[]
+  export type ExhibitCreateNestedManyWithoutStatusInput = {
+    create?: XOR<ExhibitCreateWithoutStatusInput, ExhibitUncheckedCreateWithoutStatusInput> | ExhibitCreateWithoutStatusInput[] | ExhibitUncheckedCreateWithoutStatusInput[]
+    connectOrCreate?: ExhibitCreateOrConnectWithoutStatusInput | ExhibitCreateOrConnectWithoutStatusInput[]
+    createMany?: ExhibitCreateManyStatusInputEnvelope
+    connect?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
   }
 
   export type UserUncheckedCreateNestedManyWithoutStatusInput = {
@@ -27409,46 +30015,25 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
-  export type ExhibitUpdateManyWithoutStatusNestedInput = {
-    create?: XOR<ExhibitCreateWithoutStatusInput, ExhibitUncheckedCreateWithoutStatusInput> | ExhibitCreateWithoutStatusInput[] | ExhibitUncheckedCreateWithoutStatusInput[]
-    connectOrCreate?: ExhibitCreateOrConnectWithoutStatusInput | ExhibitCreateOrConnectWithoutStatusInput[]
-    upsert?: ExhibitUpsertWithWhereUniqueWithoutStatusInput | ExhibitUpsertWithWhereUniqueWithoutStatusInput[]
-    createMany?: ExhibitCreateManyStatusInputEnvelope
-    set?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
-    disconnect?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
-    delete?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
-    connect?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
-    update?: ExhibitUpdateWithWhereUniqueWithoutStatusInput | ExhibitUpdateWithWhereUniqueWithoutStatusInput[]
-    updateMany?: ExhibitUpdateManyWithWhereWithoutStatusInput | ExhibitUpdateManyWithWhereWithoutStatusInput[]
-    deleteMany?: ExhibitScalarWhereInput | ExhibitScalarWhereInput[]
-  }
-
-  export type ExhibitionUpdateManyWithoutStatusNestedInput = {
-    create?: XOR<ExhibitionCreateWithoutStatusInput, ExhibitionUncheckedCreateWithoutStatusInput> | ExhibitionCreateWithoutStatusInput[] | ExhibitionUncheckedCreateWithoutStatusInput[]
-    connectOrCreate?: ExhibitionCreateOrConnectWithoutStatusInput | ExhibitionCreateOrConnectWithoutStatusInput[]
-    upsert?: ExhibitionUpsertWithWhereUniqueWithoutStatusInput | ExhibitionUpsertWithWhereUniqueWithoutStatusInput[]
-    createMany?: ExhibitionCreateManyStatusInputEnvelope
-    set?: ExhibitionWhereUniqueInput | ExhibitionWhereUniqueInput[]
-    disconnect?: ExhibitionWhereUniqueInput | ExhibitionWhereUniqueInput[]
-    delete?: ExhibitionWhereUniqueInput | ExhibitionWhereUniqueInput[]
-    connect?: ExhibitionWhereUniqueInput | ExhibitionWhereUniqueInput[]
-    update?: ExhibitionUpdateWithWhereUniqueWithoutStatusInput | ExhibitionUpdateWithWhereUniqueWithoutStatusInput[]
-    updateMany?: ExhibitionUpdateManyWithWhereWithoutStatusInput | ExhibitionUpdateManyWithWhereWithoutStatusInput[]
-    deleteMany?: ExhibitionScalarWhereInput | ExhibitionScalarWhereInput[]
-  }
-
-  export type LanguageUpdateManyWithoutStatusNestedInput = {
+  export type LanguageUncheckedCreateNestedManyWithoutStatusInput = {
     create?: XOR<LanguageCreateWithoutStatusInput, LanguageUncheckedCreateWithoutStatusInput> | LanguageCreateWithoutStatusInput[] | LanguageUncheckedCreateWithoutStatusInput[]
     connectOrCreate?: LanguageCreateOrConnectWithoutStatusInput | LanguageCreateOrConnectWithoutStatusInput[]
-    upsert?: LanguageUpsertWithWhereUniqueWithoutStatusInput | LanguageUpsertWithWhereUniqueWithoutStatusInput[]
     createMany?: LanguageCreateManyStatusInputEnvelope
-    set?: LanguageWhereUniqueInput | LanguageWhereUniqueInput[]
-    disconnect?: LanguageWhereUniqueInput | LanguageWhereUniqueInput[]
-    delete?: LanguageWhereUniqueInput | LanguageWhereUniqueInput[]
     connect?: LanguageWhereUniqueInput | LanguageWhereUniqueInput[]
-    update?: LanguageUpdateWithWhereUniqueWithoutStatusInput | LanguageUpdateWithWhereUniqueWithoutStatusInput[]
-    updateMany?: LanguageUpdateManyWithWhereWithoutStatusInput | LanguageUpdateManyWithWhereWithoutStatusInput[]
-    deleteMany?: LanguageScalarWhereInput | LanguageScalarWhereInput[]
+  }
+
+  export type ExhibitionUncheckedCreateNestedManyWithoutStatusInput = {
+    create?: XOR<ExhibitionCreateWithoutStatusInput, ExhibitionUncheckedCreateWithoutStatusInput> | ExhibitionCreateWithoutStatusInput[] | ExhibitionUncheckedCreateWithoutStatusInput[]
+    connectOrCreate?: ExhibitionCreateOrConnectWithoutStatusInput | ExhibitionCreateOrConnectWithoutStatusInput[]
+    createMany?: ExhibitionCreateManyStatusInputEnvelope
+    connect?: ExhibitionWhereUniqueInput | ExhibitionWhereUniqueInput[]
+  }
+
+  export type ExhibitUncheckedCreateNestedManyWithoutStatusInput = {
+    create?: XOR<ExhibitCreateWithoutStatusInput, ExhibitUncheckedCreateWithoutStatusInput> | ExhibitCreateWithoutStatusInput[] | ExhibitUncheckedCreateWithoutStatusInput[]
+    connectOrCreate?: ExhibitCreateOrConnectWithoutStatusInput | ExhibitCreateOrConnectWithoutStatusInput[]
+    createMany?: ExhibitCreateManyStatusInputEnvelope
+    connect?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
   }
 
   export type UserUpdateManyWithoutStatusNestedInput = {
@@ -27465,21 +30050,21 @@ export namespace Prisma {
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
-  export type ExhibitUncheckedUpdateManyWithoutStatusNestedInput = {
-    create?: XOR<ExhibitCreateWithoutStatusInput, ExhibitUncheckedCreateWithoutStatusInput> | ExhibitCreateWithoutStatusInput[] | ExhibitUncheckedCreateWithoutStatusInput[]
-    connectOrCreate?: ExhibitCreateOrConnectWithoutStatusInput | ExhibitCreateOrConnectWithoutStatusInput[]
-    upsert?: ExhibitUpsertWithWhereUniqueWithoutStatusInput | ExhibitUpsertWithWhereUniqueWithoutStatusInput[]
-    createMany?: ExhibitCreateManyStatusInputEnvelope
-    set?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
-    disconnect?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
-    delete?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
-    connect?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
-    update?: ExhibitUpdateWithWhereUniqueWithoutStatusInput | ExhibitUpdateWithWhereUniqueWithoutStatusInput[]
-    updateMany?: ExhibitUpdateManyWithWhereWithoutStatusInput | ExhibitUpdateManyWithWhereWithoutStatusInput[]
-    deleteMany?: ExhibitScalarWhereInput | ExhibitScalarWhereInput[]
+  export type LanguageUpdateManyWithoutStatusNestedInput = {
+    create?: XOR<LanguageCreateWithoutStatusInput, LanguageUncheckedCreateWithoutStatusInput> | LanguageCreateWithoutStatusInput[] | LanguageUncheckedCreateWithoutStatusInput[]
+    connectOrCreate?: LanguageCreateOrConnectWithoutStatusInput | LanguageCreateOrConnectWithoutStatusInput[]
+    upsert?: LanguageUpsertWithWhereUniqueWithoutStatusInput | LanguageUpsertWithWhereUniqueWithoutStatusInput[]
+    createMany?: LanguageCreateManyStatusInputEnvelope
+    set?: LanguageWhereUniqueInput | LanguageWhereUniqueInput[]
+    disconnect?: LanguageWhereUniqueInput | LanguageWhereUniqueInput[]
+    delete?: LanguageWhereUniqueInput | LanguageWhereUniqueInput[]
+    connect?: LanguageWhereUniqueInput | LanguageWhereUniqueInput[]
+    update?: LanguageUpdateWithWhereUniqueWithoutStatusInput | LanguageUpdateWithWhereUniqueWithoutStatusInput[]
+    updateMany?: LanguageUpdateManyWithWhereWithoutStatusInput | LanguageUpdateManyWithWhereWithoutStatusInput[]
+    deleteMany?: LanguageScalarWhereInput | LanguageScalarWhereInput[]
   }
 
-  export type ExhibitionUncheckedUpdateManyWithoutStatusNestedInput = {
+  export type ExhibitionUpdateManyWithoutStatusNestedInput = {
     create?: XOR<ExhibitionCreateWithoutStatusInput, ExhibitionUncheckedCreateWithoutStatusInput> | ExhibitionCreateWithoutStatusInput[] | ExhibitionUncheckedCreateWithoutStatusInput[]
     connectOrCreate?: ExhibitionCreateOrConnectWithoutStatusInput | ExhibitionCreateOrConnectWithoutStatusInput[]
     upsert?: ExhibitionUpsertWithWhereUniqueWithoutStatusInput | ExhibitionUpsertWithWhereUniqueWithoutStatusInput[]
@@ -27493,18 +30078,18 @@ export namespace Prisma {
     deleteMany?: ExhibitionScalarWhereInput | ExhibitionScalarWhereInput[]
   }
 
-  export type LanguageUncheckedUpdateManyWithoutStatusNestedInput = {
-    create?: XOR<LanguageCreateWithoutStatusInput, LanguageUncheckedCreateWithoutStatusInput> | LanguageCreateWithoutStatusInput[] | LanguageUncheckedCreateWithoutStatusInput[]
-    connectOrCreate?: LanguageCreateOrConnectWithoutStatusInput | LanguageCreateOrConnectWithoutStatusInput[]
-    upsert?: LanguageUpsertWithWhereUniqueWithoutStatusInput | LanguageUpsertWithWhereUniqueWithoutStatusInput[]
-    createMany?: LanguageCreateManyStatusInputEnvelope
-    set?: LanguageWhereUniqueInput | LanguageWhereUniqueInput[]
-    disconnect?: LanguageWhereUniqueInput | LanguageWhereUniqueInput[]
-    delete?: LanguageWhereUniqueInput | LanguageWhereUniqueInput[]
-    connect?: LanguageWhereUniqueInput | LanguageWhereUniqueInput[]
-    update?: LanguageUpdateWithWhereUniqueWithoutStatusInput | LanguageUpdateWithWhereUniqueWithoutStatusInput[]
-    updateMany?: LanguageUpdateManyWithWhereWithoutStatusInput | LanguageUpdateManyWithWhereWithoutStatusInput[]
-    deleteMany?: LanguageScalarWhereInput | LanguageScalarWhereInput[]
+  export type ExhibitUpdateManyWithoutStatusNestedInput = {
+    create?: XOR<ExhibitCreateWithoutStatusInput, ExhibitUncheckedCreateWithoutStatusInput> | ExhibitCreateWithoutStatusInput[] | ExhibitUncheckedCreateWithoutStatusInput[]
+    connectOrCreate?: ExhibitCreateOrConnectWithoutStatusInput | ExhibitCreateOrConnectWithoutStatusInput[]
+    upsert?: ExhibitUpsertWithWhereUniqueWithoutStatusInput | ExhibitUpsertWithWhereUniqueWithoutStatusInput[]
+    createMany?: ExhibitCreateManyStatusInputEnvelope
+    set?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
+    disconnect?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
+    delete?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
+    connect?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
+    update?: ExhibitUpdateWithWhereUniqueWithoutStatusInput | ExhibitUpdateWithWhereUniqueWithoutStatusInput[]
+    updateMany?: ExhibitUpdateManyWithWhereWithoutStatusInput | ExhibitUpdateManyWithWhereWithoutStatusInput[]
+    deleteMany?: ExhibitScalarWhereInput | ExhibitScalarWhereInput[]
   }
 
   export type UserUncheckedUpdateManyWithoutStatusNestedInput = {
@@ -27521,22 +30106,64 @@ export namespace Prisma {
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
+  export type LanguageUncheckedUpdateManyWithoutStatusNestedInput = {
+    create?: XOR<LanguageCreateWithoutStatusInput, LanguageUncheckedCreateWithoutStatusInput> | LanguageCreateWithoutStatusInput[] | LanguageUncheckedCreateWithoutStatusInput[]
+    connectOrCreate?: LanguageCreateOrConnectWithoutStatusInput | LanguageCreateOrConnectWithoutStatusInput[]
+    upsert?: LanguageUpsertWithWhereUniqueWithoutStatusInput | LanguageUpsertWithWhereUniqueWithoutStatusInput[]
+    createMany?: LanguageCreateManyStatusInputEnvelope
+    set?: LanguageWhereUniqueInput | LanguageWhereUniqueInput[]
+    disconnect?: LanguageWhereUniqueInput | LanguageWhereUniqueInput[]
+    delete?: LanguageWhereUniqueInput | LanguageWhereUniqueInput[]
+    connect?: LanguageWhereUniqueInput | LanguageWhereUniqueInput[]
+    update?: LanguageUpdateWithWhereUniqueWithoutStatusInput | LanguageUpdateWithWhereUniqueWithoutStatusInput[]
+    updateMany?: LanguageUpdateManyWithWhereWithoutStatusInput | LanguageUpdateManyWithWhereWithoutStatusInput[]
+    deleteMany?: LanguageScalarWhereInput | LanguageScalarWhereInput[]
+  }
+
+  export type ExhibitionUncheckedUpdateManyWithoutStatusNestedInput = {
+    create?: XOR<ExhibitionCreateWithoutStatusInput, ExhibitionUncheckedCreateWithoutStatusInput> | ExhibitionCreateWithoutStatusInput[] | ExhibitionUncheckedCreateWithoutStatusInput[]
+    connectOrCreate?: ExhibitionCreateOrConnectWithoutStatusInput | ExhibitionCreateOrConnectWithoutStatusInput[]
+    upsert?: ExhibitionUpsertWithWhereUniqueWithoutStatusInput | ExhibitionUpsertWithWhereUniqueWithoutStatusInput[]
+    createMany?: ExhibitionCreateManyStatusInputEnvelope
+    set?: ExhibitionWhereUniqueInput | ExhibitionWhereUniqueInput[]
+    disconnect?: ExhibitionWhereUniqueInput | ExhibitionWhereUniqueInput[]
+    delete?: ExhibitionWhereUniqueInput | ExhibitionWhereUniqueInput[]
+    connect?: ExhibitionWhereUniqueInput | ExhibitionWhereUniqueInput[]
+    update?: ExhibitionUpdateWithWhereUniqueWithoutStatusInput | ExhibitionUpdateWithWhereUniqueWithoutStatusInput[]
+    updateMany?: ExhibitionUpdateManyWithWhereWithoutStatusInput | ExhibitionUpdateManyWithWhereWithoutStatusInput[]
+    deleteMany?: ExhibitionScalarWhereInput | ExhibitionScalarWhereInput[]
+  }
+
+  export type ExhibitUncheckedUpdateManyWithoutStatusNestedInput = {
+    create?: XOR<ExhibitCreateWithoutStatusInput, ExhibitUncheckedCreateWithoutStatusInput> | ExhibitCreateWithoutStatusInput[] | ExhibitUncheckedCreateWithoutStatusInput[]
+    connectOrCreate?: ExhibitCreateOrConnectWithoutStatusInput | ExhibitCreateOrConnectWithoutStatusInput[]
+    upsert?: ExhibitUpsertWithWhereUniqueWithoutStatusInput | ExhibitUpsertWithWhereUniqueWithoutStatusInput[]
+    createMany?: ExhibitCreateManyStatusInputEnvelope
+    set?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
+    disconnect?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
+    delete?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
+    connect?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
+    update?: ExhibitUpdateWithWhereUniqueWithoutStatusInput | ExhibitUpdateWithWhereUniqueWithoutStatusInput[]
+    updateMany?: ExhibitUpdateManyWithWhereWithoutStatusInput | ExhibitUpdateManyWithWhereWithoutStatusInput[]
+    deleteMany?: ExhibitScalarWhereInput | ExhibitScalarWhereInput[]
+  }
+
   export type AudioCreateNestedOneWithoutSubtitlesInput = {
     create?: XOR<AudioCreateWithoutSubtitlesInput, AudioUncheckedCreateWithoutSubtitlesInput>
     connectOrCreate?: AudioCreateOrConnectWithoutSubtitlesInput
     connect?: AudioWhereUniqueInput
   }
 
-  export type UserCreateNestedOneWithoutSubtitlesInput = {
-    create?: XOR<UserCreateWithoutSubtitlesInput, UserUncheckedCreateWithoutSubtitlesInput>
-    connectOrCreate?: UserCreateOrConnectWithoutSubtitlesInput
-    connect?: UserWhereUniqueInput
-  }
-
   export type LanguageCreateNestedOneWithoutSubtitlesInput = {
     create?: XOR<LanguageCreateWithoutSubtitlesInput, LanguageUncheckedCreateWithoutSubtitlesInput>
     connectOrCreate?: LanguageCreateOrConnectWithoutSubtitlesInput
     connect?: LanguageWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutSubtitlesInput = {
+    create?: XOR<UserCreateWithoutSubtitlesInput, UserUncheckedCreateWithoutSubtitlesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSubtitlesInput
+    connect?: UserWhereUniqueInput
   }
 
   export type AudioUpdateOneWithoutSubtitlesNestedInput = {
@@ -27549,6 +30176,16 @@ export namespace Prisma {
     update?: XOR<XOR<AudioUpdateToOneWithWhereWithoutSubtitlesInput, AudioUpdateWithoutSubtitlesInput>, AudioUncheckedUpdateWithoutSubtitlesInput>
   }
 
+  export type LanguageUpdateOneWithoutSubtitlesNestedInput = {
+    create?: XOR<LanguageCreateWithoutSubtitlesInput, LanguageUncheckedCreateWithoutSubtitlesInput>
+    connectOrCreate?: LanguageCreateOrConnectWithoutSubtitlesInput
+    upsert?: LanguageUpsertWithoutSubtitlesInput
+    disconnect?: LanguageWhereInput | boolean
+    delete?: LanguageWhereInput | boolean
+    connect?: LanguageWhereUniqueInput
+    update?: XOR<XOR<LanguageUpdateToOneWithWhereWithoutSubtitlesInput, LanguageUpdateWithoutSubtitlesInput>, LanguageUncheckedUpdateWithoutSubtitlesInput>
+  }
+
   export type UserUpdateOneWithoutSubtitlesNestedInput = {
     create?: XOR<UserCreateWithoutSubtitlesInput, UserUncheckedCreateWithoutSubtitlesInput>
     connectOrCreate?: UserCreateOrConnectWithoutSubtitlesInput
@@ -27559,14 +30196,38 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSubtitlesInput, UserUpdateWithoutSubtitlesInput>, UserUncheckedUpdateWithoutSubtitlesInput>
   }
 
-  export type LanguageUpdateOneWithoutSubtitlesNestedInput = {
-    create?: XOR<LanguageCreateWithoutSubtitlesInput, LanguageUncheckedCreateWithoutSubtitlesInput>
-    connectOrCreate?: LanguageCreateOrConnectWithoutSubtitlesInput
-    upsert?: LanguageUpsertWithoutSubtitlesInput
-    disconnect?: LanguageWhereInput | boolean
-    delete?: LanguageWhereInput | boolean
-    connect?: LanguageWhereUniqueInput
-    update?: XOR<XOR<LanguageUpdateToOneWithWhereWithoutSubtitlesInput, LanguageUpdateWithoutSubtitlesInput>, LanguageUncheckedUpdateWithoutSubtitlesInput>
+  export type StatusCreateNestedOneWithoutUsersInput = {
+    create?: XOR<StatusCreateWithoutUsersInput, StatusUncheckedCreateWithoutUsersInput>
+    connectOrCreate?: StatusCreateOrConnectWithoutUsersInput
+    connect?: StatusWhereUniqueInput
+  }
+
+  export type FeedbackCreateNestedManyWithoutUserInput = {
+    create?: XOR<FeedbackCreateWithoutUserInput, FeedbackUncheckedCreateWithoutUserInput> | FeedbackCreateWithoutUserInput[] | FeedbackUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FeedbackCreateOrConnectWithoutUserInput | FeedbackCreateOrConnectWithoutUserInput[]
+    createMany?: FeedbackCreateManyUserInputEnvelope
+    connect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+  }
+
+  export type UserRoleCreateNestedManyWithoutUserInput = {
+    create?: XOR<UserRoleCreateWithoutUserInput, UserRoleUncheckedCreateWithoutUserInput> | UserRoleCreateWithoutUserInput[] | UserRoleUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserRoleCreateOrConnectWithoutUserInput | UserRoleCreateOrConnectWithoutUserInput[]
+    createMany?: UserRoleCreateManyUserInputEnvelope
+    connect?: UserRoleWhereUniqueInput | UserRoleWhereUniqueInput[]
+  }
+
+  export type SessionCreateNestedManyWithoutUserInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+  }
+
+  export type SubtitleCreateNestedManyWithoutUserInput = {
+    create?: XOR<SubtitleCreateWithoutUserInput, SubtitleUncheckedCreateWithoutUserInput> | SubtitleCreateWithoutUserInput[] | SubtitleUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SubtitleCreateOrConnectWithoutUserInput | SubtitleCreateOrConnectWithoutUserInput[]
+    createMany?: SubtitleCreateManyUserInputEnvelope
+    connect?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
   }
 
   export type AudioPlaybackLogCreateNestedManyWithoutUserInput = {
@@ -27590,20 +30251,6 @@ export namespace Prisma {
     connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
   }
 
-  export type EmailVerificationTokenCreateNestedManyWithoutUserInput = {
-    create?: XOR<EmailVerificationTokenCreateWithoutUserInput, EmailVerificationTokenUncheckedCreateWithoutUserInput> | EmailVerificationTokenCreateWithoutUserInput[] | EmailVerificationTokenUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: EmailVerificationTokenCreateOrConnectWithoutUserInput | EmailVerificationTokenCreateOrConnectWithoutUserInput[]
-    createMany?: EmailVerificationTokenCreateManyUserInputEnvelope
-    connect?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
-  }
-
-  export type FeedbackCreateNestedManyWithoutUserInput = {
-    create?: XOR<FeedbackCreateWithoutUserInput, FeedbackUncheckedCreateWithoutUserInput> | FeedbackCreateWithoutUserInput[] | FeedbackUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: FeedbackCreateOrConnectWithoutUserInput | FeedbackCreateOrConnectWithoutUserInput[]
-    createMany?: FeedbackCreateManyUserInputEnvelope
-    connect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
-  }
-
   export type PasswordResetTokenCreateNestedManyWithoutUserInput = {
     create?: XOR<PasswordResetTokenCreateWithoutUserInput, PasswordResetTokenUncheckedCreateWithoutUserInput> | PasswordResetTokenCreateWithoutUserInput[] | PasswordResetTokenUncheckedCreateWithoutUserInput[]
     connectOrCreate?: PasswordResetTokenCreateOrConnectWithoutUserInput | PasswordResetTokenCreateOrConnectWithoutUserInput[]
@@ -27611,31 +30258,46 @@ export namespace Prisma {
     connect?: PasswordResetTokenWhereUniqueInput | PasswordResetTokenWhereUniqueInput[]
   }
 
-  export type SessionCreateNestedManyWithoutUserInput = {
+  export type EmailVerificationTokenCreateNestedManyWithoutUserInput = {
+    create?: XOR<EmailVerificationTokenCreateWithoutUserInput, EmailVerificationTokenUncheckedCreateWithoutUserInput> | EmailVerificationTokenCreateWithoutUserInput[] | EmailVerificationTokenUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EmailVerificationTokenCreateOrConnectWithoutUserInput | EmailVerificationTokenCreateOrConnectWithoutUserInput[]
+    createMany?: EmailVerificationTokenCreateManyUserInputEnvelope
+    connect?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
+  }
+
+  export type UserBadgeCreateNestedManyWithoutUserInput = {
+    create?: XOR<UserBadgeCreateWithoutUserInput, UserBadgeUncheckedCreateWithoutUserInput> | UserBadgeCreateWithoutUserInput[] | UserBadgeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserBadgeCreateOrConnectWithoutUserInput | UserBadgeCreateOrConnectWithoutUserInput[]
+    createMany?: UserBadgeCreateManyUserInputEnvelope
+    connect?: UserBadgeWhereUniqueInput | UserBadgeWhereUniqueInput[]
+  }
+
+  export type FeedbackUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<FeedbackCreateWithoutUserInput, FeedbackUncheckedCreateWithoutUserInput> | FeedbackCreateWithoutUserInput[] | FeedbackUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FeedbackCreateOrConnectWithoutUserInput | FeedbackCreateOrConnectWithoutUserInput[]
+    createMany?: FeedbackCreateManyUserInputEnvelope
+    connect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+  }
+
+  export type UserRoleUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<UserRoleCreateWithoutUserInput, UserRoleUncheckedCreateWithoutUserInput> | UserRoleCreateWithoutUserInput[] | UserRoleUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserRoleCreateOrConnectWithoutUserInput | UserRoleCreateOrConnectWithoutUserInput[]
+    createMany?: UserRoleCreateManyUserInputEnvelope
+    connect?: UserRoleWhereUniqueInput | UserRoleWhereUniqueInput[]
+  }
+
+  export type SessionUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
     createMany?: SessionCreateManyUserInputEnvelope
     connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
   }
 
-  export type SubtitleCreateNestedManyWithoutUserInput = {
+  export type SubtitleUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<SubtitleCreateWithoutUserInput, SubtitleUncheckedCreateWithoutUserInput> | SubtitleCreateWithoutUserInput[] | SubtitleUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SubtitleCreateOrConnectWithoutUserInput | SubtitleCreateOrConnectWithoutUserInput[]
     createMany?: SubtitleCreateManyUserInputEnvelope
     connect?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
-  }
-
-  export type StatusCreateNestedOneWithoutUsersInput = {
-    create?: XOR<StatusCreateWithoutUsersInput, StatusUncheckedCreateWithoutUsersInput>
-    connectOrCreate?: StatusCreateOrConnectWithoutUsersInput
-    connect?: StatusWhereUniqueInput
-  }
-
-  export type UserRoleCreateNestedManyWithoutUserInput = {
-    create?: XOR<UserRoleCreateWithoutUserInput, UserRoleUncheckedCreateWithoutUserInput> | UserRoleCreateWithoutUserInput[] | UserRoleUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: UserRoleCreateOrConnectWithoutUserInput | UserRoleCreateOrConnectWithoutUserInput[]
-    createMany?: UserRoleCreateManyUserInputEnvelope
-    connect?: UserRoleWhereUniqueInput | UserRoleWhereUniqueInput[]
   }
 
   export type AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput = {
@@ -27659,20 +30321,6 @@ export namespace Prisma {
     connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
   }
 
-  export type EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<EmailVerificationTokenCreateWithoutUserInput, EmailVerificationTokenUncheckedCreateWithoutUserInput> | EmailVerificationTokenCreateWithoutUserInput[] | EmailVerificationTokenUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: EmailVerificationTokenCreateOrConnectWithoutUserInput | EmailVerificationTokenCreateOrConnectWithoutUserInput[]
-    createMany?: EmailVerificationTokenCreateManyUserInputEnvelope
-    connect?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
-  }
-
-  export type FeedbackUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<FeedbackCreateWithoutUserInput, FeedbackUncheckedCreateWithoutUserInput> | FeedbackCreateWithoutUserInput[] | FeedbackUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: FeedbackCreateOrConnectWithoutUserInput | FeedbackCreateOrConnectWithoutUserInput[]
-    createMany?: FeedbackCreateManyUserInputEnvelope
-    connect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
-  }
-
   export type PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<PasswordResetTokenCreateWithoutUserInput, PasswordResetTokenUncheckedCreateWithoutUserInput> | PasswordResetTokenCreateWithoutUserInput[] | PasswordResetTokenUncheckedCreateWithoutUserInput[]
     connectOrCreate?: PasswordResetTokenCreateOrConnectWithoutUserInput | PasswordResetTokenCreateOrConnectWithoutUserInput[]
@@ -27680,25 +30328,84 @@ export namespace Prisma {
     connect?: PasswordResetTokenWhereUniqueInput | PasswordResetTokenWhereUniqueInput[]
   }
 
-  export type SessionUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
-    createMany?: SessionCreateManyUserInputEnvelope
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+  export type EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<EmailVerificationTokenCreateWithoutUserInput, EmailVerificationTokenUncheckedCreateWithoutUserInput> | EmailVerificationTokenCreateWithoutUserInput[] | EmailVerificationTokenUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EmailVerificationTokenCreateOrConnectWithoutUserInput | EmailVerificationTokenCreateOrConnectWithoutUserInput[]
+    createMany?: EmailVerificationTokenCreateManyUserInputEnvelope
+    connect?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
   }
 
-  export type SubtitleUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<SubtitleCreateWithoutUserInput, SubtitleUncheckedCreateWithoutUserInput> | SubtitleCreateWithoutUserInput[] | SubtitleUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: SubtitleCreateOrConnectWithoutUserInput | SubtitleCreateOrConnectWithoutUserInput[]
-    createMany?: SubtitleCreateManyUserInputEnvelope
-    connect?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
+  export type UserBadgeUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<UserBadgeCreateWithoutUserInput, UserBadgeUncheckedCreateWithoutUserInput> | UserBadgeCreateWithoutUserInput[] | UserBadgeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserBadgeCreateOrConnectWithoutUserInput | UserBadgeCreateOrConnectWithoutUserInput[]
+    createMany?: UserBadgeCreateManyUserInputEnvelope
+    connect?: UserBadgeWhereUniqueInput | UserBadgeWhereUniqueInput[]
   }
 
-  export type UserRoleUncheckedCreateNestedManyWithoutUserInput = {
+  export type StatusUpdateOneWithoutUsersNestedInput = {
+    create?: XOR<StatusCreateWithoutUsersInput, StatusUncheckedCreateWithoutUsersInput>
+    connectOrCreate?: StatusCreateOrConnectWithoutUsersInput
+    upsert?: StatusUpsertWithoutUsersInput
+    disconnect?: StatusWhereInput | boolean
+    delete?: StatusWhereInput | boolean
+    connect?: StatusWhereUniqueInput
+    update?: XOR<XOR<StatusUpdateToOneWithWhereWithoutUsersInput, StatusUpdateWithoutUsersInput>, StatusUncheckedUpdateWithoutUsersInput>
+  }
+
+  export type FeedbackUpdateManyWithoutUserNestedInput = {
+    create?: XOR<FeedbackCreateWithoutUserInput, FeedbackUncheckedCreateWithoutUserInput> | FeedbackCreateWithoutUserInput[] | FeedbackUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FeedbackCreateOrConnectWithoutUserInput | FeedbackCreateOrConnectWithoutUserInput[]
+    upsert?: FeedbackUpsertWithWhereUniqueWithoutUserInput | FeedbackUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: FeedbackCreateManyUserInputEnvelope
+    set?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+    disconnect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+    delete?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+    connect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+    update?: FeedbackUpdateWithWhereUniqueWithoutUserInput | FeedbackUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: FeedbackUpdateManyWithWhereWithoutUserInput | FeedbackUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: FeedbackScalarWhereInput | FeedbackScalarWhereInput[]
+  }
+
+  export type UserRoleUpdateManyWithoutUserNestedInput = {
     create?: XOR<UserRoleCreateWithoutUserInput, UserRoleUncheckedCreateWithoutUserInput> | UserRoleCreateWithoutUserInput[] | UserRoleUncheckedCreateWithoutUserInput[]
     connectOrCreate?: UserRoleCreateOrConnectWithoutUserInput | UserRoleCreateOrConnectWithoutUserInput[]
+    upsert?: UserRoleUpsertWithWhereUniqueWithoutUserInput | UserRoleUpsertWithWhereUniqueWithoutUserInput[]
     createMany?: UserRoleCreateManyUserInputEnvelope
+    set?: UserRoleWhereUniqueInput | UserRoleWhereUniqueInput[]
+    disconnect?: UserRoleWhereUniqueInput | UserRoleWhereUniqueInput[]
+    delete?: UserRoleWhereUniqueInput | UserRoleWhereUniqueInput[]
     connect?: UserRoleWhereUniqueInput | UserRoleWhereUniqueInput[]
+    update?: UserRoleUpdateWithWhereUniqueWithoutUserInput | UserRoleUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserRoleUpdateManyWithWhereWithoutUserInput | UserRoleUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserRoleScalarWhereInput | UserRoleScalarWhereInput[]
+  }
+
+  export type SessionUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
+  }
+
+  export type SubtitleUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SubtitleCreateWithoutUserInput, SubtitleUncheckedCreateWithoutUserInput> | SubtitleCreateWithoutUserInput[] | SubtitleUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SubtitleCreateOrConnectWithoutUserInput | SubtitleCreateOrConnectWithoutUserInput[]
+    upsert?: SubtitleUpsertWithWhereUniqueWithoutUserInput | SubtitleUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SubtitleCreateManyUserInputEnvelope
+    set?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
+    disconnect?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
+    delete?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
+    connect?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
+    update?: SubtitleUpdateWithWhereUniqueWithoutUserInput | SubtitleUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SubtitleUpdateManyWithWhereWithoutUserInput | SubtitleUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SubtitleScalarWhereInput | SubtitleScalarWhereInput[]
   }
 
   export type AudioPlaybackLogUpdateManyWithoutUserNestedInput = {
@@ -27743,34 +30450,6 @@ export namespace Prisma {
     deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
   }
 
-  export type EmailVerificationTokenUpdateManyWithoutUserNestedInput = {
-    create?: XOR<EmailVerificationTokenCreateWithoutUserInput, EmailVerificationTokenUncheckedCreateWithoutUserInput> | EmailVerificationTokenCreateWithoutUserInput[] | EmailVerificationTokenUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: EmailVerificationTokenCreateOrConnectWithoutUserInput | EmailVerificationTokenCreateOrConnectWithoutUserInput[]
-    upsert?: EmailVerificationTokenUpsertWithWhereUniqueWithoutUserInput | EmailVerificationTokenUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: EmailVerificationTokenCreateManyUserInputEnvelope
-    set?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
-    disconnect?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
-    delete?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
-    connect?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
-    update?: EmailVerificationTokenUpdateWithWhereUniqueWithoutUserInput | EmailVerificationTokenUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: EmailVerificationTokenUpdateManyWithWhereWithoutUserInput | EmailVerificationTokenUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: EmailVerificationTokenScalarWhereInput | EmailVerificationTokenScalarWhereInput[]
-  }
-
-  export type FeedbackUpdateManyWithoutUserNestedInput = {
-    create?: XOR<FeedbackCreateWithoutUserInput, FeedbackUncheckedCreateWithoutUserInput> | FeedbackCreateWithoutUserInput[] | FeedbackUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: FeedbackCreateOrConnectWithoutUserInput | FeedbackCreateOrConnectWithoutUserInput[]
-    upsert?: FeedbackUpsertWithWhereUniqueWithoutUserInput | FeedbackUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: FeedbackCreateManyUserInputEnvelope
-    set?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
-    disconnect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
-    delete?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
-    connect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
-    update?: FeedbackUpdateWithWhereUniqueWithoutUserInput | FeedbackUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: FeedbackUpdateManyWithWhereWithoutUserInput | FeedbackUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: FeedbackScalarWhereInput | FeedbackScalarWhereInput[]
-  }
-
   export type PasswordResetTokenUpdateManyWithoutUserNestedInput = {
     create?: XOR<PasswordResetTokenCreateWithoutUserInput, PasswordResetTokenUncheckedCreateWithoutUserInput> | PasswordResetTokenCreateWithoutUserInput[] | PasswordResetTokenUncheckedCreateWithoutUserInput[]
     connectOrCreate?: PasswordResetTokenCreateOrConnectWithoutUserInput | PasswordResetTokenCreateOrConnectWithoutUserInput[]
@@ -27785,7 +30464,63 @@ export namespace Prisma {
     deleteMany?: PasswordResetTokenScalarWhereInput | PasswordResetTokenScalarWhereInput[]
   }
 
-  export type SessionUpdateManyWithoutUserNestedInput = {
+  export type EmailVerificationTokenUpdateManyWithoutUserNestedInput = {
+    create?: XOR<EmailVerificationTokenCreateWithoutUserInput, EmailVerificationTokenUncheckedCreateWithoutUserInput> | EmailVerificationTokenCreateWithoutUserInput[] | EmailVerificationTokenUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EmailVerificationTokenCreateOrConnectWithoutUserInput | EmailVerificationTokenCreateOrConnectWithoutUserInput[]
+    upsert?: EmailVerificationTokenUpsertWithWhereUniqueWithoutUserInput | EmailVerificationTokenUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: EmailVerificationTokenCreateManyUserInputEnvelope
+    set?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
+    disconnect?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
+    delete?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
+    connect?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
+    update?: EmailVerificationTokenUpdateWithWhereUniqueWithoutUserInput | EmailVerificationTokenUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: EmailVerificationTokenUpdateManyWithWhereWithoutUserInput | EmailVerificationTokenUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: EmailVerificationTokenScalarWhereInput | EmailVerificationTokenScalarWhereInput[]
+  }
+
+  export type UserBadgeUpdateManyWithoutUserNestedInput = {
+    create?: XOR<UserBadgeCreateWithoutUserInput, UserBadgeUncheckedCreateWithoutUserInput> | UserBadgeCreateWithoutUserInput[] | UserBadgeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserBadgeCreateOrConnectWithoutUserInput | UserBadgeCreateOrConnectWithoutUserInput[]
+    upsert?: UserBadgeUpsertWithWhereUniqueWithoutUserInput | UserBadgeUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: UserBadgeCreateManyUserInputEnvelope
+    set?: UserBadgeWhereUniqueInput | UserBadgeWhereUniqueInput[]
+    disconnect?: UserBadgeWhereUniqueInput | UserBadgeWhereUniqueInput[]
+    delete?: UserBadgeWhereUniqueInput | UserBadgeWhereUniqueInput[]
+    connect?: UserBadgeWhereUniqueInput | UserBadgeWhereUniqueInput[]
+    update?: UserBadgeUpdateWithWhereUniqueWithoutUserInput | UserBadgeUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserBadgeUpdateManyWithWhereWithoutUserInput | UserBadgeUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserBadgeScalarWhereInput | UserBadgeScalarWhereInput[]
+  }
+
+  export type FeedbackUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<FeedbackCreateWithoutUserInput, FeedbackUncheckedCreateWithoutUserInput> | FeedbackCreateWithoutUserInput[] | FeedbackUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FeedbackCreateOrConnectWithoutUserInput | FeedbackCreateOrConnectWithoutUserInput[]
+    upsert?: FeedbackUpsertWithWhereUniqueWithoutUserInput | FeedbackUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: FeedbackCreateManyUserInputEnvelope
+    set?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+    disconnect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+    delete?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+    connect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
+    update?: FeedbackUpdateWithWhereUniqueWithoutUserInput | FeedbackUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: FeedbackUpdateManyWithWhereWithoutUserInput | FeedbackUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: FeedbackScalarWhereInput | FeedbackScalarWhereInput[]
+  }
+
+  export type UserRoleUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<UserRoleCreateWithoutUserInput, UserRoleUncheckedCreateWithoutUserInput> | UserRoleCreateWithoutUserInput[] | UserRoleUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserRoleCreateOrConnectWithoutUserInput | UserRoleCreateOrConnectWithoutUserInput[]
+    upsert?: UserRoleUpsertWithWhereUniqueWithoutUserInput | UserRoleUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: UserRoleCreateManyUserInputEnvelope
+    set?: UserRoleWhereUniqueInput | UserRoleWhereUniqueInput[]
+    disconnect?: UserRoleWhereUniqueInput | UserRoleWhereUniqueInput[]
+    delete?: UserRoleWhereUniqueInput | UserRoleWhereUniqueInput[]
+    connect?: UserRoleWhereUniqueInput | UserRoleWhereUniqueInput[]
+    update?: UserRoleUpdateWithWhereUniqueWithoutUserInput | UserRoleUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserRoleUpdateManyWithWhereWithoutUserInput | UserRoleUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserRoleScalarWhereInput | UserRoleScalarWhereInput[]
+  }
+
+  export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
     upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
@@ -27799,7 +30534,7 @@ export namespace Prisma {
     deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
   }
 
-  export type SubtitleUpdateManyWithoutUserNestedInput = {
+  export type SubtitleUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<SubtitleCreateWithoutUserInput, SubtitleUncheckedCreateWithoutUserInput> | SubtitleCreateWithoutUserInput[] | SubtitleUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SubtitleCreateOrConnectWithoutUserInput | SubtitleCreateOrConnectWithoutUserInput[]
     upsert?: SubtitleUpsertWithWhereUniqueWithoutUserInput | SubtitleUpsertWithWhereUniqueWithoutUserInput[]
@@ -27811,30 +30546,6 @@ export namespace Prisma {
     update?: SubtitleUpdateWithWhereUniqueWithoutUserInput | SubtitleUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: SubtitleUpdateManyWithWhereWithoutUserInput | SubtitleUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: SubtitleScalarWhereInput | SubtitleScalarWhereInput[]
-  }
-
-  export type StatusUpdateOneWithoutUsersNestedInput = {
-    create?: XOR<StatusCreateWithoutUsersInput, StatusUncheckedCreateWithoutUsersInput>
-    connectOrCreate?: StatusCreateOrConnectWithoutUsersInput
-    upsert?: StatusUpsertWithoutUsersInput
-    disconnect?: StatusWhereInput | boolean
-    delete?: StatusWhereInput | boolean
-    connect?: StatusWhereUniqueInput
-    update?: XOR<XOR<StatusUpdateToOneWithWhereWithoutUsersInput, StatusUpdateWithoutUsersInput>, StatusUncheckedUpdateWithoutUsersInput>
-  }
-
-  export type UserRoleUpdateManyWithoutUserNestedInput = {
-    create?: XOR<UserRoleCreateWithoutUserInput, UserRoleUncheckedCreateWithoutUserInput> | UserRoleCreateWithoutUserInput[] | UserRoleUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: UserRoleCreateOrConnectWithoutUserInput | UserRoleCreateOrConnectWithoutUserInput[]
-    upsert?: UserRoleUpsertWithWhereUniqueWithoutUserInput | UserRoleUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: UserRoleCreateManyUserInputEnvelope
-    set?: UserRoleWhereUniqueInput | UserRoleWhereUniqueInput[]
-    disconnect?: UserRoleWhereUniqueInput | UserRoleWhereUniqueInput[]
-    delete?: UserRoleWhereUniqueInput | UserRoleWhereUniqueInput[]
-    connect?: UserRoleWhereUniqueInput | UserRoleWhereUniqueInput[]
-    update?: UserRoleUpdateWithWhereUniqueWithoutUserInput | UserRoleUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: UserRoleUpdateManyWithWhereWithoutUserInput | UserRoleUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: UserRoleScalarWhereInput | UserRoleScalarWhereInput[]
   }
 
   export type AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput = {
@@ -27879,34 +30590,6 @@ export namespace Prisma {
     deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
   }
 
-  export type EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<EmailVerificationTokenCreateWithoutUserInput, EmailVerificationTokenUncheckedCreateWithoutUserInput> | EmailVerificationTokenCreateWithoutUserInput[] | EmailVerificationTokenUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: EmailVerificationTokenCreateOrConnectWithoutUserInput | EmailVerificationTokenCreateOrConnectWithoutUserInput[]
-    upsert?: EmailVerificationTokenUpsertWithWhereUniqueWithoutUserInput | EmailVerificationTokenUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: EmailVerificationTokenCreateManyUserInputEnvelope
-    set?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
-    disconnect?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
-    delete?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
-    connect?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
-    update?: EmailVerificationTokenUpdateWithWhereUniqueWithoutUserInput | EmailVerificationTokenUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: EmailVerificationTokenUpdateManyWithWhereWithoutUserInput | EmailVerificationTokenUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: EmailVerificationTokenScalarWhereInput | EmailVerificationTokenScalarWhereInput[]
-  }
-
-  export type FeedbackUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<FeedbackCreateWithoutUserInput, FeedbackUncheckedCreateWithoutUserInput> | FeedbackCreateWithoutUserInput[] | FeedbackUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: FeedbackCreateOrConnectWithoutUserInput | FeedbackCreateOrConnectWithoutUserInput[]
-    upsert?: FeedbackUpsertWithWhereUniqueWithoutUserInput | FeedbackUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: FeedbackCreateManyUserInputEnvelope
-    set?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
-    disconnect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
-    delete?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
-    connect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
-    update?: FeedbackUpdateWithWhereUniqueWithoutUserInput | FeedbackUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: FeedbackUpdateManyWithWhereWithoutUserInput | FeedbackUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: FeedbackScalarWhereInput | FeedbackScalarWhereInput[]
-  }
-
   export type PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<PasswordResetTokenCreateWithoutUserInput, PasswordResetTokenUncheckedCreateWithoutUserInput> | PasswordResetTokenCreateWithoutUserInput[] | PasswordResetTokenUncheckedCreateWithoutUserInput[]
     connectOrCreate?: PasswordResetTokenCreateOrConnectWithoutUserInput | PasswordResetTokenCreateOrConnectWithoutUserInput[]
@@ -27921,52 +30604,32 @@ export namespace Prisma {
     deleteMany?: PasswordResetTokenScalarWhereInput | PasswordResetTokenScalarWhereInput[]
   }
 
-  export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
-    upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: SessionCreateManyUserInputEnvelope
-    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
+  export type EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<EmailVerificationTokenCreateWithoutUserInput, EmailVerificationTokenUncheckedCreateWithoutUserInput> | EmailVerificationTokenCreateWithoutUserInput[] | EmailVerificationTokenUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EmailVerificationTokenCreateOrConnectWithoutUserInput | EmailVerificationTokenCreateOrConnectWithoutUserInput[]
+    upsert?: EmailVerificationTokenUpsertWithWhereUniqueWithoutUserInput | EmailVerificationTokenUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: EmailVerificationTokenCreateManyUserInputEnvelope
+    set?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
+    disconnect?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
+    delete?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
+    connect?: EmailVerificationTokenWhereUniqueInput | EmailVerificationTokenWhereUniqueInput[]
+    update?: EmailVerificationTokenUpdateWithWhereUniqueWithoutUserInput | EmailVerificationTokenUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: EmailVerificationTokenUpdateManyWithWhereWithoutUserInput | EmailVerificationTokenUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: EmailVerificationTokenScalarWhereInput | EmailVerificationTokenScalarWhereInput[]
   }
 
-  export type SubtitleUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<SubtitleCreateWithoutUserInput, SubtitleUncheckedCreateWithoutUserInput> | SubtitleCreateWithoutUserInput[] | SubtitleUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: SubtitleCreateOrConnectWithoutUserInput | SubtitleCreateOrConnectWithoutUserInput[]
-    upsert?: SubtitleUpsertWithWhereUniqueWithoutUserInput | SubtitleUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: SubtitleCreateManyUserInputEnvelope
-    set?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
-    disconnect?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
-    delete?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
-    connect?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
-    update?: SubtitleUpdateWithWhereUniqueWithoutUserInput | SubtitleUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: SubtitleUpdateManyWithWhereWithoutUserInput | SubtitleUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: SubtitleScalarWhereInput | SubtitleScalarWhereInput[]
-  }
-
-  export type UserRoleUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<UserRoleCreateWithoutUserInput, UserRoleUncheckedCreateWithoutUserInput> | UserRoleCreateWithoutUserInput[] | UserRoleUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: UserRoleCreateOrConnectWithoutUserInput | UserRoleCreateOrConnectWithoutUserInput[]
-    upsert?: UserRoleUpsertWithWhereUniqueWithoutUserInput | UserRoleUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: UserRoleCreateManyUserInputEnvelope
-    set?: UserRoleWhereUniqueInput | UserRoleWhereUniqueInput[]
-    disconnect?: UserRoleWhereUniqueInput | UserRoleWhereUniqueInput[]
-    delete?: UserRoleWhereUniqueInput | UserRoleWhereUniqueInput[]
-    connect?: UserRoleWhereUniqueInput | UserRoleWhereUniqueInput[]
-    update?: UserRoleUpdateWithWhereUniqueWithoutUserInput | UserRoleUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: UserRoleUpdateManyWithWhereWithoutUserInput | UserRoleUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: UserRoleScalarWhereInput | UserRoleScalarWhereInput[]
-  }
-
-  export type RoleCreateNestedOneWithoutUserRolesInput = {
-    create?: XOR<RoleCreateWithoutUserRolesInput, RoleUncheckedCreateWithoutUserRolesInput>
-    connectOrCreate?: RoleCreateOrConnectWithoutUserRolesInput
-    connect?: RoleWhereUniqueInput
+  export type UserBadgeUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<UserBadgeCreateWithoutUserInput, UserBadgeUncheckedCreateWithoutUserInput> | UserBadgeCreateWithoutUserInput[] | UserBadgeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserBadgeCreateOrConnectWithoutUserInput | UserBadgeCreateOrConnectWithoutUserInput[]
+    upsert?: UserBadgeUpsertWithWhereUniqueWithoutUserInput | UserBadgeUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: UserBadgeCreateManyUserInputEnvelope
+    set?: UserBadgeWhereUniqueInput | UserBadgeWhereUniqueInput[]
+    disconnect?: UserBadgeWhereUniqueInput | UserBadgeWhereUniqueInput[]
+    delete?: UserBadgeWhereUniqueInput | UserBadgeWhereUniqueInput[]
+    connect?: UserBadgeWhereUniqueInput | UserBadgeWhereUniqueInput[]
+    update?: UserBadgeUpdateWithWhereUniqueWithoutUserInput | UserBadgeUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserBadgeUpdateManyWithWhereWithoutUserInput | UserBadgeUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserBadgeScalarWhereInput | UserBadgeScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutRolesInput = {
@@ -27975,12 +30638,10 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
-  export type RoleUpdateOneRequiredWithoutUserRolesNestedInput = {
+  export type RoleCreateNestedOneWithoutUserRolesInput = {
     create?: XOR<RoleCreateWithoutUserRolesInput, RoleUncheckedCreateWithoutUserRolesInput>
     connectOrCreate?: RoleCreateOrConnectWithoutUserRolesInput
-    upsert?: RoleUpsertWithoutUserRolesInput
     connect?: RoleWhereUniqueInput
-    update?: XOR<XOR<RoleUpdateToOneWithWhereWithoutUserRolesInput, RoleUpdateWithoutUserRolesInput>, RoleUncheckedUpdateWithoutUserRolesInput>
   }
 
   export type UserUpdateOneRequiredWithoutRolesNestedInput = {
@@ -27989,6 +30650,14 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutRolesInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutRolesInput, UserUpdateWithoutRolesInput>, UserUncheckedUpdateWithoutRolesInput>
+  }
+
+  export type RoleUpdateOneRequiredWithoutUserRolesNestedInput = {
+    create?: XOR<RoleCreateWithoutUserRolesInput, RoleUncheckedCreateWithoutUserRolesInput>
+    connectOrCreate?: RoleCreateOrConnectWithoutUserRolesInput
+    upsert?: RoleUpsertWithoutUserRolesInput
+    connect?: RoleWhereUniqueInput
+    update?: XOR<XOR<RoleUpdateToOneWithWhereWithoutUserRolesInput, RoleUpdateWithoutUserRolesInput>, RoleUncheckedUpdateWithoutUserRolesInput>
   }
 
   export type UserCreateNestedOneWithoutAdminAuditsInput = {
@@ -28029,10 +30698,6 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
-  export type DateTimeFieldUpdateOperationsInput = {
-    set?: Date | string
-  }
-
   export type UserUpdateOneRequiredWithoutPasswordResetTokensNestedInput = {
     create?: XOR<UserCreateWithoutPasswordResetTokensInput, UserUncheckedCreateWithoutPasswordResetTokensInput>
     connectOrCreate?: UserCreateOrConnectWithoutPasswordResetTokensInput
@@ -28053,6 +30718,108 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutEmailVerificationTokensInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutEmailVerificationTokensInput, UserUpdateWithoutEmailVerificationTokensInput>, UserUncheckedUpdateWithoutEmailVerificationTokensInput>
+  }
+
+  export type ExhibitCreateNestedOneWithoutBadgeInput = {
+    create?: XOR<ExhibitCreateWithoutBadgeInput, ExhibitUncheckedCreateWithoutBadgeInput>
+    connectOrCreate?: ExhibitCreateOrConnectWithoutBadgeInput
+    connect?: ExhibitWhereUniqueInput
+  }
+
+  export type UserBadgeCreateNestedManyWithoutBadgeInput = {
+    create?: XOR<UserBadgeCreateWithoutBadgeInput, UserBadgeUncheckedCreateWithoutBadgeInput> | UserBadgeCreateWithoutBadgeInput[] | UserBadgeUncheckedCreateWithoutBadgeInput[]
+    connectOrCreate?: UserBadgeCreateOrConnectWithoutBadgeInput | UserBadgeCreateOrConnectWithoutBadgeInput[]
+    createMany?: UserBadgeCreateManyBadgeInputEnvelope
+    connect?: UserBadgeWhereUniqueInput | UserBadgeWhereUniqueInput[]
+  }
+
+  export type ExhibitUncheckedCreateNestedOneWithoutBadgeInput = {
+    create?: XOR<ExhibitCreateWithoutBadgeInput, ExhibitUncheckedCreateWithoutBadgeInput>
+    connectOrCreate?: ExhibitCreateOrConnectWithoutBadgeInput
+    connect?: ExhibitWhereUniqueInput
+  }
+
+  export type UserBadgeUncheckedCreateNestedManyWithoutBadgeInput = {
+    create?: XOR<UserBadgeCreateWithoutBadgeInput, UserBadgeUncheckedCreateWithoutBadgeInput> | UserBadgeCreateWithoutBadgeInput[] | UserBadgeUncheckedCreateWithoutBadgeInput[]
+    connectOrCreate?: UserBadgeCreateOrConnectWithoutBadgeInput | UserBadgeCreateOrConnectWithoutBadgeInput[]
+    createMany?: UserBadgeCreateManyBadgeInputEnvelope
+    connect?: UserBadgeWhereUniqueInput | UserBadgeWhereUniqueInput[]
+  }
+
+  export type ExhibitUpdateOneWithoutBadgeNestedInput = {
+    create?: XOR<ExhibitCreateWithoutBadgeInput, ExhibitUncheckedCreateWithoutBadgeInput>
+    connectOrCreate?: ExhibitCreateOrConnectWithoutBadgeInput
+    upsert?: ExhibitUpsertWithoutBadgeInput
+    disconnect?: ExhibitWhereInput | boolean
+    delete?: ExhibitWhereInput | boolean
+    connect?: ExhibitWhereUniqueInput
+    update?: XOR<XOR<ExhibitUpdateToOneWithWhereWithoutBadgeInput, ExhibitUpdateWithoutBadgeInput>, ExhibitUncheckedUpdateWithoutBadgeInput>
+  }
+
+  export type UserBadgeUpdateManyWithoutBadgeNestedInput = {
+    create?: XOR<UserBadgeCreateWithoutBadgeInput, UserBadgeUncheckedCreateWithoutBadgeInput> | UserBadgeCreateWithoutBadgeInput[] | UserBadgeUncheckedCreateWithoutBadgeInput[]
+    connectOrCreate?: UserBadgeCreateOrConnectWithoutBadgeInput | UserBadgeCreateOrConnectWithoutBadgeInput[]
+    upsert?: UserBadgeUpsertWithWhereUniqueWithoutBadgeInput | UserBadgeUpsertWithWhereUniqueWithoutBadgeInput[]
+    createMany?: UserBadgeCreateManyBadgeInputEnvelope
+    set?: UserBadgeWhereUniqueInput | UserBadgeWhereUniqueInput[]
+    disconnect?: UserBadgeWhereUniqueInput | UserBadgeWhereUniqueInput[]
+    delete?: UserBadgeWhereUniqueInput | UserBadgeWhereUniqueInput[]
+    connect?: UserBadgeWhereUniqueInput | UserBadgeWhereUniqueInput[]
+    update?: UserBadgeUpdateWithWhereUniqueWithoutBadgeInput | UserBadgeUpdateWithWhereUniqueWithoutBadgeInput[]
+    updateMany?: UserBadgeUpdateManyWithWhereWithoutBadgeInput | UserBadgeUpdateManyWithWhereWithoutBadgeInput[]
+    deleteMany?: UserBadgeScalarWhereInput | UserBadgeScalarWhereInput[]
+  }
+
+  export type ExhibitUncheckedUpdateOneWithoutBadgeNestedInput = {
+    create?: XOR<ExhibitCreateWithoutBadgeInput, ExhibitUncheckedCreateWithoutBadgeInput>
+    connectOrCreate?: ExhibitCreateOrConnectWithoutBadgeInput
+    upsert?: ExhibitUpsertWithoutBadgeInput
+    disconnect?: ExhibitWhereInput | boolean
+    delete?: ExhibitWhereInput | boolean
+    connect?: ExhibitWhereUniqueInput
+    update?: XOR<XOR<ExhibitUpdateToOneWithWhereWithoutBadgeInput, ExhibitUpdateWithoutBadgeInput>, ExhibitUncheckedUpdateWithoutBadgeInput>
+  }
+
+  export type UserBadgeUncheckedUpdateManyWithoutBadgeNestedInput = {
+    create?: XOR<UserBadgeCreateWithoutBadgeInput, UserBadgeUncheckedCreateWithoutBadgeInput> | UserBadgeCreateWithoutBadgeInput[] | UserBadgeUncheckedCreateWithoutBadgeInput[]
+    connectOrCreate?: UserBadgeCreateOrConnectWithoutBadgeInput | UserBadgeCreateOrConnectWithoutBadgeInput[]
+    upsert?: UserBadgeUpsertWithWhereUniqueWithoutBadgeInput | UserBadgeUpsertWithWhereUniqueWithoutBadgeInput[]
+    createMany?: UserBadgeCreateManyBadgeInputEnvelope
+    set?: UserBadgeWhereUniqueInput | UserBadgeWhereUniqueInput[]
+    disconnect?: UserBadgeWhereUniqueInput | UserBadgeWhereUniqueInput[]
+    delete?: UserBadgeWhereUniqueInput | UserBadgeWhereUniqueInput[]
+    connect?: UserBadgeWhereUniqueInput | UserBadgeWhereUniqueInput[]
+    update?: UserBadgeUpdateWithWhereUniqueWithoutBadgeInput | UserBadgeUpdateWithWhereUniqueWithoutBadgeInput[]
+    updateMany?: UserBadgeUpdateManyWithWhereWithoutBadgeInput | UserBadgeUpdateManyWithWhereWithoutBadgeInput[]
+    deleteMany?: UserBadgeScalarWhereInput | UserBadgeScalarWhereInput[]
+  }
+
+  export type UserCreateNestedOneWithoutUserBadgesInput = {
+    create?: XOR<UserCreateWithoutUserBadgesInput, UserUncheckedCreateWithoutUserBadgesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUserBadgesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type BadgeCreateNestedOneWithoutUserBadgesInput = {
+    create?: XOR<BadgeCreateWithoutUserBadgesInput, BadgeUncheckedCreateWithoutUserBadgesInput>
+    connectOrCreate?: BadgeCreateOrConnectWithoutUserBadgesInput
+    connect?: BadgeWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutUserBadgesNestedInput = {
+    create?: XOR<UserCreateWithoutUserBadgesInput, UserUncheckedCreateWithoutUserBadgesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUserBadgesInput
+    upsert?: UserUpsertWithoutUserBadgesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutUserBadgesInput, UserUpdateWithoutUserBadgesInput>, UserUncheckedUpdateWithoutUserBadgesInput>
+  }
+
+  export type BadgeUpdateOneRequiredWithoutUserBadgesNestedInput = {
+    create?: XOR<BadgeCreateWithoutUserBadgesInput, BadgeUncheckedCreateWithoutUserBadgesInput>
+    connectOrCreate?: BadgeCreateOrConnectWithoutUserBadgesInput
+    upsert?: BadgeUpsertWithoutUserBadgesInput
+    connect?: BadgeWhereUniqueInput
+    update?: XOR<XOR<BadgeUpdateToOneWithWhereWithoutUserBadgesInput, BadgeUpdateWithoutUserBadgesInput>, BadgeUncheckedUpdateWithoutUserBadgesInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -28239,6 +31006,17 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type NestedDateTimeFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
   export type NestedBigIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
     in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
@@ -28270,6 +31048,33 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
     _max?: NestedStringFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedBoolNullableFilter<$PrismaModel = never> = {
@@ -28332,39 +31137,15 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
-  export type NestedDateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
-  }
-
-  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
-  }
-
   export type ExhibitCreateWithoutAudioInput = {
     exhibitId?: bigint | number
     title: string
     description?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    exhibition?: ExhibitionCreateNestedOneWithoutExhibitsInput
+    exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
     status?: StatusCreateNestedOneWithoutExhibitsInput
+    badge?: BadgeCreateNestedOneWithoutExhibitInput
     feedbacks?: FeedbackCreateNestedManyWithoutExhibitInput
     images?: ImageCreateNestedManyWithoutExhibitInput
     qrCodes?: QRCodeCreateNestedManyWithoutExhibitInput
@@ -28372,10 +31153,11 @@ export namespace Prisma {
 
   export type ExhibitUncheckedCreateWithoutAudioInput = {
     exhibitId?: bigint | number
-    exhibitionId?: bigint | number | null
+    exhibitionId: bigint | number
+    badgeId?: bigint | number | null
     title: string
-    statusId?: number | null
     description?: string | null
+    statusId?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     feedbacks?: FeedbackUncheckedCreateNestedManyWithoutExhibitInput
@@ -28449,8 +31231,8 @@ export namespace Prisma {
     text?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    user?: UserCreateNestedOneWithoutSubtitlesInput
     language?: LanguageCreateNestedOneWithoutSubtitlesInput
+    user?: UserCreateNestedOneWithoutSubtitlesInput
   }
 
   export type SubtitleUncheckedCreateWithoutAudioInput = {
@@ -28489,8 +31271,9 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    exhibition?: ExhibitionUpdateOneWithoutExhibitsNestedInput
+    exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
     status?: StatusUpdateOneWithoutExhibitsNestedInput
+    badge?: BadgeUpdateOneWithoutExhibitNestedInput
     feedbacks?: FeedbackUpdateManyWithoutExhibitNestedInput
     images?: ImageUpdateManyWithoutExhibitNestedInput
     qrCodes?: QRCodeUpdateManyWithoutExhibitNestedInput
@@ -28498,10 +31281,11 @@ export namespace Prisma {
 
   export type ExhibitUncheckedUpdateWithoutAudioInput = {
     exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
-    exhibitionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
-    statusId?: NullableIntFieldUpdateOperationsInput | number | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     feedbacks?: FeedbackUncheckedUpdateManyWithoutExhibitNestedInput
@@ -28601,6 +31385,53 @@ export namespace Prisma {
     updatedAt?: DateTimeNullableFilter<"Subtitle"> | Date | string | null
   }
 
+  export type UserCreateWithoutPlaybackLogsInput = {
+    userId?: bigint | number
+    username: string
+    email: string
+    passwordHash: string
+    emailVerified?: boolean
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    status?: StatusCreateNestedOneWithoutUsersInput
+    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
+    roles?: UserRoleCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    subtitles?: SubtitleCreateNestedManyWithoutUserInput
+    adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
+    targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
+    userBadges?: UserBadgeCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutPlaybackLogsInput = {
+    userId?: bigint | number
+    username: string
+    email: string
+    passwordHash: string
+    emailVerified?: boolean
+    statusId?: number | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
+    roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    subtitles?: SubtitleUncheckedCreateNestedManyWithoutUserInput
+    adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
+    targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+    userBadges?: UserBadgeUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutPlaybackLogsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutPlaybackLogsInput, UserUncheckedCreateWithoutPlaybackLogsInput>
+  }
+
   export type AudioCreateWithoutPlaybackLogsInput = {
     fileUrl?: string | null
     title?: string | null
@@ -28629,49 +31460,57 @@ export namespace Prisma {
     create: XOR<AudioCreateWithoutPlaybackLogsInput, AudioUncheckedCreateWithoutPlaybackLogsInput>
   }
 
-  export type UserCreateWithoutPlaybackLogsInput = {
-    userId?: bigint | number
-    username: string
-    email: string
-    passwordHash: string
-    emailVerified?: boolean | null
-    lastLoginAt?: Date | string | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
-    targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
-    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
-    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
-    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
-    subtitles?: SubtitleCreateNestedManyWithoutUserInput
-    status?: StatusCreateNestedOneWithoutUsersInput
-    roles?: UserRoleCreateNestedManyWithoutUserInput
-  }
-
-  export type UserUncheckedCreateWithoutPlaybackLogsInput = {
-    userId?: bigint | number
-    username: string
-    email: string
-    passwordHash: string
-    emailVerified?: boolean | null
-    statusId?: number | null
-    lastLoginAt?: Date | string | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
-    targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
-    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
-    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
-    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
-    subtitles?: SubtitleUncheckedCreateNestedManyWithoutUserInput
-    roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
-  }
-
-  export type UserCreateOrConnectWithoutPlaybackLogsInput = {
-    where: UserWhereUniqueInput
+  export type UserUpsertWithoutPlaybackLogsInput = {
+    update: XOR<UserUpdateWithoutPlaybackLogsInput, UserUncheckedUpdateWithoutPlaybackLogsInput>
     create: XOR<UserCreateWithoutPlaybackLogsInput, UserUncheckedCreateWithoutPlaybackLogsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutPlaybackLogsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutPlaybackLogsInput, UserUncheckedUpdateWithoutPlaybackLogsInput>
+  }
+
+  export type UserUpdateWithoutPlaybackLogsInput = {
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StatusUpdateOneWithoutUsersNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
+    roles?: UserRoleUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    subtitles?: SubtitleUpdateManyWithoutUserNestedInput
+    adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
+    targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
+    userBadges?: UserBadgeUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutPlaybackLogsInput = {
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    statusId?: NullableIntFieldUpdateOperationsInput | number | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
+    roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    subtitles?: SubtitleUncheckedUpdateManyWithoutUserNestedInput
+    adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
+    targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+    userBadges?: UserBadgeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AudioUpsertWithoutPlaybackLogsInput = {
@@ -28708,55 +31547,24 @@ export namespace Prisma {
     subtitles?: SubtitleUncheckedUpdateManyWithoutAudioNestedInput
   }
 
-  export type UserUpsertWithoutPlaybackLogsInput = {
-    update: XOR<UserUpdateWithoutPlaybackLogsInput, UserUncheckedUpdateWithoutPlaybackLogsInput>
-    create: XOR<UserCreateWithoutPlaybackLogsInput, UserUncheckedCreateWithoutPlaybackLogsInput>
-    where?: UserWhereInput
+  export type StatusCreateWithoutExhibitionsInput = {
+    statusName: string
+    users?: UserCreateNestedManyWithoutStatusInput
+    languages?: LanguageCreateNestedManyWithoutStatusInput
+    exhibits?: ExhibitCreateNestedManyWithoutStatusInput
   }
 
-  export type UserUpdateToOneWithWhereWithoutPlaybackLogsInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutPlaybackLogsInput, UserUncheckedUpdateWithoutPlaybackLogsInput>
+  export type StatusUncheckedCreateWithoutExhibitionsInput = {
+    statusId?: number
+    statusName: string
+    users?: UserUncheckedCreateNestedManyWithoutStatusInput
+    languages?: LanguageUncheckedCreateNestedManyWithoutStatusInput
+    exhibits?: ExhibitUncheckedCreateNestedManyWithoutStatusInput
   }
 
-  export type UserUpdateWithoutPlaybackLogsInput = {
-    userId?: BigIntFieldUpdateOperationsInput | bigint | number
-    username?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    passwordHash?: StringFieldUpdateOperationsInput | string
-    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
-    targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
-    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
-    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
-    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
-    subtitles?: SubtitleUpdateManyWithoutUserNestedInput
-    status?: StatusUpdateOneWithoutUsersNestedInput
-    roles?: UserRoleUpdateManyWithoutUserNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutPlaybackLogsInput = {
-    userId?: BigIntFieldUpdateOperationsInput | bigint | number
-    username?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    passwordHash?: StringFieldUpdateOperationsInput | string
-    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    statusId?: NullableIntFieldUpdateOperationsInput | number | null
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
-    targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
-    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
-    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
-    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
-    subtitles?: SubtitleUncheckedUpdateManyWithoutUserNestedInput
-    roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  export type StatusCreateOrConnectWithoutExhibitionsInput = {
+    where: StatusWhereUniqueInput
+    create: XOR<StatusCreateWithoutExhibitionsInput, StatusUncheckedCreateWithoutExhibitionsInput>
   }
 
   export type ExhibitCreateWithoutExhibitionInput = {
@@ -28765,8 +31573,9 @@ export namespace Prisma {
     description?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    audio?: AudioCreateNestedManyWithoutExhibitInput
     status?: StatusCreateNestedOneWithoutExhibitsInput
+    badge?: BadgeCreateNestedOneWithoutExhibitInput
+    audio?: AudioCreateNestedManyWithoutExhibitInput
     feedbacks?: FeedbackCreateNestedManyWithoutExhibitInput
     images?: ImageCreateNestedManyWithoutExhibitInput
     qrCodes?: QRCodeCreateNestedManyWithoutExhibitInput
@@ -28774,9 +31583,10 @@ export namespace Prisma {
 
   export type ExhibitUncheckedCreateWithoutExhibitionInput = {
     exhibitId?: bigint | number
+    badgeId?: bigint | number | null
     title: string
-    statusId?: number | null
     description?: string | null
+    statusId?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
@@ -28795,32 +31605,12 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type StatusCreateWithoutExhibitionsInput = {
-    statusName: string
-    exhibits?: ExhibitCreateNestedManyWithoutStatusInput
-    languages?: LanguageCreateNestedManyWithoutStatusInput
-    users?: UserCreateNestedManyWithoutStatusInput
-  }
-
-  export type StatusUncheckedCreateWithoutExhibitionsInput = {
-    statusId?: number
-    statusName: string
-    exhibits?: ExhibitUncheckedCreateNestedManyWithoutStatusInput
-    languages?: LanguageUncheckedCreateNestedManyWithoutStatusInput
-    users?: UserUncheckedCreateNestedManyWithoutStatusInput
-  }
-
-  export type StatusCreateOrConnectWithoutExhibitionsInput = {
-    where: StatusWhereUniqueInput
-    create: XOR<StatusCreateWithoutExhibitionsInput, StatusUncheckedCreateWithoutExhibitionsInput>
-  }
-
   export type ImageCreateWithoutExhibitionInput = {
     imageId?: bigint | number
     title?: string | null
     description?: string | null
     fileUrl?: string | null
-    isPrimary?: boolean | null
+    isPrimary?: boolean
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     exhibit?: ExhibitCreateNestedOneWithoutImagesInput
@@ -28832,7 +31622,7 @@ export namespace Prisma {
     title?: string | null
     description?: string | null
     fileUrl?: string | null
-    isPrimary?: boolean | null
+    isPrimary?: boolean
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
   }
@@ -28845,6 +31635,32 @@ export namespace Prisma {
   export type ImageCreateManyExhibitionInputEnvelope = {
     data: ImageCreateManyExhibitionInput | ImageCreateManyExhibitionInput[]
     skipDuplicates?: boolean
+  }
+
+  export type StatusUpsertWithoutExhibitionsInput = {
+    update: XOR<StatusUpdateWithoutExhibitionsInput, StatusUncheckedUpdateWithoutExhibitionsInput>
+    create: XOR<StatusCreateWithoutExhibitionsInput, StatusUncheckedCreateWithoutExhibitionsInput>
+    where?: StatusWhereInput
+  }
+
+  export type StatusUpdateToOneWithWhereWithoutExhibitionsInput = {
+    where?: StatusWhereInput
+    data: XOR<StatusUpdateWithoutExhibitionsInput, StatusUncheckedUpdateWithoutExhibitionsInput>
+  }
+
+  export type StatusUpdateWithoutExhibitionsInput = {
+    statusName?: StringFieldUpdateOperationsInput | string
+    users?: UserUpdateManyWithoutStatusNestedInput
+    languages?: LanguageUpdateManyWithoutStatusNestedInput
+    exhibits?: ExhibitUpdateManyWithoutStatusNestedInput
+  }
+
+  export type StatusUncheckedUpdateWithoutExhibitionsInput = {
+    statusId?: IntFieldUpdateOperationsInput | number
+    statusName?: StringFieldUpdateOperationsInput | string
+    users?: UserUncheckedUpdateManyWithoutStatusNestedInput
+    languages?: LanguageUncheckedUpdateManyWithoutStatusNestedInput
+    exhibits?: ExhibitUncheckedUpdateManyWithoutStatusNestedInput
   }
 
   export type ExhibitUpsertWithWhereUniqueWithoutExhibitionInput = {
@@ -28868,38 +31684,13 @@ export namespace Prisma {
     OR?: ExhibitScalarWhereInput[]
     NOT?: ExhibitScalarWhereInput | ExhibitScalarWhereInput[]
     exhibitId?: BigIntFilter<"Exhibit"> | bigint | number
-    exhibitionId?: BigIntNullableFilter<"Exhibit"> | bigint | number | null
+    exhibitionId?: BigIntFilter<"Exhibit"> | bigint | number
+    badgeId?: BigIntNullableFilter<"Exhibit"> | bigint | number | null
     title?: StringFilter<"Exhibit"> | string
-    statusId?: IntNullableFilter<"Exhibit"> | number | null
     description?: StringNullableFilter<"Exhibit"> | string | null
+    statusId?: IntNullableFilter<"Exhibit"> | number | null
     createdAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
-  }
-
-  export type StatusUpsertWithoutExhibitionsInput = {
-    update: XOR<StatusUpdateWithoutExhibitionsInput, StatusUncheckedUpdateWithoutExhibitionsInput>
-    create: XOR<StatusCreateWithoutExhibitionsInput, StatusUncheckedCreateWithoutExhibitionsInput>
-    where?: StatusWhereInput
-  }
-
-  export type StatusUpdateToOneWithWhereWithoutExhibitionsInput = {
-    where?: StatusWhereInput
-    data: XOR<StatusUpdateWithoutExhibitionsInput, StatusUncheckedUpdateWithoutExhibitionsInput>
-  }
-
-  export type StatusUpdateWithoutExhibitionsInput = {
-    statusName?: StringFieldUpdateOperationsInput | string
-    exhibits?: ExhibitUpdateManyWithoutStatusNestedInput
-    languages?: LanguageUpdateManyWithoutStatusNestedInput
-    users?: UserUpdateManyWithoutStatusNestedInput
-  }
-
-  export type StatusUncheckedUpdateWithoutExhibitionsInput = {
-    statusId?: IntFieldUpdateOperationsInput | number
-    statusName?: StringFieldUpdateOperationsInput | string
-    exhibits?: ExhibitUncheckedUpdateManyWithoutStatusNestedInput
-    languages?: LanguageUncheckedUpdateManyWithoutStatusNestedInput
-    users?: UserUncheckedUpdateManyWithoutStatusNestedInput
   }
 
   export type ImageUpsertWithWhereUniqueWithoutExhibitionInput = {
@@ -28928,9 +31719,79 @@ export namespace Prisma {
     title?: StringNullableFilter<"Image"> | string | null
     description?: StringNullableFilter<"Image"> | string | null
     fileUrl?: StringNullableFilter<"Image"> | string | null
-    isPrimary?: BoolNullableFilter<"Image"> | boolean | null
+    isPrimary?: BoolFilter<"Image"> | boolean
     createdAt?: DateTimeNullableFilter<"Image"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Image"> | Date | string | null
+  }
+
+  export type ExhibitionCreateWithoutExhibitsInput = {
+    exhibitionId?: bigint | number
+    title: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    status?: StatusCreateNestedOneWithoutExhibitionsInput
+    images?: ImageCreateNestedManyWithoutExhibitionInput
+  }
+
+  export type ExhibitionUncheckedCreateWithoutExhibitsInput = {
+    exhibitionId?: bigint | number
+    title: string
+    description?: string | null
+    statusId?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    images?: ImageUncheckedCreateNestedManyWithoutExhibitionInput
+  }
+
+  export type ExhibitionCreateOrConnectWithoutExhibitsInput = {
+    where: ExhibitionWhereUniqueInput
+    create: XOR<ExhibitionCreateWithoutExhibitsInput, ExhibitionUncheckedCreateWithoutExhibitsInput>
+  }
+
+  export type StatusCreateWithoutExhibitsInput = {
+    statusName: string
+    users?: UserCreateNestedManyWithoutStatusInput
+    languages?: LanguageCreateNestedManyWithoutStatusInput
+    exhibitions?: ExhibitionCreateNestedManyWithoutStatusInput
+  }
+
+  export type StatusUncheckedCreateWithoutExhibitsInput = {
+    statusId?: number
+    statusName: string
+    users?: UserUncheckedCreateNestedManyWithoutStatusInput
+    languages?: LanguageUncheckedCreateNestedManyWithoutStatusInput
+    exhibitions?: ExhibitionUncheckedCreateNestedManyWithoutStatusInput
+  }
+
+  export type StatusCreateOrConnectWithoutExhibitsInput = {
+    where: StatusWhereUniqueInput
+    create: XOR<StatusCreateWithoutExhibitsInput, StatusUncheckedCreateWithoutExhibitsInput>
+  }
+
+  export type BadgeCreateWithoutExhibitInput = {
+    badgeId?: bigint | number
+    name?: string | null
+    description?: string | null
+    imageUrl?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    userBadges?: UserBadgeCreateNestedManyWithoutBadgeInput
+  }
+
+  export type BadgeUncheckedCreateWithoutExhibitInput = {
+    badgeId?: bigint | number
+    name?: string | null
+    description?: string | null
+    imageUrl?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    userBadges?: UserBadgeUncheckedCreateNestedManyWithoutBadgeInput
+  }
+
+  export type BadgeCreateOrConnectWithoutExhibitInput = {
+    where: BadgeWhereUniqueInput
+    create: XOR<BadgeCreateWithoutExhibitInput, BadgeUncheckedCreateWithoutExhibitInput>
   }
 
   export type AudioCreateWithoutExhibitInput = {
@@ -28966,51 +31827,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type ExhibitionCreateWithoutExhibitsInput = {
-    exhibitionId?: bigint | number
-    title: string
-    description?: string | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    status?: StatusCreateNestedOneWithoutExhibitionsInput
-    images?: ImageCreateNestedManyWithoutExhibitionInput
-  }
-
-  export type ExhibitionUncheckedCreateWithoutExhibitsInput = {
-    exhibitionId?: bigint | number
-    title: string
-    description?: string | null
-    statusId?: number | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    images?: ImageUncheckedCreateNestedManyWithoutExhibitionInput
-  }
-
-  export type ExhibitionCreateOrConnectWithoutExhibitsInput = {
-    where: ExhibitionWhereUniqueInput
-    create: XOR<ExhibitionCreateWithoutExhibitsInput, ExhibitionUncheckedCreateWithoutExhibitsInput>
-  }
-
-  export type StatusCreateWithoutExhibitsInput = {
-    statusName: string
-    exhibitions?: ExhibitionCreateNestedManyWithoutStatusInput
-    languages?: LanguageCreateNestedManyWithoutStatusInput
-    users?: UserCreateNestedManyWithoutStatusInput
-  }
-
-  export type StatusUncheckedCreateWithoutExhibitsInput = {
-    statusId?: number
-    statusName: string
-    exhibitions?: ExhibitionUncheckedCreateNestedManyWithoutStatusInput
-    languages?: LanguageUncheckedCreateNestedManyWithoutStatusInput
-    users?: UserUncheckedCreateNestedManyWithoutStatusInput
-  }
-
-  export type StatusCreateOrConnectWithoutExhibitsInput = {
-    where: StatusWhereUniqueInput
-    create: XOR<StatusCreateWithoutExhibitsInput, StatusUncheckedCreateWithoutExhibitsInput>
-  }
-
   export type FeedbackCreateWithoutExhibitInput = {
     feedbackId?: bigint | number
     rating?: number | null
@@ -29044,7 +31860,7 @@ export namespace Prisma {
     title?: string | null
     description?: string | null
     fileUrl?: string | null
-    isPrimary?: boolean | null
+    isPrimary?: boolean
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     exhibition?: ExhibitionCreateNestedOneWithoutImagesInput
@@ -29056,7 +31872,7 @@ export namespace Prisma {
     title?: string | null
     description?: string | null
     fileUrl?: string | null
-    isPrimary?: boolean | null
+    isPrimary?: boolean
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
   }
@@ -29094,6 +31910,94 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ExhibitionUpsertWithoutExhibitsInput = {
+    update: XOR<ExhibitionUpdateWithoutExhibitsInput, ExhibitionUncheckedUpdateWithoutExhibitsInput>
+    create: XOR<ExhibitionCreateWithoutExhibitsInput, ExhibitionUncheckedCreateWithoutExhibitsInput>
+    where?: ExhibitionWhereInput
+  }
+
+  export type ExhibitionUpdateToOneWithWhereWithoutExhibitsInput = {
+    where?: ExhibitionWhereInput
+    data: XOR<ExhibitionUpdateWithoutExhibitsInput, ExhibitionUncheckedUpdateWithoutExhibitsInput>
+  }
+
+  export type ExhibitionUpdateWithoutExhibitsInput = {
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StatusUpdateOneWithoutExhibitionsNestedInput
+    images?: ImageUpdateManyWithoutExhibitionNestedInput
+  }
+
+  export type ExhibitionUncheckedUpdateWithoutExhibitsInput = {
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    statusId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    images?: ImageUncheckedUpdateManyWithoutExhibitionNestedInput
+  }
+
+  export type StatusUpsertWithoutExhibitsInput = {
+    update: XOR<StatusUpdateWithoutExhibitsInput, StatusUncheckedUpdateWithoutExhibitsInput>
+    create: XOR<StatusCreateWithoutExhibitsInput, StatusUncheckedCreateWithoutExhibitsInput>
+    where?: StatusWhereInput
+  }
+
+  export type StatusUpdateToOneWithWhereWithoutExhibitsInput = {
+    where?: StatusWhereInput
+    data: XOR<StatusUpdateWithoutExhibitsInput, StatusUncheckedUpdateWithoutExhibitsInput>
+  }
+
+  export type StatusUpdateWithoutExhibitsInput = {
+    statusName?: StringFieldUpdateOperationsInput | string
+    users?: UserUpdateManyWithoutStatusNestedInput
+    languages?: LanguageUpdateManyWithoutStatusNestedInput
+    exhibitions?: ExhibitionUpdateManyWithoutStatusNestedInput
+  }
+
+  export type StatusUncheckedUpdateWithoutExhibitsInput = {
+    statusId?: IntFieldUpdateOperationsInput | number
+    statusName?: StringFieldUpdateOperationsInput | string
+    users?: UserUncheckedUpdateManyWithoutStatusNestedInput
+    languages?: LanguageUncheckedUpdateManyWithoutStatusNestedInput
+    exhibitions?: ExhibitionUncheckedUpdateManyWithoutStatusNestedInput
+  }
+
+  export type BadgeUpsertWithoutExhibitInput = {
+    update: XOR<BadgeUpdateWithoutExhibitInput, BadgeUncheckedUpdateWithoutExhibitInput>
+    create: XOR<BadgeCreateWithoutExhibitInput, BadgeUncheckedCreateWithoutExhibitInput>
+    where?: BadgeWhereInput
+  }
+
+  export type BadgeUpdateToOneWithWhereWithoutExhibitInput = {
+    where?: BadgeWhereInput
+    data: XOR<BadgeUpdateWithoutExhibitInput, BadgeUncheckedUpdateWithoutExhibitInput>
+  }
+
+  export type BadgeUpdateWithoutExhibitInput = {
+    badgeId?: BigIntFieldUpdateOperationsInput | bigint | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    userBadges?: UserBadgeUpdateManyWithoutBadgeNestedInput
+  }
+
+  export type BadgeUncheckedUpdateWithoutExhibitInput = {
+    badgeId?: BigIntFieldUpdateOperationsInput | bigint | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    userBadges?: UserBadgeUncheckedUpdateManyWithoutBadgeNestedInput
+  }
+
   export type AudioUpsertWithWhereUniqueWithoutExhibitInput = {
     where: AudioWhereUniqueInput
     update: XOR<AudioUpdateWithoutExhibitInput, AudioUncheckedUpdateWithoutExhibitInput>
@@ -29122,63 +32026,6 @@ export namespace Prisma {
     description?: StringNullableFilter<"Audio"> | string | null
     createdAt?: DateTimeNullableFilter<"Audio"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Audio"> | Date | string | null
-  }
-
-  export type ExhibitionUpsertWithoutExhibitsInput = {
-    update: XOR<ExhibitionUpdateWithoutExhibitsInput, ExhibitionUncheckedUpdateWithoutExhibitsInput>
-    create: XOR<ExhibitionCreateWithoutExhibitsInput, ExhibitionUncheckedCreateWithoutExhibitsInput>
-    where?: ExhibitionWhereInput
-  }
-
-  export type ExhibitionUpdateToOneWithWhereWithoutExhibitsInput = {
-    where?: ExhibitionWhereInput
-    data: XOR<ExhibitionUpdateWithoutExhibitsInput, ExhibitionUncheckedUpdateWithoutExhibitsInput>
-  }
-
-  export type ExhibitionUpdateWithoutExhibitsInput = {
-    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: StatusUpdateOneWithoutExhibitionsNestedInput
-    images?: ImageUpdateManyWithoutExhibitionNestedInput
-  }
-
-  export type ExhibitionUncheckedUpdateWithoutExhibitsInput = {
-    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    statusId?: NullableIntFieldUpdateOperationsInput | number | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    images?: ImageUncheckedUpdateManyWithoutExhibitionNestedInput
-  }
-
-  export type StatusUpsertWithoutExhibitsInput = {
-    update: XOR<StatusUpdateWithoutExhibitsInput, StatusUncheckedUpdateWithoutExhibitsInput>
-    create: XOR<StatusCreateWithoutExhibitsInput, StatusUncheckedCreateWithoutExhibitsInput>
-    where?: StatusWhereInput
-  }
-
-  export type StatusUpdateToOneWithWhereWithoutExhibitsInput = {
-    where?: StatusWhereInput
-    data: XOR<StatusUpdateWithoutExhibitsInput, StatusUncheckedUpdateWithoutExhibitsInput>
-  }
-
-  export type StatusUpdateWithoutExhibitsInput = {
-    statusName?: StringFieldUpdateOperationsInput | string
-    exhibitions?: ExhibitionUpdateManyWithoutStatusNestedInput
-    languages?: LanguageUpdateManyWithoutStatusNestedInput
-    users?: UserUpdateManyWithoutStatusNestedInput
-  }
-
-  export type StatusUncheckedUpdateWithoutExhibitsInput = {
-    statusId?: IntFieldUpdateOperationsInput | number
-    statusName?: StringFieldUpdateOperationsInput | string
-    exhibitions?: ExhibitionUncheckedUpdateManyWithoutStatusNestedInput
-    languages?: LanguageUncheckedUpdateManyWithoutStatusNestedInput
-    users?: UserUncheckedUpdateManyWithoutStatusNestedInput
   }
 
   export type FeedbackUpsertWithWhereUniqueWithoutExhibitInput = {
@@ -29253,25 +32100,74 @@ export namespace Prisma {
     updatedAt?: DateTimeNullableFilter<"QRCode"> | Date | string | null
   }
 
+  export type UserCreateWithoutFeedbacksInput = {
+    userId?: bigint | number
+    username: string
+    email: string
+    passwordHash: string
+    emailVerified?: boolean
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    status?: StatusCreateNestedOneWithoutUsersInput
+    roles?: UserRoleCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    subtitles?: SubtitleCreateNestedManyWithoutUserInput
+    playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
+    adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
+    targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
+    userBadges?: UserBadgeCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutFeedbacksInput = {
+    userId?: bigint | number
+    username: string
+    email: string
+    passwordHash: string
+    emailVerified?: boolean
+    statusId?: number | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    subtitles?: SubtitleUncheckedCreateNestedManyWithoutUserInput
+    playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
+    adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
+    targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+    userBadges?: UserBadgeUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutFeedbacksInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutFeedbacksInput, UserUncheckedCreateWithoutFeedbacksInput>
+  }
+
   export type ExhibitCreateWithoutFeedbacksInput = {
     exhibitId?: bigint | number
     title: string
     description?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    audio?: AudioCreateNestedManyWithoutExhibitInput
-    exhibition?: ExhibitionCreateNestedOneWithoutExhibitsInput
+    exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
     status?: StatusCreateNestedOneWithoutExhibitsInput
+    badge?: BadgeCreateNestedOneWithoutExhibitInput
+    audio?: AudioCreateNestedManyWithoutExhibitInput
     images?: ImageCreateNestedManyWithoutExhibitInput
     qrCodes?: QRCodeCreateNestedManyWithoutExhibitInput
   }
 
   export type ExhibitUncheckedCreateWithoutFeedbacksInput = {
     exhibitId?: bigint | number
-    exhibitionId?: bigint | number | null
+    exhibitionId: bigint | number
+    badgeId?: bigint | number | null
     title: string
-    statusId?: number | null
     description?: string | null
+    statusId?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
@@ -29284,49 +32180,57 @@ export namespace Prisma {
     create: XOR<ExhibitCreateWithoutFeedbacksInput, ExhibitUncheckedCreateWithoutFeedbacksInput>
   }
 
-  export type UserCreateWithoutFeedbacksInput = {
-    userId?: bigint | number
-    username: string
-    email: string
-    passwordHash: string
-    emailVerified?: boolean | null
-    lastLoginAt?: Date | string | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
-    adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
-    targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
-    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
-    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
-    subtitles?: SubtitleCreateNestedManyWithoutUserInput
-    status?: StatusCreateNestedOneWithoutUsersInput
-    roles?: UserRoleCreateNestedManyWithoutUserInput
-  }
-
-  export type UserUncheckedCreateWithoutFeedbacksInput = {
-    userId?: bigint | number
-    username: string
-    email: string
-    passwordHash: string
-    emailVerified?: boolean | null
-    statusId?: number | null
-    lastLoginAt?: Date | string | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
-    adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
-    targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
-    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
-    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
-    subtitles?: SubtitleUncheckedCreateNestedManyWithoutUserInput
-    roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
-  }
-
-  export type UserCreateOrConnectWithoutFeedbacksInput = {
-    where: UserWhereUniqueInput
+  export type UserUpsertWithoutFeedbacksInput = {
+    update: XOR<UserUpdateWithoutFeedbacksInput, UserUncheckedUpdateWithoutFeedbacksInput>
     create: XOR<UserCreateWithoutFeedbacksInput, UserUncheckedCreateWithoutFeedbacksInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutFeedbacksInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutFeedbacksInput, UserUncheckedUpdateWithoutFeedbacksInput>
+  }
+
+  export type UserUpdateWithoutFeedbacksInput = {
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StatusUpdateOneWithoutUsersNestedInput
+    roles?: UserRoleUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    subtitles?: SubtitleUpdateManyWithoutUserNestedInput
+    playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
+    adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
+    targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
+    userBadges?: UserBadgeUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutFeedbacksInput = {
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    statusId?: NullableIntFieldUpdateOperationsInput | number | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    subtitles?: SubtitleUncheckedUpdateManyWithoutUserNestedInput
+    playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
+    adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
+    targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+    userBadges?: UserBadgeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ExhibitUpsertWithoutFeedbacksInput = {
@@ -29346,75 +32250,26 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    audio?: AudioUpdateManyWithoutExhibitNestedInput
-    exhibition?: ExhibitionUpdateOneWithoutExhibitsNestedInput
+    exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
     status?: StatusUpdateOneWithoutExhibitsNestedInput
+    badge?: BadgeUpdateOneWithoutExhibitNestedInput
+    audio?: AudioUpdateManyWithoutExhibitNestedInput
     images?: ImageUpdateManyWithoutExhibitNestedInput
     qrCodes?: QRCodeUpdateManyWithoutExhibitNestedInput
   }
 
   export type ExhibitUncheckedUpdateWithoutFeedbacksInput = {
     exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
-    exhibitionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
-    statusId?: NullableIntFieldUpdateOperationsInput | number | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
     images?: ImageUncheckedUpdateManyWithoutExhibitNestedInput
     qrCodes?: QRCodeUncheckedUpdateManyWithoutExhibitNestedInput
-  }
-
-  export type UserUpsertWithoutFeedbacksInput = {
-    update: XOR<UserUpdateWithoutFeedbacksInput, UserUncheckedUpdateWithoutFeedbacksInput>
-    create: XOR<UserCreateWithoutFeedbacksInput, UserUncheckedCreateWithoutFeedbacksInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutFeedbacksInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutFeedbacksInput, UserUncheckedUpdateWithoutFeedbacksInput>
-  }
-
-  export type UserUpdateWithoutFeedbacksInput = {
-    userId?: BigIntFieldUpdateOperationsInput | bigint | number
-    username?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    passwordHash?: StringFieldUpdateOperationsInput | string
-    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
-    adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
-    targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
-    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
-    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
-    subtitles?: SubtitleUpdateManyWithoutUserNestedInput
-    status?: StatusUpdateOneWithoutUsersNestedInput
-    roles?: UserRoleUpdateManyWithoutUserNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutFeedbacksInput = {
-    userId?: BigIntFieldUpdateOperationsInput | bigint | number
-    username?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    passwordHash?: StringFieldUpdateOperationsInput | string
-    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    statusId?: NullableIntFieldUpdateOperationsInput | number | null
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
-    adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
-    targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
-    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
-    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
-    subtitles?: SubtitleUncheckedUpdateManyWithoutUserNestedInput
-    roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ExhibitCreateWithoutImagesInput = {
@@ -29423,19 +32278,21 @@ export namespace Prisma {
     description?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    audio?: AudioCreateNestedManyWithoutExhibitInput
-    exhibition?: ExhibitionCreateNestedOneWithoutExhibitsInput
+    exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
     status?: StatusCreateNestedOneWithoutExhibitsInput
+    badge?: BadgeCreateNestedOneWithoutExhibitInput
+    audio?: AudioCreateNestedManyWithoutExhibitInput
     feedbacks?: FeedbackCreateNestedManyWithoutExhibitInput
     qrCodes?: QRCodeCreateNestedManyWithoutExhibitInput
   }
 
   export type ExhibitUncheckedCreateWithoutImagesInput = {
     exhibitId?: bigint | number
-    exhibitionId?: bigint | number | null
+    exhibitionId: bigint | number
+    badgeId?: bigint | number | null
     title: string
-    statusId?: number | null
     description?: string | null
+    statusId?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
@@ -29452,10 +32309,10 @@ export namespace Prisma {
     exhibitionId?: bigint | number
     title: string
     description?: string | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    exhibits?: ExhibitCreateNestedManyWithoutExhibitionInput
+    createdAt?: Date | string
+    updatedAt?: Date | string
     status?: StatusCreateNestedOneWithoutExhibitionsInput
+    exhibits?: ExhibitCreateNestedManyWithoutExhibitionInput
   }
 
   export type ExhibitionUncheckedCreateWithoutImagesInput = {
@@ -29463,8 +32320,8 @@ export namespace Prisma {
     title: string
     description?: string | null
     statusId?: number | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     exhibits?: ExhibitUncheckedCreateNestedManyWithoutExhibitionInput
   }
 
@@ -29490,19 +32347,21 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    audio?: AudioUpdateManyWithoutExhibitNestedInput
-    exhibition?: ExhibitionUpdateOneWithoutExhibitsNestedInput
+    exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
     status?: StatusUpdateOneWithoutExhibitsNestedInput
+    badge?: BadgeUpdateOneWithoutExhibitNestedInput
+    audio?: AudioUpdateManyWithoutExhibitNestedInput
     feedbacks?: FeedbackUpdateManyWithoutExhibitNestedInput
     qrCodes?: QRCodeUpdateManyWithoutExhibitNestedInput
   }
 
   export type ExhibitUncheckedUpdateWithoutImagesInput = {
     exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
-    exhibitionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
-    statusId?: NullableIntFieldUpdateOperationsInput | number | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
@@ -29525,10 +32384,10 @@ export namespace Prisma {
     exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    exhibits?: ExhibitUpdateManyWithoutExhibitionNestedInput
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: StatusUpdateOneWithoutExhibitionsNestedInput
+    exhibits?: ExhibitUpdateManyWithoutExhibitionNestedInput
   }
 
   export type ExhibitionUncheckedUpdateWithoutImagesInput = {
@@ -29536,9 +32395,29 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     exhibits?: ExhibitUncheckedUpdateManyWithoutExhibitionNestedInput
+  }
+
+  export type StatusCreateWithoutLanguagesInput = {
+    statusName: string
+    users?: UserCreateNestedManyWithoutStatusInput
+    exhibitions?: ExhibitionCreateNestedManyWithoutStatusInput
+    exhibits?: ExhibitCreateNestedManyWithoutStatusInput
+  }
+
+  export type StatusUncheckedCreateWithoutLanguagesInput = {
+    statusId?: number
+    statusName: string
+    users?: UserUncheckedCreateNestedManyWithoutStatusInput
+    exhibitions?: ExhibitionUncheckedCreateNestedManyWithoutStatusInput
+    exhibits?: ExhibitUncheckedCreateNestedManyWithoutStatusInput
+  }
+
+  export type StatusCreateOrConnectWithoutLanguagesInput = {
+    where: StatusWhereUniqueInput
+    create: XOR<StatusCreateWithoutLanguagesInput, StatusUncheckedCreateWithoutLanguagesInput>
   }
 
   export type AudioCreateWithoutLanguageInput = {
@@ -29574,26 +32453,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type StatusCreateWithoutLanguagesInput = {
-    statusName: string
-    exhibits?: ExhibitCreateNestedManyWithoutStatusInput
-    exhibitions?: ExhibitionCreateNestedManyWithoutStatusInput
-    users?: UserCreateNestedManyWithoutStatusInput
-  }
-
-  export type StatusUncheckedCreateWithoutLanguagesInput = {
-    statusId?: number
-    statusName: string
-    exhibits?: ExhibitUncheckedCreateNestedManyWithoutStatusInput
-    exhibitions?: ExhibitionUncheckedCreateNestedManyWithoutStatusInput
-    users?: UserUncheckedCreateNestedManyWithoutStatusInput
-  }
-
-  export type StatusCreateOrConnectWithoutLanguagesInput = {
-    where: StatusWhereUniqueInput
-    create: XOR<StatusCreateWithoutLanguagesInput, StatusUncheckedCreateWithoutLanguagesInput>
-  }
-
   export type SubtitleCreateWithoutLanguageInput = {
     subtitleId?: bigint | number
     text?: NullableJsonNullValueInput | InputJsonValue
@@ -29622,6 +32481,32 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type StatusUpsertWithoutLanguagesInput = {
+    update: XOR<StatusUpdateWithoutLanguagesInput, StatusUncheckedUpdateWithoutLanguagesInput>
+    create: XOR<StatusCreateWithoutLanguagesInput, StatusUncheckedCreateWithoutLanguagesInput>
+    where?: StatusWhereInput
+  }
+
+  export type StatusUpdateToOneWithWhereWithoutLanguagesInput = {
+    where?: StatusWhereInput
+    data: XOR<StatusUpdateWithoutLanguagesInput, StatusUncheckedUpdateWithoutLanguagesInput>
+  }
+
+  export type StatusUpdateWithoutLanguagesInput = {
+    statusName?: StringFieldUpdateOperationsInput | string
+    users?: UserUpdateManyWithoutStatusNestedInput
+    exhibitions?: ExhibitionUpdateManyWithoutStatusNestedInput
+    exhibits?: ExhibitUpdateManyWithoutStatusNestedInput
+  }
+
+  export type StatusUncheckedUpdateWithoutLanguagesInput = {
+    statusId?: IntFieldUpdateOperationsInput | number
+    statusName?: StringFieldUpdateOperationsInput | string
+    users?: UserUncheckedUpdateManyWithoutStatusNestedInput
+    exhibitions?: ExhibitionUncheckedUpdateManyWithoutStatusNestedInput
+    exhibits?: ExhibitUncheckedUpdateManyWithoutStatusNestedInput
+  }
+
   export type AudioUpsertWithWhereUniqueWithoutLanguageInput = {
     where: AudioWhereUniqueInput
     update: XOR<AudioUpdateWithoutLanguageInput, AudioUncheckedUpdateWithoutLanguageInput>
@@ -29636,32 +32521,6 @@ export namespace Prisma {
   export type AudioUpdateManyWithWhereWithoutLanguageInput = {
     where: AudioScalarWhereInput
     data: XOR<AudioUpdateManyMutationInput, AudioUncheckedUpdateManyWithoutLanguageInput>
-  }
-
-  export type StatusUpsertWithoutLanguagesInput = {
-    update: XOR<StatusUpdateWithoutLanguagesInput, StatusUncheckedUpdateWithoutLanguagesInput>
-    create: XOR<StatusCreateWithoutLanguagesInput, StatusUncheckedCreateWithoutLanguagesInput>
-    where?: StatusWhereInput
-  }
-
-  export type StatusUpdateToOneWithWhereWithoutLanguagesInput = {
-    where?: StatusWhereInput
-    data: XOR<StatusUpdateWithoutLanguagesInput, StatusUncheckedUpdateWithoutLanguagesInput>
-  }
-
-  export type StatusUpdateWithoutLanguagesInput = {
-    statusName?: StringFieldUpdateOperationsInput | string
-    exhibits?: ExhibitUpdateManyWithoutStatusNestedInput
-    exhibitions?: ExhibitionUpdateManyWithoutStatusNestedInput
-    users?: UserUpdateManyWithoutStatusNestedInput
-  }
-
-  export type StatusUncheckedUpdateWithoutLanguagesInput = {
-    statusId?: IntFieldUpdateOperationsInput | number
-    statusName?: StringFieldUpdateOperationsInput | string
-    exhibits?: ExhibitUncheckedUpdateManyWithoutStatusNestedInput
-    exhibitions?: ExhibitionUncheckedUpdateManyWithoutStatusNestedInput
-    users?: UserUncheckedUpdateManyWithoutStatusNestedInput
   }
 
   export type SubtitleUpsertWithWhereUniqueWithoutLanguageInput = {
@@ -29728,19 +32587,21 @@ export namespace Prisma {
     description?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    audio?: AudioCreateNestedManyWithoutExhibitInput
-    exhibition?: ExhibitionCreateNestedOneWithoutExhibitsInput
+    exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
     status?: StatusCreateNestedOneWithoutExhibitsInput
+    badge?: BadgeCreateNestedOneWithoutExhibitInput
+    audio?: AudioCreateNestedManyWithoutExhibitInput
     feedbacks?: FeedbackCreateNestedManyWithoutExhibitInput
     images?: ImageCreateNestedManyWithoutExhibitInput
   }
 
   export type ExhibitUncheckedCreateWithoutQrCodesInput = {
     exhibitId?: bigint | number
-    exhibitionId?: bigint | number | null
+    exhibitionId: bigint | number
+    badgeId?: bigint | number | null
     title: string
-    statusId?: number | null
     description?: string | null
+    statusId?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
@@ -29770,19 +32631,21 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    audio?: AudioUpdateManyWithoutExhibitNestedInput
-    exhibition?: ExhibitionUpdateOneWithoutExhibitsNestedInput
+    exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
     status?: StatusUpdateOneWithoutExhibitsNestedInput
+    badge?: BadgeUpdateOneWithoutExhibitNestedInput
+    audio?: AudioUpdateManyWithoutExhibitNestedInput
     feedbacks?: FeedbackUpdateManyWithoutExhibitNestedInput
     images?: ImageUpdateManyWithoutExhibitNestedInput
   }
 
   export type ExhibitUncheckedUpdateWithoutQrCodesInput = {
     exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
-    exhibitionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
-    statusId?: NullableIntFieldUpdateOperationsInput | number | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
@@ -29869,26 +32732,6 @@ export namespace Prisma {
     createdAt?: DateTimeNullableFilter<"UserRole"> | Date | string | null
   }
 
-  export type PermissionCreateWithoutRolePermissionsInput = {
-    permissionName: string
-    description?: string | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-  }
-
-  export type PermissionUncheckedCreateWithoutRolePermissionsInput = {
-    permissionId?: number
-    permissionName: string
-    description?: string | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-  }
-
-  export type PermissionCreateOrConnectWithoutRolePermissionsInput = {
-    where: PermissionWhereUniqueInput
-    create: XOR<PermissionCreateWithoutRolePermissionsInput, PermissionUncheckedCreateWithoutRolePermissionsInput>
-  }
-
   export type RoleCreateWithoutRolePermissionsInput = {
     roleName: string
     description?: string | null
@@ -29911,30 +32754,24 @@ export namespace Prisma {
     create: XOR<RoleCreateWithoutRolePermissionsInput, RoleUncheckedCreateWithoutRolePermissionsInput>
   }
 
-  export type PermissionUpsertWithoutRolePermissionsInput = {
-    update: XOR<PermissionUpdateWithoutRolePermissionsInput, PermissionUncheckedUpdateWithoutRolePermissionsInput>
+  export type PermissionCreateWithoutRolePermissionsInput = {
+    permissionName: string
+    description?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+  }
+
+  export type PermissionUncheckedCreateWithoutRolePermissionsInput = {
+    permissionId?: number
+    permissionName: string
+    description?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+  }
+
+  export type PermissionCreateOrConnectWithoutRolePermissionsInput = {
+    where: PermissionWhereUniqueInput
     create: XOR<PermissionCreateWithoutRolePermissionsInput, PermissionUncheckedCreateWithoutRolePermissionsInput>
-    where?: PermissionWhereInput
-  }
-
-  export type PermissionUpdateToOneWithWhereWithoutRolePermissionsInput = {
-    where?: PermissionWhereInput
-    data: XOR<PermissionUpdateWithoutRolePermissionsInput, PermissionUncheckedUpdateWithoutRolePermissionsInput>
-  }
-
-  export type PermissionUpdateWithoutRolePermissionsInput = {
-    permissionName?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
-  export type PermissionUncheckedUpdateWithoutRolePermissionsInput = {
-    permissionId?: IntFieldUpdateOperationsInput | number
-    permissionName?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type RoleUpsertWithoutRolePermissionsInput = {
@@ -29965,24 +32802,51 @@ export namespace Prisma {
     userRoles?: UserRoleUncheckedUpdateManyWithoutRoleNestedInput
   }
 
+  export type PermissionUpsertWithoutRolePermissionsInput = {
+    update: XOR<PermissionUpdateWithoutRolePermissionsInput, PermissionUncheckedUpdateWithoutRolePermissionsInput>
+    create: XOR<PermissionCreateWithoutRolePermissionsInput, PermissionUncheckedCreateWithoutRolePermissionsInput>
+    where?: PermissionWhereInput
+  }
+
+  export type PermissionUpdateToOneWithWhereWithoutRolePermissionsInput = {
+    where?: PermissionWhereInput
+    data: XOR<PermissionUpdateWithoutRolePermissionsInput, PermissionUncheckedUpdateWithoutRolePermissionsInput>
+  }
+
+  export type PermissionUpdateWithoutRolePermissionsInput = {
+    permissionName?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type PermissionUncheckedUpdateWithoutRolePermissionsInput = {
+    permissionId?: IntFieldUpdateOperationsInput | number
+    permissionName?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type UserCreateWithoutSessionsInput = {
     userId?: bigint | number
     username: string
     email: string
     passwordHash: string
-    emailVerified?: boolean | null
+    emailVerified?: boolean
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    status?: StatusCreateNestedOneWithoutUsersInput
+    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
+    roles?: UserRoleCreateNestedManyWithoutUserInput
+    subtitles?: SubtitleCreateNestedManyWithoutUserInput
     playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
-    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
-    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
-    subtitles?: SubtitleCreateNestedManyWithoutUserInput
-    status?: StatusCreateNestedOneWithoutUsersInput
-    roles?: UserRoleCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
+    userBadges?: UserBadgeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -29990,19 +32854,20 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
-    emailVerified?: boolean | null
+    emailVerified?: boolean
     statusId?: number | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
+    roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    subtitles?: SubtitleUncheckedCreateNestedManyWithoutUserInput
     playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
-    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
-    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
-    subtitles?: SubtitleUncheckedCreateNestedManyWithoutUserInput
-    roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+    userBadges?: UserBadgeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -30026,19 +32891,20 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
-    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StatusUpdateOneWithoutUsersNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
+    roles?: UserRoleUpdateManyWithoutUserNestedInput
+    subtitles?: SubtitleUpdateManyWithoutUserNestedInput
     playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
-    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
-    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
-    subtitles?: SubtitleUpdateManyWithoutUserNestedInput
-    status?: StatusUpdateOneWithoutUsersNestedInput
-    roles?: UserRoleUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
+    userBadges?: UserBadgeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -30046,84 +32912,71 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
-    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
+    roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    subtitles?: SubtitleUncheckedUpdateManyWithoutUserNestedInput
     playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
-    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
-    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
-    subtitles?: SubtitleUncheckedUpdateManyWithoutUserNestedInput
-    roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+    userBadges?: UserBadgeUncheckedUpdateManyWithoutUserNestedInput
   }
 
-  export type ExhibitCreateWithoutStatusInput = {
-    exhibitId?: bigint | number
-    title: string
-    description?: string | null
+  export type UserCreateWithoutStatusInput = {
+    userId?: bigint | number
+    username: string
+    email: string
+    passwordHash: string
+    emailVerified?: boolean
+    lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    audio?: AudioCreateNestedManyWithoutExhibitInput
-    exhibition?: ExhibitionCreateNestedOneWithoutExhibitsInput
-    feedbacks?: FeedbackCreateNestedManyWithoutExhibitInput
-    images?: ImageCreateNestedManyWithoutExhibitInput
-    qrCodes?: QRCodeCreateNestedManyWithoutExhibitInput
+    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
+    roles?: UserRoleCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    subtitles?: SubtitleCreateNestedManyWithoutUserInput
+    playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
+    adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
+    targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
+    userBadges?: UserBadgeCreateNestedManyWithoutUserInput
   }
 
-  export type ExhibitUncheckedCreateWithoutStatusInput = {
-    exhibitId?: bigint | number
-    exhibitionId?: bigint | number | null
-    title: string
-    description?: string | null
+  export type UserUncheckedCreateWithoutStatusInput = {
+    userId?: bigint | number
+    username: string
+    email: string
+    passwordHash: string
+    emailVerified?: boolean
+    lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
-    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutExhibitInput
-    images?: ImageUncheckedCreateNestedManyWithoutExhibitInput
-    qrCodes?: QRCodeUncheckedCreateNestedManyWithoutExhibitInput
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
+    roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    subtitles?: SubtitleUncheckedCreateNestedManyWithoutUserInput
+    playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
+    adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
+    targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+    userBadges?: UserBadgeUncheckedCreateNestedManyWithoutUserInput
   }
 
-  export type ExhibitCreateOrConnectWithoutStatusInput = {
-    where: ExhibitWhereUniqueInput
-    create: XOR<ExhibitCreateWithoutStatusInput, ExhibitUncheckedCreateWithoutStatusInput>
+  export type UserCreateOrConnectWithoutStatusInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutStatusInput, UserUncheckedCreateWithoutStatusInput>
   }
 
-  export type ExhibitCreateManyStatusInputEnvelope = {
-    data: ExhibitCreateManyStatusInput | ExhibitCreateManyStatusInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type ExhibitionCreateWithoutStatusInput = {
-    exhibitionId?: bigint | number
-    title: string
-    description?: string | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    exhibits?: ExhibitCreateNestedManyWithoutExhibitionInput
-    images?: ImageCreateNestedManyWithoutExhibitionInput
-  }
-
-  export type ExhibitionUncheckedCreateWithoutStatusInput = {
-    exhibitionId?: bigint | number
-    title: string
-    description?: string | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    exhibits?: ExhibitUncheckedCreateNestedManyWithoutExhibitionInput
-    images?: ImageUncheckedCreateNestedManyWithoutExhibitionInput
-  }
-
-  export type ExhibitionCreateOrConnectWithoutStatusInput = {
-    where: ExhibitionWhereUniqueInput
-    create: XOR<ExhibitionCreateWithoutStatusInput, ExhibitionUncheckedCreateWithoutStatusInput>
-  }
-
-  export type ExhibitionCreateManyStatusInputEnvelope = {
-    data: ExhibitionCreateManyStatusInput | ExhibitionCreateManyStatusInput[]
+  export type UserCreateManyStatusInputEnvelope = {
+    data: UserCreateManyStatusInput | UserCreateManyStatusInput[]
     skipDuplicates?: boolean
   }
 
@@ -30159,98 +33012,103 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type UserCreateWithoutStatusInput = {
-    userId?: bigint | number
-    username: string
-    email: string
-    passwordHash: string
-    emailVerified?: boolean | null
-    lastLoginAt?: Date | string | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
-    adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
-    targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
-    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
-    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
-    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
-    subtitles?: SubtitleCreateNestedManyWithoutUserInput
-    roles?: UserRoleCreateNestedManyWithoutUserInput
+  export type ExhibitionCreateWithoutStatusInput = {
+    exhibitionId?: bigint | number
+    title: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    exhibits?: ExhibitCreateNestedManyWithoutExhibitionInput
+    images?: ImageCreateNestedManyWithoutExhibitionInput
   }
 
-  export type UserUncheckedCreateWithoutStatusInput = {
-    userId?: bigint | number
-    username: string
-    email: string
-    passwordHash: string
-    emailVerified?: boolean | null
-    lastLoginAt?: Date | string | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
-    adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
-    targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
-    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
-    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
-    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
-    subtitles?: SubtitleUncheckedCreateNestedManyWithoutUserInput
-    roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+  export type ExhibitionUncheckedCreateWithoutStatusInput = {
+    exhibitionId?: bigint | number
+    title: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    exhibits?: ExhibitUncheckedCreateNestedManyWithoutExhibitionInput
+    images?: ImageUncheckedCreateNestedManyWithoutExhibitionInput
   }
 
-  export type UserCreateOrConnectWithoutStatusInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutStatusInput, UserUncheckedCreateWithoutStatusInput>
-  }
-
-  export type UserCreateManyStatusInputEnvelope = {
-    data: UserCreateManyStatusInput | UserCreateManyStatusInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type ExhibitUpsertWithWhereUniqueWithoutStatusInput = {
-    where: ExhibitWhereUniqueInput
-    update: XOR<ExhibitUpdateWithoutStatusInput, ExhibitUncheckedUpdateWithoutStatusInput>
-    create: XOR<ExhibitCreateWithoutStatusInput, ExhibitUncheckedCreateWithoutStatusInput>
-  }
-
-  export type ExhibitUpdateWithWhereUniqueWithoutStatusInput = {
-    where: ExhibitWhereUniqueInput
-    data: XOR<ExhibitUpdateWithoutStatusInput, ExhibitUncheckedUpdateWithoutStatusInput>
-  }
-
-  export type ExhibitUpdateManyWithWhereWithoutStatusInput = {
-    where: ExhibitScalarWhereInput
-    data: XOR<ExhibitUpdateManyMutationInput, ExhibitUncheckedUpdateManyWithoutStatusInput>
-  }
-
-  export type ExhibitionUpsertWithWhereUniqueWithoutStatusInput = {
+  export type ExhibitionCreateOrConnectWithoutStatusInput = {
     where: ExhibitionWhereUniqueInput
-    update: XOR<ExhibitionUpdateWithoutStatusInput, ExhibitionUncheckedUpdateWithoutStatusInput>
     create: XOR<ExhibitionCreateWithoutStatusInput, ExhibitionUncheckedCreateWithoutStatusInput>
   }
 
-  export type ExhibitionUpdateWithWhereUniqueWithoutStatusInput = {
-    where: ExhibitionWhereUniqueInput
-    data: XOR<ExhibitionUpdateWithoutStatusInput, ExhibitionUncheckedUpdateWithoutStatusInput>
+  export type ExhibitionCreateManyStatusInputEnvelope = {
+    data: ExhibitionCreateManyStatusInput | ExhibitionCreateManyStatusInput[]
+    skipDuplicates?: boolean
   }
 
-  export type ExhibitionUpdateManyWithWhereWithoutStatusInput = {
-    where: ExhibitionScalarWhereInput
-    data: XOR<ExhibitionUpdateManyMutationInput, ExhibitionUncheckedUpdateManyWithoutStatusInput>
+  export type ExhibitCreateWithoutStatusInput = {
+    exhibitId?: bigint | number
+    title: string
+    description?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
+    badge?: BadgeCreateNestedOneWithoutExhibitInput
+    audio?: AudioCreateNestedManyWithoutExhibitInput
+    feedbacks?: FeedbackCreateNestedManyWithoutExhibitInput
+    images?: ImageCreateNestedManyWithoutExhibitInput
+    qrCodes?: QRCodeCreateNestedManyWithoutExhibitInput
   }
 
-  export type ExhibitionScalarWhereInput = {
-    AND?: ExhibitionScalarWhereInput | ExhibitionScalarWhereInput[]
-    OR?: ExhibitionScalarWhereInput[]
-    NOT?: ExhibitionScalarWhereInput | ExhibitionScalarWhereInput[]
-    exhibitionId?: BigIntFilter<"Exhibition"> | bigint | number
-    title?: StringFilter<"Exhibition"> | string
-    description?: StringNullableFilter<"Exhibition"> | string | null
-    statusId?: IntNullableFilter<"Exhibition"> | number | null
-    createdAt?: DateTimeNullableFilter<"Exhibition"> | Date | string | null
-    updatedAt?: DateTimeNullableFilter<"Exhibition"> | Date | string | null
+  export type ExhibitUncheckedCreateWithoutStatusInput = {
+    exhibitId?: bigint | number
+    exhibitionId: bigint | number
+    badgeId?: bigint | number | null
+    title: string
+    description?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutExhibitInput
+    images?: ImageUncheckedCreateNestedManyWithoutExhibitInput
+    qrCodes?: QRCodeUncheckedCreateNestedManyWithoutExhibitInput
+  }
+
+  export type ExhibitCreateOrConnectWithoutStatusInput = {
+    where: ExhibitWhereUniqueInput
+    create: XOR<ExhibitCreateWithoutStatusInput, ExhibitUncheckedCreateWithoutStatusInput>
+  }
+
+  export type ExhibitCreateManyStatusInputEnvelope = {
+    data: ExhibitCreateManyStatusInput | ExhibitCreateManyStatusInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithWhereUniqueWithoutStatusInput = {
+    where: UserWhereUniqueInput
+    update: XOR<UserUpdateWithoutStatusInput, UserUncheckedUpdateWithoutStatusInput>
+    create: XOR<UserCreateWithoutStatusInput, UserUncheckedCreateWithoutStatusInput>
+  }
+
+  export type UserUpdateWithWhereUniqueWithoutStatusInput = {
+    where: UserWhereUniqueInput
+    data: XOR<UserUpdateWithoutStatusInput, UserUncheckedUpdateWithoutStatusInput>
+  }
+
+  export type UserUpdateManyWithWhereWithoutStatusInput = {
+    where: UserScalarWhereInput
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutStatusInput>
+  }
+
+  export type UserScalarWhereInput = {
+    AND?: UserScalarWhereInput | UserScalarWhereInput[]
+    OR?: UserScalarWhereInput[]
+    NOT?: UserScalarWhereInput | UserScalarWhereInput[]
+    userId?: BigIntFilter<"User"> | bigint | number
+    username?: StringFilter<"User"> | string
+    email?: StringFilter<"User"> | string
+    passwordHash?: StringFilter<"User"> | string
+    emailVerified?: BoolFilter<"User"> | boolean
+    statusId?: IntNullableFilter<"User"> | number | null
+    lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    createdAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"User"> | Date | string | null
   }
 
   export type LanguageUpsertWithWhereUniqueWithoutStatusInput = {
@@ -30282,35 +33140,48 @@ export namespace Prisma {
     updatedAt?: DateTimeNullableFilter<"Language"> | Date | string | null
   }
 
-  export type UserUpsertWithWhereUniqueWithoutStatusInput = {
-    where: UserWhereUniqueInput
-    update: XOR<UserUpdateWithoutStatusInput, UserUncheckedUpdateWithoutStatusInput>
-    create: XOR<UserCreateWithoutStatusInput, UserUncheckedCreateWithoutStatusInput>
+  export type ExhibitionUpsertWithWhereUniqueWithoutStatusInput = {
+    where: ExhibitionWhereUniqueInput
+    update: XOR<ExhibitionUpdateWithoutStatusInput, ExhibitionUncheckedUpdateWithoutStatusInput>
+    create: XOR<ExhibitionCreateWithoutStatusInput, ExhibitionUncheckedCreateWithoutStatusInput>
   }
 
-  export type UserUpdateWithWhereUniqueWithoutStatusInput = {
-    where: UserWhereUniqueInput
-    data: XOR<UserUpdateWithoutStatusInput, UserUncheckedUpdateWithoutStatusInput>
+  export type ExhibitionUpdateWithWhereUniqueWithoutStatusInput = {
+    where: ExhibitionWhereUniqueInput
+    data: XOR<ExhibitionUpdateWithoutStatusInput, ExhibitionUncheckedUpdateWithoutStatusInput>
   }
 
-  export type UserUpdateManyWithWhereWithoutStatusInput = {
-    where: UserScalarWhereInput
-    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutStatusInput>
+  export type ExhibitionUpdateManyWithWhereWithoutStatusInput = {
+    where: ExhibitionScalarWhereInput
+    data: XOR<ExhibitionUpdateManyMutationInput, ExhibitionUncheckedUpdateManyWithoutStatusInput>
   }
 
-  export type UserScalarWhereInput = {
-    AND?: UserScalarWhereInput | UserScalarWhereInput[]
-    OR?: UserScalarWhereInput[]
-    NOT?: UserScalarWhereInput | UserScalarWhereInput[]
-    userId?: BigIntFilter<"User"> | bigint | number
-    username?: StringFilter<"User"> | string
-    email?: StringFilter<"User"> | string
-    passwordHash?: StringFilter<"User"> | string
-    emailVerified?: BoolNullableFilter<"User"> | boolean | null
-    statusId?: IntNullableFilter<"User"> | number | null
-    lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
-    createdAt?: DateTimeNullableFilter<"User"> | Date | string | null
-    updatedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+  export type ExhibitionScalarWhereInput = {
+    AND?: ExhibitionScalarWhereInput | ExhibitionScalarWhereInput[]
+    OR?: ExhibitionScalarWhereInput[]
+    NOT?: ExhibitionScalarWhereInput | ExhibitionScalarWhereInput[]
+    exhibitionId?: BigIntFilter<"Exhibition"> | bigint | number
+    title?: StringFilter<"Exhibition"> | string
+    description?: StringNullableFilter<"Exhibition"> | string | null
+    statusId?: IntNullableFilter<"Exhibition"> | number | null
+    createdAt?: DateTimeFilter<"Exhibition"> | Date | string
+    updatedAt?: DateTimeFilter<"Exhibition"> | Date | string
+  }
+
+  export type ExhibitUpsertWithWhereUniqueWithoutStatusInput = {
+    where: ExhibitWhereUniqueInput
+    update: XOR<ExhibitUpdateWithoutStatusInput, ExhibitUncheckedUpdateWithoutStatusInput>
+    create: XOR<ExhibitCreateWithoutStatusInput, ExhibitUncheckedCreateWithoutStatusInput>
+  }
+
+  export type ExhibitUpdateWithWhereUniqueWithoutStatusInput = {
+    where: ExhibitWhereUniqueInput
+    data: XOR<ExhibitUpdateWithoutStatusInput, ExhibitUncheckedUpdateWithoutStatusInput>
+  }
+
+  export type ExhibitUpdateManyWithWhereWithoutStatusInput = {
+    where: ExhibitScalarWhereInput
+    data: XOR<ExhibitUpdateManyMutationInput, ExhibitUncheckedUpdateManyWithoutStatusInput>
   }
 
   export type AudioCreateWithoutSubtitlesInput = {
@@ -30341,51 +33212,6 @@ export namespace Prisma {
     create: XOR<AudioCreateWithoutSubtitlesInput, AudioUncheckedCreateWithoutSubtitlesInput>
   }
 
-  export type UserCreateWithoutSubtitlesInput = {
-    userId?: bigint | number
-    username: string
-    email: string
-    passwordHash: string
-    emailVerified?: boolean | null
-    lastLoginAt?: Date | string | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
-    adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
-    targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
-    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
-    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
-    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
-    status?: StatusCreateNestedOneWithoutUsersInput
-    roles?: UserRoleCreateNestedManyWithoutUserInput
-  }
-
-  export type UserUncheckedCreateWithoutSubtitlesInput = {
-    userId?: bigint | number
-    username: string
-    email: string
-    passwordHash: string
-    emailVerified?: boolean | null
-    statusId?: number | null
-    lastLoginAt?: Date | string | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
-    adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
-    targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
-    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
-    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
-    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
-    roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
-  }
-
-  export type UserCreateOrConnectWithoutSubtitlesInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutSubtitlesInput, UserUncheckedCreateWithoutSubtitlesInput>
-  }
-
   export type LanguageCreateWithoutSubtitlesInput = {
     languageId?: bigint | number
     title: string
@@ -30393,8 +33219,8 @@ export namespace Prisma {
     isDefault?: boolean | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    audio?: AudioCreateNestedManyWithoutLanguageInput
     status?: StatusCreateNestedOneWithoutLanguagesInput
+    audio?: AudioCreateNestedManyWithoutLanguageInput
   }
 
   export type LanguageUncheckedCreateWithoutSubtitlesInput = {
@@ -30411,6 +33237,53 @@ export namespace Prisma {
   export type LanguageCreateOrConnectWithoutSubtitlesInput = {
     where: LanguageWhereUniqueInput
     create: XOR<LanguageCreateWithoutSubtitlesInput, LanguageUncheckedCreateWithoutSubtitlesInput>
+  }
+
+  export type UserCreateWithoutSubtitlesInput = {
+    userId?: bigint | number
+    username: string
+    email: string
+    passwordHash: string
+    emailVerified?: boolean
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    status?: StatusCreateNestedOneWithoutUsersInput
+    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
+    roles?: UserRoleCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
+    adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
+    targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
+    userBadges?: UserBadgeCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutSubtitlesInput = {
+    userId?: bigint | number
+    username: string
+    email: string
+    passwordHash: string
+    emailVerified?: boolean
+    statusId?: number | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
+    roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
+    adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
+    targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+    userBadges?: UserBadgeUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutSubtitlesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutSubtitlesInput, UserUncheckedCreateWithoutSubtitlesInput>
   }
 
   export type AudioUpsertWithoutSubtitlesInput = {
@@ -30447,57 +33320,6 @@ export namespace Prisma {
     playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutAudioNestedInput
   }
 
-  export type UserUpsertWithoutSubtitlesInput = {
-    update: XOR<UserUpdateWithoutSubtitlesInput, UserUncheckedUpdateWithoutSubtitlesInput>
-    create: XOR<UserCreateWithoutSubtitlesInput, UserUncheckedCreateWithoutSubtitlesInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutSubtitlesInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutSubtitlesInput, UserUncheckedUpdateWithoutSubtitlesInput>
-  }
-
-  export type UserUpdateWithoutSubtitlesInput = {
-    userId?: BigIntFieldUpdateOperationsInput | bigint | number
-    username?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    passwordHash?: StringFieldUpdateOperationsInput | string
-    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
-    adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
-    targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
-    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
-    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
-    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
-    status?: StatusUpdateOneWithoutUsersNestedInput
-    roles?: UserRoleUpdateManyWithoutUserNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutSubtitlesInput = {
-    userId?: BigIntFieldUpdateOperationsInput | bigint | number
-    username?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    passwordHash?: StringFieldUpdateOperationsInput | string
-    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    statusId?: NullableIntFieldUpdateOperationsInput | number | null
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
-    adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
-    targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
-    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
-    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
-    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
-    roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
-  }
-
   export type LanguageUpsertWithoutSubtitlesInput = {
     update: XOR<LanguageUpdateWithoutSubtitlesInput, LanguageUncheckedUpdateWithoutSubtitlesInput>
     create: XOR<LanguageCreateWithoutSubtitlesInput, LanguageUncheckedCreateWithoutSubtitlesInput>
@@ -30516,8 +33338,8 @@ export namespace Prisma {
     isDefault?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    audio?: AudioUpdateManyWithoutLanguageNestedInput
     status?: StatusUpdateOneWithoutLanguagesNestedInput
+    audio?: AudioUpdateManyWithoutLanguageNestedInput
   }
 
   export type LanguageUncheckedUpdateWithoutSubtitlesInput = {
@@ -30531,117 +33353,77 @@ export namespace Prisma {
     audio?: AudioUncheckedUpdateManyWithoutLanguageNestedInput
   }
 
-  export type AudioPlaybackLogCreateWithoutUserInput = {
-    audioStart?: Date | string | null
-    audioEnd?: Date | string | null
-    durationListened?: number | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    audio?: AudioCreateNestedOneWithoutPlaybackLogsInput
+  export type UserUpsertWithoutSubtitlesInput = {
+    update: XOR<UserUpdateWithoutSubtitlesInput, UserUncheckedUpdateWithoutSubtitlesInput>
+    create: XOR<UserCreateWithoutSubtitlesInput, UserUncheckedCreateWithoutSubtitlesInput>
+    where?: UserWhereInput
   }
 
-  export type AudioPlaybackLogUncheckedCreateWithoutUserInput = {
-    audioLogsId?: number
-    audioId?: number | null
-    audioStart?: Date | string | null
-    audioEnd?: Date | string | null
-    durationListened?: number | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
+  export type UserUpdateToOneWithWhereWithoutSubtitlesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutSubtitlesInput, UserUncheckedUpdateWithoutSubtitlesInput>
   }
 
-  export type AudioPlaybackLogCreateOrConnectWithoutUserInput = {
-    where: AudioPlaybackLogWhereUniqueInput
-    create: XOR<AudioPlaybackLogCreateWithoutUserInput, AudioPlaybackLogUncheckedCreateWithoutUserInput>
+  export type UserUpdateWithoutSubtitlesInput = {
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StatusUpdateOneWithoutUsersNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
+    roles?: UserRoleUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
+    adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
+    targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
+    userBadges?: UserBadgeUpdateManyWithoutUserNestedInput
   }
 
-  export type AudioPlaybackLogCreateManyUserInputEnvelope = {
-    data: AudioPlaybackLogCreateManyUserInput | AudioPlaybackLogCreateManyUserInput[]
-    skipDuplicates?: boolean
+  export type UserUncheckedUpdateWithoutSubtitlesInput = {
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    statusId?: NullableIntFieldUpdateOperationsInput | number | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
+    roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
+    adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
+    targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+    userBadges?: UserBadgeUncheckedUpdateManyWithoutUserNestedInput
   }
 
-  export type AuditLogCreateWithoutAdminUserInput = {
-    auditLogId?: bigint | number
-    resource: string
-    action: string
-    changes?: string | null
-    metadata?: string | null
-    timestamp?: Date | string | null
-    targetUser?: UserCreateNestedOneWithoutTargetAuditsInput
+  export type StatusCreateWithoutUsersInput = {
+    statusName: string
+    languages?: LanguageCreateNestedManyWithoutStatusInput
+    exhibitions?: ExhibitionCreateNestedManyWithoutStatusInput
+    exhibits?: ExhibitCreateNestedManyWithoutStatusInput
   }
 
-  export type AuditLogUncheckedCreateWithoutAdminUserInput = {
-    auditLogId?: bigint | number
-    targetUserId?: bigint | number | null
-    resource: string
-    action: string
-    changes?: string | null
-    metadata?: string | null
-    timestamp?: Date | string | null
+  export type StatusUncheckedCreateWithoutUsersInput = {
+    statusId?: number
+    statusName: string
+    languages?: LanguageUncheckedCreateNestedManyWithoutStatusInput
+    exhibitions?: ExhibitionUncheckedCreateNestedManyWithoutStatusInput
+    exhibits?: ExhibitUncheckedCreateNestedManyWithoutStatusInput
   }
 
-  export type AuditLogCreateOrConnectWithoutAdminUserInput = {
-    where: AuditLogWhereUniqueInput
-    create: XOR<AuditLogCreateWithoutAdminUserInput, AuditLogUncheckedCreateWithoutAdminUserInput>
-  }
-
-  export type AuditLogCreateManyAdminUserInputEnvelope = {
-    data: AuditLogCreateManyAdminUserInput | AuditLogCreateManyAdminUserInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type AuditLogCreateWithoutTargetUserInput = {
-    auditLogId?: bigint | number
-    resource: string
-    action: string
-    changes?: string | null
-    metadata?: string | null
-    timestamp?: Date | string | null
-    adminUser?: UserCreateNestedOneWithoutAdminAuditsInput
-  }
-
-  export type AuditLogUncheckedCreateWithoutTargetUserInput = {
-    auditLogId?: bigint | number
-    adminUserId?: bigint | number | null
-    resource: string
-    action: string
-    changes?: string | null
-    metadata?: string | null
-    timestamp?: Date | string | null
-  }
-
-  export type AuditLogCreateOrConnectWithoutTargetUserInput = {
-    where: AuditLogWhereUniqueInput
-    create: XOR<AuditLogCreateWithoutTargetUserInput, AuditLogUncheckedCreateWithoutTargetUserInput>
-  }
-
-  export type AuditLogCreateManyTargetUserInputEnvelope = {
-    data: AuditLogCreateManyTargetUserInput | AuditLogCreateManyTargetUserInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type EmailVerificationTokenCreateWithoutUserInput = {
-    emailVerificationId?: bigint | number
-    token: string
-    createdAt?: Date | string | null
-    expiresAt: Date | string
-  }
-
-  export type EmailVerificationTokenUncheckedCreateWithoutUserInput = {
-    emailVerificationId?: bigint | number
-    token: string
-    createdAt?: Date | string | null
-    expiresAt: Date | string
-  }
-
-  export type EmailVerificationTokenCreateOrConnectWithoutUserInput = {
-    where: EmailVerificationTokenWhereUniqueInput
-    create: XOR<EmailVerificationTokenCreateWithoutUserInput, EmailVerificationTokenUncheckedCreateWithoutUserInput>
-  }
-
-  export type EmailVerificationTokenCreateManyUserInputEnvelope = {
-    data: EmailVerificationTokenCreateManyUserInput | EmailVerificationTokenCreateManyUserInput[]
-    skipDuplicates?: boolean
+  export type StatusCreateOrConnectWithoutUsersInput = {
+    where: StatusWhereUniqueInput
+    create: XOR<StatusCreateWithoutUsersInput, StatusUncheckedCreateWithoutUsersInput>
   }
 
   export type FeedbackCreateWithoutUserInput = {
@@ -30672,27 +33454,23 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type PasswordResetTokenCreateWithoutUserInput = {
-    passwordResetId?: bigint | number
-    token: string
+  export type UserRoleCreateWithoutUserInput = {
     createdAt?: Date | string | null
-    expiresAt: Date | string
+    role: RoleCreateNestedOneWithoutUserRolesInput
   }
 
-  export type PasswordResetTokenUncheckedCreateWithoutUserInput = {
-    passwordResetId?: bigint | number
-    token: string
+  export type UserRoleUncheckedCreateWithoutUserInput = {
+    roleId: number
     createdAt?: Date | string | null
-    expiresAt: Date | string
   }
 
-  export type PasswordResetTokenCreateOrConnectWithoutUserInput = {
-    where: PasswordResetTokenWhereUniqueInput
-    create: XOR<PasswordResetTokenCreateWithoutUserInput, PasswordResetTokenUncheckedCreateWithoutUserInput>
+  export type UserRoleCreateOrConnectWithoutUserInput = {
+    where: UserRoleWhereUniqueInput
+    create: XOR<UserRoleCreateWithoutUserInput, UserRoleUncheckedCreateWithoutUserInput>
   }
 
-  export type PasswordResetTokenCreateManyUserInputEnvelope = {
-    data: PasswordResetTokenCreateManyUserInput | PasswordResetTokenCreateManyUserInput[]
+  export type UserRoleCreateManyUserInputEnvelope = {
+    data: UserRoleCreateManyUserInput | UserRoleCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -30744,44 +33522,260 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type StatusCreateWithoutUsersInput = {
-    statusName: string
-    exhibits?: ExhibitCreateNestedManyWithoutStatusInput
-    exhibitions?: ExhibitionCreateNestedManyWithoutStatusInput
-    languages?: LanguageCreateNestedManyWithoutStatusInput
+  export type AudioPlaybackLogCreateWithoutUserInput = {
+    audioStart?: Date | string | null
+    audioEnd?: Date | string | null
+    durationListened?: number | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    audio?: AudioCreateNestedOneWithoutPlaybackLogsInput
   }
 
-  export type StatusUncheckedCreateWithoutUsersInput = {
-    statusId?: number
-    statusName: string
-    exhibits?: ExhibitUncheckedCreateNestedManyWithoutStatusInput
-    exhibitions?: ExhibitionUncheckedCreateNestedManyWithoutStatusInput
-    languages?: LanguageUncheckedCreateNestedManyWithoutStatusInput
+  export type AudioPlaybackLogUncheckedCreateWithoutUserInput = {
+    audioLogsId?: number
+    audioId?: number | null
+    audioStart?: Date | string | null
+    audioEnd?: Date | string | null
+    durationListened?: number | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
   }
 
-  export type StatusCreateOrConnectWithoutUsersInput = {
-    where: StatusWhereUniqueInput
+  export type AudioPlaybackLogCreateOrConnectWithoutUserInput = {
+    where: AudioPlaybackLogWhereUniqueInput
+    create: XOR<AudioPlaybackLogCreateWithoutUserInput, AudioPlaybackLogUncheckedCreateWithoutUserInput>
+  }
+
+  export type AudioPlaybackLogCreateManyUserInputEnvelope = {
+    data: AudioPlaybackLogCreateManyUserInput | AudioPlaybackLogCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AuditLogCreateWithoutAdminUserInput = {
+    auditLogId?: bigint | number
+    resource: string
+    action: string
+    changes?: string | null
+    metadata?: string | null
+    timestamp?: Date | string
+    targetUser?: UserCreateNestedOneWithoutTargetAuditsInput
+  }
+
+  export type AuditLogUncheckedCreateWithoutAdminUserInput = {
+    auditLogId?: bigint | number
+    targetUserId?: bigint | number | null
+    resource: string
+    action: string
+    changes?: string | null
+    metadata?: string | null
+    timestamp?: Date | string
+  }
+
+  export type AuditLogCreateOrConnectWithoutAdminUserInput = {
+    where: AuditLogWhereUniqueInput
+    create: XOR<AuditLogCreateWithoutAdminUserInput, AuditLogUncheckedCreateWithoutAdminUserInput>
+  }
+
+  export type AuditLogCreateManyAdminUserInputEnvelope = {
+    data: AuditLogCreateManyAdminUserInput | AuditLogCreateManyAdminUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AuditLogCreateWithoutTargetUserInput = {
+    auditLogId?: bigint | number
+    resource: string
+    action: string
+    changes?: string | null
+    metadata?: string | null
+    timestamp?: Date | string
+    adminUser?: UserCreateNestedOneWithoutAdminAuditsInput
+  }
+
+  export type AuditLogUncheckedCreateWithoutTargetUserInput = {
+    auditLogId?: bigint | number
+    adminUserId?: bigint | number | null
+    resource: string
+    action: string
+    changes?: string | null
+    metadata?: string | null
+    timestamp?: Date | string
+  }
+
+  export type AuditLogCreateOrConnectWithoutTargetUserInput = {
+    where: AuditLogWhereUniqueInput
+    create: XOR<AuditLogCreateWithoutTargetUserInput, AuditLogUncheckedCreateWithoutTargetUserInput>
+  }
+
+  export type AuditLogCreateManyTargetUserInputEnvelope = {
+    data: AuditLogCreateManyTargetUserInput | AuditLogCreateManyTargetUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PasswordResetTokenCreateWithoutUserInput = {
+    passwordResetId?: bigint | number
+    token: string
+    createdAt?: Date | string
+    expiresAt: Date | string
+  }
+
+  export type PasswordResetTokenUncheckedCreateWithoutUserInput = {
+    passwordResetId?: bigint | number
+    token: string
+    createdAt?: Date | string
+    expiresAt: Date | string
+  }
+
+  export type PasswordResetTokenCreateOrConnectWithoutUserInput = {
+    where: PasswordResetTokenWhereUniqueInput
+    create: XOR<PasswordResetTokenCreateWithoutUserInput, PasswordResetTokenUncheckedCreateWithoutUserInput>
+  }
+
+  export type PasswordResetTokenCreateManyUserInputEnvelope = {
+    data: PasswordResetTokenCreateManyUserInput | PasswordResetTokenCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type EmailVerificationTokenCreateWithoutUserInput = {
+    emailVerificationId?: bigint | number
+    token: string
+    createdAt?: Date | string
+    expiresAt: Date | string
+  }
+
+  export type EmailVerificationTokenUncheckedCreateWithoutUserInput = {
+    emailVerificationId?: bigint | number
+    token: string
+    createdAt?: Date | string
+    expiresAt: Date | string
+  }
+
+  export type EmailVerificationTokenCreateOrConnectWithoutUserInput = {
+    where: EmailVerificationTokenWhereUniqueInput
+    create: XOR<EmailVerificationTokenCreateWithoutUserInput, EmailVerificationTokenUncheckedCreateWithoutUserInput>
+  }
+
+  export type EmailVerificationTokenCreateManyUserInputEnvelope = {
+    data: EmailVerificationTokenCreateManyUserInput | EmailVerificationTokenCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserBadgeCreateWithoutUserInput = {
+    createdAt?: Date | string | null
+    badge: BadgeCreateNestedOneWithoutUserBadgesInput
+  }
+
+  export type UserBadgeUncheckedCreateWithoutUserInput = {
+    badgeId: bigint | number
+    createdAt?: Date | string | null
+  }
+
+  export type UserBadgeCreateOrConnectWithoutUserInput = {
+    where: UserBadgeWhereUniqueInput
+    create: XOR<UserBadgeCreateWithoutUserInput, UserBadgeUncheckedCreateWithoutUserInput>
+  }
+
+  export type UserBadgeCreateManyUserInputEnvelope = {
+    data: UserBadgeCreateManyUserInput | UserBadgeCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type StatusUpsertWithoutUsersInput = {
+    update: XOR<StatusUpdateWithoutUsersInput, StatusUncheckedUpdateWithoutUsersInput>
     create: XOR<StatusCreateWithoutUsersInput, StatusUncheckedCreateWithoutUsersInput>
+    where?: StatusWhereInput
   }
 
-  export type UserRoleCreateWithoutUserInput = {
-    createdAt?: Date | string | null
-    role: RoleCreateNestedOneWithoutUserRolesInput
+  export type StatusUpdateToOneWithWhereWithoutUsersInput = {
+    where?: StatusWhereInput
+    data: XOR<StatusUpdateWithoutUsersInput, StatusUncheckedUpdateWithoutUsersInput>
   }
 
-  export type UserRoleUncheckedCreateWithoutUserInput = {
-    roleId: number
-    createdAt?: Date | string | null
+  export type StatusUpdateWithoutUsersInput = {
+    statusName?: StringFieldUpdateOperationsInput | string
+    languages?: LanguageUpdateManyWithoutStatusNestedInput
+    exhibitions?: ExhibitionUpdateManyWithoutStatusNestedInput
+    exhibits?: ExhibitUpdateManyWithoutStatusNestedInput
   }
 
-  export type UserRoleCreateOrConnectWithoutUserInput = {
+  export type StatusUncheckedUpdateWithoutUsersInput = {
+    statusId?: IntFieldUpdateOperationsInput | number
+    statusName?: StringFieldUpdateOperationsInput | string
+    languages?: LanguageUncheckedUpdateManyWithoutStatusNestedInput
+    exhibitions?: ExhibitionUncheckedUpdateManyWithoutStatusNestedInput
+    exhibits?: ExhibitUncheckedUpdateManyWithoutStatusNestedInput
+  }
+
+  export type FeedbackUpsertWithWhereUniqueWithoutUserInput = {
+    where: FeedbackWhereUniqueInput
+    update: XOR<FeedbackUpdateWithoutUserInput, FeedbackUncheckedUpdateWithoutUserInput>
+    create: XOR<FeedbackCreateWithoutUserInput, FeedbackUncheckedCreateWithoutUserInput>
+  }
+
+  export type FeedbackUpdateWithWhereUniqueWithoutUserInput = {
+    where: FeedbackWhereUniqueInput
+    data: XOR<FeedbackUpdateWithoutUserInput, FeedbackUncheckedUpdateWithoutUserInput>
+  }
+
+  export type FeedbackUpdateManyWithWhereWithoutUserInput = {
+    where: FeedbackScalarWhereInput
+    data: XOR<FeedbackUpdateManyMutationInput, FeedbackUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type UserRoleUpsertWithWhereUniqueWithoutUserInput = {
     where: UserRoleWhereUniqueInput
+    update: XOR<UserRoleUpdateWithoutUserInput, UserRoleUncheckedUpdateWithoutUserInput>
     create: XOR<UserRoleCreateWithoutUserInput, UserRoleUncheckedCreateWithoutUserInput>
   }
 
-  export type UserRoleCreateManyUserInputEnvelope = {
-    data: UserRoleCreateManyUserInput | UserRoleCreateManyUserInput[]
-    skipDuplicates?: boolean
+  export type UserRoleUpdateWithWhereUniqueWithoutUserInput = {
+    where: UserRoleWhereUniqueInput
+    data: XOR<UserRoleUpdateWithoutUserInput, UserRoleUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserRoleUpdateManyWithWhereWithoutUserInput = {
+    where: UserRoleScalarWhereInput
+    data: XOR<UserRoleUpdateManyMutationInput, UserRoleUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type SessionUpsertWithWhereUniqueWithoutUserInput = {
+    where: SessionWhereUniqueInput
+    update: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
+    create: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput>
+  }
+
+  export type SessionUpdateWithWhereUniqueWithoutUserInput = {
+    where: SessionWhereUniqueInput
+    data: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
+  }
+
+  export type SessionUpdateManyWithWhereWithoutUserInput = {
+    where: SessionScalarWhereInput
+    data: XOR<SessionUpdateManyMutationInput, SessionUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type SessionScalarWhereInput = {
+    AND?: SessionScalarWhereInput | SessionScalarWhereInput[]
+    OR?: SessionScalarWhereInput[]
+    NOT?: SessionScalarWhereInput | SessionScalarWhereInput[]
+    sessionId?: UuidFilter<"Session"> | string
+    userId?: BigIntFilter<"Session"> | bigint | number
+    createdAt?: DateTimeNullableFilter<"Session"> | Date | string | null
+  }
+
+  export type SubtitleUpsertWithWhereUniqueWithoutUserInput = {
+    where: SubtitleWhereUniqueInput
+    update: XOR<SubtitleUpdateWithoutUserInput, SubtitleUncheckedUpdateWithoutUserInput>
+    create: XOR<SubtitleCreateWithoutUserInput, SubtitleUncheckedCreateWithoutUserInput>
+  }
+
+  export type SubtitleUpdateWithWhereUniqueWithoutUserInput = {
+    where: SubtitleWhereUniqueInput
+    data: XOR<SubtitleUpdateWithoutUserInput, SubtitleUncheckedUpdateWithoutUserInput>
+  }
+
+  export type SubtitleUpdateManyWithWhereWithoutUserInput = {
+    where: SubtitleScalarWhereInput
+    data: XOR<SubtitleUpdateManyMutationInput, SubtitleUncheckedUpdateManyWithoutUserInput>
   }
 
   export type AudioPlaybackLogUpsertWithWhereUniqueWithoutUserInput = {
@@ -30827,7 +33821,7 @@ export namespace Prisma {
     action?: StringFilter<"AuditLog"> | string
     changes?: StringNullableFilter<"AuditLog"> | string | null
     metadata?: StringNullableFilter<"AuditLog"> | string | null
-    timestamp?: DateTimeNullableFilter<"AuditLog"> | Date | string | null
+    timestamp?: DateTimeFilter<"AuditLog"> | Date | string
   }
 
   export type AuditLogUpsertWithWhereUniqueWithoutTargetUserInput = {
@@ -30844,49 +33838,6 @@ export namespace Prisma {
   export type AuditLogUpdateManyWithWhereWithoutTargetUserInput = {
     where: AuditLogScalarWhereInput
     data: XOR<AuditLogUpdateManyMutationInput, AuditLogUncheckedUpdateManyWithoutTargetUserInput>
-  }
-
-  export type EmailVerificationTokenUpsertWithWhereUniqueWithoutUserInput = {
-    where: EmailVerificationTokenWhereUniqueInput
-    update: XOR<EmailVerificationTokenUpdateWithoutUserInput, EmailVerificationTokenUncheckedUpdateWithoutUserInput>
-    create: XOR<EmailVerificationTokenCreateWithoutUserInput, EmailVerificationTokenUncheckedCreateWithoutUserInput>
-  }
-
-  export type EmailVerificationTokenUpdateWithWhereUniqueWithoutUserInput = {
-    where: EmailVerificationTokenWhereUniqueInput
-    data: XOR<EmailVerificationTokenUpdateWithoutUserInput, EmailVerificationTokenUncheckedUpdateWithoutUserInput>
-  }
-
-  export type EmailVerificationTokenUpdateManyWithWhereWithoutUserInput = {
-    where: EmailVerificationTokenScalarWhereInput
-    data: XOR<EmailVerificationTokenUpdateManyMutationInput, EmailVerificationTokenUncheckedUpdateManyWithoutUserInput>
-  }
-
-  export type EmailVerificationTokenScalarWhereInput = {
-    AND?: EmailVerificationTokenScalarWhereInput | EmailVerificationTokenScalarWhereInput[]
-    OR?: EmailVerificationTokenScalarWhereInput[]
-    NOT?: EmailVerificationTokenScalarWhereInput | EmailVerificationTokenScalarWhereInput[]
-    emailVerificationId?: BigIntFilter<"EmailVerificationToken"> | bigint | number
-    userId?: BigIntFilter<"EmailVerificationToken"> | bigint | number
-    token?: StringFilter<"EmailVerificationToken"> | string
-    createdAt?: DateTimeNullableFilter<"EmailVerificationToken"> | Date | string | null
-    expiresAt?: DateTimeFilter<"EmailVerificationToken"> | Date | string
-  }
-
-  export type FeedbackUpsertWithWhereUniqueWithoutUserInput = {
-    where: FeedbackWhereUniqueInput
-    update: XOR<FeedbackUpdateWithoutUserInput, FeedbackUncheckedUpdateWithoutUserInput>
-    create: XOR<FeedbackCreateWithoutUserInput, FeedbackUncheckedCreateWithoutUserInput>
-  }
-
-  export type FeedbackUpdateWithWhereUniqueWithoutUserInput = {
-    where: FeedbackWhereUniqueInput
-    data: XOR<FeedbackUpdateWithoutUserInput, FeedbackUncheckedUpdateWithoutUserInput>
-  }
-
-  export type FeedbackUpdateManyWithWhereWithoutUserInput = {
-    where: FeedbackScalarWhereInput
-    data: XOR<FeedbackUpdateManyMutationInput, FeedbackUncheckedUpdateManyWithoutUserInput>
   }
 
   export type PasswordResetTokenUpsertWithWhereUniqueWithoutUserInput = {
@@ -30912,91 +33863,107 @@ export namespace Prisma {
     passwordResetId?: BigIntFilter<"PasswordResetToken"> | bigint | number
     userId?: BigIntFilter<"PasswordResetToken"> | bigint | number
     token?: StringFilter<"PasswordResetToken"> | string
-    createdAt?: DateTimeNullableFilter<"PasswordResetToken"> | Date | string | null
+    createdAt?: DateTimeFilter<"PasswordResetToken"> | Date | string
     expiresAt?: DateTimeFilter<"PasswordResetToken"> | Date | string
   }
 
-  export type SessionUpsertWithWhereUniqueWithoutUserInput = {
-    where: SessionWhereUniqueInput
-    update: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
-    create: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput>
+  export type EmailVerificationTokenUpsertWithWhereUniqueWithoutUserInput = {
+    where: EmailVerificationTokenWhereUniqueInput
+    update: XOR<EmailVerificationTokenUpdateWithoutUserInput, EmailVerificationTokenUncheckedUpdateWithoutUserInput>
+    create: XOR<EmailVerificationTokenCreateWithoutUserInput, EmailVerificationTokenUncheckedCreateWithoutUserInput>
   }
 
-  export type SessionUpdateWithWhereUniqueWithoutUserInput = {
-    where: SessionWhereUniqueInput
-    data: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
+  export type EmailVerificationTokenUpdateWithWhereUniqueWithoutUserInput = {
+    where: EmailVerificationTokenWhereUniqueInput
+    data: XOR<EmailVerificationTokenUpdateWithoutUserInput, EmailVerificationTokenUncheckedUpdateWithoutUserInput>
   }
 
-  export type SessionUpdateManyWithWhereWithoutUserInput = {
-    where: SessionScalarWhereInput
-    data: XOR<SessionUpdateManyMutationInput, SessionUncheckedUpdateManyWithoutUserInput>
+  export type EmailVerificationTokenUpdateManyWithWhereWithoutUserInput = {
+    where: EmailVerificationTokenScalarWhereInput
+    data: XOR<EmailVerificationTokenUpdateManyMutationInput, EmailVerificationTokenUncheckedUpdateManyWithoutUserInput>
   }
 
-  export type SessionScalarWhereInput = {
-    AND?: SessionScalarWhereInput | SessionScalarWhereInput[]
-    OR?: SessionScalarWhereInput[]
-    NOT?: SessionScalarWhereInput | SessionScalarWhereInput[]
-    sessionId?: UuidFilter<"Session"> | string
-    userId?: BigIntFilter<"Session"> | bigint | number
-    createdAt?: DateTimeNullableFilter<"Session"> | Date | string | null
+  export type EmailVerificationTokenScalarWhereInput = {
+    AND?: EmailVerificationTokenScalarWhereInput | EmailVerificationTokenScalarWhereInput[]
+    OR?: EmailVerificationTokenScalarWhereInput[]
+    NOT?: EmailVerificationTokenScalarWhereInput | EmailVerificationTokenScalarWhereInput[]
+    emailVerificationId?: BigIntFilter<"EmailVerificationToken"> | bigint | number
+    userId?: BigIntFilter<"EmailVerificationToken"> | bigint | number
+    token?: StringFilter<"EmailVerificationToken"> | string
+    createdAt?: DateTimeFilter<"EmailVerificationToken"> | Date | string
+    expiresAt?: DateTimeFilter<"EmailVerificationToken"> | Date | string
   }
 
-  export type SubtitleUpsertWithWhereUniqueWithoutUserInput = {
-    where: SubtitleWhereUniqueInput
-    update: XOR<SubtitleUpdateWithoutUserInput, SubtitleUncheckedUpdateWithoutUserInput>
-    create: XOR<SubtitleCreateWithoutUserInput, SubtitleUncheckedCreateWithoutUserInput>
+  export type UserBadgeUpsertWithWhereUniqueWithoutUserInput = {
+    where: UserBadgeWhereUniqueInput
+    update: XOR<UserBadgeUpdateWithoutUserInput, UserBadgeUncheckedUpdateWithoutUserInput>
+    create: XOR<UserBadgeCreateWithoutUserInput, UserBadgeUncheckedCreateWithoutUserInput>
   }
 
-  export type SubtitleUpdateWithWhereUniqueWithoutUserInput = {
-    where: SubtitleWhereUniqueInput
-    data: XOR<SubtitleUpdateWithoutUserInput, SubtitleUncheckedUpdateWithoutUserInput>
+  export type UserBadgeUpdateWithWhereUniqueWithoutUserInput = {
+    where: UserBadgeWhereUniqueInput
+    data: XOR<UserBadgeUpdateWithoutUserInput, UserBadgeUncheckedUpdateWithoutUserInput>
   }
 
-  export type SubtitleUpdateManyWithWhereWithoutUserInput = {
-    where: SubtitleScalarWhereInput
-    data: XOR<SubtitleUpdateManyMutationInput, SubtitleUncheckedUpdateManyWithoutUserInput>
+  export type UserBadgeUpdateManyWithWhereWithoutUserInput = {
+    where: UserBadgeScalarWhereInput
+    data: XOR<UserBadgeUpdateManyMutationInput, UserBadgeUncheckedUpdateManyWithoutUserInput>
   }
 
-  export type StatusUpsertWithoutUsersInput = {
-    update: XOR<StatusUpdateWithoutUsersInput, StatusUncheckedUpdateWithoutUsersInput>
-    create: XOR<StatusCreateWithoutUsersInput, StatusUncheckedCreateWithoutUsersInput>
-    where?: StatusWhereInput
+  export type UserBadgeScalarWhereInput = {
+    AND?: UserBadgeScalarWhereInput | UserBadgeScalarWhereInput[]
+    OR?: UserBadgeScalarWhereInput[]
+    NOT?: UserBadgeScalarWhereInput | UserBadgeScalarWhereInput[]
+    userId?: BigIntFilter<"UserBadge"> | bigint | number
+    badgeId?: BigIntFilter<"UserBadge"> | bigint | number
+    createdAt?: DateTimeNullableFilter<"UserBadge"> | Date | string | null
   }
 
-  export type StatusUpdateToOneWithWhereWithoutUsersInput = {
-    where?: StatusWhereInput
-    data: XOR<StatusUpdateWithoutUsersInput, StatusUncheckedUpdateWithoutUsersInput>
+  export type UserCreateWithoutRolesInput = {
+    userId?: bigint | number
+    username: string
+    email: string
+    passwordHash: string
+    emailVerified?: boolean
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    status?: StatusCreateNestedOneWithoutUsersInput
+    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    subtitles?: SubtitleCreateNestedManyWithoutUserInput
+    playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
+    adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
+    targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
+    userBadges?: UserBadgeCreateNestedManyWithoutUserInput
   }
 
-  export type StatusUpdateWithoutUsersInput = {
-    statusName?: StringFieldUpdateOperationsInput | string
-    exhibits?: ExhibitUpdateManyWithoutStatusNestedInput
-    exhibitions?: ExhibitionUpdateManyWithoutStatusNestedInput
-    languages?: LanguageUpdateManyWithoutStatusNestedInput
+  export type UserUncheckedCreateWithoutRolesInput = {
+    userId?: bigint | number
+    username: string
+    email: string
+    passwordHash: string
+    emailVerified?: boolean
+    statusId?: number | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    subtitles?: SubtitleUncheckedCreateNestedManyWithoutUserInput
+    playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
+    adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
+    targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+    userBadges?: UserBadgeUncheckedCreateNestedManyWithoutUserInput
   }
 
-  export type StatusUncheckedUpdateWithoutUsersInput = {
-    statusId?: IntFieldUpdateOperationsInput | number
-    statusName?: StringFieldUpdateOperationsInput | string
-    exhibits?: ExhibitUncheckedUpdateManyWithoutStatusNestedInput
-    exhibitions?: ExhibitionUncheckedUpdateManyWithoutStatusNestedInput
-    languages?: LanguageUncheckedUpdateManyWithoutStatusNestedInput
-  }
-
-  export type UserRoleUpsertWithWhereUniqueWithoutUserInput = {
-    where: UserRoleWhereUniqueInput
-    update: XOR<UserRoleUpdateWithoutUserInput, UserRoleUncheckedUpdateWithoutUserInput>
-    create: XOR<UserRoleCreateWithoutUserInput, UserRoleUncheckedCreateWithoutUserInput>
-  }
-
-  export type UserRoleUpdateWithWhereUniqueWithoutUserInput = {
-    where: UserRoleWhereUniqueInput
-    data: XOR<UserRoleUpdateWithoutUserInput, UserRoleUncheckedUpdateWithoutUserInput>
-  }
-
-  export type UserRoleUpdateManyWithWhereWithoutUserInput = {
-    where: UserRoleScalarWhereInput
-    data: XOR<UserRoleUpdateManyMutationInput, UserRoleUncheckedUpdateManyWithoutUserInput>
+  export type UserCreateOrConnectWithoutRolesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutRolesInput, UserUncheckedCreateWithoutRolesInput>
   }
 
   export type RoleCreateWithoutUserRolesInput = {
@@ -31021,49 +33988,57 @@ export namespace Prisma {
     create: XOR<RoleCreateWithoutUserRolesInput, RoleUncheckedCreateWithoutUserRolesInput>
   }
 
-  export type UserCreateWithoutRolesInput = {
-    userId?: bigint | number
-    username: string
-    email: string
-    passwordHash: string
-    emailVerified?: boolean | null
-    lastLoginAt?: Date | string | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
-    adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
-    targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
-    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
-    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
-    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
-    subtitles?: SubtitleCreateNestedManyWithoutUserInput
-    status?: StatusCreateNestedOneWithoutUsersInput
-  }
-
-  export type UserUncheckedCreateWithoutRolesInput = {
-    userId?: bigint | number
-    username: string
-    email: string
-    passwordHash: string
-    emailVerified?: boolean | null
-    statusId?: number | null
-    lastLoginAt?: Date | string | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
-    adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
-    targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
-    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
-    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
-    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
-    subtitles?: SubtitleUncheckedCreateNestedManyWithoutUserInput
-  }
-
-  export type UserCreateOrConnectWithoutRolesInput = {
-    where: UserWhereUniqueInput
+  export type UserUpsertWithoutRolesInput = {
+    update: XOR<UserUpdateWithoutRolesInput, UserUncheckedUpdateWithoutRolesInput>
     create: XOR<UserCreateWithoutRolesInput, UserUncheckedCreateWithoutRolesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutRolesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutRolesInput, UserUncheckedUpdateWithoutRolesInput>
+  }
+
+  export type UserUpdateWithoutRolesInput = {
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StatusUpdateOneWithoutUsersNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    subtitles?: SubtitleUpdateManyWithoutUserNestedInput
+    playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
+    adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
+    targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
+    userBadges?: UserBadgeUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutRolesInput = {
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    statusId?: NullableIntFieldUpdateOperationsInput | number | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    subtitles?: SubtitleUncheckedUpdateManyWithoutUserNestedInput
+    playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
+    adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
+    targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+    userBadges?: UserBadgeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type RoleUpsertWithoutUserRolesInput = {
@@ -31094,75 +34069,25 @@ export namespace Prisma {
     rolePermissions?: RolePermissionUncheckedUpdateManyWithoutRoleNestedInput
   }
 
-  export type UserUpsertWithoutRolesInput = {
-    update: XOR<UserUpdateWithoutRolesInput, UserUncheckedUpdateWithoutRolesInput>
-    create: XOR<UserCreateWithoutRolesInput, UserUncheckedCreateWithoutRolesInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutRolesInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutRolesInput, UserUncheckedUpdateWithoutRolesInput>
-  }
-
-  export type UserUpdateWithoutRolesInput = {
-    userId?: BigIntFieldUpdateOperationsInput | bigint | number
-    username?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    passwordHash?: StringFieldUpdateOperationsInput | string
-    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
-    adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
-    targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
-    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
-    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
-    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
-    subtitles?: SubtitleUpdateManyWithoutUserNestedInput
-    status?: StatusUpdateOneWithoutUsersNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutRolesInput = {
-    userId?: BigIntFieldUpdateOperationsInput | bigint | number
-    username?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    passwordHash?: StringFieldUpdateOperationsInput | string
-    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    statusId?: NullableIntFieldUpdateOperationsInput | number | null
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
-    adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
-    targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
-    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
-    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
-    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
-    subtitles?: SubtitleUncheckedUpdateManyWithoutUserNestedInput
-  }
-
   export type UserCreateWithoutAdminAuditsInput = {
     userId?: bigint | number
     username: string
     email: string
     passwordHash: string
-    emailVerified?: boolean | null
+    emailVerified?: boolean
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
-    targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
-    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
+    status?: StatusCreateNestedOneWithoutUsersInput
     feedbacks?: FeedbackCreateNestedManyWithoutUserInput
-    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    roles?: UserRoleCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     subtitles?: SubtitleCreateNestedManyWithoutUserInput
-    status?: StatusCreateNestedOneWithoutUsersInput
-    roles?: UserRoleCreateNestedManyWithoutUserInput
+    playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
+    targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
+    userBadges?: UserBadgeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAdminAuditsInput = {
@@ -31170,19 +34095,20 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
-    emailVerified?: boolean | null
+    emailVerified?: boolean
     statusId?: number | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
-    targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
-    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
-    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     subtitles?: SubtitleUncheckedCreateNestedManyWithoutUserInput
-    roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
+    targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+    userBadges?: UserBadgeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAdminAuditsInput = {
@@ -31195,19 +34121,20 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
-    emailVerified?: boolean | null
+    emailVerified?: boolean
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
-    adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
-    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
+    status?: StatusCreateNestedOneWithoutUsersInput
     feedbacks?: FeedbackCreateNestedManyWithoutUserInput
-    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    roles?: UserRoleCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     subtitles?: SubtitleCreateNestedManyWithoutUserInput
-    status?: StatusCreateNestedOneWithoutUsersInput
-    roles?: UserRoleCreateNestedManyWithoutUserInput
+    playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
+    adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
+    userBadges?: UserBadgeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTargetAuditsInput = {
@@ -31215,19 +34142,20 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
-    emailVerified?: boolean | null
+    emailVerified?: boolean
     statusId?: number | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
-    adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
-    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
-    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     subtitles?: SubtitleUncheckedCreateNestedManyWithoutUserInput
-    roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
+    adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+    userBadges?: UserBadgeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTargetAuditsInput = {
@@ -31251,19 +34179,20 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
-    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
-    targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
-    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
+    status?: StatusUpdateOneWithoutUsersNestedInput
     feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
-    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    roles?: UserRoleUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     subtitles?: SubtitleUpdateManyWithoutUserNestedInput
-    status?: StatusUpdateOneWithoutUsersNestedInput
-    roles?: UserRoleUpdateManyWithoutUserNestedInput
+    playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
+    targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
+    userBadges?: UserBadgeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAdminAuditsInput = {
@@ -31271,19 +34200,20 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
-    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
-    targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
-    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
-    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     subtitles?: SubtitleUncheckedUpdateManyWithoutUserNestedInput
-    roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
+    targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+    userBadges?: UserBadgeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutTargetAuditsInput = {
@@ -31302,19 +34232,20 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
-    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
-    adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
-    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
+    status?: StatusUpdateOneWithoutUsersNestedInput
     feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
-    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    roles?: UserRoleUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     subtitles?: SubtitleUpdateManyWithoutUserNestedInput
-    status?: StatusUpdateOneWithoutUsersNestedInput
-    roles?: UserRoleUpdateManyWithoutUserNestedInput
+    playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
+    adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
+    userBadges?: UserBadgeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTargetAuditsInput = {
@@ -31322,19 +34253,20 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
-    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
-    adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
-    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
-    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     subtitles?: SubtitleUncheckedUpdateManyWithoutUserNestedInput
-    roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
+    adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+    userBadges?: UserBadgeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutPasswordResetTokensInput = {
@@ -31342,19 +34274,20 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
-    emailVerified?: boolean | null
+    emailVerified?: boolean
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    status?: StatusCreateNestedOneWithoutUsersInput
+    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
+    roles?: UserRoleCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    subtitles?: SubtitleCreateNestedManyWithoutUserInput
     playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
-    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
-    subtitles?: SubtitleCreateNestedManyWithoutUserInput
-    status?: StatusCreateNestedOneWithoutUsersInput
-    roles?: UserRoleCreateNestedManyWithoutUserInput
+    userBadges?: UserBadgeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPasswordResetTokensInput = {
@@ -31362,19 +34295,20 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
-    emailVerified?: boolean | null
+    emailVerified?: boolean
     statusId?: number | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
+    roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    subtitles?: SubtitleUncheckedCreateNestedManyWithoutUserInput
     playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
-    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
-    subtitles?: SubtitleUncheckedCreateNestedManyWithoutUserInput
-    roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    userBadges?: UserBadgeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutPasswordResetTokensInput = {
@@ -31398,19 +34332,20 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
-    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StatusUpdateOneWithoutUsersNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
+    roles?: UserRoleUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    subtitles?: SubtitleUpdateManyWithoutUserNestedInput
     playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
-    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
-    subtitles?: SubtitleUpdateManyWithoutUserNestedInput
-    status?: StatusUpdateOneWithoutUsersNestedInput
-    roles?: UserRoleUpdateManyWithoutUserNestedInput
+    userBadges?: UserBadgeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPasswordResetTokensInput = {
@@ -31418,19 +34353,20 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
-    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
+    roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    subtitles?: SubtitleUncheckedUpdateManyWithoutUserNestedInput
     playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
-    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
-    subtitles?: SubtitleUncheckedUpdateManyWithoutUserNestedInput
-    roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    userBadges?: UserBadgeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutEmailVerificationTokensInput = {
@@ -31438,19 +34374,20 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
-    emailVerified?: boolean | null
+    emailVerified?: boolean
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    status?: StatusCreateNestedOneWithoutUsersInput
+    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
+    roles?: UserRoleCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    subtitles?: SubtitleCreateNestedManyWithoutUserInput
     playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
-    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
-    subtitles?: SubtitleCreateNestedManyWithoutUserInput
-    status?: StatusCreateNestedOneWithoutUsersInput
-    roles?: UserRoleCreateNestedManyWithoutUserInput
+    userBadges?: UserBadgeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutEmailVerificationTokensInput = {
@@ -31458,19 +34395,20 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
-    emailVerified?: boolean | null
+    emailVerified?: boolean
     statusId?: number | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
+    roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    subtitles?: SubtitleUncheckedCreateNestedManyWithoutUserInput
     playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
-    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
-    subtitles?: SubtitleUncheckedCreateNestedManyWithoutUserInput
-    roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    userBadges?: UserBadgeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutEmailVerificationTokensInput = {
@@ -31494,19 +34432,20 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
-    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StatusUpdateOneWithoutUsersNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
+    roles?: UserRoleUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    subtitles?: SubtitleUpdateManyWithoutUserNestedInput
     playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
-    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
-    subtitles?: SubtitleUpdateManyWithoutUserNestedInput
-    status?: StatusUpdateOneWithoutUsersNestedInput
-    roles?: UserRoleUpdateManyWithoutUserNestedInput
+    userBadges?: UserBadgeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutEmailVerificationTokensInput = {
@@ -31514,19 +34453,284 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
-    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
+    roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    subtitles?: SubtitleUncheckedUpdateManyWithoutUserNestedInput
     playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
-    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    userBadges?: UserBadgeUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type ExhibitCreateWithoutBadgeInput = {
+    exhibitId?: bigint | number
+    title: string
+    description?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
+    status?: StatusCreateNestedOneWithoutExhibitsInput
+    audio?: AudioCreateNestedManyWithoutExhibitInput
+    feedbacks?: FeedbackCreateNestedManyWithoutExhibitInput
+    images?: ImageCreateNestedManyWithoutExhibitInput
+    qrCodes?: QRCodeCreateNestedManyWithoutExhibitInput
+  }
+
+  export type ExhibitUncheckedCreateWithoutBadgeInput = {
+    exhibitId?: bigint | number
+    exhibitionId: bigint | number
+    title: string
+    description?: string | null
+    statusId?: number | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutExhibitInput
+    images?: ImageUncheckedCreateNestedManyWithoutExhibitInput
+    qrCodes?: QRCodeUncheckedCreateNestedManyWithoutExhibitInput
+  }
+
+  export type ExhibitCreateOrConnectWithoutBadgeInput = {
+    where: ExhibitWhereUniqueInput
+    create: XOR<ExhibitCreateWithoutBadgeInput, ExhibitUncheckedCreateWithoutBadgeInput>
+  }
+
+  export type UserBadgeCreateWithoutBadgeInput = {
+    createdAt?: Date | string | null
+    user: UserCreateNestedOneWithoutUserBadgesInput
+  }
+
+  export type UserBadgeUncheckedCreateWithoutBadgeInput = {
+    userId: bigint | number
+    createdAt?: Date | string | null
+  }
+
+  export type UserBadgeCreateOrConnectWithoutBadgeInput = {
+    where: UserBadgeWhereUniqueInput
+    create: XOR<UserBadgeCreateWithoutBadgeInput, UserBadgeUncheckedCreateWithoutBadgeInput>
+  }
+
+  export type UserBadgeCreateManyBadgeInputEnvelope = {
+    data: UserBadgeCreateManyBadgeInput | UserBadgeCreateManyBadgeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ExhibitUpsertWithoutBadgeInput = {
+    update: XOR<ExhibitUpdateWithoutBadgeInput, ExhibitUncheckedUpdateWithoutBadgeInput>
+    create: XOR<ExhibitCreateWithoutBadgeInput, ExhibitUncheckedCreateWithoutBadgeInput>
+    where?: ExhibitWhereInput
+  }
+
+  export type ExhibitUpdateToOneWithWhereWithoutBadgeInput = {
+    where?: ExhibitWhereInput
+    data: XOR<ExhibitUpdateWithoutBadgeInput, ExhibitUncheckedUpdateWithoutBadgeInput>
+  }
+
+  export type ExhibitUpdateWithoutBadgeInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
+    status?: StatusUpdateOneWithoutExhibitsNestedInput
+    audio?: AudioUpdateManyWithoutExhibitNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutExhibitNestedInput
+    images?: ImageUpdateManyWithoutExhibitNestedInput
+    qrCodes?: QRCodeUpdateManyWithoutExhibitNestedInput
+  }
+
+  export type ExhibitUncheckedUpdateWithoutBadgeInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    statusId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutExhibitNestedInput
+    images?: ImageUncheckedUpdateManyWithoutExhibitNestedInput
+    qrCodes?: QRCodeUncheckedUpdateManyWithoutExhibitNestedInput
+  }
+
+  export type UserBadgeUpsertWithWhereUniqueWithoutBadgeInput = {
+    where: UserBadgeWhereUniqueInput
+    update: XOR<UserBadgeUpdateWithoutBadgeInput, UserBadgeUncheckedUpdateWithoutBadgeInput>
+    create: XOR<UserBadgeCreateWithoutBadgeInput, UserBadgeUncheckedCreateWithoutBadgeInput>
+  }
+
+  export type UserBadgeUpdateWithWhereUniqueWithoutBadgeInput = {
+    where: UserBadgeWhereUniqueInput
+    data: XOR<UserBadgeUpdateWithoutBadgeInput, UserBadgeUncheckedUpdateWithoutBadgeInput>
+  }
+
+  export type UserBadgeUpdateManyWithWhereWithoutBadgeInput = {
+    where: UserBadgeScalarWhereInput
+    data: XOR<UserBadgeUpdateManyMutationInput, UserBadgeUncheckedUpdateManyWithoutBadgeInput>
+  }
+
+  export type UserCreateWithoutUserBadgesInput = {
+    userId?: bigint | number
+    username: string
+    email: string
+    passwordHash: string
+    emailVerified?: boolean
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    status?: StatusCreateNestedOneWithoutUsersInput
+    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
+    roles?: UserRoleCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    subtitles?: SubtitleCreateNestedManyWithoutUserInput
+    playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
+    adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
+    targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutUserBadgesInput = {
+    userId?: bigint | number
+    username: string
+    email: string
+    passwordHash: string
+    emailVerified?: boolean
+    statusId?: number | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
+    roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    subtitles?: SubtitleUncheckedCreateNestedManyWithoutUserInput
+    playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
+    adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
+    targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutUserBadgesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutUserBadgesInput, UserUncheckedCreateWithoutUserBadgesInput>
+  }
+
+  export type BadgeCreateWithoutUserBadgesInput = {
+    badgeId?: bigint | number
+    name?: string | null
+    description?: string | null
+    imageUrl?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    exhibit?: ExhibitCreateNestedOneWithoutBadgeInput
+  }
+
+  export type BadgeUncheckedCreateWithoutUserBadgesInput = {
+    badgeId?: bigint | number
+    name?: string | null
+    description?: string | null
+    imageUrl?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    exhibit?: ExhibitUncheckedCreateNestedOneWithoutBadgeInput
+  }
+
+  export type BadgeCreateOrConnectWithoutUserBadgesInput = {
+    where: BadgeWhereUniqueInput
+    create: XOR<BadgeCreateWithoutUserBadgesInput, BadgeUncheckedCreateWithoutUserBadgesInput>
+  }
+
+  export type UserUpsertWithoutUserBadgesInput = {
+    update: XOR<UserUpdateWithoutUserBadgesInput, UserUncheckedUpdateWithoutUserBadgesInput>
+    create: XOR<UserCreateWithoutUserBadgesInput, UserUncheckedCreateWithoutUserBadgesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutUserBadgesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutUserBadgesInput, UserUncheckedUpdateWithoutUserBadgesInput>
+  }
+
+  export type UserUpdateWithoutUserBadgesInput = {
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StatusUpdateOneWithoutUsersNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
+    roles?: UserRoleUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    subtitles?: SubtitleUpdateManyWithoutUserNestedInput
+    playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
+    adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
+    targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutUserBadgesInput = {
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    statusId?: NullableIntFieldUpdateOperationsInput | number | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
+    roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     subtitles?: SubtitleUncheckedUpdateManyWithoutUserNestedInput
-    roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
+    adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
+    targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type BadgeUpsertWithoutUserBadgesInput = {
+    update: XOR<BadgeUpdateWithoutUserBadgesInput, BadgeUncheckedUpdateWithoutUserBadgesInput>
+    create: XOR<BadgeCreateWithoutUserBadgesInput, BadgeUncheckedCreateWithoutUserBadgesInput>
+    where?: BadgeWhereInput
+  }
+
+  export type BadgeUpdateToOneWithWhereWithoutUserBadgesInput = {
+    where?: BadgeWhereInput
+    data: XOR<BadgeUpdateWithoutUserBadgesInput, BadgeUncheckedUpdateWithoutUserBadgesInput>
+  }
+
+  export type BadgeUpdateWithoutUserBadgesInput = {
+    badgeId?: BigIntFieldUpdateOperationsInput | bigint | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exhibit?: ExhibitUpdateOneWithoutBadgeNestedInput
+  }
+
+  export type BadgeUncheckedUpdateWithoutUserBadgesInput = {
+    badgeId?: BigIntFieldUpdateOperationsInput | bigint | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exhibit?: ExhibitUncheckedUpdateOneWithoutBadgeNestedInput
   }
 
   export type AudioPlaybackLogCreateManyAudioInput = {
@@ -31582,8 +34786,8 @@ export namespace Prisma {
     text?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    user?: UserUpdateOneWithoutSubtitlesNestedInput
     language?: LanguageUpdateOneWithoutSubtitlesNestedInput
+    user?: UserUpdateOneWithoutSubtitlesNestedInput
   }
 
   export type SubtitleUncheckedUpdateWithoutAudioInput = {
@@ -31606,9 +34810,10 @@ export namespace Prisma {
 
   export type ExhibitCreateManyExhibitionInput = {
     exhibitId?: bigint | number
+    badgeId?: bigint | number | null
     title: string
-    statusId?: number | null
     description?: string | null
+    statusId?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
   }
@@ -31619,7 +34824,7 @@ export namespace Prisma {
     title?: string | null
     description?: string | null
     fileUrl?: string | null
-    isPrimary?: boolean | null
+    isPrimary?: boolean
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
   }
@@ -31630,8 +34835,9 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    audio?: AudioUpdateManyWithoutExhibitNestedInput
     status?: StatusUpdateOneWithoutExhibitsNestedInput
+    badge?: BadgeUpdateOneWithoutExhibitNestedInput
+    audio?: AudioUpdateManyWithoutExhibitNestedInput
     feedbacks?: FeedbackUpdateManyWithoutExhibitNestedInput
     images?: ImageUpdateManyWithoutExhibitNestedInput
     qrCodes?: QRCodeUpdateManyWithoutExhibitNestedInput
@@ -31639,9 +34845,10 @@ export namespace Prisma {
 
   export type ExhibitUncheckedUpdateWithoutExhibitionInput = {
     exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
+    badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
-    statusId?: NullableIntFieldUpdateOperationsInput | number | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
@@ -31652,9 +34859,10 @@ export namespace Prisma {
 
   export type ExhibitUncheckedUpdateManyWithoutExhibitionInput = {
     exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
+    badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
-    statusId?: NullableIntFieldUpdateOperationsInput | number | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -31664,7 +34872,7 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    isPrimary?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     exhibit?: ExhibitUpdateOneWithoutImagesNestedInput
@@ -31676,7 +34884,7 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    isPrimary?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -31687,7 +34895,7 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    isPrimary?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -31717,7 +34925,7 @@ export namespace Prisma {
     title?: string | null
     description?: string | null
     fileUrl?: string | null
-    isPrimary?: boolean | null
+    isPrimary?: boolean
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
   }
@@ -31794,7 +35002,7 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    isPrimary?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     exhibition?: ExhibitionUpdateOneWithoutImagesNestedInput
@@ -31806,7 +35014,7 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    isPrimary?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -31817,7 +35025,7 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    isPrimary?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -31973,19 +35181,13 @@ export namespace Prisma {
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type ExhibitCreateManyStatusInput = {
-    exhibitId?: bigint | number
-    exhibitionId?: bigint | number | null
-    title: string
-    description?: string | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-  }
-
-  export type ExhibitionCreateManyStatusInput = {
-    exhibitionId?: bigint | number
-    title: string
-    description?: string | null
+  export type UserCreateManyStatusInput = {
+    userId?: bigint | number
+    username: string
+    email: string
+    passwordHash: string
+    emailVerified?: boolean
+    lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
   }
@@ -31999,76 +35201,73 @@ export namespace Prisma {
     updatedAt?: Date | string | null
   }
 
-  export type UserCreateManyStatusInput = {
-    userId?: bigint | number
-    username: string
-    email: string
-    passwordHash: string
-    emailVerified?: boolean | null
-    lastLoginAt?: Date | string | null
+  export type ExhibitionCreateManyStatusInput = {
+    exhibitionId?: bigint | number
+    title: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ExhibitCreateManyStatusInput = {
+    exhibitId?: bigint | number
+    exhibitionId: bigint | number
+    badgeId?: bigint | number | null
+    title: string
+    description?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
   }
 
-  export type ExhibitUpdateWithoutStatusInput = {
-    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
+  export type UserUpdateWithoutStatusInput = {
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    audio?: AudioUpdateManyWithoutExhibitNestedInput
-    exhibition?: ExhibitionUpdateOneWithoutExhibitsNestedInput
-    feedbacks?: FeedbackUpdateManyWithoutExhibitNestedInput
-    images?: ImageUpdateManyWithoutExhibitNestedInput
-    qrCodes?: QRCodeUpdateManyWithoutExhibitNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
+    roles?: UserRoleUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    subtitles?: SubtitleUpdateManyWithoutUserNestedInput
+    playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
+    adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
+    targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
+    userBadges?: UserBadgeUpdateManyWithoutUserNestedInput
   }
 
-  export type ExhibitUncheckedUpdateWithoutStatusInput = {
-    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
-    exhibitionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
+  export type UserUncheckedUpdateWithoutStatusInput = {
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
-    feedbacks?: FeedbackUncheckedUpdateManyWithoutExhibitNestedInput
-    images?: ImageUncheckedUpdateManyWithoutExhibitNestedInput
-    qrCodes?: QRCodeUncheckedUpdateManyWithoutExhibitNestedInput
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
+    roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    subtitles?: SubtitleUncheckedUpdateManyWithoutUserNestedInput
+    playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
+    adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
+    targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+    userBadges?: UserBadgeUncheckedUpdateManyWithoutUserNestedInput
   }
 
-  export type ExhibitUncheckedUpdateManyWithoutStatusInput = {
-    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
-    exhibitionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
-  export type ExhibitionUpdateWithoutStatusInput = {
-    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    exhibits?: ExhibitUpdateManyWithoutExhibitionNestedInput
-    images?: ImageUpdateManyWithoutExhibitionNestedInput
-  }
-
-  export type ExhibitionUncheckedUpdateWithoutStatusInput = {
-    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    exhibits?: ExhibitUncheckedUpdateManyWithoutExhibitionNestedInput
-    images?: ImageUncheckedUpdateManyWithoutExhibitionNestedInput
-  }
-
-  export type ExhibitionUncheckedUpdateManyWithoutStatusInput = {
-    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
+  export type UserUncheckedUpdateManyWithoutStatusInput = {
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -32104,55 +35303,98 @@ export namespace Prisma {
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type UserUpdateWithoutStatusInput = {
-    userId?: BigIntFieldUpdateOperationsInput | bigint | number
-    username?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    passwordHash?: StringFieldUpdateOperationsInput | string
-    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
-    adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
-    targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
-    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
-    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
-    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
-    subtitles?: SubtitleUpdateManyWithoutUserNestedInput
-    roles?: UserRoleUpdateManyWithoutUserNestedInput
+  export type ExhibitionUpdateWithoutStatusInput = {
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exhibits?: ExhibitUpdateManyWithoutExhibitionNestedInput
+    images?: ImageUpdateManyWithoutExhibitionNestedInput
   }
 
-  export type UserUncheckedUpdateWithoutStatusInput = {
-    userId?: BigIntFieldUpdateOperationsInput | bigint | number
-    username?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    passwordHash?: StringFieldUpdateOperationsInput | string
-    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
-    adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
-    targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
-    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
-    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
-    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
-    subtitles?: SubtitleUncheckedUpdateManyWithoutUserNestedInput
-    roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  export type ExhibitionUncheckedUpdateWithoutStatusInput = {
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exhibits?: ExhibitUncheckedUpdateManyWithoutExhibitionNestedInput
+    images?: ImageUncheckedUpdateManyWithoutExhibitionNestedInput
   }
 
-  export type UserUncheckedUpdateManyWithoutStatusInput = {
-    userId?: BigIntFieldUpdateOperationsInput | bigint | number
-    username?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    passwordHash?: StringFieldUpdateOperationsInput | string
-    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  export type ExhibitionUncheckedUpdateManyWithoutStatusInput = {
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExhibitUpdateWithoutStatusInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
+    badge?: BadgeUpdateOneWithoutExhibitNestedInput
+    audio?: AudioUpdateManyWithoutExhibitNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutExhibitNestedInput
+    images?: ImageUpdateManyWithoutExhibitNestedInput
+    qrCodes?: QRCodeUpdateManyWithoutExhibitNestedInput
+  }
+
+  export type ExhibitUncheckedUpdateWithoutStatusInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutExhibitNestedInput
+    images?: ImageUncheckedUpdateManyWithoutExhibitNestedInput
+    qrCodes?: QRCodeUncheckedUpdateManyWithoutExhibitNestedInput
+  }
+
+  export type ExhibitUncheckedUpdateManyWithoutStatusInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type FeedbackCreateManyUserInput = {
+    feedbackId?: bigint | number
+    exhibitId?: bigint | number | null
+    rating?: number | null
+    description?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+  }
+
+  export type UserRoleCreateManyUserInput = {
+    roleId: number
+    createdAt?: Date | string | null
+  }
+
+  export type SessionCreateManyUserInput = {
+    sessionId?: string
+    createdAt?: Date | string | null
+  }
+
+  export type SubtitleCreateManyUserInput = {
+    subtitleId?: bigint | number
+    audioId?: number | null
+    languageId?: bigint | number | null
+    text?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
   }
 
   export type AudioPlaybackLogCreateManyUserInput = {
@@ -32172,7 +35414,7 @@ export namespace Prisma {
     action: string
     changes?: string | null
     metadata?: string | null
-    timestamp?: Date | string | null
+    timestamp?: Date | string
   }
 
   export type AuditLogCreateManyTargetUserInput = {
@@ -32182,159 +35424,26 @@ export namespace Prisma {
     action: string
     changes?: string | null
     metadata?: string | null
-    timestamp?: Date | string | null
-  }
-
-  export type EmailVerificationTokenCreateManyUserInput = {
-    emailVerificationId?: bigint | number
-    token: string
-    createdAt?: Date | string | null
-    expiresAt: Date | string
-  }
-
-  export type FeedbackCreateManyUserInput = {
-    feedbackId?: bigint | number
-    exhibitId?: bigint | number | null
-    rating?: number | null
-    description?: string | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
+    timestamp?: Date | string
   }
 
   export type PasswordResetTokenCreateManyUserInput = {
     passwordResetId?: bigint | number
     token: string
-    createdAt?: Date | string | null
+    createdAt?: Date | string
     expiresAt: Date | string
   }
 
-  export type SessionCreateManyUserInput = {
-    sessionId?: string
+  export type EmailVerificationTokenCreateManyUserInput = {
+    emailVerificationId?: bigint | number
+    token: string
+    createdAt?: Date | string
+    expiresAt: Date | string
+  }
+
+  export type UserBadgeCreateManyUserInput = {
+    badgeId: bigint | number
     createdAt?: Date | string | null
-  }
-
-  export type SubtitleCreateManyUserInput = {
-    subtitleId?: bigint | number
-    audioId?: number | null
-    languageId?: bigint | number | null
-    text?: NullableJsonNullValueInput | InputJsonValue
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-  }
-
-  export type UserRoleCreateManyUserInput = {
-    roleId: number
-    createdAt?: Date | string | null
-  }
-
-  export type AudioPlaybackLogUpdateWithoutUserInput = {
-    audioStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    audioEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    durationListened?: NullableIntFieldUpdateOperationsInput | number | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    audio?: AudioUpdateOneWithoutPlaybackLogsNestedInput
-  }
-
-  export type AudioPlaybackLogUncheckedUpdateWithoutUserInput = {
-    audioLogsId?: IntFieldUpdateOperationsInput | number
-    audioId?: NullableIntFieldUpdateOperationsInput | number | null
-    audioStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    audioEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    durationListened?: NullableIntFieldUpdateOperationsInput | number | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
-  export type AudioPlaybackLogUncheckedUpdateManyWithoutUserInput = {
-    audioLogsId?: IntFieldUpdateOperationsInput | number
-    audioId?: NullableIntFieldUpdateOperationsInput | number | null
-    audioStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    audioEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    durationListened?: NullableIntFieldUpdateOperationsInput | number | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
-  export type AuditLogUpdateWithoutAdminUserInput = {
-    auditLogId?: BigIntFieldUpdateOperationsInput | bigint | number
-    resource?: StringFieldUpdateOperationsInput | string
-    action?: StringFieldUpdateOperationsInput | string
-    changes?: NullableStringFieldUpdateOperationsInput | string | null
-    metadata?: NullableStringFieldUpdateOperationsInput | string | null
-    timestamp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    targetUser?: UserUpdateOneWithoutTargetAuditsNestedInput
-  }
-
-  export type AuditLogUncheckedUpdateWithoutAdminUserInput = {
-    auditLogId?: BigIntFieldUpdateOperationsInput | bigint | number
-    targetUserId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    resource?: StringFieldUpdateOperationsInput | string
-    action?: StringFieldUpdateOperationsInput | string
-    changes?: NullableStringFieldUpdateOperationsInput | string | null
-    metadata?: NullableStringFieldUpdateOperationsInput | string | null
-    timestamp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
-  export type AuditLogUncheckedUpdateManyWithoutAdminUserInput = {
-    auditLogId?: BigIntFieldUpdateOperationsInput | bigint | number
-    targetUserId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    resource?: StringFieldUpdateOperationsInput | string
-    action?: StringFieldUpdateOperationsInput | string
-    changes?: NullableStringFieldUpdateOperationsInput | string | null
-    metadata?: NullableStringFieldUpdateOperationsInput | string | null
-    timestamp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
-  export type AuditLogUpdateWithoutTargetUserInput = {
-    auditLogId?: BigIntFieldUpdateOperationsInput | bigint | number
-    resource?: StringFieldUpdateOperationsInput | string
-    action?: StringFieldUpdateOperationsInput | string
-    changes?: NullableStringFieldUpdateOperationsInput | string | null
-    metadata?: NullableStringFieldUpdateOperationsInput | string | null
-    timestamp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    adminUser?: UserUpdateOneWithoutAdminAuditsNestedInput
-  }
-
-  export type AuditLogUncheckedUpdateWithoutTargetUserInput = {
-    auditLogId?: BigIntFieldUpdateOperationsInput | bigint | number
-    adminUserId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    resource?: StringFieldUpdateOperationsInput | string
-    action?: StringFieldUpdateOperationsInput | string
-    changes?: NullableStringFieldUpdateOperationsInput | string | null
-    metadata?: NullableStringFieldUpdateOperationsInput | string | null
-    timestamp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
-  export type AuditLogUncheckedUpdateManyWithoutTargetUserInput = {
-    auditLogId?: BigIntFieldUpdateOperationsInput | bigint | number
-    adminUserId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    resource?: StringFieldUpdateOperationsInput | string
-    action?: StringFieldUpdateOperationsInput | string
-    changes?: NullableStringFieldUpdateOperationsInput | string | null
-    metadata?: NullableStringFieldUpdateOperationsInput | string | null
-    timestamp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
-  export type EmailVerificationTokenUpdateWithoutUserInput = {
-    emailVerificationId?: BigIntFieldUpdateOperationsInput | bigint | number
-    token?: StringFieldUpdateOperationsInput | string
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type EmailVerificationTokenUncheckedUpdateWithoutUserInput = {
-    emailVerificationId?: BigIntFieldUpdateOperationsInput | bigint | number
-    token?: StringFieldUpdateOperationsInput | string
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type EmailVerificationTokenUncheckedUpdateManyWithoutUserInput = {
-    emailVerificationId?: BigIntFieldUpdateOperationsInput | bigint | number
-    token?: StringFieldUpdateOperationsInput | string
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type FeedbackUpdateWithoutUserInput = {
@@ -32364,25 +35473,19 @@ export namespace Prisma {
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type PasswordResetTokenUpdateWithoutUserInput = {
-    passwordResetId?: BigIntFieldUpdateOperationsInput | bigint | number
-    token?: StringFieldUpdateOperationsInput | string
+  export type UserRoleUpdateWithoutUserInput = {
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: RoleUpdateOneRequiredWithoutUserRolesNestedInput
   }
 
-  export type PasswordResetTokenUncheckedUpdateWithoutUserInput = {
-    passwordResetId?: BigIntFieldUpdateOperationsInput | bigint | number
-    token?: StringFieldUpdateOperationsInput | string
+  export type UserRoleUncheckedUpdateWithoutUserInput = {
+    roleId?: IntFieldUpdateOperationsInput | number
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type PasswordResetTokenUncheckedUpdateManyWithoutUserInput = {
-    passwordResetId?: BigIntFieldUpdateOperationsInput | bigint | number
-    token?: StringFieldUpdateOperationsInput | string
+  export type UserRoleUncheckedUpdateManyWithoutUserInput = {
+    roleId?: IntFieldUpdateOperationsInput | number
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SessionUpdateWithoutUserInput = {
@@ -32427,18 +35530,169 @@ export namespace Prisma {
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type UserRoleUpdateWithoutUserInput = {
+  export type AudioPlaybackLogUpdateWithoutUserInput = {
+    audioStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    audioEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    durationListened?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    role?: RoleUpdateOneRequiredWithoutUserRolesNestedInput
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    audio?: AudioUpdateOneWithoutPlaybackLogsNestedInput
   }
 
-  export type UserRoleUncheckedUpdateWithoutUserInput = {
-    roleId?: IntFieldUpdateOperationsInput | number
+  export type AudioPlaybackLogUncheckedUpdateWithoutUserInput = {
+    audioLogsId?: IntFieldUpdateOperationsInput | number
+    audioId?: NullableIntFieldUpdateOperationsInput | number | null
+    audioStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    audioEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    durationListened?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type AudioPlaybackLogUncheckedUpdateManyWithoutUserInput = {
+    audioLogsId?: IntFieldUpdateOperationsInput | number
+    audioId?: NullableIntFieldUpdateOperationsInput | number | null
+    audioStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    audioEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    durationListened?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type AuditLogUpdateWithoutAdminUserInput = {
+    auditLogId?: BigIntFieldUpdateOperationsInput | bigint | number
+    resource?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    changes?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableStringFieldUpdateOperationsInput | string | null
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    targetUser?: UserUpdateOneWithoutTargetAuditsNestedInput
+  }
+
+  export type AuditLogUncheckedUpdateWithoutAdminUserInput = {
+    auditLogId?: BigIntFieldUpdateOperationsInput | bigint | number
+    targetUserId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    resource?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    changes?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableStringFieldUpdateOperationsInput | string | null
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AuditLogUncheckedUpdateManyWithoutAdminUserInput = {
+    auditLogId?: BigIntFieldUpdateOperationsInput | bigint | number
+    targetUserId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    resource?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    changes?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableStringFieldUpdateOperationsInput | string | null
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AuditLogUpdateWithoutTargetUserInput = {
+    auditLogId?: BigIntFieldUpdateOperationsInput | bigint | number
+    resource?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    changes?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableStringFieldUpdateOperationsInput | string | null
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    adminUser?: UserUpdateOneWithoutAdminAuditsNestedInput
+  }
+
+  export type AuditLogUncheckedUpdateWithoutTargetUserInput = {
+    auditLogId?: BigIntFieldUpdateOperationsInput | bigint | number
+    adminUserId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    resource?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    changes?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableStringFieldUpdateOperationsInput | string | null
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AuditLogUncheckedUpdateManyWithoutTargetUserInput = {
+    auditLogId?: BigIntFieldUpdateOperationsInput | bigint | number
+    adminUserId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    resource?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    changes?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableStringFieldUpdateOperationsInput | string | null
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PasswordResetTokenUpdateWithoutUserInput = {
+    passwordResetId?: BigIntFieldUpdateOperationsInput | bigint | number
+    token?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PasswordResetTokenUncheckedUpdateWithoutUserInput = {
+    passwordResetId?: BigIntFieldUpdateOperationsInput | bigint | number
+    token?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PasswordResetTokenUncheckedUpdateManyWithoutUserInput = {
+    passwordResetId?: BigIntFieldUpdateOperationsInput | bigint | number
+    token?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailVerificationTokenUpdateWithoutUserInput = {
+    emailVerificationId?: BigIntFieldUpdateOperationsInput | bigint | number
+    token?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailVerificationTokenUncheckedUpdateWithoutUserInput = {
+    emailVerificationId?: BigIntFieldUpdateOperationsInput | bigint | number
+    token?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailVerificationTokenUncheckedUpdateManyWithoutUserInput = {
+    emailVerificationId?: BigIntFieldUpdateOperationsInput | bigint | number
+    token?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserBadgeUpdateWithoutUserInput = {
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    badge?: BadgeUpdateOneRequiredWithoutUserBadgesNestedInput
+  }
+
+  export type UserBadgeUncheckedUpdateWithoutUserInput = {
+    badgeId?: BigIntFieldUpdateOperationsInput | bigint | number
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type UserRoleUncheckedUpdateManyWithoutUserInput = {
-    roleId?: IntFieldUpdateOperationsInput | number
+  export type UserBadgeUncheckedUpdateManyWithoutUserInput = {
+    badgeId?: BigIntFieldUpdateOperationsInput | bigint | number
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type UserBadgeCreateManyBadgeInput = {
+    userId: bigint | number
+    createdAt?: Date | string | null
+  }
+
+  export type UserBadgeUpdateWithoutBadgeInput = {
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    user?: UserUpdateOneRequiredWithoutUserBadgesNestedInput
+  }
+
+  export type UserBadgeUncheckedUpdateWithoutBadgeInput = {
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type UserBadgeUncheckedUpdateManyWithoutBadgeInput = {
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
@@ -32479,6 +35733,10 @@ export namespace Prisma {
      * @deprecated Use UserCountOutputTypeDefaultArgs instead
      */
     export type UserCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = UserCountOutputTypeDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use BadgeCountOutputTypeDefaultArgs instead
+     */
+    export type BadgeCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = BadgeCountOutputTypeDefaultArgs<ExtArgs>
     /**
      * @deprecated Use AudioDefaultArgs instead
      */
@@ -32555,6 +35813,14 @@ export namespace Prisma {
      * @deprecated Use EmailVerificationTokenDefaultArgs instead
      */
     export type EmailVerificationTokenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = EmailVerificationTokenDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use BadgeDefaultArgs instead
+     */
+    export type BadgeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = BadgeDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use UserBadgeDefaultArgs instead
+     */
+    export type UserBadgeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = UserBadgeDefaultArgs<ExtArgs>
 
   /**
    * Batch Payload for updateMany & deleteMany & createMany

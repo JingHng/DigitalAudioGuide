@@ -33,8 +33,8 @@ jobs:
     env:
       PORT: 5175
       VITE_API_TARGET: http://localhost:5175
-      # Connection string for the API to access the DB service
-      DATABASE_URL: postgresql://ciuser:cipassword@localhost:5432/cidatabase
+      # FIX: Changed 'localhost' to 'postgres' for GH Actions service network
+      DATABASE_URL: postgresql://ciuser:cipassword@postgres:5432/cidatabase 
       
     steps:
       - name: ⬇️ Checkout code
@@ -55,9 +55,13 @@ jobs:
       # --- 4. Database Schema Setup and Seed Data (API directory) ---
       - name: ⚙️ Setup Database Schema and Seed Data
         run: |
+          # NEW: Wait for the PostgreSQL service using its name 'postgres'
+          echo "Waiting for PostgreSQL service to become healthy..."
+          wait-on tcp:postgres:5432 -t 30000 
+          echo "PostgreSQL is ready."
+          
           cd api
           npm install
-          
           
           sed -i 's/require("dotenv").config();/\/\/ require("dotenv").config();/' prisma/seed.js
 
@@ -82,7 +86,7 @@ jobs:
 
           # 2. Start the compiled JavaScript server (npm start is 'node server.js')
           npm start & 
-        
+      
       # --- 6. Start Frontend Service (Web) ---
       - name: 🏃 Start Frontend App (on port 5173)
         run: |
@@ -101,7 +105,7 @@ jobs:
           cd web
           # Set the base-url to the frontend port for E2E tests
           npx playwright test --base-url=http://localhost:5173
-        
+      
       - name: 📝 Upload Test Report
         if: always()
         uses: actions/upload-artifact@v4

@@ -62,11 +62,26 @@ async function seed() {
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
   );
 `);
+
+  // 2. badge table
+    await client.query(`
+    CREATE TABLE badge (
+    badge_id BIGSERIAL PRIMARY KEY,
+    name TEXT,
+    description TEXT,
+    image_url VARCHAR(512),
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+    );
+    `);
+
+    
     // 2. EXHIBIT table
     await client.query(`
       CREATE TABLE exhibit (
         exhibit_id BIGSERIAL PRIMARY KEY,
         exhibition_id BIGINT REFERENCES exhibitions(exhibition_id) ON DELETE CASCADE,
+        badge_id BIGINT UNIQUE REFERENCES badge(badge_id) ON DELETE SET NULL, -- NEW FIELD
         title VARCHAR(255) NOT NULL,
         status_id INTEGER REFERENCES status(status_id) ON DELETE SET NULL,
         description TEXT,
@@ -112,6 +127,16 @@ async function seed() {
         created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
       );
+    `);
+
+      // 2. badge table
+    await client.query(`
+    CREATE TABLE user_badge (
+    user_id BIGINT REFERENCES "user"(user_id) ON DELETE CASCADE,
+    badge_id BIGINT REFERENCES badge(badge_id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, badge_id) 
+    );
     `);
 
     // 6. ROLES table
