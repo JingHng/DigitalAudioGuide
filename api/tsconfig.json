@@ -10,6 +10,6 @@
     "types": ["node"],
     "outDir": "dist"
   },
-  "include": ["src"],
+  "include": ["**/*.ts"],
   "exclude": ["prisma"]          // <-- keep seed out of the app build
 }

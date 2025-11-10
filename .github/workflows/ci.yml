@@ -10,7 +10,6 @@ jobs:
     
     # ----------------------------------------------------------------
     # 1. DATABASE SERVICE SETUP
-    # Runs a temporary, isolated PostgreSQL instance for testing.
     # ----------------------------------------------------------------
     services:
       postgres:
@@ -29,7 +28,6 @@ jobs:
 
     # ----------------------------------------------------------------
     # 2. ENVIRONMENT VARIABLES
-    # Connects your backend and Playwright to the correct ports/DB
     # ----------------------------------------------------------------
     env:
       PORT: 5175
@@ -53,23 +51,28 @@ jobs:
       - name: 🌐 Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      # --- 4. Database Schema Setup (API directory) ---
+      # --- 4. Database Schema Setup and Seed Data (API directory) ---
       - name: ⚙️ Setup Database Schema and Seed Data
         run: |
           cd api
           npm install
-          # Apply database migrations
-          npx prisma migrate deploy 
-
-          node prisma/seed.js
           
-        
+          # 1. Apply test database migrations
+          npm run db:migrate:test 
+          
+          # 2. Seed the database (using direct node execution as confirmed for your JS file)
+          echo "Seeding database with initial exhibit data..."
+          node prisma/seed.js
+          echo "Seeding complete."
 
       # --- 5. Start Backend Service (API) ---
-      - name: 🏃 Start Backend API (on port 5175)
+      - name: 🏃 Build and Start Backend API (on port 5175)
         run: |
           cd api
-          # Use your actual startup script (e.g., 'npm start' or 'node server.js')
+          
+          npm run build 
+
+          # 2. Start the compiled JavaScript server in the background
           npm start & 
         
       # --- 6. Start Frontend Service (Web) ---
@@ -77,11 +80,11 @@ jobs:
         run: |
           cd web
           npm install
-          npm run dev & # Use your actual development start script
+          npm run dev &
       
       # --- 7. Wait for both services ---
       - name: ⏳ Wait for Frontend and API Endpoint to be Ready
-        # Wait for the frontend port and for the exhibits API endpoint to return a 200 status
+        # Waits for the frontend port and for the exhibits API endpoint to return a 200 status
         run: wait-on tcp:5173 http-get://localhost:5175/api/exhibits -t 60000
 
       # --- 8. Run Tests ---
