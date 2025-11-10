@@ -1,9 +1,11 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach, vi } from 'vitest';
-import { PrismaClient } from '../generated/prisma/index.js';
 import bcrypt from 'bcrypt';
 import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
+
+// Import CommonJS modules using createRequire
+const { PrismaClient } = require('../generated/prisma');
 
 // Mock the email service
 vi.mock('../src/utils/emailService.js', () => ({
