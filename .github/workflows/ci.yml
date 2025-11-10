@@ -1,0 +1,108 @@
+# .github/workflows/ci.yml
+
+name: CI Pipeline - Full-Stack Test
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  test_fullstack:
+    runs-on: ubuntu-latest
+    
+    # ----------------------------------------------------------------
+    # 1. DATABASE SERVICE SETUP
+    # Runs a temporary, isolated PostgreSQL instance for testing.
+    # ----------------------------------------------------------------
+    services:
+      postgres:
+        image: postgres:14-alpine
+        env:
+          POSTGRES_USER: ciuser
+          POSTGRES_PASSWORD: cipassword
+          POSTGRES_DB: cidatabase
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    # ----------------------------------------------------------------
+    # 2. ENVIRONMENT VARIABLES
+    # Connects your backend and Playwright to the correct ports/DB
+    # ----------------------------------------------------------------
+    env:
+      PORT: 5175
+      VITE_API_TARGET: http://localhost:5175
+      # Connection string for the API to access the DB service
+      DATABASE_URL: postgresql://ciuser:cipassword@localhost:5432/cidatabase
+      
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🛠️ Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # --- 3. Install Tools ---
+      - name: 📦 Install Global Tools (wait-on)
+        run: npm install -g wait-on 
+
+      - name: 🌐 Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      # --- 4. Database Schema Setup (API directory) ---
+      - name: ⚙️ Setup Database Schema and Seed Data
+        run: |
+          cd api
+          npm install
+          # Apply database migrations
+          npx prisma migrate deploy 
+
+          node prisma/seed.js
+          
+        
+
+      # --- 5. Start Backend Service (API) ---
+      - name: 🏃 Start Backend API (on port 5175)
+        run: |
+          cd api
+          # Use your actual startup script (e.g., 'npm start' or 'node server.js')
+          npm start & 
+        
+      # --- 6. Start Frontend Service (Web) ---
+      - name: 🏃 Start Frontend App (on port 5173)
+        run: |
+          cd web
+          npm install
+          npm run dev & # Use your actual development start script
+      
+      # --- 7. Wait for both services ---
+      - name: ⏳ Wait for Frontend and API Endpoint to be Ready
+        # Wait for the frontend port and for the exhibits API endpoint to return a 200 status
+        run: wait-on tcp:5173 http-get://localhost:5175/api/exhibits -t 60000
+
+      # --- 8. Run Tests ---
+      - name: 🧪 Run Playwright Tests
+        run: |
+          cd web
+          # Set the base-url to the frontend port for E2E tests
+          npx playwright test --base-url=http://localhost:5173
+        
+      - name: 📝 Upload Test Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: web/playwright-report/
+          retention-days: 7
