@@ -1,0 +1,198 @@
+/* RegisterPage.css - Based on your LoginPage styles */
+
+/* Override page-content padding for register */
+.page-content .register-page-container {
+  margin-top: -160px;
+}
+
+.register-page-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f3f4f6;
+  padding: 2rem;
+  padding-top: calc(160px + 2rem);
+  box-sizing: border-box;
+}
+
+.register-page-container .form-wrapper {
+  background-color: white;
+  padding: 2.5rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 28rem; /* Slightly wider for register form */
+  transition: all 0.3s ease-in-out;
+}
+
+.register-page-container .form-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1f2937;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.register-page-container .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.register-page-container .form-group label {
+  display: block;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.register-page-container .form-input {
+  width: 100%;
+  padding: 0.75rem 1.25rem;
+  border: 1px solid #d1d5db;
+  border-radius: 9999px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  background-color: #f9fafb;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.register-page-container .form-input:focus {
+  outline: none;
+  border-color: #2563eb;
+  background-color: white;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+}
+
+/* Name row for first name and last name */
+.name-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.half-width {
+  flex: 1;
+}
+
+.register-page-container .submit-button {
+  width: 100%;
+  padding: 0.875rem;
+  background-color: #485164;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  margin-top: 0.5rem;
+}
+
+.register-page-container .submit-button:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+}
+
+.register-page-container .submit-button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Password toggle styles */
+.register-page-container .password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.register-page-container .password-input-wrapper .form-input {
+  padding-right: 3rem;
+}
+
+.register-page-container .password-input-wrapper .form-input[type="password"],
+.register-page-container .password-input-wrapper .form-input[type="text"] {
+  border-radius: 9999px !important;
+  padding: 0.75rem 3rem 0.75rem 1.25rem !important;
+  transition: border-color 0.2s, box-shadow 0.2s !important;
+}
+
+.register-page-container .password-toggle-btn {
+  position: absolute;
+  right: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  z-index: 1;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.register-page-container .password-toggle-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #333;
+}
+
+.register-page-container .password-toggle-btn:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.register-page-container .password-toggle-btn svg {
+  transition: color 0.2s ease;
+}
+
+/* Error message */
+.register-error-message {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+/* Alternative actions */
+.register-page-container .alternative-actions {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.register-page-container .alternative-actions a {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.register-page-container .alternative-actions a:hover {
+  text-decoration: underline;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 640px) {
+  .name-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .register-page-container {
+    padding: 1rem;
+  }
+
+  .register-page-container .form-wrapper {
+    padding: 2rem;
+  }
+}
+

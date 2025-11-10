@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon --exec ts-node server.js",
+    "dev": "nodemon server.js",
     "build": "tsc",
     "start": "node server.js",
     "start:test": "NODE_ENV=test PORT=5175 node dist/server.js",
@@ -30,6 +30,7 @@
     "google-tts-api": "^2.0.2",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.553.0",
+    "nodemailer": "^7.0.10",
     "pg": "^8.16.3",
     "prisma": "^5.22.0",
     "qr-image": "^3.2.0"
