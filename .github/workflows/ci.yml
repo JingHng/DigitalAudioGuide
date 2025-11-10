@@ -67,7 +67,12 @@ jobs:
       - name: 🚀 Start API Server
         run: |
           cd api
-          npm start &
+          echo "Starting API server..."
+          npm start > api.log 2>&1 &
+          echo "API server process started"
+          sleep 5
+          echo "API logs after 5 seconds:"
+          cat api.log || echo "No log file yet"
         env:
           DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test_db?schema=public"
           NODE_ENV: "test"
@@ -75,7 +80,21 @@ jobs:
 
       - name: ⏳ Wait for API to be ready
         run: |
-          npx wait-on http://localhost:5175/api/health -t 60000
+          echo "Waiting for API exhibits endpoint..."
+          npx wait-on http://localhost:5175/api/exhibits -t 60000 || {
+            echo "API health check failed. Debugging information:"
+            echo "=== API Server Logs ==="
+            cat api/api.log || echo "No API log file found"
+            echo "=== Process List ==="
+            ps aux | grep node || echo "No node processes found"
+            echo "=== Port Usage ==="
+            netstat -tlnp | grep 5175 || echo "Port 5175 not in use"
+            echo "=== Testing basic connectivity ==="
+            curl -v http://localhost:5175/ || echo "Server not responding at all"
+            echo "=== Testing API base path ==="
+            curl -v http://localhost:5175/api/ || echo "API base path not responding"
+            exit 1
+          }
           echo "API server is ready!"
 
       # --- Frontend Setup ---
@@ -111,3 +130,14 @@ jobs:
           cd api
           npm test
         continue-on-error: true  # Don't fail if no tests exist yet
+
+      # --- Debug Information (only runs on failure) ---
+      - name: 🐛 Debug API Server (on failure)
+        if: failure()
+        run: |
+          echo "=== Final API Server Logs ==="
+          cat api/api.log || echo "No API log file found"
+          echo "=== Final Process List ==="
+          ps aux | grep node || echo "No node processes found"
+          echo "=== Final Port Usage ==="
+          netstat -tlnp | grep 5175 || echo "Port 5175 not in use"
