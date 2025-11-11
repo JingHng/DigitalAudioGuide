@@ -347,6 +347,11 @@ exports.register = async (req, res, next) => {
     res.locals.permissions = [];
     res.locals.message = "Registration successful. Please check your email to verify your account.";
     res.locals.emailPreviewUrl = emailPreviewUrl; // Include preview URL for development/testing
+    
+    // In test mode, include verification token in response for testing purposes
+    if (process.env.NODE_ENV === 'test') {
+      res.locals.verificationToken = verificationToken;
+    }
 
     // Don't disconnect Prisma here - let the middleware chain complete first
     // The disconnect will happen after the response is sent

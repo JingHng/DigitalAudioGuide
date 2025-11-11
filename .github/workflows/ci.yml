@@ -88,21 +88,29 @@ jobs:
       - name: ⏳ Wait for API to be ready
         run: |
           echo "Waiting for API exhibits endpoint..."
-          npx wait-on http://localhost:5175/api/exhibits -t 60000 || {
-            echo "API health check failed. Debugging information:"
-            echo "=== API Server Logs ==="
-            cat api/api.log || echo "No API log file found"
-            echo "=== Process List ==="
-            ps aux | grep node || echo "No node processes found"
-            echo "=== Port Usage ==="
-            netstat -tlnp | grep 5175 || echo "Port 5175 not in use"
-            echo "=== Testing basic connectivity ==="
-            curl -v http://localhost:5175/ || echo "Server not responding at all"
-            echo "=== Testing API base path ==="
-            curl -v http://localhost:5175/api/ || echo "API base path not responding"
-            exit 1
-          }
-          echo "API server is ready!"
+          timeout=60
+          counter=0
+          while [ $counter -lt $timeout ]; do
+            if curl -f http://localhost:5175/api/exhibits > /dev/null 2>&1; then
+              echo "API server is ready!"
+              exit 0
+            fi
+            echo "Waiting for API... ($counter/$timeout seconds)"
+            sleep 2
+            counter=$((counter + 2))
+          done
+          echo "API health check failed. Debugging information:"
+          echo "=== API Server Logs ==="
+          cat api/api.log || echo "No API log file found"
+          echo "=== Process List ==="
+          ps aux | grep node || echo "No node processes found"
+          echo "=== Port Usage ==="
+          netstat -tlnp | grep 5175 || echo "Port 5175 not in use"
+          echo "=== Testing basic connectivity ==="
+          curl -v http://localhost:5175/ || echo "Server not responding at all"
+          echo "=== Testing API base path ==="
+          curl -v http://localhost:5175/api/ || echo "API base path not responding"
+          exit 1
 
       # --- Frontend Setup ---
       - name: 📦 Install Web Dependencies
@@ -203,19 +211,14 @@ jobs:
         env:
           SEED_DISABLE: 0
 
-      - name: 🔧 Build API
-        run: |
-          cd api
-          npm run build
-
       - name: 🚀 Start API Server
         run: |
           cd api
           echo "Starting API server for registration tests..."
           npm start > api.log 2>&1 &
-          echo "API server process started"
-          sleep 5
-          echo "API logs after 5 seconds:"
+          echo "API server process started (PID: $!)"
+          sleep 10
+          echo "API logs after 10 seconds:"
           cat api.log || echo "No log file yet"
         env:
           DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test_db?schema=public"
@@ -229,12 +232,20 @@ jobs:
       - name: ⏳ Wait for API to be ready
         run: |
           echo "Waiting for API to be ready for registration tests..."
-          npx wait-on http://localhost:5175/api/exhibits -t 60000 || {
-            echo "API health check failed for registration tests"
-            cat api/api.log || echo "No API log file found"
-            exit 1
-          }
-          echo "API server is ready for registration tests!"
+          timeout=60
+          counter=0
+          while [ $counter -lt $timeout ]; do
+            if curl -f http://localhost:5175/api/exhibits > /dev/null 2>&1; then
+              echo "API server is ready for registration tests!"
+              exit 0
+            fi
+            echo "Waiting for API... ($counter/$timeout seconds)"
+            sleep 2
+            counter=$((counter + 2))
+          done
+          echo "API health check failed for registration tests"
+          cat api/api.log || echo "No API log file found"
+          exit 1
 
       # --- Frontend Setup ---
       - name: 📦 Install Web Dependencies
@@ -251,7 +262,7 @@ jobs:
       - name: 🔍 Run Registration API Unit Tests
         run: |
           cd api
-          npm test -- --grep "Registration"
+          npm test -- -t "Registration"
         env:
           DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test_db?schema=public"
           NODE_ENV: "test"
@@ -265,7 +276,7 @@ jobs:
       - name: 🧪 Run Registration E2E Tests
         run: |
           cd web
-          npx playwright test registration.spec.ts
+          npx playwright test tests/e2e/registration.spec.ts
         env:
           VITE_API_TARGET: http://localhost:5175
           CI: true
@@ -349,19 +360,14 @@ jobs:
         env:
           SEED_DISABLE: 0
 
-      - name: 🔧 Build API
-        run: |
-          cd api
-          npm run build
-
       - name: 🚀 Start API Server
         run: |
           cd api
           echo "Starting API server for login/logout tests..."
           npm start > api.log 2>&1 &
-          echo "API server process started"
-          sleep 5
-          echo "API logs after 5 seconds:"
+          echo "API server process started (PID: $!)"
+          sleep 10
+          echo "API logs after 10 seconds:"
           cat api.log || echo "No log file yet"
         env:
           DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test_db?schema=public"
@@ -375,12 +381,20 @@ jobs:
       - name: ⏳ Wait for API to be ready
         run: |
           echo "Waiting for API to be ready for login/logout tests..."
-          npx wait-on http://localhost:5175/api/exhibits -t 60000 || {
-            echo "API health check failed for login/logout tests"
-            cat api/api.log || echo "No API log file found"
-            exit 1
-          }
-          echo "API server is ready for login/logout tests!"
+          timeout=60
+          counter=0
+          while [ $counter -lt $timeout ]; do
+            if curl -f http://localhost:5175/api/exhibits > /dev/null 2>&1; then
+              echo "API server is ready for login/logout tests!"
+              exit 0
+            fi
+            echo "Waiting for API... ($counter/$timeout seconds)"
+            sleep 2
+            counter=$((counter + 2))
+          done
+          echo "API health check failed for login/logout tests"
+          cat api/api.log || echo "No API log file found"
+          exit 1
 
       # --- Frontend Setup ---
       - name: 📦 Install Web Dependencies
@@ -397,7 +411,7 @@ jobs:
       - name: 🔐 Run Login/Logout E2E Tests
         run: |
           cd web
-          npx playwright test auth-login-logout.spec.ts login.spec.ts
+          npx playwright test tests/e2e/auth-login-logout.spec.ts tests/e2e/login.spec.ts
         env:
           VITE_API_TARGET: http://localhost:5175
           CI: true
@@ -481,19 +495,14 @@ jobs:
         env:
           SEED_DISABLE: 0
 
-      - name: 🔧 Build API
-        run: |
-          cd api
-          npm run build
-
       - name: 🚀 Start API Server
         run: |
           cd api
           echo "Starting API server for general E2E tests..."
           npm start > api.log 2>&1 &
-          echo "API server process started"
-          sleep 5
-          echo "API logs after 5 seconds:"
+          echo "API server process started (PID: $!)"
+          sleep 10
+          echo "API logs after 10 seconds:"
           cat api.log || echo "No log file yet"
         env:
           DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test_db?schema=public"
@@ -507,12 +516,20 @@ jobs:
       - name: ⏳ Wait for API to be ready
         run: |
           echo "Waiting for API to be ready for general E2E tests..."
-          npx wait-on http://localhost:5175/api/exhibits -t 60000 || {
-            echo "API health check failed for general E2E tests"
-            cat api/api.log || echo "No API log file found"
-            exit 1
-          }
-          echo "API server is ready for general E2E tests!"
+          timeout=60
+          counter=0
+          while [ $counter -lt $timeout ]; do
+            if curl -f http://localhost:5175/api/exhibits > /dev/null 2>&1; then
+              echo "API server is ready for general E2E tests!"
+              exit 0
+            fi
+            echo "Waiting for API... ($counter/$timeout seconds)"
+            sleep 2
+            counter=$((counter + 2))
+          done
+          echo "API health check failed for general E2E tests"
+          cat api/api.log || echo "No API log file found"
+          exit 1
 
       # --- Frontend Setup ---
       - name: 📦 Install Web Dependencies
@@ -529,7 +546,7 @@ jobs:
       - name: 🧪 Run General E2E Tests
         run: |
           cd web
-          npx playwright test homepage.spec.ts exhibitions.spec.ts
+          npx playwright test tests/e2e/homepage.spec.ts tests/e2e/exhibitions.spec.ts
         env:
           VITE_API_TARGET: http://localhost:5175
           CI: true

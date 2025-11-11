@@ -101,6 +101,11 @@ module.exports.sendToken = (req, res, next) => {
     responseData.emailPreviewUrl = res.locals.emailPreviewUrl;
   }
   
+  // Include verification token in test mode for automated testing
+  if (process.env.NODE_ENV === 'test' && res.locals.verificationToken) {
+    responseData.verificationToken = res.locals.verificationToken;
+  }
+  
   res.status(200).json(responseData);
 };
 
@@ -161,5 +166,6 @@ module.exports.requireAdmin = (req, res, next) => {
   }
   next();
 };
+
 
 
