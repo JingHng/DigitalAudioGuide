@@ -29,8 +29,10 @@ jobs:
       NODE_ENV: "test"
       PORT: 5175
       VITE_API_TARGET: http://localhost:5175
-      JWT_SECRET: "test-jwt-secret-key"
-      JWT_REFRESH_SECRET: "test-refresh-secret-key"
+      JWT_SECRET_KEY: "test-jwt-secret-key-for-ci-testing-only-minimum-64-characters-long-to-meet-security-requirements"
+      JWT_EXPIRES_IN: "24h"
+      JWT_ALGORITHM: "HS256"
+      FRONTEND_URL: "http://localhost:5173"
       
     steps:
       - name: ⬇️ Checkout code
@@ -77,6 +79,10 @@ jobs:
           DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test_db?schema=public"
           NODE_ENV: "test"
           PORT: 5175
+          JWT_SECRET_KEY: "test-jwt-secret-key-for-ci-testing-only-minimum-64-characters-long-to-meet-security-requirements"
+          JWT_EXPIRES_IN: "24h"
+          JWT_ALGORITHM: "HS256"
+          FRONTEND_URL: "http://localhost:5173"
 
       - name: ⏳ Wait for API to be ready
         run: |
@@ -103,18 +109,35 @@ jobs:
           cd web
           npm install
 
+      # --- API Unit Tests (Run before E2E tests) ---
+      - name: 🔍 Run API Unit Tests
+        run: |
+          cd api
+          npm test
+        env:
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test_db?schema=public"
+          NODE_ENV: "test"
+          JWT_SECRET_KEY: "test-jwt-secret-key-for-ci-testing-only-minimum-64-characters-long-to-meet-security-requirements"
+          JWT_EXPIRES_IN: "24h"
+          JWT_ALGORITHM: "HS256"
+          FRONTEND_URL: "http://localhost:5173"
+        continue-on-error: false  # Fail if tests fail
+
+      # --- Frontend Setup for E2E Tests ---
       - name: 🌐 Install Playwright Browsers
         run: |
           cd web
           npx playwright install --with-deps
 
-      # --- Integration Tests ---
-      - name: 🧪 Run Full Stack Integration Tests
+      # --- Integration Tests (E2E) ---
+      # Note: Playwright config automatically starts the dev server via webServer config
+      - name: 🧪 Run Full Stack Integration Tests (E2E)
         run: |
           cd web
           npx playwright test
         env:
           VITE_API_TARGET: http://localhost:5175
+          CI: true
 
       - name: 📝 Upload Test Report
         if: always()
@@ -124,20 +147,15 @@ jobs:
           path: web/playwright-report/
           retention-days: 7
 
-      # --- Optional: API-only tests ---
-      - name: 🔍 Run API Unit Tests (if available)
-        run: |
-          cd api
-          npm test
-        continue-on-error: true  # Don't fail if no tests exist yet
-
       # --- Debug Information (only runs on failure) ---
       - name: 🐛 Debug API Server (on failure)
         if: failure()
         run: |
           echo "=== Final API Server Logs ==="
           cat api/api.log || echo "No API log file found"
+          echo "=== Final Frontend Server Logs ==="
+          cat web/frontend.log || echo "No frontend log file found"
           echo "=== Final Process List ==="
-          ps aux | grep node || echo "No node processes found"
+          ps aux | grep -E "(node|vite)" || echo "No processes found"
           echo "=== Final Port Usage ==="
-          netstat -tlnp | grep 5175 || echo "Port 5175 not in use"
+          netstat -tlnp | grep -E "(5175|5173)" || echo "Ports not in use"

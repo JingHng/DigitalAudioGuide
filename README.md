@@ -1,85 +1,259 @@
-# Singapore Discovery Center - Digital Audio Guide System
+[![Open in Codespaces](https://classroom.github.com/assets/launch-codespace-2972f46106e565e64193e422d61a12cf1da4916b45550586e14ef0a7c637dd04.svg)](https://classroom.github.com/open-in-codespaces?assignment_repo_id=21376267)
+# CI/CD Demo Application
 
-A robust, scalable, database-driven web application designed to replace the Singapore Discovery Center's traditional audio guide system. This project allows visitors to access audio guides by scanning QR codes with their own devices, while providing a comprehensive dashboard for administrators to manage content and analyze visitor engagement.
+A full-stack task management application with user authentication, task assignment, and user management features. Built with React, Node.js, Express, Prisma, and PostgreSQL.
 
-## Table of Contents
+## Features
 
-- [Project Purpose](#project-purpose)
-- [Key Features](#key-features)
-- [Current Development Features](#current-development-features)
-- [Technology Stack](#technology-stack)
-- [Database Schema (ERD)](#database-schema-erd)
-- [API Endpoints](#api-endpoints)
-- [Getting Started](#getting-started)
-- [Screenshots](#screenshots)
-- [Future Improvements](#future-improvements)
-- [Team Members](#team-members)
-- [License](#license)
+- **Authentication System**: User registration and login with JWT tokens
+- **Task Management**: Create, edit, delete, and assign tasks to users
+- **User Management**: View users with pagination and role management
+- **Backend Pagination**: Efficient database pagination for large datasets
+- **Responsive Design**: Mobile-friendly interface with hamburger navigation
+- **Comprehensive Testing**: E2E testing with Playwright
+- **CI/CD Pipeline**: Automated testing and deployment with GitHub Actions
 
-## 🚀 Project Purpose
+## Tech Stack
 
-The primary goal of this project is to modernize the visitor experience at the Singapore Discovery Center. The system achieves this by:
+### Frontend
+- React 19 with TypeScript
+- React Router for navigation
+- Tailwind CSS for styling
+- Vite for build tooling
+- Playwright for E2E testing
 
-- Allowing visitors to instantly access audio guides by scanning QR codes at exhibits.
-- Providing administrators with powerful tools to manage audio content, users, and roles.
-- Enabling real-time analytics to gain insights into exhibit popularity and visitor engagement.
-- Reducing operational overhead by eliminating the need for physical audio guide devices.
+### Backend
+- Node.js with Express
+- TypeScript
+- Prisma ORM with PostgreSQL
+- JWT authentication
+- bcrypt for password hashing
 
-## ✨ Key Features
+## Quick Start
 
-### For Visitors
-- **QR Code Scanning:** Seamlessly access exhibit information and audio by scanning a QR code.
-- **Audio Playback:** A responsive audio player with standard controls (play, pause, seek) and language selection.
-- **Multi-language Support:** Audio guides and subtitles available in multiple languages.
-- **User Registration & Feedback:** Registered users can leave ratings and reviews for exhibits.
-- **Mobile-First Design:** Fully responsive layout for an optimal experience on any device.
+### Prerequisites
+- Node.js 18 or higher
+- PostgreSQL database
+- Git
 
-### For Administrators
-- **Analytics Dashboard:** Visualize key metrics like most popular exhibits, user growth, and audio playback statistics.
-- **CRUD Operations:** Full content management for Exhibits, Audio, Images, Users, and Roles.
-- **Role-Based Access Control (RBAC):** Granular control over what different admin users can see and do using a flexible roles and permissions system.
-- **Audit Logs:** Track all significant actions performed by administrators for security and accountability.
-- **Text-to-Speech (TTS):** Automatically generate audio guides from text descriptions.
-- **Speech-to-Text (SST):** Automatically transcribe spoken audio into written text and highlighting.
+Installation
 
----
+1. **Clone the repository**
+   bash
+   git clone <repository-url>
+   cd ci-cd-demo
+   
 
-## 🛠 Current Development Features
+2. **Set up the database**
+   bash
+   # Create a PostgreSQL database
+   # Update the DATABASE_URL in ci-cd-demo/api/.env
+   
 
-The following features are actively being developed by the team:
+3. **Install API dependencies**
+   bash
+   cd api
+   npm install
+   
 
-- **Badges:** Introduce digital badges to enhance user engagement.  
-- **Self-Hosting TTS (Low Priority):** Explore hosting Text-to-Speech locally
-- **Large Language Model (LLM) Integration:** Implement Ollama, hosted on Azure
-- **ORM Enhancements:** Continue refining database access using Prisma ORM.   
-- **Remove Translation Feature:** Deprecate the translation module to simplify the system. 
-- **CI/CD Pipeline:** Implement Continuous Integration and Continuous Deployment using **GitHub Actions** for automated builds, testing, and deployment.  
-- **End-to-End Testing:** Use **Playwright** to automate browser testing for login, registration, and navigation flows, ensuring cross-browser compatibility and reliability.  
+4. **Install Web dependencies**
+   bash
+   cd ../web
+   npm install
+   
+5. **Set up database schema**
+   bash
+   cd ../api
+   npx prisma migrate dev
+   npx prisma db seed
+   
 
+6. **Start the applications**
+   
+   Terminal 1 (API):
+   bash
+   cd api
+   npm run dev
+   
+   Terminal 2 (Web):
+   bash
+   cd web
+   npm run dev
 
----
+7. **Access the application**
+   - Frontend: http://localhost:5173
+   - API: http://localhost:5175
 
-## 💻 Technology Stack
+## Default Users
 
-| Area        | Technology |
-| :---------- | :----------|
-| **Frontend** | `React.js` |
-| **Backend**  | `Node.js`, `Express.js` |
-| **Database** | `PostgreSQL` on `NeonDB` (Cloud Native) |
-| **ORM**      | `Prisma` |
-| **Auth**     | `JSON Web Tokens (JWT)` |
+After seeding the database, you can log in with:
+- **Admin**: admin@example.com
+- **Regular User**: user@example.com
 
-## 🗃️ Database Schema (ERD)
+## Testing
 
-The database was designed with 18 tables to ensure a normalized, scalable, and efficient structure. It heavily utilizes primary/foreign keys, constraints, indexing, and stored procedures to maintain data integrity and performance.
+### E2E Testing with Playwright
 
-## 👥 Team Members
+1. **Install Playwright browsers**
+   bash
+   cd web
+   npx playwright install
+   
+2. **Run tests**
+   bash
+   # Run all tests
+   npm run e2e
+   
+   # Run tests in headed mode (visible browser)
+   npx playwright test --headed
+   
+   # Run specific test file
+   npx playwright test tests/e2e/auth.spec.ts
+   
+   # Run tests in debug mode
+   npx playwright test --debug
+   
+3. **View test reports**
+   bash
+   npm run e2e:report
+   
+### Test Coverage
 
-This project was a collaborative effort by Group 3 CI/CD:
+Our test suite covers:
 
--   **Jing Hng**
--   **Damian** 
--   **Julia**
--   **Owen**
--   **Ruyi** 
+#### Authentication Tests (`auth.spec.ts`)
+- Login page display and navigation
+- User registration flow
+- Login with existing users
+- Error handling for invalid inputs
+- Mobile navigation menu
+- Logout functionality
 
+#### Task Management Tests (`tasks.spec.ts`)
+- Task creation and assignment
+- Task editing and cancellation
+- Task status toggling (done/pending)
+- Task deletion with confirmation
+- Pagination controls
+- Date display
+
+#### User Management Tests (`users.spec.ts`)
+- User table display with pagination
+- Users per page dropdown functionality
+- Navigation between pages
+- Table styling and alternating rows
+- Mobile responsive behavior
+- URL-based pagination state
+
+## API Endpoints
+
+### Authentication
+- `POST /api/register` - User registration
+- `POST /api/login` - User login
+- `POST /api/refresh` - Token refresh
+
+### Tasks
+- `GET /api/tasks?page=1&limit=10` - Get paginated tasks
+- `POST /api/tasks` - Create new task
+- `PUT /api/tasks/:id` - Update task
+- `DELETE /api/tasks/:id` - Delete task
+
+### Users
+- `GET /api/users?page=1&limit=10` - Get paginated users
+
+## CI/CD Pipeline
+
+The project includes a comprehensive GitHub Actions workflow (`.github/workflows/ci-cd.yml`) that:
+
+### On Pull Requests:
+- Lints code
+- Runs security scans
+- Runs all Playwright tests
+- Uploads test reports as artifacts
+
+### On Main Branch Push:
+- Runs full test suite
+- Builds both applications
+- Creates deployment artifacts
+- Ready for deployment to various platforms
+
+### Pipeline Features:
+- **PostgreSQL Service**: Spins up database for testing
+- **Caching**: NPM dependencies cached for faster builds
+- **Parallel Jobs**: Lint, test, and security scan run efficiently
+- **Artifacts**: Test reports and deployment packages saved
+- **Error Handling**: Comprehensive error reporting
+
+## Development
+
+### Project Structure
+```
+ci-cd-demo/
+├── api/                 # Backend application
+│   ├── src/            # Source code
+│   ├── prisma/         # Database schema and migrations
+│   └── package.json
+├── web/                # Frontend application
+│   ├── src/            # React components and pages
+│   ├── tests/e2e/      # Playwright tests
+│   └── package.json
+└── .github/workflows/   # CI/CD pipeline
+```
+
+### Environment Variables
+
+#### API (.env)
+```env
+DATABASE_URL="postgresql://user:password@localhost:5432/dbname"
+JWT_SECRET="your-secret-key"
+JWT_REFRESH_SECRET="your-refresh-secret"
+NODE_ENV="development"
+PORT=5175
+```
+
+#### Web (.env.development)
+```env
+VITE_API_TARGET="http://localhost:5175"
+```
+
+### Key Features Implementation
+
+#### Backend Pagination
+- Efficient database queries with `skip` and `take`
+- Metadata returned with pagination info
+- URL parameters for page and limit
+
+#### Authentication
+- JWT access and refresh tokens
+- Password hashing with bcrypt
+- Role-based access control
+
+#### Task Assignment
+- Many-to-one relationship between tasks and users
+- Optional assignment (tasks can be unassigned)
+- User profiles with full names
+
+## Deployment
+
+The application is ready for deployment to various platforms:
+
+### Example Deployment Targets:
+- **Vercel** (Frontend) + **Railway/Heroku** (Backend)
+- **AWS** (Full stack)
+- **Docker** containers
+- **Traditional VPS** with nginx
+
+Deployment configurations are commented in the GitHub Actions workflow and can be easily enabled.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add/update tests as needed
+5. Run the test suite
+6. Submit a pull request
+
+## License
+
+This project is licensed under the ISC License.

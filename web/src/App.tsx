@@ -6,10 +6,10 @@ import { useEffect } from "react";
 import Navbar from "./components/Navbar.tsx"; // KEEP: Needed for navigation
 import Homepage from "./components/HomePage.tsx"; // KEEP: Requested
 // --- COMMENTED OUT: Auth & User Components ---
-// import LoginPage from "./components/LoginPage";
-// import RegisterPage from "./components/RegisterPage";
+import LoginPage from "./routes/LoginPage";
+import RegisterPage from "./routes/RegisterPage";
 // import ResetPasswordPage from "./components/ResetPasswordPage";
-// import EmailVerificationPage from "./components/EmailVerificationPage";
+import EmailVerificationPage from "./routes/EmailVerificationPage";
 // import UserDashboard from "./components/UserDashboard";
 // import ScanPage from "./components/ScanPage";
 
@@ -79,17 +79,16 @@ function App() {
             <Route path="/exhibitions/:id" element={<ExhibitionDetails />} />
             <Route path="/exhibit/:id" element={<ExhibitDetails />} /> */}
 
-            {/* --- Other Public/Auth Routes (Disabled/Commented Out) ---
+            {/* --- Other Public/Auth Routes --- */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
-            <Route path="/reset-password" element={<ResetPasswordPage />} />
+            {/* <Route path="/reset-password" element={<ResetPasswordPage />} /> */}
             <Route path="/verify-email" element={<EmailVerificationPage />} />
-            <Route path="/unauthorized" element={<UnauthorizedPage />} />
+            {/* <Route path="/unauthorized" element={<UnauthorizedPage />} />
             <Route path="/scan" element={<ScanPage />} />
             <Route path="/reviews" element={<ReviewPage />} />
             <Route path="/exhibits/:exhibitId/reviews" element={<ReviewPage />} />
-            <Route path="/dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} /> 
-            */}
+            <Route path="/dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} /> */}
             
             {/* Catch-all route is kept */}
             <Route path="*" element={<NotFoundPage />} />

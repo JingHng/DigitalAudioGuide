@@ -1,6 +1,6 @@
-// require('dotenv').config();
+require('dotenv').config();
 const express = require('express');
-const mainRoutes = require('../api/src/routes/mainRoutes');
+const mainRoutes = require('./src/routes/mainRoutes');
 // const qrCodeRoute = require('./routes/qrCodeRoutes');
 // const usersRoutes = require('./routes/usersRoutes');
 // const rolesRoutes = require('./routes/rolesRoutes');
@@ -50,24 +50,5 @@ app.use('/api', mainRoutes); // All routes under /api
 
 // Additional logging for debugging
 console.log('Middleware and routes setup complete.');
-
-// Print registered routes for debugging
-console.log('\n🔍 REGISTERED ROUTES:');
-if (app._router && app._router.stack) {
-  app._router.stack.forEach(middleware => {
-    if(middleware.route){ // routes registered directly on the app
-      console.log(`Route: ${middleware.route.path}`);
-    } else if(middleware.name === 'router'){ // router middleware 
-      middleware.handle.stack.forEach(handler => {
-        if (handler.route) {
-          const path = handler.route.path;
-          console.log(`Route: ${path}`);
-        }
-      });
-    }
-  });
-} else {
-  console.error('Error: Router stack is not initialized.');
-}
 
 module.exports = app;
