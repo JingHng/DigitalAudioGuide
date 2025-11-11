@@ -541,11 +541,15 @@ async function seed() {
       ('verify_email', 'Verify user email addresses');
     `);
 
-    // Insert admin and moderator users first
+    // Insert admin, moderator, and test user first
+    // Password for all test users: TestPassword123!
+    // Hash generated with: bcrypt.hash('TestPassword123!', 12)
+    const testPasswordHash = '$2b$12$lClTvZSiHNrNq3bXT.ng2ObMQKEMRcg2eieXfhjLyZgm9RAg8YAtG';
     await client.query(`
       INSERT INTO "user" (username, email, password_hash, email_verified, status_id, last_login_at) VALUES
-      ('admin', 'admin@audiomuseum.com', '$2b$12$lClTvZSiHNrNq3bXT.ng2ObMQKEMRcg2eieXfhjLyZgm9RAg8YAtG', true, 1, CURRENT_TIMESTAMP - INTERVAL '2 hours'),
-      ('moderator', 'moderator@audiomuseum.com', '$2b$12$lClTvZSiHNrNq3bXT.ng2ObMQKEMRcg2eieXfhjLyZgm9RAg8YAtG', true, 1, CURRENT_TIMESTAMP - INTERVAL '1 day');
+      ('admin', 'admin@audiomuseum.com', '${testPasswordHash}', true, 1, CURRENT_TIMESTAMP - INTERVAL '2 hours'),
+      ('moderator', 'moderator@audiomuseum.com', '${testPasswordHash}', true, 1, CURRENT_TIMESTAMP - INTERVAL '1 day'),
+      ('testuser', 'testuser@example.com', '${testPasswordHash}', true, 1, CURRENT_TIMESTAMP - INTERVAL '3 hours');
     `);
 
     // Generate 100+ users with varying registration dates for trend analysis
@@ -591,19 +595,20 @@ async function seed() {
       `);
     }
 
-    console.log(`Inserted ${users.length + 2} users total (including admin and moderator)`);
+    console.log(`Inserted ${users.length + 3} users total (including admin, moderator, and testuser)`);
 
-    // Assign roles to users - admin and moderator first
+    // Assign roles to users - admin, moderator, and testuser first
     await client.query(`
       INSERT INTO userroles (user_id, role_id) VALUES 
       (1, 1), -- admin user gets admin role
-      (2, 2); -- moderator user gets moderator role
+      (2, 2), -- moderator user gets moderator role
+      (3, 3); -- testuser gets visitor role
     `);
 
-    // Assign visitor role to all other users
+    // Assign visitor role to all other users (user_id > 3)
     await client.query(`
       INSERT INTO userroles (user_id, role_id)
-      SELECT user_id, 3 FROM "user" WHERE user_id > 2;
+      SELECT user_id, 3 FROM "user" WHERE user_id > 3;
     `);
 
     // Assign permissions to roles
@@ -782,7 +787,7 @@ async function seed() {
 
     console.log("✅ Seeding complete!");
     console.log("📊 Database ready with:");
-    console.log("   - 122 users (admin, moderator, + 120 test users with varied registration dates)");
+    console.log("   - 123 users (admin, moderator, testuser, + 120 test users with varied registration dates)");
     console.log(
       "   - 3 roles with proper permissions (including password reset & email verification)"
     );

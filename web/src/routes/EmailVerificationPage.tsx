@@ -33,13 +33,11 @@ const EmailVerificationPage: React.FC = () => {
       });
 
       setVerificationStatus('success');
-      toast.success('Email verified successfully! You can now log in.');
+      toast.success('Email verified successfully!');
       
-      // Redirect to login after 2 seconds
+      // Redirect to home after 2 seconds
       setTimeout(() => {
-        navigate('/login', { 
-          state: { message: 'Email verified! You can now log in.' }
-        });
+        navigate('/');
       }, 2000);
 
     } catch (error: any) {
@@ -53,11 +51,9 @@ const EmailVerificationPage: React.FC = () => {
           // Handle already verified case
           if (error.response.data?.errorType === 'ALREADY_VERIFIED') {
             setVerificationStatus('success');
-            toast.success('Your email is already verified! Redirecting to login...');
+            toast.success('Your email is already verified! Redirecting to home...');
             setTimeout(() => {
-              navigate('/login', { 
-                state: { message: 'Your email is already verified. You can now log in.' }
-              });
+              navigate('/');
             }, 2000);
             return;
           }
@@ -233,7 +229,7 @@ const EmailVerificationPage: React.FC = () => {
                   marginTop: '1rem',
                   fontSize: '0.875rem'
                 }}>
-                  Redirecting to login page...
+                  Redirecting to home page...
                 </p>
               </>
             )}
@@ -355,7 +351,7 @@ const EmailVerificationPage: React.FC = () => {
                   fontSize: '0.75rem',
                   fontStyle: 'italic'
                 }}>
-                  The verification link in the email will automatically verify your account and redirect you to login.
+                  The verification link in the email will automatically verify your account and redirect you to the home page.
                 </p>
               </div>
             )}

@@ -5,18 +5,40 @@ import {
   X,
   Globe,
   UserPlus,
+  ShieldCheck,
+  User,
+  Settings,
 } from "lucide-react";
-// Removed: import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 import "../css/NavBar.css";
 
 const Navbar: React.FC = () => {
-  // Removed auth variables: user, isAuthenticated, isAdmin, isSuperAdmin, logout
+  const { user, isAuthenticated, isAdmin, isSuperAdmin, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
-  // Removed: isUserDropdownOpen state
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState("English");
 
-  // Removed all handleLogout/Debug functions
+  const handleLogout = () => {
+    try {
+      // Clear all stored data explicitly
+      localStorage.removeItem("token");
+      localStorage.removeItem("userData");
+      localStorage.removeItem("userType");
+      localStorage.removeItem("selectedLanguage");
+
+      // Use auth context logout (which also clears localStorage)
+      logout();
+
+      // Force a page reload to ensure everything is cleared
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Fallback: force clear everything and reload
+      localStorage.clear();
+      window.location.href = "/";
+    }
+  };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -24,7 +46,12 @@ const Navbar: React.FC = () => {
 
   const toggleLanguageDropdown = () => {
     setIsLanguageDropdownOpen(!isLanguageDropdownOpen);
-    // Removed: setIsUserDropdownOpen(false);
+    setIsUserDropdownOpen(false); // Close user dropdown
+  };
+
+  const toggleUserDropdown = () => {
+    setIsUserDropdownOpen(!isUserDropdownOpen);
+    setIsLanguageDropdownOpen(false); // Close language dropdown
   };
 
   const translatePage = async (targetLang: string, langName: string) => {
@@ -121,13 +148,9 @@ const Navbar: React.FC = () => {
 
   // Close dropdowns when clicking outside
   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      // Only close if the click target is not within the dropdown buttons
-      const target = e.target as HTMLElement;
-      if (!target.closest('.language-switcher-container')) {
-          setIsLanguageDropdownOpen(false);
-      }
-      // Removed: setIsUserDropdownOpen(false);
+    const handleClickOutside = () => {
+      setIsLanguageDropdownOpen(false);
+      setIsUserDropdownOpen(false);
     };
 
     document.addEventListener("click", handleClickOutside);
@@ -147,17 +170,57 @@ const Navbar: React.FC = () => {
 
         {/* Mobile Controls & Auth/Language Block */}
         <div className="mobile-controls">
-          {/* Static Auth Buttons - Mobile */}
-          <div className="auth-buttons-mobile">
-            <a href="/login" className="admin-login-link mobile-login">
-              <LogIn size={16} />
-              <span>Login</span>
-            </a>
-            <a href="/register" className="admin-register-link mobile-register">
-              <UserPlus size={16} />
-              <span>Register</span>
-            </a>
-          </div>
+          {isAuthenticated ? (
+            <div className="user-menu-mobile">
+              <button
+                className="admin-login-link mobile-login"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleUserDropdown();
+                }}
+              >
+                <User size={16} />
+                <span>{user?.username}</span>
+              </button>
+              {isUserDropdownOpen && (
+                <div className="user-dropdown mobile-user-dropdown">
+                  <div className="user-info">
+                    <span className="username">{user?.username}</span>
+                    <span className="user-roles">{user?.roles?.join(", ") || "No roles"}</span>
+                  </div>
+                  <div className="dropdown-divider"></div>
+                  <a href="/dashboard" className="dropdown-item">
+                    <User size={16} />
+                    Settings
+                  </a>
+                  {isAdmin() && (
+                    <a href="/admin/dashboard" className="dropdown-item">
+                      <ShieldCheck size={16} />
+                      Admin Dashboard
+                    </a>
+                  )}
+                  <button
+                    onClick={handleLogout}
+                    className="dropdown-item logout-item"
+                  >
+                    <LogIn size={16} />
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="auth-buttons-mobile">
+              <a href="/login" className="admin-login-link mobile-login">
+                <LogIn size={16} />
+                <span>Login</span>
+              </a>
+              <a href="/register" className="admin-register-link mobile-register">
+                <UserPlus size={16} />
+                <span>Register</span>
+              </a>
+            </div>
+          )}
 
           <button
             className="hamburger-button"
@@ -219,17 +282,65 @@ const Navbar: React.FC = () => {
           <a href="/reviews">Reviews</a>
           <a href="/#how-it-works">How It Works</a>
 
-          {/* Static Auth Buttons - Desktop */}
-          <div className="auth-buttons-desktop">
-            <a href="/login" className="admin-login-link desktop-login">
-              <LogIn size={16} />
-              <span>Login</span>
-            </a>
-            <a href="/register" className="admin-register-link desktop-register">
-              <UserPlus size={16} />
-              <span>Register</span>
-            </a>
-          </div>
+          {isAuthenticated ? (
+            <div className="user-menu-desktop">
+              <button
+                className="admin-login-link desktop-login"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleUserDropdown();
+                }}
+              >
+                <User size={16} />
+                <span>{user?.username}</span>
+                <span className="role-badge">{user?.roles?.[0] || 'No Role'}</span>
+              </button>
+              {isUserDropdownOpen && (
+                <div className="user-dropdown desktop-user-dropdown">
+                  <div className="user-info">
+                    <span className="username">{user?.username}</span>
+                    <span className="user-roles">{user?.roles?.join(", ") || "No roles"}</span>
+                  </div>
+                  <div className="dropdown-divider"></div>
+                  <a href="/dashboard" className="dropdown-item">
+                    <User size={16} />
+                    Settings
+                  </a>
+                  {isAdmin() && (
+                    <a href="/admin/dashboard" className="dropdown-item">
+                      <ShieldCheck size={16} />
+                      Admin Dashboard
+                    </a>
+                  )}
+                  {isSuperAdmin() && (
+                    <a href="/admin/users" className="dropdown-item">
+                      <Settings size={16} />
+                      User Management
+                    </a>
+                  )}
+                  <div className="dropdown-divider"></div>
+                  <button
+                    onClick={handleLogout}
+                    className="dropdown-item logout-item"
+                  >
+                    <LogIn size={16} />
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="auth-buttons-desktop">
+              <a href="/login" className="admin-login-link desktop-login">
+                <LogIn size={16} />
+                <span>Login</span>
+              </a>
+              <a href="/register" className="admin-register-link desktop-register">
+                <UserPlus size={16} />
+                <span>Register</span>
+              </a>
+            </div>
+          )}
 
           {/* Desktop Language Switcher (Keep) */}
           <div className="language-switcher-container desktop-language">
