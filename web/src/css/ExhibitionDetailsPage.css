@@ -1,0 +1,161 @@
+/* --- Global Status Container (Loading/Error) --- */
+.page-status-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 50vh; /* Takes up vertical space */
+    font-size: 1.25rem; /* 20px */
+    color: #444;
+}
+
+.error-message {
+    color: #d9534f; /* A clear error red */
+    font-weight: bold;
+}
+
+/* --- Main Page Layout --- */
+.exhibits-page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* --- Exhibition Header --- */
+.exhibition-header {
+    text-align: center;
+    padding: 40px 20px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.exhibition-header h1 {
+    font-size: 2.5rem; /* 40px */
+    color: #1a1a1a;
+    margin-bottom: 0.5rem;
+}
+
+.exhibition-header p {
+    font-size: 1.1rem; /* 18px */
+    color: #666;
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* --- Exhibits Grid --- */
+.exhibits-grid-section {
+    padding-bottom: 50px;
+}
+
+.exhibits-grid {
+    display: grid;
+    /* Responsive Grid: 
+       - Min column width of 300px 
+       - Max of 1200px container width 
+    */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+/* --- Exhibit Card Link (Removes Link Underline) --- */
+.exhibit-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block; /* Ensure the link takes up the full card area */
+}
+
+/* --- Exhibit Card --- */
+.exhibit-card {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s, box-shadow 0.3s;
+    height: 100%; /* Ensures all cards in a row have the same height */
+    display: flex;
+    flex-direction: column;
+}
+
+.exhibit-card:hover {
+    transform: translateY(-5px); /* Lift effect on hover */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Image Container --- */
+.exhibit-image-container {
+    width: 100%;
+    /* Aspect Ratio: 16:9 for images */
+    padding-top: 56.25%; 
+    position: relative;
+    overflow: hidden;
+    background-color: #f5f5f5; /* Placeholder color */
+}
+
+.exhibit-image-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Important for clean cropping */
+    transition: transform 0.5s ease-in-out;
+}
+
+.exhibit-card:hover .exhibit-image-container img {
+    transform: scale(1.05); /* Slight zoom on hover */
+}
+
+/* --- Card Content --- */
+.exhibit-card-content {
+    padding: 20px;
+    flex-grow: 1; /* Pushes the "Learn More" button to the bottom */
+    display: flex;
+    flex-direction: column;
+}
+
+.exhibit-card-content h3 {
+    font-size: 1.5rem; /* 24px */
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 10px;
+    line-height: 1.3;
+}
+
+.exhibit-description {
+    font-size: 0.95rem; /* 15px */
+    color: #777;
+    margin-bottom: 15px;
+    /* Limit description to 3 lines */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.5;
+}
+
+/* --- Learn More Button Style --- */
+.exhibit-learn-more-btn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    color: #007bff; /* Primary link color */
+    font-weight: 600;
+    margin-top: auto; /* Pushes the button to the bottom */
+    transition: color 0.3s;
+}
+
+.exhibit-learn-more-btn:hover {
+    color: #0056b3; /* Darker color on hover */
+}
+
+.exhibit-learn-more-btn svg {
+    margin-left: 5px;
+    transition: transform 0.3s;
+}
+
+.exhibit-card-link:hover .exhibit-learn-more-btn svg {
+    transform: translateX(5px); /* Slide arrow on hover */
+}

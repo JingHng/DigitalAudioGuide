@@ -1,0 +1,268 @@
+/* ----------------------------------------------------- */
+/* --- Variable Integration (Assuming Global Variables exist) --- */
+/* ----------------------------------------------------- */
+:root {
+    /* Fallbacks in case global variables are not imported */
+    --primary-color-dark: #3b82f6; 
+    --primary-color-light: #60a5fa; 
+    --background-lightest: #ffffff;
+    --background-mid: #f9f9f9;
+    --text-dark: #1f2937;
+    --text-light: #6b7280;
+    --border-color: #e5e7eb;
+}
+
+/* ----------------------------------------------------- */
+/* --- Status Messages & Error Handling Styles --- */
+/* ----------------------------------------------------- */
+.status-message-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    padding: 2rem;
+    background-color: var(--background-mid);
+    color: var(--text-dark);
+}
+
+.status-message-container p {
+    margin-top: 1rem;
+    font-size: 1.1rem;
+    color: var(--text-light);
+}
+
+.status-message-container.error-message h2 {
+    color: #ef4444;
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.no-exhibitions-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5rem 0;
+    text-align: center;
+    color: #9ca3af;
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+.no-exhibitions-message p {
+    margin-top: 1rem;
+}
+
+/* ----------------------------------------------------- */
+/* --- Hero Section (Image + Soft Blue Gradient Overlay) --- */
+/* ----------------------------------------------------- */
+.hero-section-exhibitions {
+    position: relative;
+    /* This layers the blue gradient over the background image set via inline style in the React component */
+    background-image: 
+        linear-gradient(135deg, rgba(59, 130, 246, 0.9) 0%, rgba(96, 165, 250, 0.85) 100%),
+        var(--hero-image-placeholder); /* Will be overridden by the inline style in JSX */
+    background-size: cover;
+    background-position: center;
+    background-blend-mode: overlay; /* This blends the gradient and image */
+    
+    padding: 6rem 1.5rem;
+    text-align: center;
+    color: white; 
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+}
+
+/* Add a subtle glowing depth like global hero */
+.hero-section-exhibitions::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 10% 90%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 10%, rgba(96, 165, 250, 0.08) 0%, transparent 40%);
+    z-index: 0;
+}
+
+.hero-content-exhibitions {
+    position: relative;
+    z-index: 1;
+    max-width: 700px;
+    margin: 0 auto;
+    color: white; /* Ensure text is visible over dark blue background */
+    padding: 0 1rem;
+}
+
+.hero-content-exhibitions h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    /* Use a white gradient for contrast */
+    background: linear-gradient(90deg, #050404, #2a3339);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+    animation: fadeInDown 0.8s ease-out;
+}
+
+.hero-content-exhibitions p {
+    font-size: 1.25rem;
+    color: #13171f; /* Off-white for body text */
+    text-shadow: 0 3px 8px rgba(0, 0, 0, 0.4); 
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ----------------------------------------------------- */
+/* --- Grid and Cards Section --- */
+/* ----------------------------------------------------- */
+
+.exhibitions-grid-section {
+    padding: 4rem 5%; 
+}
+
+.exhibitions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.exhibition-card-link {
+    text-decoration: none;
+}
+
+.exhibition-card {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.exhibition-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    border-color: var(--primary-color-dark);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); 
+}
+
+.exhibition-card-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    display: block;
+}
+
+.exhibition-card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    /* Default dark overlay */
+    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 60%, transparent 100%);
+    color: white;
+    padding: 2rem;
+    transition: all 0.3s ease;
+}
+
+.exhibition-card:hover .exhibition-card-overlay {
+    /* Used primary color for hover overlay effect */
+    background: linear-gradient(to top, var(--primary-color-dark) 0%, color-mix(in srgb, var(--primary-color-dark) 80%, transparent) 60%, transparent 100%);
+}
+
+.exhibition-card-overlay h3 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.exhibition-card-overlay p {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.exhibition-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    padding-top: 1rem;
+}
+
+.view-exhibition-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    transition: gap 0.3s ease;
+}
+
+.exhibition-card:hover .view-exhibition-btn {
+    gap: 1rem;
+}
+
+/* ----------------------------------------------------- */
+/* --- Mobile Responsiveness --- */
+/* ----------------------------------------------------- */
+
+@media (max-width: 900px) {
+    .hero-section-exhibitions {
+        padding: 4rem 1.5rem;
+    }
+    .hero-content-exhibitions h1 {
+        font-size: 2.2rem;
+    }
+    .hero-content-exhibitions p {
+        font-size: 1rem;
+    }
+    .exhibitions-grid {
+        grid-template-columns: 1fr;
+    }
+    .exhibition-card-image {
+        height: 300px;
+    }
+    .exhibition-card-overlay {
+        padding: 1.5rem;
+    }
+    .exhibition-card-overlay h3 {
+        font-size: 1.5rem;
+    }
+}
