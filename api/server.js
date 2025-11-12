@@ -1,4 +1,17 @@
 require('dotenv').config();
+
+process.on('uncaughtException', (err) => {
+  console.error('🚨 FATAL UNCAUGHT EXCEPTION:', err.message);
+  console.error('Stack trace:', err.stack);
+  console.error('This error caused the server to crash!');
+  // Don't call process.exit() - let Azure restart automatically
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('🚨 UNHANDLED PROMISE REJECTION at:', promise, 'reason:', reason);
+  console.error('This might cause the server to crash!');
+});
+
 const app = require('./app');
 
 // Validate required environment variables
