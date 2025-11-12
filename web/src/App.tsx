@@ -36,11 +36,9 @@ import NotFoundPage from "./components/NotFoundPage.tsx"; // KEEP: Good practice
 // --- COMMENTED OUT: Loaders/Providers ---
 // import GoogleTranslateLoader from "./components/GoogleTranslateLoader";
 
-// Unauthorized page component (KEEP for structural integrity, but it's not used in routes)
-const UnauthorizedPage: React.FC = () => (
-  // ... your existing UnauthorizedPage JSX
-  <div>Unauthorized</div>
-);
+// const UnauthorizedPage: React.FC = () => (
+//   <div>Unauthorized</div>
+// );
 
 function App() {
   const location = useLocation();

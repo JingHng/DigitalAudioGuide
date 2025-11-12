@@ -47,23 +47,38 @@ app.use('/api', mainRoutes); // All routes under /api
 // app.use('/api/language', languageRoutes);
 // app.use('/api/translate', translateRoutes);
 
-app.get('*', (req, res, next) => {
-    // Check if the request is for a file that wasn't found (e.g., an image)
-    // or if the request is for an API route that didn't match
-    if (req.url.startsWith('/api')) {
-        // If it's an API route that failed to match, let the server handle the 404/error
-        return next();
-    }
-    
-    // For all other requests, serve the main index.html file
-    res.sendFile(path.join(frontendBuildPath, 'index.html'), (err) => {
-        if (err) {
-            // Log if the index.html file itself is missing, indicating a build/deployment issue
-            console.error(`ERROR: Failed to send index.html from: ${frontendBuildPath}`, err);
-            // Fallback for missing index.html
-            res.status(500).send('Frontend application files are missing from the server.');
-        }
-    });
+// Health check endpoint (IMPORTANT FOR AZURE)
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    message: 'CICDP Group 3 API is running',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
 });
+
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api/') || req.path.startsWith('/public/')) {
+    return next();
+  }
+  
+
+  
+  // Serve frontend index.html for all other routes
+  const indexPath = path.join(frontendBuildPath, 'index.html');
+  res.sendFile(indexPath, (err) => {
+    if (err) {
+      console.error(`ERROR: Failed to send index.html from: ${frontendBuildPath}`, err);
+      res.status(500).json({ 
+        error: 'Frontend application files are missing from the server.',
+        path: indexPath 
+      });
+    }
+  });
+});
+
+// Additional logging for debugging
+console.log('Middleware and routes setup complete.');
+console.log('Frontend build path:', frontendBuildPath);
 
 module.exports = app;
