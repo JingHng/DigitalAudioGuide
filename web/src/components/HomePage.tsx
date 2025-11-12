@@ -156,7 +156,7 @@ const Homepage: React.FC = () => {
                     <div className="exhibit-card">
                       <div className="image-container">
                         <img 
-                          src={getImageUrl(exhibit.images[0]?.fileUrl)} 
+                        src={getImageUrl(exhibit.images?.[0]?.fileUrl)} 
                           alt={exhibit.title} 
                         />
                       </div>
