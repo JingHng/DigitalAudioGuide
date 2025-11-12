@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const badgeController = require('../controllers/badgeController');
-// const jwtMiddleware = require("../middleware/jwtMiddleware"); 
+const jwtMiddleware = require("../middleware/jwtMiddleware"); 
 // const { checkPermission } = require("../middleware/permissionMiddleware"); 
 // const { uploadImage } = require('../middleware/fileUploads');
 
@@ -10,7 +10,7 @@ const badgeController = require('../controllers/badgeController');
 // Get all badges (for everyone)
 router.get('/allBadges', badgeController.getAllBadges);
 // Get badges of the logged-in user
-router.get('/userBadges', badgeController.getUserBadges);
+router.get('/userBadges', jwtMiddleware.verifyToken, badgeController.getUserBadges);
 
 
 // // --- ADMIN-ONLY ROUTES ---
