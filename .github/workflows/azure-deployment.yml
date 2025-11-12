@@ -1,0 +1,181 @@
+name: Deploy monorepo (api + web) to Azure App Service
+
+on:
+  push:
+    branches: [ "main", "master" ]
+    paths-ignore:
+      - "modules/**"
+      - "**/*.md"
+  workflow_dispatch:
+
+env:
+  WEBAPP_NAME: "cicdp"
+  NODE_VERSION: "20.x"
+  API_DIR: "api"
+  WEB_DIR: "web"
+  ARTIFACT_NAME: "deployment.zip"
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  CLIENT_ID: ${{ secrets.AZUREAPPSERVICE_CLIENTID }}
+  TENANT_ID: ${{ secrets.AZUREAPPSERVICE_TENANTID }}
+  SUBSCRIPTION_ID: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }}
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install API deps
+        working-directory: ${{ env.API_DIR }}
+        run: npm ci
+
+      - name: Install Web deps
+        working-directory: ${{ env.WEB_DIR }}
+        run: npm ci
+
+      - name: Build API (for E2E)
+        working-directory: ${{ env.API_DIR }}
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+        run: |
+          npx prisma generate
+          npx prisma migrate deploy
+          npx prisma db seed
+          npm run build
+
+      - name: Install Playwright browsers
+        working-directory: ${{ env.WEB_DIR }}
+        run: npx playwright install --with-deps
+
+      - name: Start API server in background
+        working-directory: ${{ env.API_DIR }}
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+          PORT: 5175
+          JWT_ACCESS_SECRET: test-jwt-secret-for-ci
+          JWT_REFRESH_SECRET: test-refresh-secret-for-ci
+          NODE_ENV: test
+        run: |
+          npm start &
+          sleep 10
+          # Verify API is responding
+          curl -f http://localhost:5175/health || curl -f http://localhost:5175/ || echo "API server not responding"
+
+      - name: Run Playwright tests
+        working-directory: ${{ env.WEB_DIR }}
+        run: npm run e2e
+        env:
+          CI: true
+          VITE_API_TARGET: http://localhost:5175
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: ${{ env.WEB_DIR }}/playwright-report/
+          retention-days: 7
+
+  build:
+    runs-on: ubuntu-latest
+    needs: e2e
+    permissions: { contents: read }
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      # ---- Frontend ----
+      - name: Install web deps
+        working-directory: ${{ env.WEB_DIR }}
+        run: npm ci
+
+      - name: Build web
+        working-directory: ${{ env.WEB_DIR }}
+        run: npm run build
+
+      # ---- Backend ----
+      - name: Install api deps (for build)
+        working-directory: ${{ env.API_DIR }}
+        run: npm ci
+
+      - name: Build api (TypeScript -> dist)
+        working-directory: ${{ env.API_DIR }}
+        run: npm run build
+
+      - name: Prune dev dependencies (keep only production)
+        working-directory: ${{ env.API_DIR }}
+        run: npm prune --production
+
+      # ---- Bundle web into api/public ----
+      - name: Copy web build into api/public
+        run: |
+          rm -rf "${API_DIR}/public"
+          mkdir -p "${API_DIR}/public"
+          cp -R "${WEB_DIR}/dist/." "${API_DIR}/public/"
+
+      # ---- Create artifact containing only what's needed on the server ----
+      - name: Package deployment artifact
+        run: |
+          # include compiled API, production node_modules, prisma files, package files and the static public folder
+          cd "${API_DIR}"
+          rm -f "../${ARTIFACT_NAME}"
+          zip -r "../${ARTIFACT_NAME}" dist node_modules package*.json prisma public || true
+          # Fallback: if node_modules doesn't exist (rare), include dist and package files
+          if [ ! -f "../${ARTIFACT_NAME}" ]; then
+            zip -r "../${ARTIFACT_NAME}" dist package*.json prisma public || true
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-package
+          path: ${{ env.ARTIFACT_NAME }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: deployment-package
+          path: .
+
+      - name: List files (debug)
+        run: |
+          ls -la
+          unzip -l ${{ env.ARTIFACT_NAME }} || true
+
+      # ---- Login (OIDC) ----
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ env.CLIENT_ID }}
+          tenant-id: ${{ env.TENANT_ID }}
+          subscription-id: ${{ env.SUBSCRIPTION_ID }}
+
+      # ---- Deploy ----
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.WEBAPP_NAME }}
+          package: ${{ env.ARTIFACT_NAME }}
