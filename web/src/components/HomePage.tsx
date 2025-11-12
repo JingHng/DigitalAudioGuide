@@ -13,7 +13,7 @@ import 'swiper/css/pagination';
 import '../css/HomePage.css'; 
 
 // --- Constants for API and Default Image ---
-const BACKEND_URL = import.meta.env.VITE_API_TARGET; 
+const BACKEND_URL = import.meta.env.VITE_API_TARGET || '';
 const DEFAULT_IMAGE_URL = `${BACKEND_URL}/public/images/SingaporeDiscoveryCentre.jpg`; 
 
 // --- Type Definitions for API Data ---

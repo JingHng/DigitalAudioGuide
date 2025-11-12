@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Loader2, Info } from 'lucide-react'; // Added Info icon
 import axios from 'axios';
 
-const BACKEND_URL = import.meta.env.VITE_API_TARGET;
+const BACKEND_URL = import.meta.env.VITE_API_TARGET || '';
 const DEFAULT_IMAGE_URL = `${BACKEND_URL}/public/images/ThroughTheLensOfTime.jpg`;
 const HERO_IMAGE_URL = `${BACKEND_URL}/public/images/SingaporeDiscoveryCentre.jpg`; // Ensure this is available or defined
 import '../css/ExhibitionsPage.css';

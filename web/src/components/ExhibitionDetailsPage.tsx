@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { ArrowRight, Loader2 } from 'lucide-react';
 import axios from 'axios';
 
-const BACKEND_URL = import.meta.env.VITE_API_TARGET;
+const BACKEND_URL = import.meta.env.VITE_API_TARGET || '';
 const DEFAULT_IMAGE_URL = `${BACKEND_URL}/public/images/Exhibit.jpg`;
 import "../css/ExhibitionDetailsPage.css";
 
