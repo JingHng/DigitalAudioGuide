@@ -99,18 +99,18 @@ jobs:
             sleep 2
             counter=$((counter + 2))
           done
-          echo "API health check failed. Debugging information:"
-          echo "=== API Server Logs ==="
-          cat api/api.log || echo "No API log file found"
-          echo "=== Process List ==="
-          ps aux | grep node || echo "No node processes found"
-          echo "=== Port Usage ==="
-          netstat -tlnp | grep 5175 || echo "Port 5175 not in use"
-          echo "=== Testing basic connectivity ==="
-          curl -v http://localhost:5175/ || echo "Server not responding at all"
-          echo "=== Testing API base path ==="
-          curl -v http://localhost:5175/api/ || echo "API base path not responding"
-          exit 1
+            echo "API health check failed. Debugging information:"
+            echo "=== API Server Logs ==="
+            cat api/api.log || echo "No API log file found"
+            echo "=== Process List ==="
+            ps aux | grep node || echo "No node processes found"
+            echo "=== Port Usage ==="
+            netstat -tlnp | grep 5175 || echo "Port 5175 not in use"
+            echo "=== Testing basic connectivity ==="
+            curl -v http://localhost:5175/ || echo "Server not responding at all"
+            echo "=== Testing API base path ==="
+            curl -v http://localhost:5175/api/ || echo "API base path not responding"
+            exit 1
 
       # --- Frontend Setup ---
       - name: 📦 Install Web Dependencies
@@ -412,6 +412,16 @@ jobs:
         run: |
           cd web
           npx playwright test tests/e2e/auth-login-logout.spec.ts tests/e2e/login.spec.ts
+        env:
+          VITE_API_TARGET: http://localhost:5175
+          CI: true
+        continue-on-error: false
+
+      # --- Reset Password E2E Tests ---
+      - name: 🔑 Run Reset Password E2E Tests
+        run: |
+          cd web
+          npx playwright test tests/e2e/reset-password.spec.ts
         env:
           VITE_API_TARGET: http://localhost:5175
           CI: true

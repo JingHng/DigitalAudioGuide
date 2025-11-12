@@ -76,8 +76,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     // Listen for login state changes
     const handleLoginStateChange = () => {
-      const newUserData = getCurrentUser();
-      setUser(newUserData);
+      // Small delay to ensure localStorage is updated
+      setTimeout(() => {
+        const newUserData = getCurrentUser();
+        setUser(newUserData);
+        setIsLoading(false);
+      }, 50);
     };
 
     window.addEventListener("loginStateChange", handleLoginStateChange);

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { QrCode, Headphones, Compass, ArrowRight } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
-import axios from 'axios';
+import apiClient from '../utils/apiClient';
 
 // --- Swiper CSS Imports ---
 import 'swiper/css';
@@ -36,12 +36,18 @@ const Homepage: React.FC = () => {
   useEffect(() => {
     (async () => {
       try {
-        const response = await axios.get(`${BACKEND_URL}/api/exhibits`);
+        // Use apiClient which handles authentication headers
+        const response = await apiClient.get('/exhibits');
         // Limit to 6 exhibits for the carousel
         const fetchedExhibits = response.data.slice(0, 6); 
         setFeaturedExhibits(fetchedExhibits);
-      } catch (err) {
-        console.error('Error fetching data:', err);
+      } catch (err: any) {
+        // Only log error if it's not a 401 (which might be expected for public endpoints)
+        if (err.response?.status !== 401) {
+          console.error('Error fetching exhibits:', err);
+        }
+        // Set empty array on error to prevent UI issues
+        setFeaturedExhibits([]);
       } finally {
         setLoading(false);
       }

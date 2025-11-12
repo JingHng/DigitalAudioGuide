@@ -59,6 +59,9 @@ const LoginPage: React.FC = () => {
       // You can also dispatch a custom event to notify other components (like Navbar)
       window.dispatchEvent(new Event("loginStateChange"));
 
+      // Small delay to ensure AuthContext has time to update
+      await new Promise(resolve => setTimeout(resolve, 100));
+
       // Redirect based on user role
       const userRoles = response.data.user?.roles || [];
 

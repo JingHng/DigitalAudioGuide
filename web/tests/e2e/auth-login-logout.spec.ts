@@ -214,11 +214,50 @@ test.describe('Authentication - Login and Logout Flow', () => {
       await page.fill('input[name="username"]', TEST_CREDENTIALS.admin.username);
       await page.fill('input[name="password"]', TEST_CREDENTIALS.admin.password);
       
-      // Submit form
-      await page.click('button[type="submit"]');
+      // Submit form and wait for response
+      const [response] = await Promise.all([
+        page.waitForResponse(response => {
+          const url = response.url();
+          return (url.includes('/auth/login') || url.includes('/api/auth/login') || url.includes('5175')) && response.status() === 200;
+        }, { timeout: 15000 }),
+        page.click('button[type="submit"]')
+      ]);
       
-      // Wait for navigation to admin dashboard
-      await page.waitForURL(/.*\/admin\/dashboard/, { timeout: 10000 });
+      // Verify response is successful
+      expect(response.status()).toBe(200);
+      
+      // Wait for navigation - the page should navigate after login
+      // Try multiple URL patterns to catch navigation
+      try {
+        await page.waitForURL(/.*\/admin\/dashboard/, { timeout: 15000 });
+      } catch (error) {
+        // If navigation didn't happen, check what URL we're on and if there are errors
+        const currentUrl = page.url();
+        const errorMessage = page.locator('.login-error-message');
+        const hasError = await errorMessage.isVisible().catch(() => false);
+        
+        if (hasError) {
+          const errorText = await errorMessage.textContent();
+          throw new Error(`Login failed with error: ${errorText}. Current URL: ${currentUrl}`);
+        }
+        
+        // Check if we're still on login page
+        if (currentUrl.includes('/login')) {
+          // Check token and userData
+          const token = await page.evaluate(() => localStorage.getItem('token'));
+          const userData = await page.evaluate(() => {
+            const data = localStorage.getItem('userData');
+            return data ? JSON.parse(data) : null;
+          });
+          throw new Error(`Login succeeded but navigation failed. Token: ${!!token}, UserData: ${JSON.stringify(userData)}, Current URL: ${currentUrl}`);
+        }
+        
+        // If we're on a different page, that's unexpected
+        throw new Error(`Unexpected URL after login: ${currentUrl}`);
+      }
+      
+      // Verify we're on admin dashboard
+      expect(page.url()).toContain('/admin/dashboard');
       
       // Verify token is stored
       const token = await page.evaluate(() => localStorage.getItem('token'));
@@ -239,24 +278,56 @@ test.describe('Authentication - Login and Logout Flow', () => {
       await page.fill('input[name="username"]', TEST_CREDENTIALS.admin.email);
       await page.fill('input[name="password"]', TEST_CREDENTIALS.admin.password);
       
-      // Submit form
-      await page.click('button[type="submit"]');
+      // Submit form and wait for response
+      const [response] = await Promise.all([
+        page.waitForResponse(response => {
+          const url = response.url();
+          return (url.includes('/auth/login') || url.includes('/api/auth/login') || url.includes('5175')) && response.status() === 200;
+        }, { timeout: 15000 }),
+        page.click('button[type="submit"]')
+      ]);
+      
+      expect(response.status()).toBe(200);
       
       // Wait for navigation to admin dashboard
-      await page.waitForURL(/.*\/admin\/dashboard/, { timeout: 10000 });
+      try {
+        await page.waitForURL(/.*\/admin\/dashboard/, { timeout: 15000 });
+      } catch (error) {
+        const currentUrl = page.url();
+        const errorMessage = page.locator('.login-error-message');
+        if (await errorMessage.isVisible().catch(() => false)) {
+          const errorText = await errorMessage.textContent();
+          throw new Error(`Login failed: ${errorText}`);
+        }
+        throw new Error(`Navigation to admin dashboard failed. Current URL: ${currentUrl}`);
+      }
       
       // Verify we're on admin dashboard
-      const url = page.url();
-      expect(url).toContain('/admin/dashboard');
+      expect(page.url()).toContain('/admin/dashboard');
     });
 
     test('should redirect admin user to admin dashboard after login', async ({ page }) => {
       await page.fill('input[name="username"]', TEST_CREDENTIALS.admin.username);
       await page.fill('input[name="password"]', TEST_CREDENTIALS.admin.password);
-      await page.click('button[type="submit"]');
+      
+      // Submit form and wait for response
+      const [response] = await Promise.all([
+        page.waitForResponse(response => {
+          const url = response.url();
+          return (url.includes('/auth/login') || url.includes('/api/auth/login') || url.includes('5175')) && response.status() === 200;
+        }, { timeout: 15000 }),
+        page.click('button[type="submit"]')
+      ]);
+      
+      expect(response.status()).toBe(200);
       
       // Wait for navigation to admin dashboard
-      await page.waitForURL(/.*\/admin\/dashboard/, { timeout: 10000 });
+      try {
+        await page.waitForURL(/.*\/admin\/dashboard/, { timeout: 15000 });
+      } catch (error) {
+        const currentUrl = page.url();
+        throw new Error(`Navigation to admin dashboard failed. Current URL: ${currentUrl}`);
+      }
       
       // Verify admin dashboard elements are visible
       const dashboardContent = await page.textContent('body');
@@ -383,8 +454,25 @@ test.describe('Authentication - Login and Logout Flow', () => {
       // First, login as admin user
       await page.fill('input[name="username"]', TEST_CREDENTIALS.admin.username);
       await page.fill('input[name="password"]', TEST_CREDENTIALS.admin.password);
-      await page.click('button[type="submit"]');
-      await page.waitForURL(/.*\/admin\/dashboard/, { timeout: 10000 });
+      
+      // Submit form and wait for response
+      const [response] = await Promise.all([
+        page.waitForResponse(response => {
+          const url = response.url();
+          return (url.includes('/auth/login') || url.includes('/api/auth/login') || url.includes('5175')) && response.status() === 200;
+        }, { timeout: 15000 }),
+        page.click('button[type="submit"]')
+      ]);
+      
+      expect(response.status()).toBe(200);
+      
+      // Wait for navigation to admin dashboard
+      try {
+        await page.waitForURL(/.*\/admin\/dashboard/, { timeout: 15000 });
+      } catch (error) {
+        const currentUrl = page.url();
+        throw new Error(`Navigation to admin dashboard failed. Current URL: ${currentUrl}`);
+      }
       
       // Verify user is logged in
       const tokenBeforeLogout = await page.evaluate(() => localStorage.getItem('token'));
