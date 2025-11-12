@@ -34,6 +34,8 @@ jobs:
           npm run build --prefix web
           
           npm run build --if-present
+        env:
+          VITE_API_TARGET: https://sdcgroup3-bwbnekdtd7h8bzg4.malaysiawest-01.azurewebsites.net
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -68,4 +70,3 @@ jobs:
           app-name: 'SDCGroup3'
           slot-name: 'Production'
           package: .
-          

@@ -21,11 +21,29 @@ BigInt.prototype.toJSON = function() {
 const app = express();
 
 const corsOptions = {
-  origin: 'http://localhost:5173', 
-  
-  credentials: true, 
-
-  optionsSuccessStatus: 200 
+  origin: function (origin, callback) {
+    // Allow requests with no origin 
+    if (!origin) return callback(null, true);
+    
+    // Allow localhost for development
+    if (origin.includes('localhost')) {
+      return callback(null, true);
+    }
+    
+    // Allow Azure domain
+    if (origin.includes('azurewebsites.net')) {
+      return callback(null, true);
+    }
+    
+    // Specific Azure domain 
+    if (origin === 'https://sdcgroup3-bwbnekdtd7h8bzg4.malaysiawest-01.azurewebsites.net') {
+      return callback(null, true);
+    }
+    
+    callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+  optionsSuccessStatus: 200
 };
 
 app.use(cors(corsOptions));
