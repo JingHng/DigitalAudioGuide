@@ -196,7 +196,7 @@ jobs:
           cd web
           npm run build
         env:
-          VITE_API_TARGET: https://your-production-domain.com # Adjust as needed
+          VITE_API_TARGET: '' 
 
       # --- Upload Build Artifacts ---
       - name: ⬆️ Upload API Build Artifact
