@@ -1,8 +1,13 @@
 # .github/workflows/ci.yml
 
-name: CI Pipeline - Full Stack Integration Test
+name: Test + Build Pipeline
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - 'feature/**'
+  workflow_dispatch:
+      
 
 jobs:
   # 🧪 JOB 1: Testing (Unit + Integration) - Runs First
