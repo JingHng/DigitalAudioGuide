@@ -179,10 +179,11 @@ jobs:
 
   
 
-  # 🚀 JOB 3: Deploy - Runs after Build
+  # 🚀 JOB 3: Deploy - Runs after Build, ONLY on development branch
   deploy:
     runs-on: ubuntu-latest
     needs: build
+    if: github.ref == 'refs/heads/development' 
     permissions:
       id-token: write
       contents: read
