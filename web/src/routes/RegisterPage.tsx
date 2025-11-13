@@ -20,7 +20,7 @@ const RegisterPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const { firstName, lastName, username, email, password, confirmPassword } =
+  const { firstName: _firstName, lastName:_lastName, username, email, password, confirmPassword } =
     formData;
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {

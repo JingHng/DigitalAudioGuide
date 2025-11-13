@@ -13,7 +13,7 @@ import 'swiper/css/pagination';
 import '../css/HomePage.css'; 
 
 // --- Constants for API and Default Image ---
-const BACKEND_URL = import.meta.env.VITE_API_TARGET; 
+const BACKEND_URL = import.meta.env.VITE_API_TARGET || '';
 const DEFAULT_IMAGE_URL = `${BACKEND_URL}/public/images/SingaporeDiscoveryCentre.jpg`; 
 
 // --- Type Definitions for API Data ---
@@ -37,11 +37,14 @@ const Homepage: React.FC = () => {
     (async () => {
       try {
         const response = await axios.get(`${BACKEND_URL}/api/exhibits`);
-        // Limit to 6 exhibits for the carousel
-        const fetchedExhibits = response.data.slice(0, 6); 
+        // Add safety check to ensure response.data is an array
+        const data = Array.isArray(response.data) ? response.data : [];
+        const fetchedExhibits = data.slice(0, 6); 
         setFeaturedExhibits(fetchedExhibits);
       } catch (err) {
         console.error('Error fetching data:', err);
+        // Ensure state remains an empty array on error
+        setFeaturedExhibits([]);
       } finally {
         setLoading(false);
       }
@@ -129,7 +132,7 @@ const Homepage: React.FC = () => {
                 <ArrowRight size={18} />
             </a>
             
-            {featuredExhibits.length === 0 ? (
+            {!Array.isArray(featuredExhibits) || featuredExhibits.length === 0 ? (
               <div className="no-exhibits-message">
                 <p>No featured exhibits are currently available.</p>
               </div>
@@ -156,7 +159,7 @@ const Homepage: React.FC = () => {
                     <div className="exhibit-card">
                       <div className="image-container">
                         <img 
-                          src={getImageUrl(exhibit.images[0]?.fileUrl)} 
+                          src={getImageUrl(exhibit.images?.[0]?.fileUrl)} 
                           alt={exhibit.title} 
                         />
                       </div>

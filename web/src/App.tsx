@@ -3,8 +3,8 @@ import { useEffect } from "react";
 // --- COMMENTED OUT: Context & Utilities ---
 // import { AuthProvider } from "./contexts/AuthContext";
 // import { ensureLanguagePersistence } from "./utils/languageUtils"; 
-import Navbar from "./components/Navbar.tsx"; // KEEP: Needed for navigation
-import Homepage from "./components/HomePage.tsx"; // KEEP: Requested
+import Navbar from "./components/Navbar.tsx"; 
+import Homepage from "./components/HomePage.tsx"; 
 // --- COMMENTED OUT: Auth & User Components ---
 import LoginPage from "./routes/LoginPage";
 import RegisterPage from "./routes/RegisterPage";
@@ -14,8 +14,8 @@ import EmailVerificationPage from "./routes/EmailVerificationPage";
 // import ScanPage from "./components/ScanPage";
 
 // --- MODIFIED/NEW IMPORTS FOR EXHIBITIONS --- (KEEP ALL)
-// import AllExhibitions from "./components/Exhibitions.tsx"; // Renamed from AllExhibits
-// import ExhibitionDetails from "./components/ExhibitionDetails.tsx"; // New Page
+import AllExhibitions from "./components/ExhibitionsPage.tsx"; 
+import ExhibitionDetails from "./components/ExhibitionDetailsPage.tsx"; // New Page
 // import ExhibitDetails from "./components/ExhibitDetails.tsx"; // This is the final audio player page
 
 // --- COMMENTED OUT: Other Public/Protected Components ---
@@ -36,11 +36,9 @@ import NotFoundPage from "./components/NotFoundPage.tsx"; // KEEP: Good practice
 // --- COMMENTED OUT: Loaders/Providers ---
 // import GoogleTranslateLoader from "./components/GoogleTranslateLoader";
 
-// Unauthorized page component (KEEP for structural integrity, but it's not used in routes)
-const UnauthorizedPage: React.FC = () => (
-  // ... your existing UnauthorizedPage JSX
-  <div>Unauthorized</div>
-);
+// const UnauthorizedPage: React.FC = () => (
+//   <div>Unauthorized</div>
+// );
 
 function App() {
   const location = useLocation();
@@ -75,9 +73,9 @@ function App() {
             <Route path="/" element={<Homepage />} />
 
             {/* --- NEW/MODIFIED Public Exhibition Routes (Enabled) --- */}
-            {/* <Route path="/exhibitions" element={<AllExhibitions />} />
+            <Route path="/exhibitions" element={<AllExhibitions />} />
             <Route path="/exhibitions/:id" element={<ExhibitionDetails />} />
-            <Route path="/exhibit/:id" element={<ExhibitDetails />} /> */}
+              {/* <Route path="/exhibit/:id" element={<ExhibitDetails />} />   */}
 
             {/* --- Other Public/Auth Routes --- */}
             <Route path="/login" element={<LoginPage />} />

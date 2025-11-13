@@ -28,7 +28,7 @@ const EmailVerificationPage: React.FC = () => {
     hasVerifiedRef.current = true;
     setIsVerifying(true);
     try {
-      const response = await apiClient.post('/auth/verify-email', {
+        await apiClient.post('/auth/verify-email', {
         token: currentToken,
       });
 

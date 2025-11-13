@@ -21,23 +21,20 @@ BigInt.prototype.toJSON = function() {
 const app = express();
 
 const corsOptions = {
-  origin: 'http://localhost:5173', 
-  
-  credentials: true, 
-
-  optionsSuccessStatus: 200 
+  origin: true, // Allow all origins temporarily
+  credentials: true,
+  optionsSuccessStatus: 200
 };
 
 app.use(cors(corsOptions));
-
-
-
 app.use(express.json());
 
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
-
+const frontendBuildPath = path.join(__dirname, '..', 'web', 'dist');
+app.use(express.static(frontendBuildPath));
 app.use('/api', mainRoutes); // All routes under /api
+
 // app.use('/api/qr', qrCodeRoute);
 // app.use('/api/users', usersRoutes);
 // app.use('/api/roles', rolesRoutes);
@@ -48,7 +45,38 @@ app.use('/api', mainRoutes); // All routes under /api
 // app.use('/api/language', languageRoutes);
 // app.use('/api/translate', translateRoutes);
 
+// Health check endpoint (IMPORTANT FOR AZURE)
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    message: 'CICDP Group 3 API is running',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api/') || req.path.startsWith('/public/')) {
+    return next();
+  }
+  
+
+  
+  // Serve frontend index.html for all other routes
+  const indexPath = path.join(frontendBuildPath, 'index.html');
+  res.sendFile(indexPath, (err) => {
+    if (err) {
+      console.error(`ERROR: Failed to send index.html from: ${frontendBuildPath}`, err);
+      res.status(500).json({ 
+        error: 'Frontend application files are missing from the server.',
+        path: indexPath 
+      });
+    }
+  });
+});
+
 // Additional logging for debugging
 console.log('Middleware and routes setup complete.');
+console.log('Frontend build path:', frontendBuildPath);
 
 module.exports = app;
