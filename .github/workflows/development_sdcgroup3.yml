@@ -1,4 +1,4 @@
-# .github/workflows/ci-deploy.yml
+# .github/workflows/development_sdcgroup3.yml
 
 name: Test, Build, and Deploy Pipeline
 
@@ -132,7 +132,7 @@ jobs:
           echo "=== Final API Server Logs ==="
           cat api/api.log || echo "No API log file found"
 
-  ---
+  
 
   # 🔨 JOB 2: Build - Runs after Test
   build:
