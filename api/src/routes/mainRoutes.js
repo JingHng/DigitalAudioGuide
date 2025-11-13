@@ -4,6 +4,7 @@ const router = express.Router();
 // Import the exhibits routes
 const exhibitsRoutes = require('./exhibitsRoutes');
 const exhibitionsRoutes = require('./exhibitonRoutes'); 
+const badgeRoutes = require('./badgeRoutes');
 const authRoutes = require('./authRoutes'); 
 // const imagesRoutes = require('../routes/imageRoutes');
 // const reviewRoutes = require('../routes/reviewRoutes'); 
@@ -12,11 +13,11 @@ const authRoutes = require('./authRoutes');
 
 router.use('/exhibits', exhibitsRoutes);
 router.use('/exhibitions', exhibitionsRoutes); 
+router.use('/badges', badgeRoutes);
 router.use('/auth', authRoutes);
 // router.use('/images', imagesRoutes);
 // router.use('/reviews', reviewRoutes); 
 // router.use('/settings', settingsRoutes);
-
 
 
 

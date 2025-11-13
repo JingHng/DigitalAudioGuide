@@ -20,7 +20,7 @@ async function seed() {
     `);
 
     // Wait a moment for connections to close
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Drop all existing tables dynamically
     await client.query(`
@@ -51,7 +51,7 @@ async function seed() {
       INSERT INTO status (status_name) VALUES ('Active'), ('Inactive'), ('Suspended');
       `);
 
-    // 1.1 EXHIBITIONS table
+    // 2. EXHIBITIONS table
     await client.query(`
   CREATE TABLE exhibitions (
     exhibition_id BIGSERIAL PRIMARY KEY,
@@ -63,7 +63,7 @@ async function seed() {
   );
 `);
 
-  // 2. badge table
+    // 3. badge table
     await client.query(`
     CREATE TABLE badge (
     badge_id BIGSERIAL PRIMARY KEY,
@@ -75,8 +75,7 @@ async function seed() {
     );
     `);
 
-    
-    // 2. EXHIBIT table
+    // 4. EXHIBIT table
     await client.query(`
       CREATE TABLE exhibit (
         exhibit_id BIGSERIAL PRIMARY KEY,
@@ -90,7 +89,7 @@ async function seed() {
       );
     `);
 
-    // 3. QR_CODE table to link exhibits and QR URLs
+    // 5. QR_CODE table to link exhibits and QR URLs
     await client.query(`
       CREATE TABLE qr_code (
         qr_id SERIAL PRIMARY KEY,
@@ -101,7 +100,7 @@ async function seed() {
       );
     `);
 
-    // 4. LANGUAGE table
+    // 6. LANGUAGE table
     await client.query(`
       CREATE TABLE language (
         language_id BIGSERIAL PRIMARY KEY,
@@ -114,7 +113,7 @@ async function seed() {
       );
     `);
 
-    // 5. USER table
+    // 7. USER table
     await client.query(`
       CREATE TABLE "user" (
         user_id BIGSERIAL PRIMARY KEY,
@@ -129,7 +128,7 @@ async function seed() {
       );
     `);
 
-      // 2. badge table
+    // 8. USER_BADGE table
     await client.query(`
     CREATE TABLE user_badge (
     user_id BIGINT REFERENCES "user"(user_id) ON DELETE CASCADE,
@@ -139,7 +138,7 @@ async function seed() {
     );
     `);
 
-    // 6. ROLES table
+    // 9. ROLES table
     await client.query(`
       CREATE TABLE roles (
         role_id SERIAL PRIMARY KEY,
@@ -150,7 +149,7 @@ async function seed() {
       );
     `);
 
-    // 7. PERMISSIONS table
+    // 10. PERMISSIONS table
     await client.query(`
       CREATE TABLE permissions (
         permission_id SERIAL PRIMARY KEY,
@@ -161,7 +160,7 @@ async function seed() {
       );
     `);
 
-    // 8. USERROLES junction table
+    // 11. USER_ROLES junction table
     await client.query(`
       CREATE TABLE userroles (
         user_id BIGINT NOT NULL,
@@ -173,7 +172,7 @@ async function seed() {
       );
     `);
 
-    // 9. ROLES_PERMISSION junction table
+    // 12. ROLES_PERMISSION junction table
     await client.query(`
       CREATE TABLE roles_permission (
         role_id INTEGER NOT NULL,
@@ -184,7 +183,7 @@ async function seed() {
       );
     `);
 
-    // 10. SESSIONS table
+    // 13. SESSIONS table
     await client.query(`
       CREATE TABLE sessions (
         session_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -194,7 +193,7 @@ async function seed() {
       );
     `);
 
-    // 11. PASSWORD_RESET_TOKEN table
+    // 14. PASSWORD_RESET_TOKEN table
     await client.query(`
       CREATE TABLE password_reset_token (
         password_reset_id BIGSERIAL PRIMARY KEY,
@@ -206,7 +205,7 @@ async function seed() {
       );
     `);
 
-    // 12. EMAIL_VERIFICATION_TOKEN table
+    // 15. EMAIL_VERIFICATION_TOKEN table
     await client.query(`
       CREATE TABLE email_verification_token (
         email_verification_id BIGSERIAL PRIMARY KEY,
@@ -218,7 +217,7 @@ async function seed() {
       );
     `);
 
-    // 13. AUDIO table
+    // 16. AUDIO table
     await client.query(`
       CREATE TABLE audio (
         audio_id SERIAL PRIMARY KEY,
@@ -232,7 +231,7 @@ async function seed() {
       );
     `);
 
-    // 14. IMAGES table
+    // 17. IMAGES table
     await client.query(`
   CREATE TABLE images (
     image_id BIGSERIAL PRIMARY KEY,
@@ -247,7 +246,7 @@ async function seed() {
   );
 `);
 
-    // 15. SUBTITLE table
+    // 18. SUBTITLE table
     await client.query(`
       CREATE TABLE subtitle (
         subtitle_id BIGSERIAL PRIMARY KEY,
@@ -260,7 +259,7 @@ async function seed() {
       );
     `);
 
-    // 16. FEEDBACK table
+    // 19. FEEDBACK table
     await client.query(`
       CREATE TABLE feedback (
         feedback_id BIGSERIAL PRIMARY KEY,
@@ -273,7 +272,7 @@ async function seed() {
       );
     `);
 
-    // 17. AUDIO_PLAYBACK_LOGS table
+    // 20. AUDIO_PLAYBACK_LOGS table
     await client.query(`
       CREATE TABLE audio_playback_logs (
         audio_logs_id SERIAL PRIMARY KEY,
@@ -287,7 +286,7 @@ async function seed() {
       );
     `);
 
-    // 18. AUDIT_LOGS table
+    // 21. AUDIT_LOGS table
     await client.query(`
       CREATE TABLE IF NOT EXISTS audit_logs (
       audit_log_id BIGSERIAL PRIMARY KEY,
@@ -553,30 +552,85 @@ async function seed() {
     const usernames = [];
     const emails = [];
     const statuses = [1, 1, 1, 1, 2, 3]; // Mostly active, some inactive/suspended
-    const firstNames = ['Alex', 'Sam', 'Jordan', 'Taylor', 'Casey', 'Morgan', 'Riley', 'Avery', 'Quinn', 'Blake', 'Cameron', 'Devon', 'Emery', 'Harper', 'Hayden', 'Jamie', 'Kennedy', 'Logan', 'Madison', 'Parker'];
-    const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez', 'Hernandez', 'Lopez', 'Gonzalez', 'Wilson', 'Anderson', 'Thomas', 'Taylor', 'Moore', 'Jackson', 'Martin', 'Lee', 'Perez', 'Thompson', 'White', 'Harris'];
+    const firstNames = [
+      "Alex",
+      "Sam",
+      "Jordan",
+      "Taylor",
+      "Casey",
+      "Morgan",
+      "Riley",
+      "Avery",
+      "Quinn",
+      "Blake",
+      "Cameron",
+      "Devon",
+      "Emery",
+      "Harper",
+      "Hayden",
+      "Jamie",
+      "Kennedy",
+      "Logan",
+      "Madison",
+      "Parker",
+    ];
+    const lastNames = [
+      "Smith",
+      "Johnson",
+      "Williams",
+      "Brown",
+      "Jones",
+      "Garcia",
+      "Miller",
+      "Davis",
+      "Rodriguez",
+      "Martinez",
+      "Hernandez",
+      "Lopez",
+      "Gonzalez",
+      "Wilson",
+      "Anderson",
+      "Thomas",
+      "Taylor",
+      "Moore",
+      "Jackson",
+      "Martin",
+      "Lee",
+      "Perez",
+      "Thompson",
+      "White",
+      "Harris",
+    ];
 
     // Create users spanning the last 12 months with realistic distribution
     for (let i = 1; i <= 120; i++) {
-      const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+      const firstName =
+        firstNames[Math.floor(Math.random() * firstNames.length)];
       const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
       const username = `${firstName.toLowerCase()}_${lastName.toLowerCase()}_${i}`;
       const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${i}@example.com`;
-      
+
       // Distribute registrations over past 12 months with higher activity in recent months
       const daysAgo = Math.floor(Math.random() * 365);
-      const weight = Math.max(0.1, 1 - (daysAgo / 365)); // More users in recent months
-      const adjustedDaysAgo = Math.random() < weight ? Math.floor(Math.random() * 90) : daysAgo;
-      
-      const createdAt = `CURRENT_TIMESTAMP - INTERVAL '${adjustedDaysAgo} days' - INTERVAL '${Math.floor(Math.random() * 24)} hours'`;
+      const weight = Math.max(0.1, 1 - daysAgo / 365); // More users in recent months
+      const adjustedDaysAgo =
+        Math.random() < weight ? Math.floor(Math.random() * 90) : daysAgo;
+
+      const createdAt = `CURRENT_TIMESTAMP - INTERVAL '${adjustedDaysAgo} days' - INTERVAL '${Math.floor(
+        Math.random() * 24
+      )} hours'`;
       const statusId = statuses[Math.floor(Math.random() * statuses.length)];
       const emailVerified = Math.random() > 0.1; // 90% email verified
       const hasLoggedIn = Math.random() > 0.2; // 80% have logged in
-      const lastLoginAt = hasLoggedIn ? 
-        `CURRENT_TIMESTAMP - INTERVAL '${Math.floor(Math.random() * adjustedDaysAgo + 1)} days'` : 
-        'NULL';
+      const lastLoginAt = hasLoggedIn
+        ? `CURRENT_TIMESTAMP - INTERVAL '${Math.floor(
+            Math.random() * adjustedDaysAgo + 1
+          )} days'`
+        : "NULL";
 
-      users.push(`('${username}', '${email}', '$2b$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', ${emailVerified}, ${statusId}, ${lastLoginAt}, ${createdAt})`);
+      users.push(
+        `('${username}', '${email}', '$2b$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', ${emailVerified}, ${statusId}, ${lastLoginAt}, ${createdAt})`
+      );
       usernames.push(username);
       emails.push(email);
     }
@@ -587,11 +641,13 @@ async function seed() {
       const batch = users.slice(i, i + batchSize);
       await client.query(`
         INSERT INTO "user" (username, email, password_hash, email_verified, status_id, last_login_at, created_at) VALUES
-        ${batch.join(', ')};
+        ${batch.join(", ")};
       `);
     }
 
-    console.log(`Inserted ${users.length + 2} users total (including admin and moderator)`);
+    console.log(
+      `Inserted ${users.length + 2} users total (including admin and moderator)`
+    );
 
     // Assign roles to users - admin and moderator first
     await client.query(`
@@ -692,13 +748,47 @@ async function seed() {
       (2, 'Our Milestones', 'Singapore’s achievements and moments of celebration.', 1)
     `);
 
+    // Insert badges automatically for each exhibit
+    // Get all exhibits
+    const exhibits = await client.query(`SELECT exhibit_id, title, description FROM exhibit`);
+
+    // Loop through exhibits and insert corresponding badges
+    for (const exhibit of exhibits.rows) {
+      const { exhibit_id, title, description } = exhibit;
+
+      // Insert badge based on exhibit data
+      const badgeResult = await client.query(
+        `INSERT INTO badge (name, description, created_at, updated_at)
+         VALUES ($1, $2, NOW(), NOW())
+         RETURNING badge_id`,
+        [title, description]
+      );
+
+      const badgeId = badgeResult.rows[0].badge_id;
+
+      // Update exhibit to link this badge
+      await client.query(
+        `UPDATE exhibit SET badge_id = $1 WHERE exhibit_id = $2`,
+        [badgeId, exhibit_id]
+      );
+    }
+
+    // Insert userBadges (4 badges are earned by admin 1)
+    await client.query(`
+      INSERT INTO user_badge (user_id, badge_id, created_at) VALUES
+      (1, 1, NOW()),
+      (1, 2, NOW()),
+      (1, 3, NOW()),
+      (1, 4, NOW());
+    `);
+
     // Insert QR codes dynamically
     await client.query(`
       INSERT INTO qr_code (exhibit_id, qr_url)
       SELECT exhibit_id, 'http://localhost:5173/exhibits/' || exhibit_id FROM exhibit;
     `);
 
-    // Insert image files 
+    // Insert image files
     await client.query(`
       INSERT INTO images (exhibit_id, exhibition_id, title, description, file_url, is_primary) VALUES
       (1, 1, 'Enter The Sandbox', '', '/images/enterthesandbox.jpg', true),
@@ -729,19 +819,14 @@ async function seed() {
       (25, 2, 'Our Milestones', '', '/images/ourmilestones.jpg', true)
     `);
 
-
-
-
-
     // Insert feedback
     await client.query(`
-  INSERT INTO feedback (user_id, exhibit_id, rating, description) VALUES
-  (3, 1, 5, 'Immersive and emotional storytelling about early Singapore. Loved how the visuals brought the maritime past to life.'),
-  (4, 2, 5, 'Very powerful depiction of wartime courage. The Resistance and Resilience segment was especially moving.'),
-  (3, 3, 4, 'Strong narrative on Singapore’s struggle for independence. The sabotage acts were intense!'),
-  (4, 4, 4, 'Great insight into Singapore’s milestones. The Cable Car Tragedy was deeply impactful.');
-`);
-
+      INSERT INTO feedback (user_id, exhibit_id, rating, description) VALUES
+      (3, 1, 5, 'Immersive and emotional storytelling about early Singapore. Loved how the visuals brought the maritime past to life.'),
+      (4, 2, 5, 'Very powerful depiction of wartime courage. The Resistance and Resilience segment was especially moving.'),
+      (3, 3, 4, 'Strong narrative on Singapore’s struggle for independence. The sabotage acts were intense!'),
+      (4, 4, 4, 'Great insight into Singapore’s milestones. The Cable Car Tragedy was deeply impactful.');
+    `);
 
     // Insert sessions
     await client.query(`
@@ -782,12 +867,20 @@ async function seed() {
 
     console.log("✅ Seeding complete!");
     console.log("📊 Database ready with:");
-    console.log("   - 122 users (admin, moderator, + 120 test users with varied registration dates)");
+    console.log(
+      "   - 122 users (admin, moderator, + 120 test users with varied registration dates)"
+    );
     console.log(
       "   - 3 roles with proper permissions (including password reset & email verification)"
     );
     console.log("   - 10 languages with English as default");
-    console.log("   - 2 exhibitions with 25 exhibits total, QR codes, images and feedback");
+    console.log(
+      "   - 2 exhibitions with 25 exhibits total, QR codes, images and feedback"
+    );
+    console.log(
+      "   - 25 badges created, each linked uniquely to an exhibit (with name and description)"
+    );
+    console.log("   - 4 badges are given to admin1");
     console.log("   - Password reset and email verification token tables");
     console.log(
       "   - Sample tokens for testing (1 expired, cleaned up automatically)"
@@ -797,7 +890,9 @@ async function seed() {
       "   - Comprehensive performance indexes and constraints applied"
     );
     console.log("   - Automatic token cleanup function available");
-    console.log("   - User registration data distributed over 12 months for trend analysis");
+    console.log(
+      "   - User registration data distributed over 12 months for trend analysis"
+    );
   } catch (err) {
     console.error("❌ Error during seeding:", err);
     throw err;
