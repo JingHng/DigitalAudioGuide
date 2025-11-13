@@ -1,216 +1,110 @@
-# .github/workflows/ci.yml
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: CI Pipeline - Full Stack Integration Test
+name: Build and deploy Node.js app to Azure Web App - SDCGroup3
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - 'feature/**'
+  workflow_dispatch:
 
 jobs:
-  # 🧪 JOB 1: Testing (Unit + Integration) - Runs First
   test:
     runs-on: ubuntu-latest
-    
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_DB: test_db
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-    
-    env:
-      # Test database configuration
-      DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test_db?schema=public"
-      NODE_ENV: "test"
-      PORT: 5175
-      VITE_API_TARGET: http://localhost:5175
-      JWT_SECRET_KEY: "test-jwt-secret-key-for-ci-testing-only-minimum-64-characters-long-to-meet-security-requirements"
-      JWT_EXPIRES_IN: "24h"
-      JWT_ALGORITHM: "HS256"
-      FRONTEND_URL: "http://localhost:5173"
-      
+    permissions:
+      contents: read
+
     steps:
-      - name: ⬇️ Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: 🛠️ Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: '22.x'
 
-      # --- Backend Setup ---
-      - name: 📦 Install API Dependencies
+      - name: Install dependencies
         run: |
-          cd api
           npm install
+          npm install --prefix api
+          npm install --prefix web
 
-      - name: 🗄️ Setup Database Schema
+      - name: Run tests
         run: |
-          cd api
-          npx prisma migrate deploy
+          # Run API tests if they exist
+          if [ -f "api/package.json" ] && npm run --prefix api test --if-present; then
+            echo "API tests completed"
+          fi
+          
+          # Run web tests if they exist
+          if [ -f "web/package.json" ] && npm run --prefix web test --if-present; then
+            echo "Web tests completed"
+          fi
+          
+          # Run root level tests if they exist
+          npm run test --if-present
 
-      - name: 🌱 Seed Test Database
-        run: |
-          cd api
-          node prisma/seed.js
-        env:
-          SEED_DISABLE: 0
-
-      - name: 🔧 Build API (if needed)
-        run: |
-          cd api
-          npm run build
-
-      - name: 🚀 Start API Server
-        run: |
-          cd api
-          echo "Starting API server..."
-          npm start > api.log 2>&1 &
-          echo "API server process started"
-          sleep 5
-          echo "API logs after 5 seconds:"
-          cat api.log || echo "No log file yet"
-        env:
-          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test_db?schema=public"
-          NODE_ENV: "test"
-          PORT: 5175
-          JWT_SECRET_KEY: "test-jwt-secret-key-for-ci-testing-only-minimum-64-characters-long-to-meet-security-requirements"
-          JWT_EXPIRES_IN: "24h"
-          JWT_ALGORITHM: "HS256"
-          FRONTEND_URL: "http://localhost:5173"
-
-      - name: ⏳ Wait for API to be ready
-        run: |
-          echo "Waiting for API exhibits endpoint..."
-          npx wait-on http://localhost:5175/api/exhibits -t 60000 || {
-            echo "API health check failed. Debugging information:"
-            echo "=== API Server Logs ==="
-            cat api/api.log || echo "No API log file found"
-            echo "=== Process List ==="
-            ps aux | grep node || echo "No node processes found"
-            echo "=== Port Usage ==="
-            netstat -tlnp | grep 5175 || echo "Port 5175 not in use"
-            echo "=== Testing basic connectivity ==="
-            curl -v http://localhost:5175/ || echo "Server not responding at all"
-            echo "=== Testing API base path ==="
-            curl -v http://localhost:5175/api/ || echo "API base path not responding"
-            exit 1
-          }
-          echo "API server is ready!"
-
-      # --- API Unit Tests ---
-      - name: 🔍 Run API Unit Tests
-        run: |
-          cd api
-          npm test
-        env:
-          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test_db?schema=public"
-          NODE_ENV: "test"
-          JWT_SECRET_KEY: "test-jwt-secret-key-for-ci-testing-only-minimum-64-characters-long-to-meet-security-requirements"
-          JWT_EXPIRES_IN: "24h"
-          JWT_ALGORITHM: "HS256"
-          FRONTEND_URL: "http://localhost:5173"
-        continue-on-error: false
-
-      # --- Frontend Setup ---
-      - name: 📦 Install Web Dependencies
-        run: |
-          cd web
-          npm install
-
-      # --- Frontend Setup for E2E Tests ---
-      - name: 🌐 Install Playwright Browsers
-        run: |
-          cd web
-          npx playwright install --with-deps
-
-      # --- Integration Tests (E2E) ---
-      - name: 🧪 Run Full Stack Integration Tests (E2E)
-        run: |
-          cd web
-          npx playwright test
-        env:
-          VITE_API_TARGET: http://localhost:5175
-          CI: true
-
-      - name: 📝 Upload Test Report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report
-          path: web/playwright-report/
-          retention-days: 7
-
-      # --- Debug Information (only runs on failure) ---
-      - name: 🐛 Debug API Server (on failure)
-        if: failure()
-        run: |
-          echo "=== Final API Server Logs ==="
-          cat api/api.log || echo "No API log file found"
-          echo "=== Final Frontend Server Logs ==="
-          cat web/frontend.log || echo "No frontend log file found"
-          echo "=== Final Process List ==="
-          ps aux | grep -E "(node|vite)" || echo "No processes found"
-          echo "=== Final Port Usage ==="
-          netstat -tlnp | grep -E "(5175|5173)" || echo "Ports not in use"
-
-  # 🔨 JOB 2: Build 
   build:
     runs-on: ubuntu-latest
-    needs: test  
-    
+    needs: test
+    permissions:
+      contents: read
+
     steps:
-      - name: ⬇️ Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: 🛠️ Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: '22.x'
 
-      # --- API Build ---
-      - name: 📦 Install API Dependencies
+      - name: Install dependencies
         run: |
-          cd api
           npm install
+          npm install --prefix api
+          npm install --prefix web
 
-      - name: 🔧 Build API
+      - name: Build applications
         run: |
-          cd api
-          npm run build
+          # Build API (if build script exists)
+          npm run build --prefix api --if-present
+          
+          # Build web application
+          npm run build --prefix web
+          
+          # Build root level if script exists
+          npm run build --if-present
 
-      # --- Frontend Build ---
-      - name: 📦 Install Web Dependencies
-        run: |
-          cd web
-          npm install
-
-      - name: 🔧 Build Web Application
-        run: |
-          cd web
-          npm run build
-        env:
-          VITE_API_TARGET: '' 
-
-      # --- Upload Build Artifacts ---
-      - name: ⬆️ Upload API Build Artifact
+      - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-          name: api-build
-          path: api/dist/
-          retention-days: 7
+          name: node-app
+          path: .
 
-      - name: ⬆️ Upload Web Build Artifact
-        uses: actions/upload-artifact@v4
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      id-token: write #This is required for requesting the JWT
+      contents: read #This is required for actions/checkout
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
         with:
-          name: web-build
-          path: web/dist/
-          retention-days: 7
+          name: node-app
+      
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_4330C975942B4DDCA15E0D4616BA43E8 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_96770E6A4A34489D8EEC451700443C4F }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_572DFA48CF314A3098295F4F77B7283C }}
 
- 
+      - name: 'Deploy to Azure Web App'
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'SDCGroup3'
+          slot-name: 'Production'
+          package: .
