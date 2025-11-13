@@ -1,59 +1,202 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
+# .github/workflows/ci-deploy.yml
 
-name: Build and deploy Node.js app to Azure Web App - SDCGroup3
+name: Test, Build, and Deploy Pipeline
 
 on:
   push:
     branches:
-      - development
-  workflow_dispatch:
+      - development 
+  workflow_dispatch: # Allows manual trigger
+
+# Define environment variables for the entire workflow
+env:
+  # Test database configuration
+  DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test_db?schema=public"
+  NODE_ENV: "test"
+  PORT: 5175
+  VITE_API_TARGET: http://localhost:5175
+  JWT_SECRET_KEY: "test-jwt-secret-key-for-ci-testing-only-minimum-64-characters-long-to-meet-security-requirements"
+  JWT_EXPIRES_IN: "24h"
+  JWT_ALGORITHM: "HS256"
+  FRONTEND_URL: "http://localhost:5173"
+  NODE_VERSION: '20' 
 
 jobs:
-  build:
+  # 🧪 JOB 1: Testing (Unit + Integration) - Runs First
+  test:
     runs-on: ubuntu-latest
     permissions:
-      contents: read #This is required for actions/checkout
+      contents: read
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: test_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
 
     steps:
-      - uses: actions/checkout@v4
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
 
-      - name: Set up Node.js version
-        uses: actions/setup-node@v3
+      - name: 🛠️ Set up Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
         with:
-          node-version: '22.x'
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: |
+            **/package-lock.json
+            **/npm-shrinkwrap.json
 
-      - name: npm install, build, and test
+      # --- Setup & Start Services ---
+      - name: 📦 Install API Dependencies
         run: |
+          cd api
           npm install
 
-          npm install --prefix api
-          npm run build --prefix api
+      - name: 🗄️ Setup Database Schema
+        run: |
+          cd api
+          npx prisma migrate deploy
 
+      - name: 🌱 Seed Test Database
+        run: |
+          cd api
+          node prisma/seed.js
+        env:
+          SEED_DISABLE: 0
+
+      - name: 🔧 Build API (needed for 'npm start')
+        run: |
+          cd api
+          npm run build
+
+      - name: 🚀 Start API Server
+        run: |
+          cd api
+          npm start > api.log 2>&1 &
+          sleep 5
+
+      - name: ⏳ Wait for API to be ready
+        run: |
+          npx wait-on http://localhost:5175/api/exhibits -t 60000 || {
+            echo "API health check failed. See logs below."
+            cat api/api.log
+            exit 1
+          }
+
+      # --- Run Tests ---
+      - name: 🔍 Run API Unit Tests
+        run: |
+          cd api
+          npm test
+        continue-on-error: false
+
+      - name: 📦 Install Web Dependencies
+        run: |
+          cd web
+          npm install
+
+      - name: 🌐 Install Playwright Browsers
+        run: |
+          cd web
+          npx playwright install --with-deps
+
+      - name: 🧪 Run Full Stack Integration Tests (E2E)
+        run: |
+          cd web
+          npx playwright test
+        env:
+          CI: true
+
+      # --- Artifact & Debug ---
+      - name: 📝 Upload Test Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: web/playwright-report/
+          retention-days: 7
+
+      - name: 🐛 Debug API Server (on failure)
+        if: failure()
+        run: |
+          echo "=== Final API Server Logs ==="
+          cat api/api.log || echo "No API log file found"
+
+  ---
+
+  # 🔨 JOB 2: Build - Runs after Test
+  build:
+    runs-on: ubuntu-latest
+    needs: test 
+    permissions:
+      contents: read
+
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🛠️ Set up Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Install All Dependencies
+        run: |
+          npm install --prefix api
           npm install --prefix web
-          npm run build --prefix web
-          
-          npm run build --if-present
-       
-      - name: Upload artifact for deployment job
+
+      - name: 🔧 Build API
+        run: |
+          cd api
+          npm run build
+
+      - name: 🔧 Build Web Application
+        run: |
+          cd web
+          npm run build
+        env:
+          VITE_API_TARGET: ''
+
+      # --- Upload Artifact for Deployment ---
+      - name: ⬆️ Upload artifact for deployment job (node-app)
         uses: actions/upload-artifact@v4
         with:
           name: node-app
           path: .
+          retention-days: 7
 
+  ---
+
+  # 🚀 JOB 3: Deploy - Runs after Build
   deploy:
     runs-on: ubuntu-latest
     needs: build
     permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
+      id-token: write
+      contents: read
 
     steps:
-      - name: Download artifact from build job
+      - name: ⬇️ Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: node-app
       
+      - name: Set up Node.js version (22.x for deployment)
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22.x'
+          
       - name: Login to Azure
         uses: azure/login@v2
         with:
