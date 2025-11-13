@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - development 
+      - features/updatedDevelopmentBranchWorkflowFIle # Added branch for testing
   workflow_dispatch: # Allows manual trigger
 
 # Define environment variables for the entire workflow
