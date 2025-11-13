@@ -1,6 +1,9 @@
 const { Client } = require("pg");
 require("dotenv").config();
 
+require('dotenv').config();
+const PORT = process.env.PORT || 5175;
+
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
 });
@@ -752,17 +755,25 @@ async function seed() {
     // Get all exhibits
     const exhibits = await client.query(`SELECT exhibit_id, title, description FROM exhibit`);
 
+    function toSafeFileName(title) {
+      return title
+        .trim()
+        .replace(/:/g, "")
+        .replace(/\s+/g, "_") 
+        .replace(/[^a-zA-Z0-9_-]/g, ""); 
+    }
+
     // Loop through exhibits and insert corresponding badges
     for (const exhibit of exhibits.rows) {
-      const { exhibit_id, title, description } = exhibit;
+    const { exhibit_id, title, description } = exhibit;
+    const safeFileName = toSafeFileName(title);
 
-      // Insert badge based on exhibit data
-      const badgeResult = await client.query(
-        `INSERT INTO badge (name, description, created_at, updated_at)
-         VALUES ($1, $2, NOW(), NOW())
-         RETURNING badge_id`,
-        [title, description]
-      );
+    const badgeResult = await client.query(
+      `INSERT INTO badge (name, description, image_url, created_at, updated_at)
+      VALUES ($1, $2, $3, NOW(), NOW())
+      RETURNING badge_id`,
+      [title, description, `http://localhost:${PORT}/public/images/badge/${safeFileName}.png`]
+    );
 
       const badgeId = badgeResult.rows[0].badge_id;
 
