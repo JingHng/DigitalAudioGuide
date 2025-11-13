@@ -42,7 +42,7 @@
     cursor: pointer;
     border-radius: 0.5rem;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    background-color: var(--background-mid);
+    background: transparent;
     padding: 0.25rem;
 }
 
@@ -74,40 +74,51 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 50;
+    z-index: 999;
+    padding-top: 4rem;
 }
 
 .modal-window {
     position: relative;
-    width: 90%;
+    width: 80%;
     max-width: 700px;
+    height: 400px;
     padding: 2rem;
     border-radius: 1rem;
     background-color: var(--background-lightest);
-    box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
     text-align: center;
-    overflow-y: auto;
+    transform: translateY(-20px);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
 }
 
 .modal-img {
     width: 100%;
-    max-height: 300px;
+    max-height: 230px;
     object-fit: contain;
-    margin-bottom: 1rem;
+    margin-bottom: 0rem;
     border-radius: 0.5rem;
 }
 
 .modal-title {
     font-size: 1.5rem;
     font-weight: 700;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0rem;
     color: var(--text-dark);
+}
+
+.modal-title,
+.modal-desc,
+.modal-locked-text {
+    flex-shrink: 0;
 }
 
 .modal-desc {
     font-size: 1rem;
     color: var(--text-light);
-    margin-bottom: 1.5rem;
+    margin-bottom: 0rem;
 }
 
 .modal-locked-text {
@@ -140,10 +151,10 @@
 }
 
 .modal-nav {
+    margin-top: auto;
     display: flex;
     justify-content: center;
     gap: 2rem;
-    margin-top: 1rem;
 }
 
 .modal-nav button {
@@ -165,7 +176,22 @@
 @media (max-width: 768px) {
     .modal-window {
         max-width: 95vw;
-        max-height: 95vh;
+        max-height: 65vh;
+    }
+
+    .modal-img {
+        width: 100%;
+        max-height: 180px;
+        object-fit: contain;
+        border-radius: 0.5rem;
+    }
+
+    .modal-title {
+        font-size: 1.3rem;
+    }
+
+    .modal-desc {
+        font-size: 0.8rem;
     }
 
     .badge-grid {
@@ -176,5 +202,8 @@
 @media (min-width: 769px) {
     .badge-grid {
         grid-template-columns: repeat(4, 1fr);
+    }
+    .modal-window {
+      max-width: 900px;
     }
 }
