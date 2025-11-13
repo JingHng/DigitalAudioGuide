@@ -213,21 +213,4 @@ jobs:
           path: web/dist/
           retention-days: 7
 
-  # 🎯 JOB 3: Deploy (Optional - runs only after build succeeds)
-  deploy:
-    runs-on: ubuntu-latest
-    needs: [test, build]  # Waits for both test AND build to succeed
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/development'  # Only deploy from main/development
-    
-    steps:
-      - name: ⬇️ Download Build Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: web-build
-          path: ./dist
-
-      - name: 🚀 Deploy to Production
-        run: |
-          echo "🚀 Deploying to production..."
-          echo "This is where you'd deploy to your hosting service"
-          # Add your deployment commands here
+ 
