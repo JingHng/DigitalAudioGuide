@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, Link as RouterLink } from 'react-router-dom';
 import apiClient from '../utils/apiClient';
-import { Play, Pause, Rewind, FastForward, Volume2, Loader2, Pin, Languages, MicOff, MessageSquare } from 'lucide-react';
+import { Play, Pause, Rewind, FastForward, Volume2, Loader2, Pin, Languages, MicOff } from 'lucide-react';
 
 //  import { useAuth } from '../contexts/AuthContext';
 //  import audioLogService from '../services/audioLogService';
@@ -333,10 +333,10 @@ const ExhibitDetails: React.FC = () => {
         <header className="exhibit-header">
             <div className="exhibit-title-section">
               <h1>{exhibit.title}</h1>
-              <RouterLink to={`/exhibits/${id}/reviews`} className="review-button" title="View Reviews">
+{/*               <RouterLink to={`/exhibits/${id}/reviews`} className="review-button" title="View Reviews">
                 <MessageSquare size={24} />
                 <span>Reviews</span>
-              </RouterLink>
+              </RouterLink> */}
             </div>
             <p className="exhibit-description">{exhibit.description}</p>
         </header>
