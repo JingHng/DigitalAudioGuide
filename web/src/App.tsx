@@ -16,7 +16,7 @@ import EmailVerificationPage from "./routes/EmailVerificationPage";
 // --- MODIFIED/NEW IMPORTS FOR EXHIBITIONS --- (KEEP ALL)
 import AllExhibitions from "./components/ExhibitionsPage.tsx"; 
 import ExhibitionDetails from "./components/ExhibitionDetailsPage.tsx"; // New Page
-// import ExhibitDetails from "./components/ExhibitDetails.tsx"; // This is the final audio player page
+import ExhibitDetails from "./components/ExhibitDetails.tsx"; 
 
 // --- COMMENTED OUT: Other Public/Protected Components ---
 // import ReviewPage from "./components/reviewPage/ReviewPage";
@@ -75,7 +75,7 @@ function App() {
             {/* --- NEW/MODIFIED Public Exhibition Routes (Enabled) --- */}
             <Route path="/exhibitions" element={<AllExhibitions />} />
             <Route path="/exhibitions/:id" element={<ExhibitionDetails />} />
-              {/* <Route path="/exhibit/:id" element={<ExhibitDetails />} />   */}
+              <Route path="/exhibit/:id" element={<ExhibitDetails />} />  
 
             {/* --- Other Public/Auth Routes --- */}
             <Route path="/login" element={<LoginPage />} />
