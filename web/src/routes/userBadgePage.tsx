@@ -61,7 +61,7 @@ const userBadgePage = () => {
       <main className="py-12 px-4 md:px-12">
         <h1 className="text-4xl font-bold mb-6 text-center">Your Badge Collection</h1>
         {allBadges.length === 0 ? (
-          <p className="text-center text-gray-500">No badges available yet.</p>
+          <p className="no-badge-message text-center text-gray-500">No badges available yet.</p>
         ) : (
           <div className="badge-grid">
             {allBadges.map((badge, index) => {
