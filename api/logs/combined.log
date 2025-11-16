@@ -79,3 +79,7 @@
 {"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2025-11-16 19:23:44"}
 {"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2025-11-16 20:39:27"}
 {"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2025-11-16 20:39:29"}
+{"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2025-11-16 21:08:21"}
+{"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2025-11-16 21:08:24"}
+{"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2025-11-16 21:08:36"}
+{"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2025-11-16 21:08:41"}
