@@ -1,0 +1,400 @@
+/* AdminModals.css - Styling for modal dialogs and confirmations */
+
+.admin-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.admin-modal {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: hidden;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.admin-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+}
+
+.admin-modal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.admin-modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  background: none;
+  border-radius: 6px;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-modal-close:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.admin-modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  max-height: calc(90vh - 140px);
+}
+
+.admin-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+}
+
+.admin-modal-footer.center {
+  justify-content: center;
+}
+
+.admin-modal-footer.between {
+  justify-content: space-between;
+}
+
+/* Confirmation Modal */
+.admin-modal-confirmation {
+  max-width: 400px;
+  text-align: center;
+}
+
+.admin-modal-confirmation-icon {
+  width: 3rem;
+  height: 3rem;
+  margin: 0 auto 1rem;
+  padding: 0.75rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-modal-confirmation-icon.warning {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.admin-modal-confirmation-icon.danger {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+.admin-modal-confirmation-icon.info {
+  background-color: #dbeafe;
+  color: #2563eb;
+}
+
+.admin-modal-confirmation-icon.success {
+  background-color: #d1fae5;
+  color: #059669;
+}
+
+.admin-modal-confirmation-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.admin-modal-confirmation-message {
+  color: #6b7280;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+.admin-modal-confirmation-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+/* Loading Modal */
+.admin-modal-loading {
+  max-width: 300px;
+  text-align: center;
+}
+
+.admin-modal-loading-spinner {
+  width: 3rem;
+  height: 3rem;
+  border: 3px solid #e5e7eb;
+  border-top: 3px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.admin-modal-loading-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.admin-modal-loading-message {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+/* Form Modal */
+.admin-modal-form {
+  max-width: 800px;
+}
+
+.admin-modal-form .admin-form {
+  margin: 0;
+}
+
+.admin-modal-form .admin-form-actions {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+/* Image Preview Modal */
+.admin-modal-image {
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+.admin-modal-image .admin-modal-body {
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #000;
+}
+
+.admin-modal-image img {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+}
+
+.admin-modal-image .admin-modal-header,
+.admin-modal-image .admin-modal-footer {
+  background-color: rgba(0, 0, 0, 0.8);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.admin-modal-image .admin-modal-title {
+  color: white;
+}
+
+.admin-modal-image .admin-modal-close {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.admin-modal-image .admin-modal-close:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+/* Drawer Modal (Side Panel) */
+.admin-modal-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 400px;
+  max-width: 90vw;
+  background: white;
+  box-shadow: -10px 0 25px -5px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  animation: slideInRight 0.3s ease-out;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.admin-modal-drawer .admin-modal-body {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .admin-modal-overlay {
+    padding: 0.5rem;
+  }
+  
+  .admin-modal {
+    max-width: 100%;
+    max-height: 95vh;
+  }
+  
+  .admin-modal-header,
+  .admin-modal-body,
+  .admin-modal-footer {
+    padding: 1rem;
+  }
+  
+  .admin-modal-footer {
+    flex-direction: column-reverse;
+  }
+  
+  .admin-modal-footer button {
+    width: 100%;
+  }
+  
+  .admin-modal-confirmation-actions {
+    flex-direction: column-reverse;
+  }
+  
+  .admin-modal-confirmation-actions button {
+    width: 100%;
+  }
+  
+  .admin-modal-drawer {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-modal-overlay {
+    padding: 0;
+  }
+  
+  .admin-modal {
+    border-radius: 0;
+    max-height: 100vh;
+  }
+  
+  .admin-modal-header,
+  .admin-modal-body,
+  .admin-modal-footer {
+    padding: 0.75rem;
+  }
+  
+  .admin-modal-title {
+    font-size: 1.125rem;
+  }
+}
+
+/* Animation utilities */
+.admin-modal-fade-enter {
+  opacity: 0;
+}
+
+.admin-modal-fade-enter-active {
+  opacity: 1;
+  transition: opacity 200ms ease-out;
+}
+
+.admin-modal-fade-exit {
+  opacity: 1;
+}
+
+.admin-modal-fade-exit-active {
+  opacity: 0;
+  transition: opacity 200ms ease-out;
+}
+
+.admin-modal-slide-enter {
+  transform: translateY(-20px) scale(0.95);
+  opacity: 0;
+}
+
+.admin-modal-slide-enter-active {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  transition: all 300ms ease-out;
+}
+
+.admin-modal-slide-exit {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.admin-modal-slide-exit-active {
+  transform: translateY(-20px) scale(0.95);
+  opacity: 0;
+  transition: all 200ms ease-out;
+}
+
+/* Dark Mode Styles */
+.dark-mode .admin-modal {
+  background-color: #212936;
+  color: #ffffff;
+  border: 1px solid #333333;
+}
+
+.dark-mode .admin-modal-header {
+  border-bottom-color: #333333;
+}
+
+.dark-mode .admin-modal-title {
+  color: #ffffff;
+}
+
+.dark-mode .admin-modal-footer {
+  border-top-color: #333333;
+}

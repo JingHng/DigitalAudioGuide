@@ -1,5 +1,5 @@
 const { PrismaClient } = require('../../generated/prisma');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const crypto = require("crypto");
 const { logAuditAction } = require('./auditLogsController');
 const { sendPasswordResetEmail, sendEmailVerificationEmail } = require("../utils/emailService");
@@ -97,8 +97,7 @@ exports.login = async (req, res, next) => {
       userRole.role.rolePermissions.map(rolePermission => rolePermission.permission.permissionName)
     );
 
-    // Convert BigInt userId to string for JWT serialization
-    res.locals.userId = user.userId.toString();
+    res.locals.userId = user.userId?.toString();
     res.locals.username = user.username;
     res.locals.roles = roles;
     res.locals.permissions = [...new Set(permissions)]; // Remove duplicates
@@ -117,117 +116,30 @@ exports.login = async (req, res, next) => {
 exports.register = async (req, res, next) => {
   const prisma = new PrismaClient();
   try {
-    let { username, email, password } = req.body;
-
-    // Normalize input: trim whitespace and convert to lowercase for comparison
-    if (username) username = username.trim();
-    if (email) email = email.trim().toLowerCase();
+    const { username, email, password } = req.body;
 
     if (!username || !email || !password) {
-      await prisma.$disconnect();
       return res.status(400).json({ error: 'Username, email, and password are required.' });
     }
 
-    // Validate username format
-    if (username.length < 3 || username.length > 100) {
-      await prisma.$disconnect();
-      return res.status(400).json({ error: 'Username must be between 3 and 100 characters.' });
-    }
-
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      await prisma.$disconnect();
-      return res.status(400).json({ error: 'Please enter a valid email address.' });
-    }
-
-    // Validate password length
-    if (password.length < 6) {
-      await prisma.$disconnect();
-      return res.status(400).json({ error: 'Password must be at least 6 characters long.' });
-    }
-
-    console.log(`🔍 Checking for existing user: username="${username}", email="${email}"`);
-
     // Check if username or email already exists
-    // Use raw SQL for case-insensitive checking since Prisma doesn't support case-insensitive queries directly
-    // First, try exact match (faster)
-    let existingUser = await prisma.user.findFirst({
+    const existingUser = await prisma.user.findFirst({
       where: {
         OR: [
           { username: username },
           { email: email }
         ]
-      },
-      select: {
-        userId: true,
-        username: true,
-        email: true
       }
     });
 
-    // If no exact match, check case-insensitively using raw query
-    // This handles cases where PostgreSQL might have case differences
-    if (!existingUser) {
-      try {
-        const caseInsensitiveCheck = await prisma.$queryRaw`
-          SELECT "user_id", username, email 
-          FROM "user" 
-          WHERE LOWER(username) = LOWER(${username}) 
-             OR LOWER(email) = LOWER(${email})
-          LIMIT 1
-        `;
-        
-        if (caseInsensitiveCheck && caseInsensitiveCheck.length > 0) {
-          existingUser = {
-            userId: caseInsensitiveCheck[0].user_id,
-            username: caseInsensitiveCheck[0].username,
-            email: caseInsensitiveCheck[0].email
-          };
-        }
-      } catch (rawQueryError) {
-        console.warn('⚠️ Could not perform case-insensitive check:', rawQueryError.message);
-        // Continue with exact match only
-      }
-    }
-
     if (existingUser) {
-      await prisma.$disconnect();
-      console.log(`❌ User already exists:`, {
-        userId: existingUser.userId.toString(),
-        username: existingUser.username,
-        email: existingUser.email,
-        requestedUsername: username,
-        requestedEmail: email
-      });
-      
-      // Check which field matches (case-insensitive comparison)
-      const usernameMatch = existingUser.username && 
-        existingUser.username.toLowerCase() === username.toLowerCase();
-      const emailMatch = existingUser.email && 
-        existingUser.email.toLowerCase() === email.toLowerCase();
-      
-      if (usernameMatch) {
-        return res.status(409).json({ 
-          error: 'Username already exists. Please choose a different username.',
-          field: 'username'
-        });
+      if (existingUser.username === username) {
+        return res.status(409).json({ error: 'Username already exists' });
       }
-      if (emailMatch) {
-        return res.status(409).json({ 
-          error: 'Email already exists. Please use a different email address.',
-          field: 'email'
-        });
+      if (existingUser.email === email) {
+        return res.status(409).json({ error: 'Email already exists' });
       }
-      
-      // Fallback error
-      return res.status(409).json({ 
-        error: 'A user with this username or email already exists.',
-        field: 'unknown'
-      });
     }
-
-    console.log(`✅ No existing user found, proceeding with registration...`);
 
     // Hash the password
     const passwordHash = await bcrypt.hash(password, 10);
@@ -235,39 +147,16 @@ exports.register = async (req, res, next) => {
     // Generate a secure random token for email verification
     const verificationToken = crypto.randomBytes(32).toString("hex");
 
-    // Create the user within a transaction to ensure atomicity
-    // If any step fails, everything rolls back
-    let newUser;
-    try {
-      newUser = await prisma.user.create({
-        data: {
-          username,
-          email,
-          passwordHash,
-          emailVerified: false,
-          statusId: 1 // Active status
-        }
-      });
-      console.log(`✅ User created successfully: userId=${newUser.userId}, username=${newUser.username}`);
-    } catch (createError) {
-      await prisma.$disconnect();
-      console.error('❌ Error creating user:', createError);
-      
-      // Handle Prisma unique constraint violation
-      if (createError.code === 'P2002') {
-        const target = createError.meta?.target;
-        if (target && target.includes('username')) {
-          return res.status(409).json({ error: 'Username already exists. Please choose a different username.' });
-        }
-        if (target && target.includes('email')) {
-          return res.status(409).json({ error: 'Email already exists. Please use a different email address.' });
-        }
-        return res.status(409).json({ error: 'A user with this username or email already exists.' });
+    // Create the user
+    const newUser = await prisma.user.create({
+      data: {
+        username,
+        email,
+        passwordHash,
+        emailVerified: false,
+        statusId: 1 // Active status
       }
-      
-      // Handle other database errors
-      throw createError;
-    }
+    });
 
     // Create email verification token
     await prisma.emailVerificationToken.create({
@@ -279,127 +168,39 @@ exports.register = async (req, res, next) => {
     });
 
     // Assign default visitor role
-    let visitorRole = await prisma.role.findFirst({
+    const visitorRole = await prisma.role.findFirst({
       where: { roleName: 'visitor' }
     });
 
-    // If visitor role doesn't exist, create it
-    if (!visitorRole) {
-      console.warn('Visitor role not found. Creating visitor role...');
-      visitorRole = await prisma.role.create({
-        data: {
-          roleName: 'visitor',
-          description: 'Default visitor role'
-        }
-      });
-    }
-
-    // Assign visitor role to user
-    try {
+    if (visitorRole) {
       await prisma.userRole.create({
         data: {
           userId: newUser.userId,
           roleId: visitorRole.roleId
         }
       });
-    } catch (roleError) {
-      console.error('Error assigning visitor role:', roleError);
-      // Continue even if role assignment fails - user is still created
     }
 
-    // Log the audit action for the successful registration (non-blocking)
-    try {
-      await logAuditAction(null, newUser.userId, 'user', 'create', { username, email });
-    } catch (auditError) {
-      console.error('Error logging audit action:', auditError);
-      // Continue even if audit logging fails
-    }
+    // Log the audit action for the successful registration
+    await logAuditAction(null, newUser.userId, 'user', 'create', { username, email });
 
     // Send the verification email
-    let emailPreviewUrl = null;
-    try {
-      const emailResult = await sendEmailVerificationEmail(email, verificationToken);
-      if (emailResult.success) {
-        if (emailResult.previewUrl) {
-          // Using Ethereal Email (test service) - preview URL available
-          emailPreviewUrl = emailResult.previewUrl;
-          console.log('\n⚠️  NOTE: Using Ethereal Email (TEST SERVICE)');
-          console.log('⚠️  No real email was sent. Use the preview URL to view the email.');
-          console.log('📧 Preview URL:', emailPreviewUrl);
-        } else {
-          // Using real email service
-          console.log('✅ Verification email sent successfully to real email:', email);
-        }
-      } else {
-        console.error('❌ Email verification email failed to send:', emailResult.error);
-        // Continue registration even if email fails - user can request resend later
-      }
-    } catch (emailError) {
-      console.error('❌ Error sending verification email:', emailError);
-      // Continue registration even if email fails - user can request resend later
-    }
+    await sendEmailVerificationEmail(email, verificationToken);
 
     // Prepare data for the JWT
-    // Convert BigInt userId to string for JWT serialization
-    res.locals.userId = newUser.userId.toString();
+    res.locals.userId = newUser.userId;
     res.locals.username = newUser.username;
     res.locals.roles = ['visitor'];
     res.locals.permissions = [];
     res.locals.message = "Registration successful. Please check your email to verify your account.";
-    res.locals.emailPreviewUrl = emailPreviewUrl; // Include preview URL for development/testing
-    
-    // In test mode, include verification token in response for testing purposes
-    if (process.env.NODE_ENV === 'test') {
-      res.locals.verificationToken = verificationToken;
-    }
 
-    // Don't disconnect Prisma here - let the middleware chain complete first
-    // The disconnect will happen after the response is sent
     next();
 
   } catch (err) {
-    console.error('❌ Register Controller Error:', err);
-    console.error('Error details:', {
-      message: err.message,
-      code: err.code,
-      meta: err.meta,
-      stack: err.stack,
-      name: err.name
-    });
-    
-    // Try to send error response if headers haven't been sent
-    if (!res.headersSent) {
-      // Handle Prisma unique constraint violations
-      if (err.code === 'P2002') {
-        const target = err.meta?.target;
-        if (target && target.includes('username')) {
-          return res.status(409).json({ error: 'Username already exists. Please choose a different username.' });
-        }
-        if (target && target.includes('email')) {
-          return res.status(409).json({ error: 'Email already exists. Please use a different email address.' });
-        }
-        return res.status(409).json({ error: 'A user with this username or email already exists.' });
-      }
-      
-      // Handle database connection errors
-      if (err.code === 'P1001' || err.name === 'PrismaClientInitializationError') {
-        return res.status(503).json({ error: 'Database connection error. Please try again later.' });
-      }
-      
-      // Generic error
-      const errorMessage = err.message || 'Server error during registration';
-      res.status(500).json({ error: errorMessage });
-    }
+    console.error('Register Controller Error:', err);
+    res.status(500).json({ error: 'Server error during registration' });
   } finally {
-    // Disconnect Prisma after a short delay to allow middleware to complete
-    // Use setTimeout to ensure middleware chain completes
-    setTimeout(async () => {
-      try {
-        await prisma.$disconnect();
-      } catch (disconnectError) {
-        console.error('Error disconnecting Prisma:', disconnectError);
-      }
-    }, 100);
+    await prisma.$disconnect();
   }
 };
 
@@ -901,18 +702,10 @@ exports.resendVerificationEmail = async (req, res) => {
     const emailResult = await sendEmailVerificationEmail(email, verificationToken);
     
     if (emailResult.success) {
-      const responseData = {
+      res.status(200).json({
         message: "Verification email has been sent. Please check your email and spam folder.",
         success: true
-      };
-      
-      // Include preview URL for development/testing (Ethereal Email)
-      if (emailResult.previewUrl) {
-        responseData.previewUrl = emailResult.previewUrl;
-        console.log(`📧 Verification email preview URL: ${emailResult.previewUrl}`);
-      }
-      
-      res.status(200).json(responseData);
+      });
     } else {
       // Log the error but don't expose email service issues to the user
       console.error("Email service error:", emailResult.error);
@@ -929,4 +722,3 @@ exports.resendVerificationEmail = async (req, res) => {
     await prisma.$disconnect();
   }
 };
-

@@ -117,6 +117,10 @@ jobs:
         run: |
           cd web
           npm install
+      - name: 🏗️ Build Web (production build)
+        run: |
+          cd web
+          npm run build
 
       - name: 🌐 Install Playwright Browsers
         run: |
@@ -252,6 +256,10 @@ jobs:
         run: |
           cd web
           npm install
+      - name: 🏗️ Build Web (production build)
+        run: |
+          cd web
+          npm run build
 
       - name: 🌐 Install Playwright Browsers
         run: |
@@ -401,6 +409,10 @@ jobs:
         run: |
           cd web
           npm install
+      - name: 🏗️ Build Web (production build)
+        run: |
+          cd web
+          npm run build
 
       - name: 🌐 Install Playwright Browsers
         run: |

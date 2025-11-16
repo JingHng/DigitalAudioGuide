@@ -16,10 +16,7 @@ const createTransporter = async () => {
   // Fallback to Ethereal Email for testing if no Gmail credentials
   try {
     const testAccount = await nodemailer.createTestAccount();
-    console.log('\n⚠️  WARNING: Using Ethereal Email (TEST SERVICE)');
-    console.log('⚠️  Ethereal Email does NOT send real emails to your inbox!');
-    console.log('⚠️  It creates preview URLs that you can view in your browser.');
-    console.log('⚠️  To send real emails, configure EMAIL_USER and EMAIL_PASS in your .env file.\n');
+    console.log('Using Ethereal Email for testing (no Gmail credentials provided)');
     return nodemailer.createTransport({
       host: 'smtp.ethereal.email',
       port: 587,
@@ -64,23 +61,18 @@ const sendPasswordResetEmail = async (email, resetToken) => {
   try {
     const info = await transporter.sendMail(mailOptions);
     
-    // Always get preview URL (works for both Ethereal and real emails)
-    const previewUrl = nodemailer.getTestMessageUrl(info);
-    
-    if (previewUrl) {
-      // Using Ethereal Email - show preview URL prominently
-      console.log('\n' + '='.repeat(80));
-      console.log('📧 EMAIL PREVIEW URL (Ethereal Email - Test Service)');
-      console.log('='.repeat(80));
-      console.log('⚠️  IMPORTANT: This is a TEST email service. No real email was sent!');
-      console.log('🔗', previewUrl);
-      console.log('🔑 Reset Token:', resetToken);
-      console.log('='.repeat(80) + '\n');
-    } else {
-      console.log('✅ Password reset email sent successfully to real email address:', email);
+    // For Ethereal Email, log the preview URL
+    if (process.env.NODE_ENV !== 'production') {
+      const previewUrl = nodemailer.getTestMessageUrl(info);
+      if (previewUrl) {
+        console.log('🔗 Preview email at:', previewUrl);
+        console.log('📧 Password reset email sent to:', email);
+        console.log('🔑 Reset token:', resetToken);
+      }
     }
     
-    return { success: true, previewUrl: previewUrl || null };
+    console.log('Password reset email sent successfully');
+    return { success: true, previewUrl: nodemailer.getTestMessageUrl(info) };
   } catch (error) {
     console.error('Error sending password reset email:', error);
     return { success: false, error: error.message };
@@ -122,27 +114,18 @@ const sendEmailVerificationEmail = async (email, verificationToken) => {
     const info = await transporter.sendMail(mailOptions);
     console.log(`📬 Email sent with messageId: ${info.messageId}`);
     
-    // Always get preview URL (works for both Ethereal and real emails, but only Ethereal returns a URL)
-    const previewUrl = nodemailer.getTestMessageUrl(info);
-    
-    if (previewUrl) {
-      // Using Ethereal Email - show preview URL prominently
-      console.log('\n' + '='.repeat(80));
-      console.log('📧 EMAIL PREVIEW URL (Ethereal Email - Test Service)');
-      console.log('='.repeat(80));
-      console.log('⚠️  IMPORTANT: This is a TEST email service. No real email was sent!');
-      console.log('⚠️  Click the URL below to view the email in your browser:');
-      console.log('🔗', previewUrl);
-      console.log('🔑 Verification Token:', verificationToken);
-      console.log('📧 Verification URL:', verificationUrl);
-      console.log('='.repeat(80) + '\n');
-    } else {
-      // Using real email service (Gmail)
-      console.log('✅ Email verification sent successfully to real email address:', email);
-      console.log('📧 Please check your inbox (and spam folder) for the verification email.');
+    // For Ethereal Email, log the preview URL
+    if (process.env.NODE_ENV !== 'production') {
+      const previewUrl = nodemailer.getTestMessageUrl(info);
+      if (previewUrl) {
+        console.log('🔗 Preview email at:', previewUrl);
+        console.log('📧 Email verification sent to:', email);
+        console.log('🔑 Verification token:', verificationToken);
+      }
     }
     
-    return { success: true, previewUrl: previewUrl || null };
+    console.log('✅ Email verification sent successfully');
+    return { success: true, previewUrl: nodemailer.getTestMessageUrl(info) };
   } catch (error) {
     console.error('❌ Error sending email verification:', error);
     return { success: false, error: error.message };
@@ -153,7 +136,6 @@ module.exports = {
   sendPasswordResetEmail,
   sendEmailVerificationEmail,
 };
-
 
 
 

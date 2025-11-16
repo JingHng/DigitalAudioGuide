@@ -1,0 +1,155 @@
+/* src/components/css/Exhibitions.css */
+
+.exhibitions-page-container {
+  background-color: #f4f4f4;
+}
+
+.hero-section-exhibitions {
+  position: relative;
+  background: linear-gradient(135deg, #e53935 0%, #ff5252 100%);
+  padding: 6rem 1.5rem;
+  text-align: center;
+  color: white;
+  overflow: hidden;
+}
+
+.hero-section-exhibitions::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('/images/sdc-background.jpg') no-repeat center center/cover;
+  opacity: 0.3;
+  z-index: 0;
+}
+
+.hero-content-exhibitions {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-content-exhibitions h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  animation: fadeInDown 0.8s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-content-exhibitions p {
+  font-size: 1.25rem;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.exhibitions-grid-section {
+  padding: 4rem 1.5rem;
+}
+
+.exhibitions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.exhibition-card-link {
+  text-decoration: none;
+}
+
+.exhibition-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.exhibition-card:hover {
+  transform: translateY(-10px) scale(1.02);
+  border-color: #e53935;
+}
+
+.exhibition-card-image {
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+  display: block;
+}
+
+.exhibition-card-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 60%, transparent 100%);
+  color: white;
+  padding: 2rem;
+  transition: all 0.3s ease;
+}
+
+.exhibition-card:hover .exhibition-card-overlay {
+  background: linear-gradient(to top, rgba(229,57,53,0.95) 0%, rgba(229,57,53,0.7) 60%, transparent 100%);
+}
+
+.exhibition-card-overlay h3 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.exhibition-card-overlay p {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.exhibition-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(255,255,255,0.2);
+  padding-top: 1rem;
+}
+
+.view-exhibition-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  transition: gap 0.3s ease;
+}
+
+.exhibition-card:hover .view-exhibition-btn {
+  gap: 1rem;
+}

@@ -1,15 +1,15 @@
 require('dotenv').config();
 const express = require('express');
 const mainRoutes = require('./src/routes/mainRoutes');
-// const qrCodeRoute = require('./routes/qrCodeRoutes');
-// const usersRoutes = require('./routes/usersRoutes');
-// const rolesRoutes = require('./routes/rolesRoutes');
-// const permissionsRoutes = require('./routes/permissionsRoutes');
-// const auditLogsRoutes = require('./routes/auditLogsRoutes');
-// const audioPlaybackRoutes = require('./routes/audioPlaybackRoutes');
-// const audioRoutes = require('./routes/audioRoutes');
-// const languageRoutes = require('./routes/languageRoutes');
-// const translateRoutes = require('./routes/translationRoutes');
+const qrCodeRoute = require('./src/routes/qrCodeRoutes');
+const usersRoutes = require('./src/routes/usersRoutes');
+const rolesRoutes = require('./src/routes/rolesRoutes');
+const permissionsRoutes = require('./src/routes/permissionsRoutes');
+const auditLogsRoutes = require('./src/routes/auditLogsRoutes');
+const audioPlaybackRoutes = require('./src/routes/audioPlaybackRoutes');
+const audioRoutes = require('./src/routes/audioRoutes');
+const languageRoutes = require('./src/routes/languageRoutes');
+const translateRoutes = require('./src/routes/translationRoutes');
 const path = require('path');
 const cors = require('cors');
 
@@ -38,15 +38,15 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 
 
 app.use('/api', mainRoutes); // All routes under /api
-// app.use('/api/qr', qrCodeRoute);
-// app.use('/api/users', usersRoutes);
-// app.use('/api/roles', rolesRoutes);
-// app.use('/api/permissions', permissionsRoutes);
-// app.use('/api/audit-logs', auditLogsRoutes);
-// app.use('/api/audio-logs', audioPlaybackRoutes);
-// app.use('/api/audio', audioRoutes);
-// app.use('/api/language', languageRoutes);
-// app.use('/api/translate', translateRoutes);
+app.use('/api/qr', qrCodeRoute);
+app.use('/api/users', usersRoutes);
+app.use('/api/roles', rolesRoutes);
+app.use('/api/permissions', permissionsRoutes);
+app.use('/api/audit-logs', auditLogsRoutes);
+app.use('/api/audio-logs', audioPlaybackRoutes);
+app.use('/api/audio', audioRoutes);
+app.use('/api/language', languageRoutes);
+app.use('/api/translate', translateRoutes);
 
 // Additional logging for debugging
 console.log('Middleware and routes setup complete.');

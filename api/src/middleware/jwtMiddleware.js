@@ -10,41 +10,28 @@ const jwt = require("jsonwebtoken");
 //////////////////////////////////////////////////////
 // SET JWT CONFIGURATION
 //////////////////////////////////////////////////////
-const secretKey = process.env.JWT_SECRET_KEY;
-const tokenDuration = process.env.JWT_EXPIRES_IN || "24h";
-const tokenAlgorithm = process.env.JWT_ALGORITHM || "HS256";
+let secretKey = process.env.JWT_SECRET_KEY;
+const tokenDuration = process.env.JWT_EXPIRES_IN || '24h';
+const envAlgorithm = (process.env.JWT_ALGORITHM || 'HS256').toUpperCase();
+const allowedAlgorithms = [
+  'HS256', 'HS384', 'HS512',
+  'RS256', 'RS384', 'RS512',
+  'PS256', 'PS384', 'PS512',
+  'ES256', 'ES384', 'ES512',
+  'EdDSA'
+];
+const tokenAlgorithm = allowedAlgorithms.includes(envAlgorithm) ? envAlgorithm : 'HS256';
 
-// Validate that JWT_SECRET_KEY is set
 if (!secretKey) {
-  console.error("❌ ERROR: JWT_SECRET_KEY is not set in environment variables!");
-  console.error("Please create a .env file in the api directory with:");
-  console.error("JWT_SECRET_KEY=your-secret-key-here");
-  console.error("JWT_EXPIRES_IN=24h");
-  console.error("JWT_ALGORITHM=HS256");
-  // Don't throw here, but we'll handle it in the middleware
+  // Development fallback: create a deterministic secret per machine session
+  secretKey = 'dev-insecure-secret-change-me';
+  console.warn('⚠️  JWT_SECRET_KEY not set, using an insecure development default.');
 }
 
 //////////////////////////////////////////////////////
 // MIDDLEWARE FUNCTION FOR GENERATING JWT TOKEN
 //////////////////////////////////////////////////////
 module.exports.generateToken = (req, res, next) => {
-  // Check if secret key is set
-  if (!secretKey) {
-    console.error("❌ JWT_SECRET_KEY is not configured!");
-    return res.status(500).json({ 
-      error: "Server configuration error: JWT_SECRET_KEY is not set. Please configure your .env file.",
-      details: "The server requires JWT_SECRET_KEY to be set in the environment variables."
-    });
-  }
-
-  // Validate required fields
-  if (!res.locals.userId || !res.locals.username) {
-    console.error("❌ Missing required user data for JWT token");
-    return res.status(500).json({ 
-      error: "Server error: Missing user data for token generation"
-    });
-  }
-
   const payload = {
     userId: res.locals.userId,
     username: res.locals.username,
@@ -60,32 +47,22 @@ module.exports.generateToken = (req, res, next) => {
 
   const callback = (err, token) => {
     if (err) {
-      console.error("❌ Error generating JWT token:", err);
-      console.error("Error details:", {
-        message: err.message,
-        name: err.name
-      });
-      return res.status(500).json({ 
-        error: "Failed to generate authentication token",
-        details: err.message
-      });
+      console.error("Error jwt:", err);
+      res.status(500).json(err);
     } else {
       res.locals.token = token;
       next();
     }
   };
 
-  // jwt.sign with callback is asynchronous
-  // If secretKey is invalid, it will call the callback with an error
-  // Synchronous errors (like missing secret) are handled by the callback
-  jwt.sign(payload, secretKey, options, callback);
+  const token = jwt.sign(payload, secretKey, options, callback);
 };
 
 //////////////////////////////////////////////////////
 // MIDDLEWARE FUNCTION FOR SENDING JWT TOKEN
 //////////////////////////////////////////////////////
 module.exports.sendToken = (req, res, next) => {
-  const responseData = {
+  res.status(200).json({
     message: res.locals.message,
     token: res.locals.token,
     user: {
@@ -94,33 +71,45 @@ module.exports.sendToken = (req, res, next) => {
       roles: res.locals.roles || [],
       permissions: res.locals.permissions || [],
     },
-  };
-  
-  // Include email preview URL if available (for development/testing)
-  if (res.locals.emailPreviewUrl) {
-    responseData.emailPreviewUrl = res.locals.emailPreviewUrl;
-  }
-  
-  // Include verification token in test mode for automated testing
-  if (process.env.NODE_ENV === 'test' && res.locals.verificationToken) {
-    responseData.verificationToken = res.locals.verificationToken;
-  }
-  
-  res.status(200).json(responseData);
+  });
 };
 
 //////////////////////////////////////////////////////
 // MIDDLEWARE FUNCTION FOR VERIFYING JWT TOKEN
 //////////////////////////////////////////////////////
-module.exports.verifyToken = (req, res, next) => {
-  // Check if secret key is set
-  if (!secretKey) {
-    console.error("❌ JWT_SECRET_KEY is not configured!");
-    return res.status(500).json({ 
-      error: "Server configuration error: JWT_SECRET_KEY is not set. Please configure your .env file."
-    });
-  }
+// module.exports.verifyToken = (req, res, next) => {
+//   const authHeader = req.headers.authorization;
 
+//   if (!authHeader || !authHeader.startsWith("Bearer ")) {
+//     return res.status(401).json({ error: "Please Login to Continue" });
+//   }
+
+//   const token = authHeader.substring(7);
+
+//   if (!token) {
+//     return res.status(401).json({ error: "Please Login to Continue" });
+//   }
+
+//   const callback = (err, decoded) => {
+//     if (err) {
+//       return res.status(401).json({ error: "Invalid token" });
+//     }
+
+//     console.log("Decoded token", decoded);
+//     res.locals.userId = decoded.userId;
+//     res.locals.creator_id = decoded.userId;
+//     res.locals.username = decoded.username;
+//     res.locals.roles = decoded.roles || [];
+//     res.locals.permissions = decoded.permissions || [];
+//     res.locals.tokenTimestamp = decoded.timestamp;
+
+//     next();
+//   };
+
+//   jwt.verify(token, secretKey, callback);
+// };
+
+module.exports.verifyToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -166,7 +155,6 @@ module.exports.requireAdmin = (req, res, next) => {
   }
   next();
 };
-
 
 
 
