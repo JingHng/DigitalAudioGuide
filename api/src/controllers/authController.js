@@ -123,16 +123,13 @@ exports.register = async (req, res, next) => {
     }
 
     // Basic validation to satisfy API tests
-    if (typeof username !== 'string' || username.length < 3) {
-      return res.status(400).json({ error: 'Username must be at least 3 characters long.', field: 'username' });
-    }
-    if (username.length > 100) {
-      return res.status(400).json({ error: 'Username must be at most 100 characters long.', field: 'username' });
+    if (typeof username !== 'string' || username.length < 3 || username.length > 100) {
+      return res.status(400).json({ error: 'Username must be between 3 and 100 characters', field: 'username' });
     }
     // Basic email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (typeof email !== 'string' || !emailRegex.test(email)) {
-      return res.status(400).json({ error: 'Invalid email format.', field: 'email' });
+      return res.status(400).json({ error: 'Please enter a valid email address', field: 'email' });
     }
     if (typeof password !== 'string' || password.length < 6) {
       return res.status(400).json({ error: 'Password must be at least 6 characters long.', field: 'password' });
