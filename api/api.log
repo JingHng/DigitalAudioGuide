@@ -8812,3 +8812,250 @@ Please make sure to provide valid database credentials for the database server a
   clientVersion: '5.22.0',
   errorCode: undefined
 }
+ Error in getExhibits: PrismaClientInitializationError: 
+Invalid `prisma.exhibit.findMany()` invocation in
+C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\src\controllers\exhibitsController.js:23:43
+
+  20 // Get all exhibits
+  21 exports.getExhibits = async (req, res) => {
+  22   try {
+→ 23     const exhibits = await prisma.exhibit.findMany(
+Authentication failed against database server at `localhost`, the provided database credentials for `postgres` are not valid.
+
+Please make sure to provide valid database credentials for the database server at `localhost`.
+    at $n.handleRequestError (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:7615)
+    at $n.handleAndLogRequestError (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:6623)
+    at $n.request (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:6307)
+    at async l (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:130:9633)
+    at async exports.getExhibits (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\src\controllers\exhibitsController.js:23:22) {
+  clientVersion: '5.22.0',
+  errorCode: undefined
+}
+ Error in getExhibits: PrismaClientInitializationError: 
+Invalid `prisma.exhibit.findMany()` invocation in
+C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\src\controllers\exhibitsController.js:23:43
+
+  20 // Get all exhibits
+  21 exports.getExhibits = async (req, res) => {
+  22   try {
+→ 23     const exhibits = await prisma.exhibit.findMany(
+Authentication failed against database server at `localhost`, the provided database credentials for `postgres` are not valid.
+
+Please make sure to provide valid database credentials for the database server at `localhost`.
+    at $n.handleRequestError (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:7615)
+    at $n.handleAndLogRequestError (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:6623)
+    at $n.request (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:6307)
+    at async l (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:130:9633)
+    at async exports.getExhibits (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\src\controllers\exhibitsController.js:23:22) {
+  clientVersion: '5.22.0',
+  errorCode: undefined
+}
+ Error in getExhibits: PrismaClientInitializationError: 
+Invalid `prisma.exhibit.findMany()` invocation in
+C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\src\controllers\exhibitsController.js:23:43
+
+  20 // Get all exhibits
+  21 exports.getExhibits = async (req, res) => {
+  22   try {
+→ 23     const exhibits = await prisma.exhibit.findMany(
+Authentication failed against database server at `localhost`, the provided database credentials for `postgres` are not valid.
+
+Please make sure to provide valid database credentials for the database server at `localhost`.
+    at $n.handleRequestError (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:7615)
+    at $n.handleAndLogRequestError (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:6623)
+    at $n.request (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:6307)
+    at async l (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:130:9633)
+    at async exports.getExhibits (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\src\controllers\exhibitsController.js:23:22) {
+  clientVersion: '5.22.0',
+  errorCode: undefined
+}
+ Error in getExhibits: PrismaClientInitializationError: 
+Invalid `prisma.exhibit.findMany()` invocation in
+C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\src\controllers\exhibitsController.js:23:43
+
+  20 // Get all exhibits
+  21 exports.getExhibits = async (req, res) => {
+  22   try {
+→ 23     const exhibits = await prisma.exhibit.findMany(
+Authentication failed against database server at `localhost`, the provided database credentials for `postgres` are not valid.
+
+Please make sure to provide valid database credentials for the database server at `localhost`.
+    at $n.handleRequestError (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:7615)
+    at $n.handleAndLogRequestError (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:6623)
+    at $n.request (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:6307)
+    at async l (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:130:9633)
+    at async exports.getExhibits (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\src\controllers\exhibitsController.js:23:22) {
+  clientVersion: '5.22.0',
+  errorCode: undefined
+}
+ Error in getExhibits: PrismaClientInitializationError: 
+Invalid `prisma.exhibit.findMany()` invocation in
+C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\src\controllers\exhibitsController.js:23:43
+
+  20 // Get all exhibits
+  21 exports.getExhibits = async (req, res) => {
+  22   try {
+→ 23     const exhibits = await prisma.exhibit.findMany(
+Authentication failed against database server at `localhost`, the provided database credentials for `postgres` are not valid.
+
+Please make sure to provide valid database credentials for the database server at `localhost`.
+    at $n.handleRequestError (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:7615)
+    at $n.handleAndLogRequestError (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:6623)
+    at $n.request (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:6307)
+    at async l (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:130:9633)
+    at async exports.getExhibits (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\src\controllers\exhibitsController.js:23:22) {
+  clientVersion: '5.22.0',
+  errorCode: undefined
+}
+ Error in getExhibits: PrismaClientInitializationError: 
+Invalid `prisma.exhibit.findMany()` invocation in
+C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\src\controllers\exhibitsController.js:23:43
+
+  20 // Get all exhibits
+  21 exports.getExhibits = async (req, res) => {
+  22   try {
+→ 23     const exhibits = await prisma.exhibit.findMany(
+Authentication failed against database server at `localhost`, the provided database credentials for `postgres` are not valid.
+
+Please make sure to provide valid database credentials for the database server at `localhost`.
+    at $n.handleRequestError (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:7615)
+    at $n.handleAndLogRequestError (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:6623)
+    at $n.request (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:6307)
+    at async l (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:130:9633)
+    at async exports.getExhibits (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\src\controllers\exhibitsController.js:23:22) {
+  clientVersion: '5.22.0',
+  errorCode: undefined
+}
+ Error in getExhibits: PrismaClientInitializationError: 
+Invalid `prisma.exhibit.findMany()` invocation in
+C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\src\controllers\exhibitsController.js:23:43
+
+  20 // Get all exhibits
+  21 exports.getExhibits = async (req, res) => {
+  22   try {
+→ 23     const exhibits = await prisma.exhibit.findMany(
+Authentication failed against database server at `localhost`, the provided database credentials for `postgres` are not valid.
+
+Please make sure to provide valid database credentials for the database server at `localhost`.
+    at $n.handleRequestError (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:7615)
+    at $n.handleAndLogRequestError (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:6623)
+    at $n.request (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:6307)
+    at async l (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:130:9633)
+    at async exports.getExhibits (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\src\controllers\exhibitsController.js:23:22) {
+  clientVersion: '5.22.0',
+  errorCode: undefined
+}
+ Error in getExhibits: PrismaClientInitializationError: 
+Invalid `prisma.exhibit.findMany()` invocation in
+C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\src\controllers\exhibitsController.js:23:43
+
+  20 // Get all exhibits
+  21 exports.getExhibits = async (req, res) => {
+  22   try {
+→ 23     const exhibits = await prisma.exhibit.findMany(
+Authentication failed against database server at `localhost`, the provided database credentials for `postgres` are not valid.
+
+Please make sure to provide valid database credentials for the database server at `localhost`.
+    at $n.handleRequestError (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:7615)
+    at $n.handleAndLogRequestError (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:6623)
+    at $n.request (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:6307)
+    at async l (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:130:9633)
+    at async exports.getExhibits (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\src\controllers\exhibitsController.js:23:22) {
+  clientVersion: '5.22.0',
+  errorCode: undefined
+}
+ Error in getExhibits: PrismaClientInitializationError: 
+Invalid `prisma.exhibit.findMany()` invocation in
+C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\src\controllers\exhibitsController.js:23:43
+
+  20 // Get all exhibits
+  21 exports.getExhibits = async (req, res) => {
+  22   try {
+→ 23     const exhibits = await prisma.exhibit.findMany(
+Authentication failed against database server at `localhost`, the provided database credentials for `postgres` are not valid.
+
+Please make sure to provide valid database credentials for the database server at `localhost`.
+    at $n.handleRequestError (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:7615)
+    at $n.handleAndLogRequestError (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:6623)
+    at $n.request (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:6307)
+    at async l (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:130:9633)
+    at async exports.getExhibits (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\src\controllers\exhibitsController.js:23:22) {
+  clientVersion: '5.22.0',
+  errorCode: undefined
+}
+ Error in getExhibits: PrismaClientInitializationError: 
+Invalid `prisma.exhibit.findMany()` invocation in
+C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\src\controllers\exhibitsController.js:23:43
+
+  20 // Get all exhibits
+  21 exports.getExhibits = async (req, res) => {
+  22   try {
+→ 23     const exhibits = await prisma.exhibit.findMany(
+Authentication failed against database server at `localhost`, the provided database credentials for `postgres` are not valid.
+
+Please make sure to provide valid database credentials for the database server at `localhost`.
+    at $n.handleRequestError (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:7615)
+    at $n.handleAndLogRequestError (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:6623)
+    at $n.request (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:6307)
+    at async l (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:130:9633)
+    at async exports.getExhibits (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\src\controllers\exhibitsController.js:23:22) {
+  clientVersion: '5.22.0',
+  errorCode: undefined
+}
+ Error in getExhibits: PrismaClientInitializationError: 
+Invalid `prisma.exhibit.findMany()` invocation in
+C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\src\controllers\exhibitsController.js:23:43
+
+  20 // Get all exhibits
+  21 exports.getExhibits = async (req, res) => {
+  22   try {
+→ 23     const exhibits = await prisma.exhibit.findMany(
+Authentication failed against database server at `localhost`, the provided database credentials for `postgres` are not valid.
+
+Please make sure to provide valid database credentials for the database server at `localhost`.
+    at $n.handleRequestError (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:7615)
+    at $n.handleAndLogRequestError (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:6623)
+    at $n.request (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:6307)
+    at async l (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:130:9633)
+    at async exports.getExhibits (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\src\controllers\exhibitsController.js:23:22) {
+  clientVersion: '5.22.0',
+  errorCode: undefined
+}
+ Error in getExhibits: PrismaClientInitializationError: 
+Invalid `prisma.exhibit.findMany()` invocation in
+C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\src\controllers\exhibitsController.js:23:43
+
+  20 // Get all exhibits
+  21 exports.getExhibits = async (req, res) => {
+  22   try {
+→ 23     const exhibits = await prisma.exhibit.findMany(
+Authentication failed against database server at `localhost`, the provided database credentials for `postgres` are not valid.
+
+Please make sure to provide valid database credentials for the database server at `localhost`.
+    at $n.handleRequestError (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:7615)
+    at $n.handleAndLogRequestError (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:6623)
+    at $n.request (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:6307)
+    at async l (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:130:9633)
+    at async exports.getExhibits (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\src\controllers\exhibitsController.js:23:22) {
+  clientVersion: '5.22.0',
+  errorCode: undefined
+}
+ Error in getExhibits: PrismaClientInitializationError: 
+Invalid `prisma.exhibit.findMany()` invocation in
+C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\src\controllers\exhibitsController.js:23:43
+
+  20 // Get all exhibits
+  21 exports.getExhibits = async (req, res) => {
+  22   try {
+→ 23     const exhibits = await prisma.exhibit.findMany(
+Authentication failed against database server at `localhost`, the provided database credentials for `postgres` are not valid.
+
+Please make sure to provide valid database credentials for the database server at `localhost`.
+    at $n.handleRequestError (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:7615)
+    at $n.handleAndLogRequestError (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:6623)
+    at $n.request (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:121:6307)
+    at async l (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\generated\prisma\runtime\library.js:130:9633)
+    at async exports.getExhibits (C:\Users\damia\Downloads\CICD project\cicdp-project-group-3-sdc\api\src\controllers\exhibitsController.js:23:22) {
+  clientVersion: '5.22.0',
+  errorCode: undefined
+}

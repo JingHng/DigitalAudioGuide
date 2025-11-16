@@ -314,6 +314,8 @@ jobs:
   # Login/Logout Test Job - Tests authentication flows
   test_login_logout:
     runs-on: ubuntu-latest
+    # Run after setup to ensure API flow is validated first
+    needs: setup
     
     services:
       postgres:
@@ -423,7 +425,7 @@ jobs:
       - name: 🔐 Run Login/Logout E2E Tests
         run: |
           cd web
-          npx playwright test tests/e2e/auth-login-logout.spec.ts tests/e2e/login.spec.ts
+          npx playwright test tests/e2e/auth-login-logout.spec.ts tests/e2e/admin-login-logout.spec.ts
         env:
           VITE_API_TARGET: http://localhost:5175
           CI: true
