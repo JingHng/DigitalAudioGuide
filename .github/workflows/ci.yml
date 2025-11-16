@@ -1,12 +1,17 @@
 # .github/workflows/ci.yml
 
-name: CI Pipeline - Full Stack Integration Test
+name: Test + Build Pipeline
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - 'feature/**'
+  workflow_dispatch:
+      
 
 jobs:
-  # Setup job - prepares database and starts API server
-  setup:
+  # 🧪 JOB 1: Testing (Unit + Integration) - Runs First
+  test:
     runs-on: ubuntu-latest
     
     services:
@@ -88,17 +93,7 @@ jobs:
       - name: ⏳ Wait for API to be ready
         run: |
           echo "Waiting for API exhibits endpoint..."
-          timeout=60
-          counter=0
-          while [ $counter -lt $timeout ]; do
-            if curl -f http://localhost:5175/api/exhibits > /dev/null 2>&1; then
-              echo "API server is ready!"
-              exit 0
-            fi
-            echo "Waiting for API... ($counter/$timeout seconds)"
-            sleep 2
-            counter=$((counter + 2))
-          done
+          npx wait-on http://localhost:5175/api/exhibits -t 60000 || {
             echo "API health check failed. Debugging information:"
             echo "=== API Server Logs ==="
             cat api/api.log || echo "No API log file found"
@@ -111,23 +106,10 @@ jobs:
             echo "=== Testing API base path ==="
             curl -v http://localhost:5175/api/ || echo "API base path not responding"
             exit 1
+          }
+          echo "API server is ready!"
 
-      # --- Frontend Setup ---
-      - name: 📦 Install Web Dependencies
-        run: |
-          cd web
-          npm install
-      - name: 🏗️ Build Web (production build)
-        run: |
-          cd web
-          npm run build
-
-      - name: 🌐 Install Playwright Browsers
-        run: |
-          cd web
-          npx playwright install --with-deps
-
-      # --- API Unit Tests (Run before E2E tests) ---
+      # --- API Unit Tests ---
       - name: 🔍 Run API Unit Tests
         run: |
           cd api
@@ -139,55 +121,55 @@ jobs:
           JWT_EXPIRES_IN: "24h"
           JWT_ALGORITHM: "HS256"
           FRONTEND_URL: "http://localhost:5173"
-        continue-on-error: false  # Fail if tests fail
+        continue-on-error: false
 
-      # Store API logs for debugging
-      - name: 📝 Save API Logs
-        if: always()
+      # --- Frontend Setup ---
+      - name: 📦 Install Web Dependencies
         run: |
-          mkdir -p artifacts
-          cp api/api.log artifacts/api.log 2>/dev/null || echo "No API log file found"
-        continue-on-error: true
+          cd web
+          npm install
 
-      - name: 💾 Upload API Logs
+      # --- Frontend Setup for E2E Tests ---
+      - name: 🌐 Install Playwright Browsers
+        run: |
+          cd web
+          npx playwright install --with-deps
+
+      # --- Integration Tests (E2E) ---
+      - name: 🧪 Run Full Stack Integration Tests (E2E)
+        run: |
+          cd web
+          npx playwright test
+        env:
+          VITE_API_TARGET: http://localhost:5175
+          CI: true
+
+      - name: 📝 Upload Test Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: api-logs
-          path: artifacts/api.log
-          retention-days: 1
-          if-no-files-found: ignore
+          name: playwright-report
+          path: web/playwright-report/
+          retention-days: 7
 
-  # Registration Test Job - Tests user registration flow
-  test_registration:
+      # --- Debug Information (only runs on failure) ---
+      - name: 🐛 Debug API Server (on failure)
+        if: failure()
+        run: |
+          echo "=== Final API Server Logs ==="
+          cat api/api.log || echo "No API log file found"
+          echo "=== Final Frontend Server Logs ==="
+          cat web/frontend.log || echo "No frontend log file found"
+          echo "=== Final Process List ==="
+          ps aux | grep -E "(node|vite)" || echo "No processes found"
+          echo "=== Final Port Usage ==="
+          netstat -tlnp | grep -E "(5175|5173)" || echo "Ports not in use"
+
+  # 🔨 JOB 2: Build 
+  build:
     runs-on: ubuntu-latest
+    needs: test  
     
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_DB: test_db
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-    
-    env:
-      DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test_db?schema=public"
-      NODE_ENV: "test"
-      PORT: 5175
-      VITE_API_TARGET: http://localhost:5175
-      JWT_SECRET_KEY: "test-jwt-secret-key-for-ci-testing-only-minimum-64-characters-long-to-meet-security-requirements"
-      JWT_EXPIRES_IN: "24h"
-      JWT_ALGORITHM: "HS256"
-      FRONTEND_URL: "http://localhost:5173"
-      CI: true
-      
     steps:
       - name: ⬇️ Checkout code
         uses: actions/checkout@v4
@@ -197,402 +179,43 @@ jobs:
         with:
           node-version: '20'
 
-      # --- Backend Setup ---
+      # --- API Build ---
       - name: 📦 Install API Dependencies
         run: |
           cd api
           npm install
 
-      - name: 🗄️ Setup Database Schema
+      - name: 🔧 Build API
         run: |
           cd api
-          npx prisma migrate deploy
+          npm run build
 
-      - name: 🌱 Seed Test Database
-        run: |
-          cd api
-          node prisma/seed.js
-        env:
-          SEED_DISABLE: 0
-
-      - name: 🚀 Start API Server
-        run: |
-          cd api
-          echo "Starting API server for registration tests..."
-          npm start > api.log 2>&1 &
-          echo "API server process started (PID: $!)"
-          sleep 10
-          echo "API logs after 10 seconds:"
-          cat api.log || echo "No log file yet"
-        env:
-          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test_db?schema=public"
-          NODE_ENV: "test"
-          PORT: 5175
-          JWT_SECRET_KEY: "test-jwt-secret-key-for-ci-testing-only-minimum-64-characters-long-to-meet-security-requirements"
-          JWT_EXPIRES_IN: "24h"
-          JWT_ALGORITHM: "HS256"
-          FRONTEND_URL: "http://localhost:5173"
-
-      - name: ⏳ Wait for API to be ready
-        run: |
-          echo "Waiting for API to be ready for registration tests..."
-          timeout=60
-          counter=0
-          while [ $counter -lt $timeout ]; do
-            if curl -f http://localhost:5175/api/exhibits > /dev/null 2>&1; then
-              echo "API server is ready for registration tests!"
-              exit 0
-            fi
-            echo "Waiting for API... ($counter/$timeout seconds)"
-            sleep 2
-            counter=$((counter + 2))
-          done
-          echo "API health check failed for registration tests"
-          cat api/api.log || echo "No API log file found"
-          exit 1
-
-      # --- Frontend Setup ---
+      # --- Frontend Build ---
       - name: 📦 Install Web Dependencies
         run: |
           cd web
           npm install
-      - name: 🏗️ Build Web (production build)
+
+      - name: 🔧 Build Web Application
         run: |
           cd web
           npm run build
-
-      - name: 🌐 Install Playwright Browsers
-        run: |
-          cd web
-          npx playwright install --with-deps
-
-      # --- Registration API Unit Tests ---
-      - name: 🔍 Run Registration API Unit Tests
-        run: |
-          cd api
-          npm test -- -t "Registration"
         env:
-          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test_db?schema=public"
-          NODE_ENV: "test"
-          JWT_SECRET_KEY: "test-jwt-secret-key-for-ci-testing-only-minimum-64-characters-long-to-meet-security-requirements"
-          JWT_EXPIRES_IN: "24h"
-          JWT_ALGORITHM: "HS256"
-          FRONTEND_URL: "http://localhost:5173"
-        continue-on-error: false
+          VITE_API_TARGET: '' 
 
-      # --- Registration E2E Tests ---
-      - name: 🧪 Run Registration E2E Tests
-        run: |
-          cd web
-          npx playwright test tests/e2e/registration.spec.ts
-        env:
-          VITE_API_TARGET: http://localhost:5175
-          CI: true
-        continue-on-error: false
-
-      - name: 📝 Upload Registration Test Report
-        if: always()
+      # --- Upload Build Artifacts ---
+      - name: ⬆️ Upload API Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: registration-test-report
-          path: web/playwright-report/
+          name: api-build
+          path: api/dist/
           retention-days: 7
-          if-no-files-found: ignore
 
-      # --- Debug Information (only runs on failure) ---
-      - name: 🐛 Debug Registration Tests (on failure)
-        if: failure()
-        run: |
-          echo "=== Registration Test Failure Debug ==="
-          echo "=== API Server Logs ==="
-          cat api/api.log || echo "No API log file found"
-          echo "=== Process List ==="
-          ps aux | grep -E "(node|vite)" || echo "No processes found"
-          echo "=== Port Usage ==="
-          netstat -tlnp | grep -E "(5175|5173)" || echo "Ports not in use"
-
-  # Login/Logout Test Job - Tests authentication flows
-  test_login_logout:
-    runs-on: ubuntu-latest
-    # Run after setup to ensure API flow is validated first
-    needs: setup
-    
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_DB: test_db
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-    
-    env:
-      DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test_db?schema=public"
-      NODE_ENV: "test"
-      PORT: 5175
-      VITE_API_TARGET: http://localhost:5175
-      JWT_SECRET_KEY: "test-jwt-secret-key-for-ci-testing-only-minimum-64-characters-long-to-meet-security-requirements"
-      JWT_EXPIRES_IN: "24h"
-      JWT_ALGORITHM: "HS256"
-      FRONTEND_URL: "http://localhost:5173"
-      CI: true
-      
-    steps:
-      - name: ⬇️ Checkout code
-        uses: actions/checkout@v4
-
-      - name: 🛠️ Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      # --- Backend Setup ---
-      - name: 📦 Install API Dependencies
-        run: |
-          cd api
-          npm install
-
-      - name: 🗄️ Setup Database Schema
-        run: |
-          cd api
-          npx prisma migrate deploy
-
-      - name: 🌱 Seed Test Database
-        run: |
-          cd api
-          node prisma/seed.js
-        env:
-          SEED_DISABLE: 0
-
-      - name: 🚀 Start API Server
-        run: |
-          cd api
-          echo "Starting API server for login/logout tests..."
-          npm start > api.log 2>&1 &
-          echo "API server process started (PID: $!)"
-          sleep 10
-          echo "API logs after 10 seconds:"
-          cat api.log || echo "No log file yet"
-        env:
-          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test_db?schema=public"
-          NODE_ENV: "test"
-          PORT: 5175
-          JWT_SECRET_KEY: "test-jwt-secret-key-for-ci-testing-only-minimum-64-characters-long-to-meet-security-requirements"
-          JWT_EXPIRES_IN: "24h"
-          JWT_ALGORITHM: "HS256"
-          FRONTEND_URL: "http://localhost:5173"
-
-      - name: ⏳ Wait for API to be ready
-        run: |
-          echo "Waiting for API to be ready for login/logout tests..."
-          timeout=60
-          counter=0
-          while [ $counter -lt $timeout ]; do
-            if curl -f http://localhost:5175/api/exhibits > /dev/null 2>&1; then
-              echo "API server is ready for login/logout tests!"
-              exit 0
-            fi
-            echo "Waiting for API... ($counter/$timeout seconds)"
-            sleep 2
-            counter=$((counter + 2))
-          done
-          echo "API health check failed for login/logout tests"
-          cat api/api.log || echo "No API log file found"
-          exit 1
-
-      # --- Frontend Setup ---
-      - name: 📦 Install Web Dependencies
-        run: |
-          cd web
-          npm install
-      - name: 🏗️ Build Web (production build)
-        run: |
-          cd web
-          npm run build
-
-      - name: 🌐 Install Playwright Browsers
-        run: |
-          cd web
-          npx playwright install --with-deps
-
-      # --- Login/Logout E2E Tests ---
-      - name: 🔐 Run Login/Logout E2E Tests
-        run: |
-          cd web
-          npx playwright test tests/e2e/auth-login-logout.spec.ts tests/e2e/admin-login-logout.spec.ts
-        env:
-          VITE_API_TARGET: http://localhost:5175
-          CI: true
-        continue-on-error: false
-
-      # --- Reset Password E2E Tests ---
-      - name: 🔑 Run Reset Password E2E Tests
-        run: |
-          cd web
-          npx playwright test tests/e2e/reset-password.spec.ts
-        env:
-          VITE_API_TARGET: http://localhost:5175
-          CI: true
-        continue-on-error: false
-
-      - name: 📝 Upload Login/Logout Test Report
-        if: always()
+      - name: ⬆️ Upload Web Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: login-logout-test-report
-          path: web/playwright-report/
+          name: web-build
+          path: web/dist/
           retention-days: 7
-          if-no-files-found: ignore
 
-      # --- Debug Information (only runs on failure) ---
-      - name: 🐛 Debug Login/Logout Tests (on failure)
-        if: failure()
-        run: |
-          echo "=== Login/Logout Test Failure Debug ==="
-          echo "=== API Server Logs ==="
-          cat api/api.log || echo "No API log file found"
-          echo "=== Process List ==="
-          ps aux | grep -E "(node|vite)" || echo "No processes found"
-          echo "=== Port Usage ==="
-          netstat -tlnp | grep -E "(5175|5173)" || echo "Ports not in use"
-
-  # General E2E Tests Job - Tests other features (exhibitions, homepage, etc.)
-  test_e2e_general:
-    runs-on: ubuntu-latest
-    
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_DB: test_db
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-    
-    env:
-      DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test_db?schema=public"
-      NODE_ENV: "test"
-      PORT: 5175
-      VITE_API_TARGET: http://localhost:5175
-      JWT_SECRET_KEY: "test-jwt-secret-key-for-ci-testing-only-minimum-64-characters-long-to-meet-security-requirements"
-      JWT_EXPIRES_IN: "24h"
-      JWT_ALGORITHM: "HS256"
-      FRONTEND_URL: "http://localhost:5173"
-      CI: true
-      
-    steps:
-      - name: ⬇️ Checkout code
-        uses: actions/checkout@v4
-
-      - name: 🛠️ Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      # --- Backend Setup ---
-      - name: 📦 Install API Dependencies
-        run: |
-          cd api
-          npm install
-
-      - name: 🗄️ Setup Database Schema
-        run: |
-          cd api
-          npx prisma migrate deploy
-
-      - name: 🌱 Seed Test Database
-        run: |
-          cd api
-          node prisma/seed.js
-        env:
-          SEED_DISABLE: 0
-
-      - name: 🚀 Start API Server
-        run: |
-          cd api
-          echo "Starting API server for general E2E tests..."
-          npm start > api.log 2>&1 &
-          echo "API server process started (PID: $!)"
-          sleep 10
-          echo "API logs after 10 seconds:"
-          cat api.log || echo "No log file yet"
-        env:
-          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test_db?schema=public"
-          NODE_ENV: "test"
-          PORT: 5175
-          JWT_SECRET_KEY: "test-jwt-secret-key-for-ci-testing-only-minimum-64-characters-long-to-meet-security-requirements"
-          JWT_EXPIRES_IN: "24h"
-          JWT_ALGORITHM: "HS256"
-          FRONTEND_URL: "http://localhost:5173"
-
-      - name: ⏳ Wait for API to be ready
-        run: |
-          echo "Waiting for API to be ready for general E2E tests..."
-          timeout=60
-          counter=0
-          while [ $counter -lt $timeout ]; do
-            if curl -f http://localhost:5175/api/exhibits > /dev/null 2>&1; then
-              echo "API server is ready for general E2E tests!"
-              exit 0
-            fi
-            echo "Waiting for API... ($counter/$timeout seconds)"
-            sleep 2
-            counter=$((counter + 2))
-          done
-          echo "API health check failed for general E2E tests"
-          cat api/api.log || echo "No API log file found"
-          exit 1
-
-      # --- Frontend Setup ---
-      - name: 📦 Install Web Dependencies
-        run: |
-          cd web
-          npm install
-
-      - name: 🌐 Install Playwright Browsers
-        run: |
-          cd web
-          npx playwright install --with-deps
-
-      # --- General E2E Tests (exhibitions, homepage, etc.) ---
-      - name: 🧪 Run General E2E Tests
-        run: |
-          cd web
-          npx playwright test tests/e2e/homepage.spec.ts tests/e2e/exhibitions.spec.ts
-        env:
-          VITE_API_TARGET: http://localhost:5175
-          CI: true
-        continue-on-error: false
-
-      - name: 📝 Upload General E2E Test Report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: general-e2e-test-report
-          path: web/playwright-report/
-          retention-days: 7
-          if-no-files-found: ignore
-
-      # --- Debug Information (only runs on failure) ---
-      - name: 🐛 Debug General E2E Tests (on failure)
-        if: failure()
-        run: |
-          echo "=== General E2E Test Failure Debug ==="
-          echo "=== API Server Logs ==="
-          cat api/api.log || echo "No API log file found"
-          echo "=== Process List ==="
-          ps aux | grep -E "(node|vite)" || echo "No processes found"
-          echo "=== Port Usage ==="
-          netstat -tlnp | grep -E "(5175|5173)" || echo "Ports not in use"
+ 

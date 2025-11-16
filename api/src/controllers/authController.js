@@ -122,21 +122,6 @@ exports.register = async (req, res, next) => {
       return res.status(400).json({ error: 'Username, email, and password are required.' });
     }
 
-    // Basic input validation to satisfy unit tests expectations
-    if (typeof username !== 'string' || username.length < 3) {
-      return res.status(400).json({ error: 'Username must be at least 3 characters long.', field: 'username' });
-    }
-    if (username.length > 100) {
-      return res.status(400).json({ error: 'Username must be at most 100 characters long.', field: 'username' });
-    }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({ error: 'Invalid email format.', field: 'email' });
-    }
-    if (typeof password !== 'string' || password.length < 6) {
-      return res.status(400).json({ error: 'Password must be at least 6 characters long.', field: 'password' });
-    }
-
     // Check if username or email already exists
     const existingUser = await prisma.user.findFirst({
       where: {
@@ -149,10 +134,10 @@ exports.register = async (req, res, next) => {
 
     if (existingUser) {
       if (existingUser.username === username) {
-        return res.status(409).json({ error: 'Username already exists', field: 'username' });
+        return res.status(409).json({ error: 'Username already exists' });
       }
       if (existingUser.email === email) {
-        return res.status(409).json({ error: 'Email already exists', field: 'email' });
+        return res.status(409).json({ error: 'Email already exists' });
       }
     }
 
@@ -182,39 +167,32 @@ exports.register = async (req, res, next) => {
       }
     });
 
-    // Assign default visitor role (create if not exists)
-    let visitorRole = await prisma.role.findFirst({
+    // Assign default visitor role
+    const visitorRole = await prisma.role.findFirst({
       where: { roleName: 'visitor' }
     });
 
-    if (!visitorRole) {
-      visitorRole = await prisma.role.create({
-        data: { roleName: 'visitor', description: 'Default visitor role' }
+    if (visitorRole) {
+      await prisma.userRole.create({
+        data: {
+          userId: newUser.userId,
+          roleId: visitorRole.roleId
+        }
       });
     }
-    await prisma.userRole.create({
-      data: {
-        userId: newUser.userId,
-        roleId: visitorRole.roleId
-      }
-    });
 
     // Log the audit action for the successful registration
     await logAuditAction(null, newUser.userId, 'user', 'create', { username, email });
 
     // Send the verification email
-    const emailResult = await sendEmailVerificationEmail(email, verificationToken);
+    await sendEmailVerificationEmail(email, verificationToken);
 
     // Prepare data for the JWT
-    const locals = res.locals || (res.locals = {});
-    locals.userId = newUser.userId?.toString();
-    locals.username = newUser.username;
-    locals.roles = ['visitor'];
-    locals.permissions = [];
-    locals.message = "Registration successful. Please check your email to verify your account.";
-    if (emailResult && emailResult.previewUrl) {
-      locals.emailPreviewUrl = emailResult.previewUrl;
-    }
+    res.locals.userId = newUser.userId;
+    res.locals.username = newUser.username;
+    res.locals.roles = ['visitor'];
+    res.locals.permissions = [];
+    res.locals.message = "Registration successful. Please check your email to verify your account.";
 
     next();
 

@@ -1,7 +1,5 @@
 import { test, expect } from '@playwright/test';
 
-const BASE_URL = 'http://localhost:5173';
-
 function base64UrlEncode(obj: unknown): string {
   const json = JSON.stringify(obj);
   const hasBuffer = typeof (globalThis as any).Buffer !== 'undefined';
@@ -37,14 +35,14 @@ test.describe('Visitor Login and Logout', () => {
     };
     const fakeToken = createFakeJwt(payload);
 
-    await page.goto(`${BASE_URL}/`);
+    await page.goto(`/`);
     await page.evaluate((token) => {
       localStorage.setItem('token', token);
       window.dispatchEvent(new Event('loginStateChange'));
     }, fakeToken);
 
     // Navigate to a page where the header is visible and logout should be present
-    await page.goto(`${BASE_URL}/`);
+    await page.goto(`/`);
     await page.waitForSelector('header, nav', { timeout: 15000 });
     await page.waitForTimeout(500);
 

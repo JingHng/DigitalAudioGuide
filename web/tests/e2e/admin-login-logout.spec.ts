@@ -1,7 +1,5 @@
 import { test, expect } from '@playwright/test';
 
-const BASE_URL = 'http://localhost:5173';
-
 test.describe('Admin Login and Conditional Logout', () => {
   function base64UrlEncode(obj: unknown): string {
     const json = JSON.stringify(obj);
@@ -36,7 +34,8 @@ test.describe('Admin Login and Conditional Logout', () => {
       timestamp: new Date().toISOString(),
     };
     const fakeToken = createFakeJwt(payload);
-    await page.goto(`${BASE_URL}/`);
+    await page.goto(`/`);
+    await page.goto(`/`);
     await page.evaluate((token) => {
       localStorage.setItem('token', token);
       window.dispatchEvent(new Event('loginStateChange'));
