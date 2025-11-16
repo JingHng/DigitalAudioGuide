@@ -65,6 +65,8 @@ module.exports.sendToken = (req, res, next) => {
   res.status(200).json({
     message: res.locals.message,
     token: res.locals.token,
+    // Only present in test/dev when using Ethereal Email
+    emailPreviewUrl: res.locals.emailPreviewUrl,
     user: {
       userId: res.locals.userId,
       username: res.locals.username,
