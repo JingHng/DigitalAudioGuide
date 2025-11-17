@@ -544,12 +544,15 @@ async function seed() {
       ('verify_email', 'Verify user email addresses');
     `);
 
-    // Insert admin and moderator users first
+    // Insert admin user first
+    // Admin password: admin123
+    // Generate hash for admin123 password
+    const adminHash = await bcrypt.hash('admin123', 12);
+    
     await client.query(`
       INSERT INTO "user" (username, email, password_hash, email_verified, status_id, last_login_at) VALUES
-      ('admin', 'admin@audiomuseum.com', '$2b$12$lClTvZSiHNrNq3bXT.ng2ObMQKEMRcg2eieXfhjLyZgm9RAg8YAtG', true, 1, CURRENT_TIMESTAMP - INTERVAL '2 hours'),
-      ('moderator', 'moderator@audiomuseum.com', '$2b$12$lClTvZSiHNrNq3bXT.ng2ObMQKEMRcg2eieXfhjLyZgm9RAg8YAtG', true, 1, CURRENT_TIMESTAMP - INTERVAL '1 day');
-    `);
+      ($1, $2, $3, true, 1, CURRENT_TIMESTAMP - INTERVAL '2 hours')
+    `, ['admin', 'admin@audiomuseum.com', adminHash]);
 
     // Generate 100+ users with varying registration dates for trend analysis
     const users = [];
@@ -594,19 +597,18 @@ async function seed() {
       `);
     }
 
-    console.log(`Inserted ${users.length + 2} users total (including admin and moderator)`);
+    console.log(`Inserted ${users.length + 1} users total (including admin and ${users.length} test users)`);
 
-    // Assign roles to users - admin and moderator first
+    // Assign roles to users - admin first
     await client.query(`
       INSERT INTO userroles (user_id, role_id) VALUES 
-      (1, 1), -- admin user gets admin role
-      (2, 2); -- moderator user gets moderator role
+      (1, 1); -- admin user gets admin role
     `);
 
-    // Assign visitor role to all other users
+    // Assign visitor role to all other users (user_id > 1)
     await client.query(`
       INSERT INTO userroles (user_id, role_id)
-      SELECT user_id, 3 FROM "user" WHERE user_id > 2;
+      SELECT user_id, 3 FROM "user" WHERE user_id > 1;
     `);
 
     // Assign permissions to roles
@@ -827,7 +829,7 @@ async function seed() {
 
     console.log("✅ Seeding complete!");
     console.log("📊 Database ready with:");
-    console.log("   - 122 users (admin, moderator, + 120 test users with varied registration dates)");
+    console.log("   - 121 users (admin + 120 test users with varied registration dates)");
     console.log(
       "   - 3 roles with proper permissions (including password reset & email verification)"
     );

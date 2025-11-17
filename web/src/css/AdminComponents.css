@@ -1,0 +1,251 @@
+/* ==========================================================================
+   AdminComponents.css
+   Shared, reusable styles for the entire admin dashboard.
+   ========================================================================== */
+
+/* --- Foundational & Layout --- */
+.admin-page-content {
+  padding: 1.5rem;
+}
+
+.admin-page-header-local {
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-page-header-local h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.admin-page-header-local p {
+  font-size: 1rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* --- Generic Buttons --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem; /* 10px 20px */
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  text-decoration: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background-color: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
+/* --- Form Elements --- */
+.form-label {
+  display: block;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.625rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  background-color: white;
+  color: #1f2937;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.form-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+}
+
+/* --- Status Badge --- */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.status-badge.active {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.status-badge.inactive,
+.status-badge.suspended {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* --- Status Messages & Loaders --- */
+.status-container, .loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 2rem;
+  color: #6b7280;
+  font-size: 1rem;
+}
+
+.error-message {
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 1.5rem;
+  font-weight: 500;
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+
+.loading-spinner {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 2px solid #e5e7eb;
+  border-top: 2px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+
+/* ==========================================================================
+   DARK MODE STYLES
+   ========================================================================== */
+
+.dark-mode .admin-page-header-local {
+  border-bottom-color: #374151;
+}
+
+.dark-mode .admin-page-header-local h1 {
+  color: #f3f4f6;
+}
+
+.dark-mode .admin-page-header-local p {
+  color: #9ca3af;
+}
+
+.dark-mode .btn-primary {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+}
+.dark-mode .btn-primary:hover:not(:disabled) {
+  background-color: #60a5fa;
+  border-color: #60a5fa;
+}
+
+.dark-mode .form-label {
+  color: #d1d5db;
+}
+
+.dark-mode .form-input {
+  background-color: #374151;
+  border-color: #4b5563;
+  color: #f3f4f6;
+}
+.dark-mode .form-input::placeholder {
+  color: #9ca3af;
+}
+
+.dark-mode .form-select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+}
+
+.dark-mode .status-badge.active {
+  background-color: #064e3b;
+  color: #a7f3d0;
+}
+
+.dark-mode .status-badge.inactive,
+.dark-mode .status-badge.suspended {
+  background-color: #7f1d1d;
+  color: #fecaca;
+}
+
+.dark-mode .loading-container {
+  color: #9ca3af;
+}
+
+.dark-mode .error-message {
+  background-color: #7f1d1d;
+  color: #fecaca;
+  border-color: #b91c1c;
+}
+
+.dark-mode .loading-spinner {
+  border-color: #374151;
+  border-top-color: #60a5fa;
+}
+
+/* User Info Styling for Dark Mode */
+.dark-mode .user-info {
+  background-color: transparent !important;
+}
+
+.dark-mode .user-name {
+  color: #f9fafb !important;
+}
+
+.dark-mode .user-email {
+  color: #9ca3af !important;
+}
+
+/* ==========================================================================
+   RESPONSIVE STYLES
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .admin-page-content {
+    padding: 1rem;
+  }
+
+  .admin-page-header-local h1 {
+    font-size: 1.5rem;
+  }
+
+  .admin-page-header-local p {
+    font-size: 0.875rem;
+  }
+}

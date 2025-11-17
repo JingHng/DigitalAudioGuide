@@ -1,14 +1,15 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
-// --- COMMENTED OUT: Context & Utilities ---
-// import { AuthProvider } from "./contexts/AuthContext";
+// --- Context & Utilities ---
+import { AuthProvider } from "./contexts/AuthContext";
 // import { ensureLanguagePersistence } from "./utils/languageUtils"; 
 import Navbar from "./components/Navbar.tsx"; 
 import Homepage from "./components/HomePage.tsx"; 
 // --- COMMENTED OUT: Auth & User Components ---
-import LoginPage from "./routes/LoginPage";
+import LoginPage from "./components/LoginPage";
 import RegisterPage from "./routes/RegisterPage";
-// import ResetPasswordPage from "./components/ResetPasswordPage";
+import ForgotPasswordPage from "./components/ForgotPasswordPage";
+import ResetPasswordPage from "./components/ResetPasswordPage";
 import EmailVerificationPage from "./routes/EmailVerificationPage";
 // import UserDashboard from "./components/UserDashboard";
 // import ScanPage from "./components/ScanPage";
@@ -20,19 +21,17 @@ import ExhibitDetails from "./components/ExhibitDetails.tsx";
 
 // --- COMMENTED OUT: Other Public/Protected Components ---
 // import ReviewPage from "./components/reviewPage/ReviewPage";
-// import ProtectedRoute, { AdminRoute } from "./contexts/ProtectedRoute";
-import UserBadgePage from "./routes/userBadgePage.tsx";
-
-// --- COMMENTED OUT: Admin Components ---
-// import AdminDashboard from "./components/admin/AdminDashboard";
-// import ExhibitsPage from "./components/admin/ExhibitsPage"; // This is the Admin page container
-// import RolesPage from "./components/admin/RolesPage";
-// import UsersPage from "./components/admin/UsersPage";
-// import AuditLogsPage from "./components/admin/AuditLogsPage";
-// import AudioAnalyticsPage from "./components/admin/AudioAnalyticsPage";
-// import AudioManagement from "./components/admin/AudioManagement";
-// import SettingsPage from "./components/admin/SettingsPage";
-// import HelpAndInformationPage from "./components/admin/HelpAndInformationPage";
+import ProtectedRoute, { AdminRoute } from "./components/ProtectedRoute";
+// --- Admin Components ---
+import AdminDashboard from "./components/admin/AdminDashboard";
+import ExhibitsPage from "./components/admin/ExhibitsPage";
+import RolesPage from "./components/admin/RolesPage";
+import UsersPage from "./components/admin/UsersPage";
+import AuditLogsPage from "./components/admin/AuditLogsPage";
+import AudioAnalyticsPage from "./components/admin/AudioAnalyticsPage";
+import AudioManagement from "./components/admin/AudioManagement";
+import SettingsPage from "./components/admin/SettingsPage";
+import HelpAndInformationPage from "./components/admin/HelpAndInformationPage";
 
 import NotFoundPage from "./components/NotFoundPage.tsx"; // KEEP: Good practice for * route
 // --- COMMENTED OUT: Loaders/Providers ---
@@ -51,21 +50,24 @@ function App() {
     // ensureLanguagePersistence(); 
   }, []);
   
-  // NOTE: AuthProvider is temporarily removed
   return (
-    // <AuthProvider> 
-    // <GoogleTranslateLoader />
-    <> 
+    <AuthProvider>
+      {/* <GoogleTranslateLoader /> */}
       {/* Navbar is kept, as it's typically required for navigation */}
       {!isAdminRoute && <Navbar />} 
       
-      {/* Admin routes are disabled by falling through the ternary, or remove the ternary entirely for simplicity */}
+      {/* Admin routes */}
       {isAdminRoute ? (
-         // Since AdminRoute components are commented out, we redirect admin users to 404
         <Routes>
-          {/* Note: Admin routes were commented out but the ternary structure was kept. 
-             If we use the ternary, we must ensure the Admin path uses a component that is imported (NotFoundPage). 
-             The previous version did this correctly. */}
+          <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+          <Route path="/admin/exhibits" element={<AdminRoute><ExhibitsPage /></AdminRoute>} />
+          <Route path="/admin/audio" element={<AdminRoute><AudioManagement /></AdminRoute>} />
+          <Route path="/admin/roles" element={<AdminRoute><RolesPage /></AdminRoute>} />
+          <Route path="/admin/users" element={<AdminRoute><UsersPage /></AdminRoute>} />
+          <Route path="/admin/audit-logs" element={<AdminRoute><AuditLogsPage /></AdminRoute>} />
+          <Route path="/admin/audio-analytics" element={<AdminRoute><AudioAnalyticsPage /></AdminRoute>} />
+          <Route path="/admin/settings" element={<AdminRoute><SettingsPage /></AdminRoute>} />
+          <Route path="/admin/help" element={<AdminRoute><HelpAndInformationPage /></AdminRoute>} />
           <Route path="/admin/*" element={<NotFoundPage />} />
         </Routes>
       ) : (
@@ -82,7 +84,8 @@ function App() {
             {/* --- Other Public/Auth Routes --- */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
-            {/* <Route path="/reset-password" element={<ResetPasswordPage />} /> */}
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/verify-email" element={<EmailVerificationPage />} />
             {/* <Route path="/unauthorized" element={<UnauthorizedPage />} />
             <Route path="/scan" element={<ScanPage />} />
@@ -95,8 +98,7 @@ function App() {
           </Routes>
         </div>
       )}
-    </>
-    // </AuthProvider>
+    </AuthProvider>
   );
 }
 

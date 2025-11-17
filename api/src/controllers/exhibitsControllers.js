@@ -1,4 +1,4 @@
-const { PrismaClient } = require("./../../generated/prisma"); 
+const { PrismaClient } = require("../../generated/prisma"); 
 const googleTTS = require("google-tts-api");
 const path = require("path");
 const fs = require("fs");

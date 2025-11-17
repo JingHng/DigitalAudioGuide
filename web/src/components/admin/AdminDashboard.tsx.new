@@ -1,0 +1,276 @@
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import AdminLayout from './AdminLayout';
+import { 
+  LineChart, Line, BarChart, Bar, XAxis, YAxis, 
+  CartesianGrid, Tooltip, Legend, ResponsiveContainer, 
+  PieChart, Pie, Cell 
+} from 'recharts';
+import { 
+  CalendarDays, Users, Ticket, ArrowUpRight, 
+  Filter, Calendar, TrendingUp, BarChart3 
+} from 'lucide-react';
+import '../../css/AdminDashboard.css';
+
+// Demo data for charts
+const visitorData = [
+  { name: 'Jan', visitors: 4000 },
+  { name: 'Feb', visitors: 3000 },
+  { name: 'Mar', visitors: 2000 },
+  { name: 'Apr', visitors: 2780 },
+  { name: 'May', visitors: 1890 },
+  { name: 'Jun', visitors: 2390 },
+  { name: 'Jul', visitors: 3490 },
+  { name: 'Aug', visitors: 4000 },
+  { name: 'Sep', visitors: 3200 },
+  { name: 'Oct', visitors: 2800 },
+  { name: 'Nov', visitors: 3000 },
+  { name: 'Dec', visitors: 4500 },
+];
+
+const exhibitPopularity = [
+  { name: 'Modern Art', value: 400 },
+  { name: 'Ancient History', value: 300 },
+  { name: 'Natural Sciences', value: 300 },
+  { name: 'Interactive', value: 200 },
+  { name: 'Special Exhibitions', value: 100 },
+];
+
+const revenueData = [
+  { name: 'Tickets', revenue: 4000 },
+  { name: 'Gift Shop', revenue: 2400 },
+  { name: 'Donations', revenue: 2000 },
+  { name: 'Events', revenue: 1200 },
+  { name: 'Online', revenue: 900 },
+];
+
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
+
+const AdminDashboard = () => {
+  const [timeFilter, setTimeFilter] = useState('monthly');
+  const [dateRange, setDateRange] = useState('last30Days');
+  
+  // KPI stats
+  const [stats] = useState({
+    visitors: {
+      total: 45280,
+      trend: '+12.5%',
+      isPositive: true
+    },
+    ticketSales: {
+      total: '$124,500',
+      trend: '+8.3%',
+      isPositive: true
+    },
+    activeExhibits: {
+      total: 12,
+      trend: '+2',
+      isPositive: true
+    },
+    upcomingEvents: {
+      total: 8,
+      trend: '-1',
+      isPositive: false
+    }
+  });
+  
+  return (
+    <AdminLayout>
+      <div className="admin-dashboard">
+        <div className="dashboard-header">
+          <h1>Dashboard</h1>
+          <div className="dashboard-filters">
+            <div className="filter-group">
+              <Filter size={18} />
+              <select 
+                value={timeFilter}
+                onChange={(e) => setTimeFilter(e.target.value)}
+                className="time-filter"
+              >
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="yearly">Yearly</option>
+              </select>
+            </div>
+            <div className="filter-group">
+              <Calendar size={18} />
+              <select 
+                value={dateRange}
+                onChange={(e) => setDateRange(e.target.value)}
+                className="date-range"
+              >
+                <option value="last7Days">Last 7 Days</option>
+                <option value="last30Days">Last 30 Days</option>
+                <option value="last90Days">Last 90 Days</option>
+                <option value="lastYear">Last Year</option>
+                <option value="allTime">All Time</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* KPI Cards */}
+        <div className="kpi-cards">
+          <div className="kpi-card">
+            <div className="kpi-icon visitors">
+              <Users size={24} />
+            </div>
+            <div className="kpi-content">
+              <h3>Total Visitors</h3>
+              <div className="kpi-value">
+                <span className="value">{stats.visitors.total}</span>
+                <span className={`trend ${stats.visitors.isPositive ? 'positive' : 'negative'}`}>
+                  {stats.visitors.trend}
+                  <ArrowUpRight size={16} />
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="kpi-card">
+            <div className="kpi-icon sales">
+              <Ticket size={24} />
+            </div>
+            <div className="kpi-content">
+              <h3>Ticket Sales</h3>
+              <div className="kpi-value">
+                <span className="value">{stats.ticketSales.total}</span>
+                <span className={`trend ${stats.ticketSales.isPositive ? 'positive' : 'negative'}`}>
+                  {stats.ticketSales.trend}
+                  <ArrowUpRight size={16} />
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="kpi-card">
+            <div className="kpi-icon exhibits">
+              <BarChart3 size={24} />
+            </div>
+            <div className="kpi-content">
+              <h3>Active Exhibits</h3>
+              <div className="kpi-value">
+                <span className="value">{stats.activeExhibits.total}</span>
+                <span className={`trend ${stats.activeExhibits.isPositive ? 'positive' : 'negative'}`}>
+                  {stats.activeExhibits.trend}
+                  <ArrowUpRight size={16} />
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="kpi-card">
+            <div className="kpi-icon events">
+              <CalendarDays size={24} />
+            </div>
+            <div className="kpi-content">
+              <h3>Upcoming Events</h3>
+              <div className="kpi-value">
+                <span className="value">{stats.upcomingEvents.total}</span>
+                <span className={`trend ${stats.upcomingEvents.isPositive ? 'positive' : 'negative'}`}>
+                  {stats.upcomingEvents.trend}
+                  <ArrowUpRight size={16} />
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Charts */}
+        <div className="dashboard-charts">
+          <div className="chart-container visitors-chart">
+            <h2>Visitor Traffic</h2>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart
+                data={visitorData}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line 
+                  type="monotone" 
+                  dataKey="visitors" 
+                  stroke="#3b82f6" 
+                  strokeWidth={2}
+                  activeDot={{ r: 8 }} 
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="charts-row">
+            <div className="chart-container exhibits-chart">
+              <h2>Exhibit Popularity</h2>
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={exhibitPopularity}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  >
+                    {exhibitPopularity.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="chart-container revenue-chart">
+              <h2>Revenue Sources</h2>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart
+                  data={revenueData}
+                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="revenue" fill="#3b82f6" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="quick-actions">
+          <h2>Quick Actions</h2>
+          <div className="action-cards">
+            <Link to="/admin/exhibits" className="action-card">
+              <TrendingUp size={24} />
+              <h3>Manage Exhibits</h3>
+              <p>Update your museum's exhibitions</p>
+            </Link>
+            
+            <Link to="/admin/users" className="action-card">
+              <Users size={24} />
+              <h3>Manage Users</h3>
+              <p>Manage staff and user accounts</p>
+            </Link>
+            
+            <Link to="/admin/statistics" className="action-card">
+              <BarChart3 size={24} />
+              <h3>View Statistics</h3>
+              <p>Detailed museum analytics</p>
+            </Link>
+          </div>
+        </div>
+      </div>
+    </AdminLayout>
+  );
+};
+
+export default AdminDashboard;

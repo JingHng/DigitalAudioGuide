@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Loader2, Info } from 'lucide-react'; // Added Info icon
-import axios from 'axios';
+import apiClient from '../utils/apiClient';
 
 const BACKEND_URL = import.meta.env.VITE_API_TARGET || '';
 const DEFAULT_IMAGE_URL = `${BACKEND_URL}/public/images/ThroughTheLensOfTime.jpg`;
@@ -40,7 +40,8 @@ const ExhibitionsPage: React.FC = () => {
     // Clear error state before new fetch
     setError(null); 
     
-    axios.get(`${BACKEND_URL}/api/exhibitions`)
+    // Use apiClient which handles authentication headers
+    apiClient.get('/exhibitions')
       .then((res) => {
         // Ensure data is an array before setting state
         if (Array.isArray(res.data)) {
@@ -51,10 +52,16 @@ const ExhibitionsPage: React.FC = () => {
           console.warn('API returned non-array data:', res.data);
         }
       })
-      .catch((err) => {
-        console.error('Error fetching exhibitions:', err);
-        // Set a user-friendly error message
-        setError('Failed to load exhibitions. Please check your network connection or try again later.');
+      .catch((err: any) => {
+        // Only log error if it's not a 401 (which might be expected for public endpoints)
+        if (err.response?.status !== 401) {
+          console.error('Error fetching exhibitions:', err);
+          // Set a user-friendly error message
+          setError('Failed to load exhibitions. Please check your network connection or try again later.');
+        } else {
+          // For 401 errors, just set empty array (endpoint might not require auth)
+          setExhibitions([]);
+        }
       })
       .finally(() => setLoading(false));
   }, []); // Empty dependency array means this runs once on mount
