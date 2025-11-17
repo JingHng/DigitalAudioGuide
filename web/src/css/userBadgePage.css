@@ -1,0 +1,209 @@
+/* ----------------------------------------------------- */
+/* --- Global Variables (Soft, Light Color Scheme) --- */
+/* ----------------------------------------------------- */
+:root {
+    --primary-color-dark: #3b82f6;
+    --primary-color-light: #60a5fa;
+    --background-lightest: #ffffff;
+    --background-mid: #f9f9f9;
+    --text-dark: #1f2937;
+    --text-light: #6b7280;
+    --border-color: #e5e7eb;
+}
+
+/* ----------------------------------------------------- */
+/* --- Base Reset and Typography --- */
+/* ----------------------------------------------------- */
+#root {
+    max-width: 90%;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* ----------------------------------------------------- */
+/* --- Badge Grid Layout --- */
+/* ----------------------------------------------------- */
+.badge-grid {
+    display: grid;
+    gap: 1.3rem;
+    justify-items: center;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.badge-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.badge-img {
+    width: 100%;
+    height: auto;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: transparent;
+    padding: 0.25rem;
+}
+
+.badge-img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+.grayscale {
+    filter: grayscale(100%);
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.badge-locked-text {
+    margin-top: 0.25rem;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    user-select: none;
+}
+
+/* ----------------------------------------------------- */
+/* --- Modal Styles --- */
+/* ----------------------------------------------------- */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    padding-top: 4rem;
+}
+
+.modal-window {
+    position: relative;
+    width: 80%;
+    max-width: 700px;
+    height: 400px;
+    padding: 2rem;
+    border-radius: 1rem;
+    background-color: var(--background-lightest);
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    transform: translateY(-20px);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-img {
+    width: 100%;
+    max-height: 230px;
+    object-fit: contain;
+    margin-bottom: 0rem;
+    border-radius: 0.5rem;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0rem;
+    color: var(--text-dark);
+}
+
+.modal-title,
+.modal-desc,
+.modal-locked-text {
+    flex-shrink: 0;
+}
+
+.modal-desc {
+    font-size: 1rem;
+    color: var(--text-light);
+    margin-bottom: 0rem;
+}
+
+.modal-locked-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #cc0000;
+    margin: 1rem 0;
+    user-select: none;
+}
+
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    border: none;
+    background-color: red;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-close:hover {
+    background-color: darkred;
+}
+
+.modal-nav {
+    margin-top: auto;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.modal-nav button {
+    background: none;
+    border: none;
+    color: var(--primary-color-dark);
+    font-size: 2rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.modal-nav button:hover {
+    transform: scale(1.2);
+}
+
+/* ----------------------------------------------------- */
+/* --- Responsive --- */
+/* ----------------------------------------------------- */
+@media (max-width: 768px) {
+    .modal-window {
+        max-width: 95vw;
+        max-height: 65vh;
+    }
+
+    .modal-img {
+        width: 100%;
+        max-height: 180px;
+        object-fit: contain;
+        border-radius: 0.5rem;
+    }
+
+    .modal-title {
+        font-size: 1.3rem;
+    }
+
+    .modal-desc {
+        font-size: 0.8rem;
+    }
+
+    .badge-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 769px) {
+    .badge-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    .modal-window {
+      max-width: 900px;
+    }
+}

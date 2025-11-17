@@ -21,6 +21,8 @@ import ExhibitDetails from "./components/ExhibitDetails.tsx";
 // --- COMMENTED OUT: Other Public/Protected Components ---
 // import ReviewPage from "./components/reviewPage/ReviewPage";
 // import ProtectedRoute, { AdminRoute } from "./contexts/ProtectedRoute";
+import UserBadgePage from "./routes/userBadgePage.tsx";
+
 // --- COMMENTED OUT: Admin Components ---
 // import AdminDashboard from "./components/admin/AdminDashboard";
 // import ExhibitsPage from "./components/admin/ExhibitsPage"; // This is the Admin page container
@@ -87,7 +89,7 @@ function App() {
             <Route path="/reviews" element={<ReviewPage />} />
             <Route path="/exhibits/:exhibitId/reviews" element={<ReviewPage />} />
             <Route path="/dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} /> */}
-            
+            <Route path="/user-badge" element={<UserBadgePage />} />
             {/* Catch-all route is kept */}
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
