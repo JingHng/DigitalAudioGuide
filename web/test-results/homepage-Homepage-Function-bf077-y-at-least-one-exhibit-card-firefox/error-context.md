@@ -1,0 +1,82 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - navigation [ref=e4]:
+      - link "Singapore Discovery Centre" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e6]:
+          - generic [ref=e7]: Singapore
+          - generic [ref=e8]: Discovery Centre
+      - generic [ref=e9]:
+        - link "Exhibits" [ref=e10] [cursor=pointer]:
+          - /url: /exhibitions
+        - link "Reviews" [ref=e11] [cursor=pointer]:
+          - /url: /reviews
+        - link "How It Works" [ref=e12] [cursor=pointer]:
+          - /url: /#how-it-works
+        - generic [ref=e13]:
+          - link "Login" [ref=e14] [cursor=pointer]:
+            - /url: /login
+            - img [ref=e15]
+            - generic [ref=e19]: Login
+          - link "Register" [ref=e20] [cursor=pointer]:
+            - /url: /register
+            - img [ref=e21]
+            - generic [ref=e26]: Register
+        - button "Select language" [ref=e28] [cursor=pointer]:
+          - img [ref=e29]
+  - generic [ref=e34]:
+    - main [ref=e35]:
+      - generic [ref=e36]:
+        - generic [ref=e37]:
+          - heading "Unlock the Next Chapter of History." [level=1] [ref=e38]
+          - paragraph [ref=e39]: Experience the Singapore Story through interactive exhibits and personalized digital content. Your journey of discovery starts now.
+          - button "Scan to Start" [ref=e40] [cursor=pointer]:
+            - img [ref=e41]
+            - generic [ref=e54]: Scan to Start
+          - generic [ref=e55]:
+            - generic [ref=e56]:
+              - img [ref=e58]
+              - generic [ref=e71]: "**Instant Scan**"
+            - generic [ref=e72]:
+              - img [ref=e74]
+              - generic [ref=e76]: "**Audio Guide**"
+            - generic [ref=e77]:
+              - img [ref=e79]
+              - generic [ref=e82]: "**Map & Explore**"
+        - img "Modern museum display" [ref=e84]
+      - generic [ref=e85]:
+        - heading "Explore Our Featured Collections" [level=2] [ref=e87]
+        - generic [ref=e88]:
+          - paragraph [ref=e90]: No featured exhibits are currently available.
+          - link "View All Collections" [ref=e92] [cursor=pointer]:
+            - /url: /exhibitions
+            - generic [ref=e93]: View All Collections
+            - img [ref=e94]
+      - generic [ref=e98]:
+        - heading "Ready to Start Your Discovery?" [level=3] [ref=e99]
+        - paragraph [ref=e100]: Unlock deeper insights and personalized guidance as you explore the Centre.
+        - button "Begin Scanning Now" [ref=e101] [cursor=pointer]:
+          - img [ref=e102]
+          - text: Begin Scanning Now
+    - contentinfo [ref=e115]:
+      - generic [ref=e116]:
+        - generic [ref=e117]:
+          - heading "SDC Digital Guide" [level=3] [ref=e118]
+          - paragraph [ref=e119]: A seamless guide to the Singapore Discovery Centre.
+        - generic [ref=e120]:
+          - heading "Navigation" [level=4] [ref=e121]
+          - link "Exhibits" [ref=e122] [cursor=pointer]:
+            - /url: /exhibitions
+          - link "Virtual Map" [ref=e123] [cursor=pointer]:
+            - /url: /map
+        - generic [ref=e124]:
+          - heading "Legal & Info" [level=4] [ref=e125]
+          - link "Privacy Policy" [ref=e126] [cursor=pointer]:
+            - /url: "#"
+          - link "Terms of Use" [ref=e127] [cursor=pointer]:
+            - /url: "#"
+      - paragraph [ref=e129]: © 2025 Singapore Discovery Centre. All rights reserved.
+```
