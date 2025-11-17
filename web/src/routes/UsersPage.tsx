@@ -1,5 +1,5 @@
 import { useLoaderData, useNavigate, useSearchParams } from "react-router-dom";
-import { useAuth } from "../contexts/useAuth";
+import { useAuth } from "../contexts/AuthContext";
 import type { PaginatedUserResponse } from "./users.loaders";
 
 export default function UsersPage() {

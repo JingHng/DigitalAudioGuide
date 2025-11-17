@@ -1,0 +1,470 @@
+/* ==========================================================================
+   AdminSettings.css
+   Styles for the admin settings page layout and components
+   ========================================================================== */
+
+/* Settings page main container */
+.admin-settings {
+  display: flex;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: calc(100vh - 200px);
+}
+
+/* Settings sidebar */
+.admin-settings-sidebar {
+  flex: 0 0 250px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  height: fit-content;
+  overflow: hidden;
+}
+
+/* Settings navigation */
+.admin-settings-nav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.admin-settings-nav li {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-settings-nav li:last-child {
+  border-bottom: none;
+}
+
+.admin-settings-nav button {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.admin-settings-nav button:hover {
+  background-color: #f9fafb;
+  color: #374151;
+}
+
+.admin-settings-nav button.active {
+  background-color: #eff6ff;
+  color: #3b82f6;
+  border-right: 3px solid #3b82f6;
+}
+
+.admin-settings-nav button.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background-color: #3b82f6;
+}
+
+/* Settings content area */
+.admin-settings-content {
+  flex: 1;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Settings section */
+.admin-settings-section {
+  padding: 2rem;
+}
+
+.admin-settings-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 0.5rem 0;
+}
+
+.admin-settings-description {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin: 0 0 2rem 0;
+  line-height: 1.5;
+}
+
+/* Profile avatar specific styling */
+.admin-profile-avatar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.admin-profile-avatar-display {
+  flex-shrink: 0;
+}
+
+.admin-profile-avatar-info {
+  flex: 1;
+}
+
+.admin-profile-avatar-info h4 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.admin-profile-avatar-info p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* Avatar component global styles */
+.admin-avatar {
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.admin-avatar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.admin-avatar:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Enhanced form button styling for settings */
+.admin-form-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.admin-form-btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  transform: translateY(-1px);
+}
+
+.admin-form-btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.admin-form-btn-primary.loading {
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+/* Enhanced password strength indicator */
+.admin-password-strength {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.admin-password-strength-bar {
+  flex: 1;
+  height: 6px;
+  background-color: #e5e7eb;
+  border-radius: 3px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.admin-password-strength-fill {
+  height: 100%;
+  transition: all 0.3s ease;
+  border-radius: 3px;
+  background: linear-gradient(90deg, currentColor, currentColor);
+}
+
+.admin-password-strength-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  min-width: 60px;
+  text-align: right;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Enhanced password requirements */
+.admin-password-requirements {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.admin-password-checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0 0 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.admin-password-checklist li {
+  font-size: 0.75rem;
+  color: #64748b;
+  position: relative;
+  padding-left: 1.5rem;
+  transition: all 0.2s ease;
+  line-height: 1.4;
+}
+
+.admin-password-checklist li::before {
+  content: '✗';
+  position: absolute;
+  left: 0;
+  color: #ef4444;
+  font-weight: 700;
+  width: 1rem;
+  text-align: center;
+}
+
+.admin-password-checklist li.valid {
+  color: #059669;
+  font-weight: 500;
+}
+
+.admin-password-checklist li.valid::before {
+  content: '✓';
+  color: #059669;
+}
+
+/* Account info enhancement */
+.admin-account-info {
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-top: 0.5rem;
+}
+
+.admin-account-info p {
+  margin: 0.75rem 0;
+  font-size: 0.875rem;
+  color: #475569;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-account-info p:first-child {
+  margin-top: 0;
+}
+
+.admin-account-info p:last-child {
+  margin-bottom: 0;
+}
+
+.admin-account-info strong {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .admin-settings {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .admin-settings-sidebar {
+    flex: none;
+  }
+  
+  .admin-settings-nav {
+    display: flex;
+    overflow-x: auto;
+  }
+  
+  .admin-settings-nav li {
+    border-bottom: none;
+    border-right: 1px solid #e5e7eb;
+    flex: none;
+  }
+  
+  .admin-settings-nav li:last-child {
+    border-right: none;
+  }
+  
+  .admin-settings-nav button {
+    white-space: nowrap;
+    padding: 1rem;
+  }
+  
+  .admin-settings-nav button.active::before {
+    left: 0;
+    right: 0;
+    top: auto;
+    bottom: 0;
+    width: auto;
+    height: 3px;
+  }
+  
+  .admin-settings-section {
+    padding: 1.5rem;
+  }
+  
+  .admin-password-checklist {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-settings-section {
+    padding: 1rem;
+  }
+  
+  .admin-settings-title {
+    font-size: 1.25rem;
+  }
+  
+  .admin-profile-avatar {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+/* ==========================================================================
+   DARK MODE STYLES
+   ========================================================================== */
+
+.dark-mode .admin-settings-sidebar {
+  background-color: #1f2937;
+  border-color: #374151;
+}
+
+.dark-mode .admin-settings-nav li {
+  border-bottom-color: #374151;
+}
+
+.dark-mode .admin-settings-nav button {
+  color: #9ca3af;
+}
+
+.dark-mode .admin-settings-nav button:hover {
+  background-color: #374151;
+  color: #d1d5db;
+}
+
+.dark-mode .admin-settings-nav button.active {
+  background-color: #1e3a8a;
+  color: #60a5fa;
+  border-right-color: #60a5fa;
+}
+
+.dark-mode .admin-settings-nav button.active::before {
+  background-color: #60a5fa;
+}
+
+.dark-mode .admin-settings-content {
+  background-color: #1f2937;
+  border-color: #374151;
+}
+
+.dark-mode .admin-settings-title {
+  color: #f3f4f6;
+}
+
+.dark-mode .admin-settings-description {
+  color: #9ca3af;
+}
+
+.dark-mode .admin-profile-avatar {
+  background: #374151 !important;
+  border-color: #4b5563 !important;
+}
+
+.dark-mode .admin-profile-avatar-info h4 {
+  color: #f3f4f6 !important;
+}
+
+.dark-mode .admin-profile-avatar-info p {
+  color: #9ca3af !important;
+}
+
+.dark-mode .admin-profile-avatar-img {
+  border-color: #4b5563;
+  background-color: #374151;
+}
+
+.dark-mode .admin-password-strength {
+  background-color: #374151;
+  border-color: #4b5563;
+}
+
+.dark-mode .admin-password-requirements {
+  background-color: #374151;
+  border-color: #4b5563;
+}
+
+.dark-mode .admin-password-checklist li {
+  color: #9ca3af;
+}
+
+.dark-mode .admin-password-checklist li.valid {
+  color: #10b981;
+}
+
+.dark-mode .admin-account-info {
+  background: linear-gradient(135deg, #374151, #4b5563);
+  border-color: #4b5563;
+}
+
+.dark-mode .admin-account-info p {
+  color: #d1d5db;
+}
+
+.dark-mode .admin-account-info strong {
+  color: #f3f4f6;
+}
+
+/* Dark mode responsive adjustments */
+@media (max-width: 768px) {
+  .dark-mode .admin-settings-nav li {
+    border-right-color: #374151;
+  }
+}

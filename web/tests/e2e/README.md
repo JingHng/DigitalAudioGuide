@@ -6,6 +6,9 @@ This directory contains end-to-end tests using Playwright.
 
 - `homepage.spec.ts` - Tests for homepage functionality and API integration
 - `registration.spec.ts` - Tests for user registration flow (form → API → DB → email)
+- `login.spec.ts` - Tests for login page functionality and basic login flows
+- `auth-login-logout.spec.ts` - Comprehensive tests for login and logout flows for both regular users and admins
+- `exhibitions.spec.ts` - Tests for exhibitions page functionality
 
 ## Running Tests
 
@@ -66,12 +69,62 @@ The registration E2E tests cover:
 
 ## Test Data
 
-Tests generate unique test data for each test run to avoid conflicts:
+### Registration Tests
+Registration tests generate unique test data for each test run to avoid conflicts:
 - Username: `testuser_{timestamp}_{random}`
 - Email: `test_{timestamp}_{random}@example.com`
 - Password: `TestPassword123!`
 
+### Login/Logout Tests
+Login and logout tests use pre-seeded test users from the database:
+- **Admin User**:
+  - Username: `admin`
+  - Email: `admin@audiomuseum.com`
+  - Password: `TestPassword123!`
+  - Role: `admin`
+- **Regular User**:
+  - Username: `testuser`
+  - Email: `testuser@example.com`
+  - Password: `TestPassword123!`
+  - Role: `visitor`
+
+## Test Coverage
+
+### Login/Logout Tests (`auth-login-logout.spec.ts`)
+1. **Regular User Login**
+   - Login with username
+   - Login with email
+   - Redirect to home page after login
+   - Token and user data storage
+
+2. **Admin User Login**
+   - Login with username
+   - Login with email
+   - Redirect to admin dashboard after login
+   - Admin role verification
+
+3. **Login Error Handling**
+   - Invalid credentials
+   - Empty fields validation
+   - Error message display
+
+4. **Logout Functionality**
+   - Regular user logout and session clearing
+   - Admin user logout and session clearing
+   - Protected route access prevention after logout
+   - Session persistence verification
+
+5. **Session Management**
+   - Session persistence across page navigation
+   - Concurrent logout from multiple tabs
+
 ## CI/CD
 
-Tests run automatically in GitHub Actions on every push and pull request.
+Tests run automatically in GitHub Actions on every push and pull request. The CI pipeline includes:
+- **Setup Job**: Validates database and API server setup
+- **Registration Test Job**: Runs registration API unit tests and E2E tests
+- **Login/Logout Test Job**: Runs comprehensive login and logout E2E tests
+- **General E2E Test Job**: Runs other E2E tests (homepage, exhibitions, etc.)
+
+All test jobs run in parallel for faster CI execution.
 

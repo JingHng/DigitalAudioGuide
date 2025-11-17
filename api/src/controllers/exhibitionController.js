@@ -2,7 +2,7 @@
 const { PrismaClient } = require('../../generated/prisma');
 const prisma = new PrismaClient();
 
-// const { logAuditAction } = require("./auditLogsController");
+const { logAuditAction } = require("./auditLogsController");
 
 /**
  * @route   GET /api/exhibitions

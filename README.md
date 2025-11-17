@@ -1,4 +1,8 @@
+Here is a well-formatted version of your README.md file with proper markdown usage and code block formatting for commands and config files:
+
+```markdown
 [![Open in Codespaces](https://classroom.github.com/assets/launch-codespace-2972f46106e565e64193e422d61a12cf1da4916b45550586e14ef0a7c637dd04.svg)](https://classroom.github.com/open-in-codespaces?assignment_repo_id=21376267)
+
 # CI/CD Demo Application
 
 A full-stack task management application with user authentication, task assignment, and user management features. Built with React, Node.js, Express, Prisma, and PostgreSQL.
@@ -36,87 +40,104 @@ A full-stack task management application with user authentication, task assignme
 - PostgreSQL database
 - Git
 
-Installation
+### Installation
 
 1. **Clone the repository**
-   bash
-   git clone <repository-url>
-   cd ci-cd-demo
-   
+
+```
+git clone <repository-url>
+cd ci-cd-demo
+```
 
 2. **Set up the database**
-   bash
-   # Create a PostgreSQL database
-   # Update the DATABASE_URL in ci-cd-demo/api/.env
-   
+
+```
+# Create a PostgreSQL database
+# Update the DATABASE_URL in ci-cd-demo/api/.env
+```
 
 3. **Install API dependencies**
-   bash
-   cd api
-   npm install
-   
+
+```
+cd api
+npm install
+```
 
 4. **Install Web dependencies**
-   bash
-   cd ../web
-   npm install
-   
+
+```
+cd ../web
+npm install
+```
+
 5. **Set up database schema**
-   bash
-   cd ../api
-   npx prisma migrate dev
-   npx prisma db seed
-   
+
+```
+cd ../api
+npx prisma migrate dev
+npx prisma db seed
+```
 
 6. **Start the applications**
-   
-   Terminal 1 (API):
-   bash
-   cd api
-   npm run dev
-   
-   Terminal 2 (Web):
-   bash
-   cd web
-   npm run dev
+
+Terminal 1 (API):
+
+```
+cd api
+npm run dev
+```
+
+Terminal 2 (Web):
+
+```
+cd web
+npm run dev
+```
 
 7. **Access the application**
-   - Frontend: http://localhost:5173
-   - API: http://localhost:5175
+
+- Frontend: http://localhost:5173
+- API: http://localhost:5175
 
 ## Default Users
 
 After seeding the database, you can log in with:
-- **Admin**: admin@example.com
-- **Regular User**: user@example.com
+- **Admin**: [admin@example.com](mailto:admin@example.com)
+- **Regular User**: [user@example.com](mailto:user@example.com)
 
 ## Testing
 
 ### E2E Testing with Playwright
 
 1. **Install Playwright browsers**
-   bash
-   cd web
-   npx playwright install
-   
+
+```
+cd web
+npx playwright install
+```
+
 2. **Run tests**
-   bash
-   # Run all tests
-   npm run e2e
-   
-   # Run tests in headed mode (visible browser)
-   npx playwright test --headed
-   
-   # Run specific test file
-   npx playwright test tests/e2e/auth.spec.ts
-   
-   # Run tests in debug mode
-   npx playwright test --debug
-   
+
+```
+# Run all tests
+npm run e2e
+
+# Run tests in headed mode (visible browser)
+npx playwright test --headed
+
+# Run specific test file
+npx playwright test tests/e2e/auth.spec.ts
+
+# Run tests in debug mode
+npx playwright test --debug
+```
+
 3. **View test reports**
-   bash
-   npm run e2e:report
-   
+
+```
+npm run e2e:report
+```
+
 ### Test Coverage
 
 Our test suite covers:
@@ -187,34 +208,31 @@ The project includes a comprehensive GitHub Actions workflow (`.github/workflows
 ## Development
 
 ### Project Structure
-```
+
 ci-cd-demo/
-├── api/                 # Backend application
-│   ├── src/            # Source code
-│   ├── prisma/         # Database schema and migrations
+├── api/            # Backend application
+│   ├── src/        # Source code
+│   ├── prisma/     # Database schema and migrations
 │   └── package.json
-├── web/                # Frontend application
-│   ├── src/            # React components and pages
-│   ├── tests/e2e/      # Playwright tests
+├── web/            # Frontend application
+│   ├── src/        # React components and pages
+│   ├── tests/e2e/  # Playwright tests
 │   └── package.json
-└── .github/workflows/   # CI/CD pipeline
-```
+└── .github/workflows/ # CI/CD pipeline
 
 ### Environment Variables
 
 #### API (.env)
-```env
+
 DATABASE_URL="postgresql://user:password@localhost:5432/dbname"
 JWT_SECRET="your-secret-key"
 JWT_REFRESH_SECRET="your-refresh-secret"
 NODE_ENV="development"
 PORT=5175
-```
 
 #### Web (.env.development)
-```env
+
 VITE_API_TARGET="http://localhost:5175"
-```
 
 ### Key Features Implementation
 
