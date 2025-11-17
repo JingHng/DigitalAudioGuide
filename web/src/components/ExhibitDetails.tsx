@@ -98,7 +98,10 @@ const ExhibitDetails: React.FC = () => {
     apiClient.get(`/exhibits/${id}`)
       .then(res => {
         const data: Exhibit = res.data;
-        setExhibit(data);
+                console.log('📡 API Response for exhibit:', id);
+        console.log('🎵 Audio array:', data.audio);
+        console.log('🎵 Audio count:', data.audio?.length || 0);
+        setExhibit(data);
         const firstAvailableAudio = data.audio.find(a => a.fileUrl);
         if (firstAvailableAudio) {
           console.log('Setting initial audio:', firstAvailableAudio.title, firstAvailableAudio.audioId);
@@ -110,32 +113,34 @@ const ExhibitDetails: React.FC = () => {
       .finally(() => setLoading(false));
   }, [id]);
 
-  useEffect(() => {
-    console.log('Audio selection changed:', { selectedAudioId, exhibit: exhibit?.title });
-    if (!exhibit || !selectedAudioId) {
-        console.log('No exhibit or audio ID, clearing current audio');
-        setCurrentAudio(null);
-        return;
-    };
-    const newAudio = exhibit.audio.find(a => a.audioId.toString() === selectedAudioId);
-    console.log('Found audio:', newAudio?.title, 'with subtitles:', newAudio?.subtitles?.length);
-    setCurrentAudio(newAudio || null);
-    setIsPlaying(false);
-    setCurrentTime(0);
-    setActiveWordIndex(-1);
-    setDuration(0);
-    if(audioRef.current && newAudio?.fileUrl) {
-        const audioSrc = `${BACKEND_URL}${newAudio.fileUrl}`;
-        console.log('Setting audio source:', audioSrc);
-        audioRef.current.src = audioSrc;
-        audioRef.current.load();
-    } else if (audioRef.current) {
-        console.log('No audio file URL, clearing source');
-        audioRef.current.removeAttribute('src');
-    }
-  }, [selectedAudioId, exhibit]);
-
-  useEffect(() => {
+  useEffect(() => {
+    console.log('Audio selection changed:', { selectedAudioId, exhibit: exhibit?.title });
+    console.log('BACKEND_URL value:', BACKEND_URL);
+    if (!exhibit || !selectedAudioId) {
+        console.log('No exhibit or audio ID, clearing current audio');
+        setCurrentAudio(null);
+        return;
+    };
+    const newAudio = exhibit.audio.find(a => a.audioId.toString() === selectedAudioId);
+    console.log('Found audio:', newAudio?.title, 'with subtitles:', newAudio?.subtitles?.length);
+    console.log('Audio fileUrl from database:', newAudio?.fileUrl);
+    setCurrentAudio(newAudio || null);
+    setIsPlaying(false);
+    setCurrentTime(0);
+    setActiveWordIndex(-1);
+    setDuration(0);
+    if(audioRef.current && newAudio?.fileUrl) {
+        // Ensure fileUrl starts with a slash for proper URL construction
+        const cleanFileUrl = newAudio.fileUrl.startsWith('/') ? newAudio.fileUrl : `/${newAudio.fileUrl}`;
+        const audioSrc = `${BACKEND_URL}${cleanFileUrl}`;
+        console.log('Final audio source URL:', audioSrc);
+        audioRef.current.src = audioSrc;
+        audioRef.current.load();
+    } else if (audioRef.current) {
+        console.log('No audio file URL, clearing source');
+        audioRef.current.removeAttribute('src');
+    }
+  }, [selectedAudioId, exhibit]);  useEffect(() => {
     if (!userHasScrolled && activeWordRef.current) {
       activeWordRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
@@ -270,14 +275,9 @@ const ExhibitDetails: React.FC = () => {
   if (error) return <div className="page-status error">{error}</div>;
   if (!exhibit) return <div className="page-status">Exhibit not found.</div>;
 
-  const availableAudio = exhibit.audio.filter(a => 
-    a.fileUrl && 
-    !a.title?.includes('Audio Guide') && 
-    !a.fileUrl?.startsWith('/audio/')
-  );
-  const hasAudioContent = availableAudio.length > 0;
-  
-  // Group audio by language for display (kept for potential future use, but availableLanguages removed)
+ const availableAudio = exhibit.audio.filter(a => a.fileUrl);
+
+  const hasAudioContent = availableAudio.length > 0;  // Group audio by language for display (kept for potential future use, but availableLanguages removed)
 //   const audioByLanguage = availableAudio.reduce((acc, audio) => {
 //     const langId = audio.language?.languageId || 'unknown';
 //     if (!acc[langId]) {
@@ -296,10 +296,19 @@ const ExhibitDetails: React.FC = () => {
     <div className="exhibit-detail-container">
       <audio
         ref={audioRef}
-        onLoadedMetadata={() => setDuration(audioRef.current?.duration || 0)}
+                onLoadedMetadata={() => {
+          console.log('Audio metadata loaded successfully');
+          setDuration(audioRef.current?.duration || 0);
+        }}
         onTimeUpdate={handleTimeUpdate}
         onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
+                onPause={() => setIsPlaying(false)}
+        onError={(e) => {
+          console.error('Audio loading error:', e);
+          console.error('Audio error details:', audioRef.current?.error);
+        }}
+        onLoadStart={() => console.log('Audio load started')}
+        onCanPlay={() => console.log('Audio can start playing')}
         onEnded={async () => {
           setIsPlaying(false);
           // CHANGE 5: Remove audio logging on end
