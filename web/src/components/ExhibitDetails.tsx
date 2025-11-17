@@ -131,7 +131,11 @@ const ExhibitDetails: React.FC = () => {
     setDuration(0);
     if(audioRef.current && newAudio?.fileUrl) {
         // Ensure fileUrl starts with a slash for proper URL construction
-        const cleanFileUrl = newAudio.fileUrl.startsWith('/') ? newAudio.fileUrl : `/${newAudio.fileUrl}`;
+        let cleanFileUrl = newAudio.fileUrl.startsWith('/') ? newAudio.fileUrl : `/${newAudio.fileUrl}`;
+        // Convert /audios/ paths to /public/audios/ for correct static file serving
+        if (cleanFileUrl.startsWith('/audios/')) {
+          cleanFileUrl = cleanFileUrl.replace('/audios/', '/public/audios/');
+        }
         const audioSrc = `${BACKEND_URL}${cleanFileUrl}`;
         console.log('Final audio source URL:', audioSrc);
         audioRef.current.src = audioSrc;

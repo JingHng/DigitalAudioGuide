@@ -29,7 +29,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
-app.use('/public', express.static(path.join(__dirname, 'public')));
+app.use('/public', express.static(path.join(__dirname, 'src', 'public')));
 
 const frontendBuildPath = path.join(__dirname, '..', 'web', 'dist');
 app.use(express.static(frontendBuildPath));

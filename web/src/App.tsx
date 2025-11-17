@@ -92,7 +92,7 @@ function App() {
             <Route path="/reviews" element={<ReviewPage />} />
             <Route path="/exhibits/:exhibitId/reviews" element={<ReviewPage />} />
             <Route path="/dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} /> */}
-            <Route path="/user-badge" element={<UserBadgePage />} />
+            {/* <Route path="/user-badge" element={<UserBadgePage />} /> */}
             {/* Catch-all route is kept */}
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
