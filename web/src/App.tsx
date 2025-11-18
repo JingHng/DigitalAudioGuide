@@ -12,7 +12,7 @@ import ForgotPasswordPage from "./components/ForgotPasswordPage";
 import ResetPasswordPage from "./components/ResetPasswordPage";
 import EmailVerificationPage from "./routes/EmailVerificationPage";
 // import UserDashboard from "./components/UserDashboard";
-// import ScanPage from "./components/ScanPage";
+import ScanPage from "./components/ScanPage.tsx";
 
 // --- MODIFIED/NEW IMPORTS FOR EXHIBITIONS --- (KEEP ALL)
 import AllExhibitions from "./components/ExhibitionsPage.tsx"; 
@@ -87,11 +87,13 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/verify-email" element={<EmailVerificationPage />} />
-            {/* <Route path="/unauthorized" element={<UnauthorizedPage />} />
+            { 
+            // <Route path="/unauthorized" element={<UnauthorizedPage />} />
             <Route path="/scan" element={<ScanPage />} />
-            <Route path="/reviews" element={<ReviewPage />} />
-            <Route path="/exhibits/:exhibitId/reviews" element={<ReviewPage />} />
-            <Route path="/dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} /> */}
+            // <Route path="/reviews" element={<ReviewPage />} />
+            // <Route path="/exhibits/:exhibitId/reviews" element={<ReviewPage />} />
+            // <Route path="/dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} /> 
+            }
             {/* <Route path="/user-badge" element={<UserBadgePage />} /> */}
             {/* Catch-all route is kept */}
             <Route path="*" element={<NotFoundPage />} />
