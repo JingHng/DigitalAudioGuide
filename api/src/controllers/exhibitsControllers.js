@@ -1,4 +1,4 @@
-const { PrismaClient } = require("./../../generated/prisma"); 
+const { PrismaClient } = require("../../generated/prisma"); 
 const googleTTS = require("google-tts-api");
 const path = require("path");
 const fs = require("fs");
@@ -414,7 +414,7 @@ exports.generateExhibitTTS = async (req, res) => {
     const audioDir = path.join(__dirname, "..", "public", "audios");
     fs.mkdirSync(audioDir, { recursive: true });
     fs.writeFileSync(path.join(audioDir, filename), audioBuffer, "binary");
-    const audioUrl = `/audios/${filename}`;
+    const audioUrl = `/public/audios/${filename}`;
 
     const newAudio = await prisma.audio.create({
       data: {

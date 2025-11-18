@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import apiClient from "../utils/apiClient";
 import "../css/RegisterPage.css";
@@ -284,12 +284,6 @@ const RegisterPage: React.FC = () => {
             {loading ? "Creating Account..." : "Create Account"}
           </button>
         </form>
-
-        <div className="alternative-actions">
-          <p>
-            Already have an account? <Link to="/login">Sign in here</Link>
-          </p>
-        </div>
       </div>
     </div>
   );

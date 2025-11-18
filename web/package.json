@@ -5,21 +5,23 @@
   "type": "module",
   "scripts": {
     "dev": "vite --mode development",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview --port 5173",
-    "e2e": "dotenv -e .env.test -- playwright test --workers=5",
+    "e2e": "dotenv -e .env.test -- playwright test tests/e2e/auth-login-logout.spec.ts tests/e2e/admin-login-logout.spec.ts --workers=3",
     "e2e:dev": "dotenv -e .env.development -- playwright test",
     "e2e:report": "playwright show-report"
   },
   "dependencies": {
     "axios": "^1.13.2",
     "dotenv": "^17.2.3",
+    "html5-qrcode": "^2.3.8",
     "lucide-react": "^0.553.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-hot-toast": "^2.6.0",
     "react-router-dom": "^7.9.3",
+    "recharts": "^2.15.4",
     "swiper": "^12.0.3"
   },
   "devDependencies": {

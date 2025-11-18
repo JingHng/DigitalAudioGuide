@@ -7,10 +7,13 @@ import react from '@vitejs/plugin-react'
 export default defineConfig(({ mode }) => {
   // read VITE_* from .env files (optional)
   const env = loadEnv(mode, process.cwd(), "");
-  const target = env.VITE_API_TARGET || "http://localhost:5175";
+  const target = env.VITE_API_TARGET || "http://localhost:3000";
 
   return {
     plugins: [react()],
+    resolve: {
+      extensions: ['.tsx', '.ts', '.jsx', '.js', '.json'],
+    },
     server: {
         host: '0.0.0.0',  // Listen on all network interfaces (needed for Docker)
         port: 5173,

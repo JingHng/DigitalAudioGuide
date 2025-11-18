@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowRight, Loader2 } from 'lucide-react';
-import axios from 'axios';
+import apiClient from '../utils/apiClient';
 
 const BACKEND_URL = import.meta.env.VITE_API_TARGET || '';
 const DEFAULT_IMAGE_URL = `${BACKEND_URL}/public/images/Exhibit.jpg`;
@@ -50,13 +50,19 @@ const ExhibitionDetailsPage: React.FC = () => {
         return;
     }
 
-    axios.get(`${BACKEND_URL}/api/exhibitions/${id}`)
+    // Use apiClient which handles authentication headers
+    apiClient.get(`/exhibitions/${id}`)
       .then((res) => {
         setExhibition(res.data);
       })
-      .catch((err) => {
-        console.error(`Error fetching exhibition ${id}:`, err);
-        setError("Could not load the collection. It may not exist or there was a server error.");
+      .catch((err: any) => {
+        // Only log error if it's not a 401 (which might be expected for public endpoints)
+        if (err.response?.status !== 401) {
+          console.error(`Error fetching exhibition ${id}:`, err);
+          setError("Could not load the collection. It may not exist or there was a server error.");
+        } else {
+          setError("Could not load the collection. Please check your authentication.");
+        }
       })
       .finally(() => {
         setLoading(false);

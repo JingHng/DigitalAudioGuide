@@ -1,5 +1,5 @@
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
-import { useAuth } from "../contexts/useAuth";
+import { useAuth } from "../contexts/AuthContext";
 import { useState, useEffect } from "react";
 
 export function Header() {
@@ -42,7 +42,7 @@ export function Header() {
             <div className="text-lg font-bold text-slate-900">CI/CD Demo</div>
             {isAuthenticated && user && (
               <span className="hidden sm:inline-block text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded">
-                {user.email}
+                {user.username}
               </span>
             )}
           </div>
@@ -111,7 +111,7 @@ export function Header() {
               <>
                 {user && (
                   <div className="px-3 py-2 text-xs text-slate-500 bg-slate-50 rounded">
-                    {user.email}
+                    {user.username}
                   </div>
                 )}
                 <NavLink 

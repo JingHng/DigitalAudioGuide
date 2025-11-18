@@ -1,25 +1,79 @@
-import { Navigate } from 'react-router-dom';
-import { useAuth } from '../contexts/useAuth';
-import type { ReactNode } from 'react';
+// components/ProtectedRoute.tsx
+import React from "react";
+import { Navigate, useLocation } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
-export function ProtectedRoute({ children }: { children: ReactNode }) {
-  const { isAuthenticated, isLoading } = useAuth();
+interface ProtectedRouteProps {
+  children: React.ReactNode;
+  requiredRoles?: string[];
+  requiredPermissions?: string[];
+  requireAuth?: boolean;
+  fallbackPath?: string;
+}
 
-  // Don't redirect while checking auth state
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  children,
+  requiredRoles = [],
+  requiredPermissions = [],
+  requireAuth = true,
+  fallbackPath = "/login",
+}) => {
+  const { user, isAuthenticated, hasRole, hasPermission, isLoading } =
+    useAuth();
+  const location = useLocation();
+
+  // Show loading while checking auth status
   if (isLoading) {
-    // Render a loading indicator but preserve layout
     return (
-      <>
-        <div className="flex items-center justify-center flex-1">
-          <div className="text-slate-600">Loading...</div>
-        </div>
-      </>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-lg">Loading...</div>
+      </div>
     );
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+  // Check if authentication is required and user is not authenticated
+  if (requireAuth && !isAuthenticated) {
+    return <Navigate to={fallbackPath} state={{ from: location }} replace />;
+  }
+
+  // Check if user has required roles
+  if (requiredRoles.length > 0) {
+    const hasRequiredRole = requiredRoles.some((role) => hasRole(role));
+    if (!hasRequiredRole) {
+      return <Navigate to="/unauthorized" replace />;
+    }
+  }
+
+  // Check if user has required permissions
+  if (requiredPermissions.length > 0) {
+    const hasRequiredPermission = requiredPermissions.some((permission) =>
+      hasPermission(permission)
+    );
+    if (!hasRequiredPermission) {
+      return <Navigate to="/unauthorized" replace />;
+    }
   }
 
   return <>{children}</>;
-}
+};
+
+// Specific route components for common use cases
+export const AdminRoute: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => (
+  <ProtectedRoute requiredRoles={["admin", "super admin"]}>
+    {children}
+  </ProtectedRoute>
+);
+
+export const SuperAdminRoute: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => (
+  <ProtectedRoute requiredRoles={["super admin"]}>{children}</ProtectedRoute>
+);
+
+export const VisitorRoute: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => <ProtectedRoute requiredRoles={["visitor"]}>{children}</ProtectedRoute>;
+
+export default ProtectedRoute;

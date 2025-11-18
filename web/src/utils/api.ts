@@ -2,7 +2,7 @@
 export async function authFetch(url: string, options: RequestInit = {}): Promise<Response> {
   const auth = localStorage.getItem('auth');
   if (!auth) {
-    window.location.href = '/login';
+    localStorage.removeItem('auth');
     throw new Error('Not authenticated');
   }
 
@@ -29,7 +29,6 @@ export async function authFetch(url: string, options: RequestInit = {}): Promise
       if (!refreshResponse.ok) {
         // Refresh failed, logout
         localStorage.removeItem('auth');
-        window.location.href = '/login';
         throw new Error('Session expired');
       }
 
