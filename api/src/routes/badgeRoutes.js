@@ -13,7 +13,7 @@ router.get('/allBadges', badgeController.getAllBadges);
 router.get('/userBadges', jwtMiddleware.verifyToken, badgeController.getUserBadges);
 
 // Assign badges to user
-router.post('/assignBadges', jwtMiddleware.verifyToken, badgeController.assignBadgesToUser);
+router.post('/assignBadges/:exhibitId', jwtMiddleware.verifyToken, badgeController.assignBadgesToUser);
 
 
 // // --- ADMIN-ONLY ROUTES ---

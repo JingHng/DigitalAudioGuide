@@ -53,7 +53,7 @@ exports.assignBadgesToUser = async (req, res) => {
   try {
     // Use a consistent field for user ID (align with getUserBadges)
     const userId = req.user?.userId;
-    const { exhibitId } = req.body;
+    const { exhibitId } = req.params;
 
     if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
@@ -71,7 +71,6 @@ exports.assignBadgesToUser = async (req, res) => {
         .json({ error: 'Badge not found for this exhibit' });
     }
 
-    // NOTE: With Prisma your primary key is likely "badgeId", not "id"
     const badgeId = badge.badgeId;
 
     // 2. Optionally avoid duplicates: check if the user already has this badge
@@ -80,6 +79,7 @@ exports.assignBadgesToUser = async (req, res) => {
       return res.json({
         message: 'Badge already claimed',
         badgeId,
+        image_url: badge.imageUrl,
       });
     }
 
@@ -89,6 +89,7 @@ exports.assignBadgesToUser = async (req, res) => {
     return res.json({
       message: 'Badge claimed successfully',
       badgeId,
+      image_url: badge.imageUrl,
     });
   } catch (error) {
     console.error('Error claiming badge:', error);

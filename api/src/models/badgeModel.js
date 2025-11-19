@@ -88,7 +88,6 @@ class BadgeModel {
       data: {
         userId,
         badgeId,
-        // createdAt: new Date(), // Uncomment if you do NOT use @default(now())
       },
     });
   }
