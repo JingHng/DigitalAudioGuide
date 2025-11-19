@@ -71,7 +71,7 @@ const userBadgePage = () => {
               return (
                 <div key={badge.badgeId} className="badge-wrapper">
                   <img
-                    src={`${BACKEND_URL}public${badge.imageUrl}`}
+                    src={`${BACKEND_URL}/public${badge.imageUrl}`}
                     alt={badge.name}
                     className={`badge-img ${owned ? "" : "grayscale"}`}
                     onClick={() => openModal(index)}
@@ -94,7 +94,7 @@ const userBadgePage = () => {
           >
             <button className="modal-close" onClick={closeModal}>×</button>
             <img
-              src={`${BACKEND_URL}public${allBadges[selectedIndex].imageUrl}`}
+              src={`${BACKEND_URL}/public${allBadges[selectedIndex].imageUrl}`}
               alt={allBadges[selectedIndex].name}
               className={`modal-img ${isOwned(allBadges[selectedIndex].badgeId) ? "" : "grayscale"}`}
             />

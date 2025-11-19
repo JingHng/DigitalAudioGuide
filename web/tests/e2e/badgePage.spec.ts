@@ -37,7 +37,7 @@ test.describe('User Badge Page Functionality & API Check', () => {
     await page.goto('/login');
 
     await page.fill(
-      'input[placeholder="Enter your username or email"]',
+      'input[placeholder="Enter your username"]',
       TEST_USER.username
     );
 
@@ -46,9 +46,9 @@ test.describe('User Badge Page Functionality & API Check', () => {
       TEST_USER.password
     );
 
-    await page.click('button:has-text("Sign In")');
+    await page.click('button:has-text("Login")');
 
-    await page.waitForURL('http://localhost:5173/', { timeout: 15000 });
+    await page.waitForURL('http://localhost:5173/admin/dashboard', { timeout: 15*1000 });
 
     await page.goto('/user-badge');
 
@@ -140,16 +140,14 @@ test.describe('User Badge Page Functionality & API Check', () => {
   // -----------------------------------
   // Test 3: Badge Modal – open & navigate
   // -----------------------------------
-  test('should open badge modal and navigate between badges', async ({
-    page,
-  }) => {
-    const firstBadge = page.locator('.badge-wrapper .badge-img').first();
+  test('should open badge modal and navigate between badges', async ({page}) => {
 
-    if (!(await firstBadge.isVisible())) {
-      console.log('No badges available to open modal');
-      test.skip();
-      return;
-    }
+    await page.waitForSelector('.badge-wrapper .badge-img', {
+      state: 'visible',
+      timeout: 15000,
+    });
+
+    const firstBadge = page.locator('.badge-wrapper .badge-img').first();
 
     await firstBadge.click();
 
@@ -181,13 +179,11 @@ test.describe('User Badge Page Functionality & API Check', () => {
   // Test 4: Modal close actions
   // -----------------------------------
   test('should close modal via close button or overlay', async ({ page }) => {
-    const firstBadge = page.locator('.badge-wrapper .badge-img').first();
 
-    if (!(await firstBadge.isVisible())) {
-      console.log('No badges available, skipping modal close test');
-      test.skip();
-      return;
-    }
+    await page.waitForSelector('.badge-wrapper .badge-img', {
+      state: 'visible',
+      timeout: 15000,
+    }); const firstBadge = page.locator('.badge-wrapper .badge-img').first();
 
     await firstBadge.click();
 
