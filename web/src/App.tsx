@@ -13,6 +13,7 @@ import ResetPasswordPage from "./components/ResetPasswordPage";
 import EmailVerificationPage from "./routes/EmailVerificationPage";
 // import UserDashboard from "./components/UserDashboard";
 import ScanPage from "./components/ScanPage.tsx";
+import UserBadgePage from "./routes/userBadgePage.tsx";
 
 // --- MODIFIED/NEW IMPORTS FOR EXHIBITIONS --- (KEEP ALL)
 import AllExhibitions from "./components/ExhibitionsPage.tsx"; 
@@ -94,7 +95,7 @@ function App() {
             // <Route path="/exhibits/:exhibitId/reviews" element={<ReviewPage />} />
             // <Route path="/dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} /> 
             }
-            {/* <Route path="/user-badge" element={<UserBadgePage />} /> */}
+            {<Route path="/user-badge" element={<UserBadgePage />} />}
             {/* Catch-all route is kept */}
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
