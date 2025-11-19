@@ -568,6 +568,8 @@ async function seed() {
     // Generate hash for admin123 password
     const adminHash = await bcrypt.hash('admin123', 12);
     const moderatorHash = await bcrypt.hash('moderator123', 12);
+    // Generate hash for User123$% password (used for all generated users)
+    const userHash = await bcrypt.hash('User123$%', 12);
     
     await client.query(`
       INSERT INTO "user" (username, email, password_hash, email_verified, status_id, last_login_at) VALUES
@@ -656,9 +658,7 @@ async function seed() {
           )} days'`
         : "NULL";
 
-      users.push(
-        `('${username}', '${email}', '$2b$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', ${emailVerified}, ${statusId}, ${lastLoginAt}, ${createdAt})`
-      );
+      users.push(`('${username}', '${email}', '${userHash}', ${emailVerified}, ${statusId}, ${lastLoginAt}, ${createdAt})`);
       usernames.push(username);
       emails.push(email);
     }
