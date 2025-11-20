@@ -229,27 +229,45 @@ const ExhibitDetails: React.FC = () => {
   // Call backend: /badges/assignBadges
   const assignBadge = async (exhibitId: string | undefined) => {
     if (!exhibitId) return;
+
     try {
       const res = await apiClient.post(`/badges/assignBadges/${exhibitId}`);
 
-      // Extract image_url from backend response
-      const imageUrlFromApi: string | undefined = res.data?.image_url;
+      const { message, image_url } = res.data || {};
 
-      if (imageUrlFromApi) {
-        // If backend returns a relative path, prefix with BACKEND_URL
-        const fullUrl = imageUrlFromApi.startsWith("http")
-          ? imageUrlFromApi
-          : `${BACKEND_URL}/public${imageUrlFromApi}`;
+      // Have already got this badge, do not show modal
+      if (message === "Badge already claimed") {
+        console.log("User already has this badge, not showing modal.");
+        setBadgeAssigned(true);
+        setShowBadgeModal(false);
+        setBadgeImageUrl(undefined);
+        return;
+      }
+
+      // Earned new badge, show modal
+      if (image_url) {
+        const fullUrl = image_url.startsWith("http")
+          ? image_url
+          : `${BACKEND_URL}/public${image_url}`;
 
         setBadgeImageUrl(fullUrl);
       } else {
         setBadgeImageUrl(undefined);
       }
 
-      // Show modal if successful
       setShowBadgeModal(true);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to assign badge:", error);
+
+      const backendMsg = error?.response?.data?.message;
+      if (backendMsg === "Badge already claimed") {
+        console.log("User already has this badge (from error response), not showing modal.");
+        setBadgeAssigned(true);
+        setShowBadgeModal(false);
+        setBadgeImageUrl(undefined);
+        return;
+      }
+
       setBadgeAssigned(false);
     }
   };
