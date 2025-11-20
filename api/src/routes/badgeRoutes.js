@@ -12,6 +12,9 @@ router.get('/allBadges', badgeController.getAllBadges);
 // Get badges of the logged-in user
 router.get('/userBadges', jwtMiddleware.verifyToken, badgeController.getUserBadges);
 
+// Assign badges to user
+router.post('/assignBadges/:exhibitId', jwtMiddleware.verifyToken, badgeController.assignBadgesToUser);
+
 
 // // --- ADMIN-ONLY ROUTES ---
 // // Route to update an existing badge
