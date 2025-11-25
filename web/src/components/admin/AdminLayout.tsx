@@ -6,8 +6,7 @@ import {
   Sun, 
   Moon, 
   ChevronDown,
-  ChevronRight,
-  Globe
+  ChevronRight
 } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -38,8 +37,6 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
     return saved ? JSON.parse(saved) : false;
   });
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
-  const [currentLanguage, setCurrentLanguage] = useState("English");
   
   const toggleSidebar = () => {
     setSidebarCollapsed(!sidebarCollapsed);
@@ -54,66 +51,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
     document.documentElement.classList.toggle('dark-mode', newDarkMode);
   };
 
-  const toggleLanguageDropdown = () => {
-    setIsLanguageDropdownOpen(!isLanguageDropdownOpen);
-    setUserMenuOpen(false); // Close user dropdown
-  };
 
-  const translatePage = async (targetLang: string, langName: string) => {
-    try {
-      setCurrentLanguage(langName);
-      setIsLanguageDropdownOpen(false);
-      localStorage.setItem("selectedLanguage", targetLang);
-      if (targetLang === "en") {
-        const newHash = `#googtrans(auto|en)`;
-        if (window.location.hash === newHash) {
-          return;
-        }
-        window.location.hash = newHash;
-        setTimeout(() => {
-          window.location.reload();
-        }, 100);
-        return;
-      }
-      const newHash = `#googtrans(en|${targetLang})`;
-      if (window.location.hash === newHash) {
-        return;
-      }
-      window.location.hash = newHash;
-      setTimeout(() => {
-        window.location.reload();
-      }, 100);
-    } catch (error) {
-      console.error("Translation error:", error);
-      console.error("Error details:", {
-        message: error instanceof Error ? error.message : 'Unknown error',
-        stack: error instanceof Error ? error.stack : 'No stack trace',
-        targetLang,
-        langName,
-        currentHash: window.location.hash,
-        currentUrl: window.location.href
-      });
-      const hash =
-        targetLang === "en"
-          ? `#googtrans(auto|en)`
-          : `#googtrans(en|${targetLang})`;
-      localStorage.setItem("selectedLanguage", targetLang);
-      window.location.href = `${window.location.href.split("#")[0]}${hash}`;
-    }
-  };
-
-  const languages = [
-    { code: "en", name: "English", flag: "🇺🇸" },
-    { code: "zh-CN", name: "简体中文", flag: "🇨🇳" },
-    { code: "zh-TW", name: "繁體中文", flag: "🇹🇼" },
-    { code: "ja", name: "日本語", flag: "🇯🇵" },
-    { code: "ko", name: "한국어", flag: "🇰🇷" },
-    { code: "th", name: "ไทย", flag: "🇹🇭" },
-    { code: "vi", name: "Tiếng Việt", flag: "🇻🇳" },
-    { code: "ms", name: "Bahasa Melayu", flag: "🇲🇾" },
-    { code: "id", name: "Bahasa Indonesia", flag: "🇮🇩" },
-  ];
-  
   const handleLogout = () => {
     logout();
     window.location.href = '/login';
@@ -137,69 +75,11 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
     document.documentElement.classList.toggle('dark-mode', darkMode);
   }, []);
 
-  useEffect(() => {
-    const initializeLanguage = () => {
-      const hash = window.location.hash;
-      const storedLang = localStorage.getItem("selectedLanguage");
-
-      if (hash.includes("googtrans")) {
-        // Handle English (auto|en) pattern
-        const englishMatch = hash.match(/googtrans\(auto\|en\)/);
-        if (englishMatch) {
-          setCurrentLanguage("English");
-          localStorage.setItem("selectedLanguage", "en");
-          return;
-        }
-
-        // Handle other languages (en|lang) pattern
-        const langMatch = hash.match(/googtrans\(en\|(.+?)\)/);
-        if (langMatch) {
-          const langCode = langMatch[1];
-          const language = languages.find((lang) => lang.code === langCode);
-          if (language) {
-            setCurrentLanguage(language.name);
-            localStorage.setItem("selectedLanguage", langCode);
-          }
-        }
-      } else if (storedLang) {
-        // Restore language from localStorage when no hash present
-        const language = languages.find((lang) => lang.code === storedLang);
-        if (language) {
-          setCurrentLanguage(language.name);
-        } else {
-          setCurrentLanguage("English");
-        }
-      } else {
-        // Default to English if nothing stored
-        setCurrentLanguage("English");
-      }
-    };
-    initializeLanguage();
-    const handleHashChange = () => {
-      initializeLanguage();
-    };
-    window.addEventListener("hashchange", handleHashChange);
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        setTimeout(initializeLanguage, 100);
-      }
-    };
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () => {
-      window.removeEventListener("hashchange", handleHashChange);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, []);
 
   // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element;
-      
-      // Check if click is outside language switcher
-      if (!target.closest('.admin-language-switcher')) {
-        setIsLanguageDropdownOpen(false);
-      }
       
       // Check if click is outside user dropdown
       if (!target.closest('.admin-user-dropdown')) {
@@ -241,36 +121,6 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
           </nav>
           
           <div className="admin-page-actions">
-            {/* Language Switcher */}
-            <div className="admin-language-switcher">
-              <button
-                className="admin-action-btn"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleLanguageDropdown();
-                }}
-                aria-label="Select language"
-              >
-                <Globe size={18} />
-              </button>
-              {isLanguageDropdownOpen && (
-                <div className="admin-language-dropdown">
-                  {languages.map((lang) => (
-                    <button
-                      key={lang.code}
-                      className={`admin-language-option ${
-                        currentLanguage === lang.name ? "active" : ""
-                      }`}
-                      onClick={() => translatePage(lang.code, lang.name)}
-                    >
-                      <span className="flag">{lang.flag}</span>
-                      <span className="lang-name">{lang.name}</span>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
             {/* Theme toggle */}
             <button 
               className="admin-action-btn"

@@ -13,8 +13,8 @@ import {
   MicOff,
 } from "lucide-react";
 
-//  import { useAuth } from '../contexts/AuthContext';
-//  import audioLogService from '../services/audioLogService';
+import { useAuth } from '../contexts/AuthContext';
+import audioLogService from '../services/audioLogService';
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, A11y } from "swiper/modules";
@@ -91,8 +91,7 @@ const formatTime = (time: number) => {
 const ExhibitDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
 
-  // Only temporary till admin dashboard is up
-  const user = null; // Forces all user-dependent logic to be skipped // const { user } = useAuth();
+  const { user } = useAuth();
   const [exhibit, setExhibit] = useState<Exhibit | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -200,28 +199,40 @@ const ExhibitDetails: React.FC = () => {
         block: "center",
       });
     }
-  }, [activeWordIndex, userHasScrolled]); // CHANGE: Remove audio logging cleanup
+  }, [activeWordIndex, userHasScrolled]);
 
-  // Cleanup on unmount (audio logging removed for guest access)
+  // Cleanup audio logging when component unmounts or audio changes
   useEffect(() => {
-    return () => {
-      // Audio logging removed for guest access
-      // if (currentPlaybackLogId && user && audioRef.current) {
-      //   const durationListened = Math.round(audioRef.current.currentTime - playbackStartTime);
-      //   audioLogService.endPlayback(currentPlaybackLogId, durationListened)
-      //     .catch((error: any) => console.error('Failed to cleanup audio log:', error));
-      // }
+    // Handle page unload/navigation away
+    const handleBeforeUnload = () => {
+      if (currentPlaybackLogId && user && audioRef.current) {
+        const durationListened = Math.round(audioRef.current.currentTime - playbackStartTime);
+        // Use sendBeacon for page unload to ensure it completes
+        audioLogService.forceEndPlayback(currentPlaybackLogId, durationListened);
+      }
     };
-  }, [currentPlaybackLogId, user, playbackStartTime]); // CHANGE: Remove audio logging state reset
 
-  // Reset logging state when audio changes (logging removed for guest access)
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      if (currentPlaybackLogId && user && audioRef.current) {
+        // End the current playback log if component unmounts
+        const durationListened = Math.round(audioRef.current.currentTime - playbackStartTime);
+        audioLogService.endPlayback(currentPlaybackLogId, durationListened)
+          .catch((error: any) => console.error('Failed to cleanup audio log:', error));
+      }
+    };
+  }, [currentPlaybackLogId, user, playbackStartTime]);
+
+  // Reset logging state when audio track changes
   useEffect(() => {
-    // Audio logging reset removed for guest access
-    // if (currentPlaybackLogId && user && audioRef.current) {
-    //   const durationListened = Math.round(audioRef.current.currentTime - playbackStartTime);
-    //   audioLogService.endPlayback(currentPlaybackLogId, durationListened)
-    //     .catch((error: any) => console.error('Failed to end previous audio log:', error));
-    // }
+    if (currentPlaybackLogId && user && audioRef.current) {
+      // End previous audio log if switching tracks
+      const durationListened = Math.round(audioRef.current.currentTime - playbackStartTime);
+      audioLogService.endPlayback(currentPlaybackLogId, durationListened)
+        .catch((error: any) => console.error('Failed to end previous audio log:', error));
+    }
     setCurrentPlaybackLogId(null);
     setPlaybackStartTime(0);
   }, [currentAudio?.audioId]);
@@ -339,13 +350,32 @@ const ExhibitDetails: React.FC = () => {
     if (!currentAudio?.fileUrl) return;
     const audio = audioRef.current;
     if (!audio) return;
+    
     if (isPlaying) {
-      // Pause audio (Logging removed)
+      // Pause audio and end logging
       audio.pause();
+      if (currentPlaybackLogId && user) {
+        try {
+          const durationListened = Math.round(audio.currentTime - playbackStartTime);
+          await audioLogService.endPlayback(currentPlaybackLogId, durationListened);
+          setCurrentPlaybackLogId(null);
+        } catch (error) {
+          console.error('Failed to log audio pause:', error);
+        }
+      }
     } else {
-      // Start audio (Logging removed)
+      // Start audio and begin logging
       try {
         await audio.play();
+        if (user && currentAudio.audioId) {
+          try {
+            const { logId } = await audioLogService.startPlayback(user.userId, currentAudio.audioId);
+            setCurrentPlaybackLogId(logId);
+            setPlaybackStartTime(audio.currentTime);
+          } catch (error) {
+            console.error('Failed to start audio logging:', error);
+          }
+        }
       } catch (e) {
         console.error("Audio play failed:", e);
         return;
@@ -420,6 +450,16 @@ const ExhibitDetails: React.FC = () => {
           onCanPlay={() => console.log("Audio can start playing")}
           onEnded={async () => {
             setIsPlaying(false);
+            // Log the end of playback when audio finishes naturally
+            if (currentPlaybackLogId && user && audioRef.current) {
+              try {
+                const durationListened = Math.round(audioRef.current.currentTime - playbackStartTime);
+                await audioLogService.endPlayback(currentPlaybackLogId, durationListened);
+                setCurrentPlaybackLogId(null);
+              } catch (error) {
+                console.error('Failed to log audio end:', error);
+              }
+            }
           }}
         />
 

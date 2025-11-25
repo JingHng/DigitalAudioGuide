@@ -6,8 +6,26 @@ import ExhibitForm from './ExhibitForm';
 import ExhibitionForm from './ExhibitionForm';
 import '../css/ManageExhibits.css';
 
-const BACKEND_URL = 'http://localhost:3000';
 const DEFAULT_IMAGE_URL = '/images/Exhibit.jpg';
+
+// Helper function to construct the correct image URL
+const getImageUrl = (fileUrl: string | null): string => {
+  if (!fileUrl) return DEFAULT_IMAGE_URL;
+
+  const cleanedPath = fileUrl.replace(/\\/g, '/');
+  const imagePrefix = '/images/';
+  const pathIndex = cleanedPath.indexOf(imagePrefix);
+
+  if (pathIndex !== -1) {
+    const filename = cleanedPath.substring(pathIndex + imagePrefix.length);
+    // Images are served from /public/images/ on the backend
+    // The backend serves static files from /public (not under /api)
+    // So we need to use the full backend URL for images
+    const backendUrl = import.meta.env.VITE_API_TARGET || 'http://localhost:3000';
+    return `${backendUrl}/public/images/${filename}`;
+  }
+  return DEFAULT_IMAGE_URL;
+};
 
 // --- Type Definitions ---
 interface Status {
@@ -274,7 +292,7 @@ const ManageExhibitions: React.FC = () => {
             <div className="exhibits-list">
               {group.exhibits.length > 0 ? (
                 group.exhibits.map((exhibit) => {
-                  const imageUrl = exhibit.images?.[0]?.fileUrl ? `${BACKEND_URL}${exhibit.images[0].fileUrl}` : DEFAULT_IMAGE_URL;
+                  const imageUrl = getImageUrl(exhibit.images?.[0]?.fileUrl || null);
                   return (
                     <div key={exhibit.exhibitId} className="exhibit-card-manage">
                       <img src={imageUrl} alt={exhibit.title} className="exhibit-card-image" />
