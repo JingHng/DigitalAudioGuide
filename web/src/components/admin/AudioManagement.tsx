@@ -8,8 +8,8 @@ import {
 } from 'lucide-react';
 import '../../css/AudioManagement.css';
 
-// Backend URL for audio files - same as visitor page
-const BACKEND_URL = 'http://localhost:3000';
+// Backend URL for audio files - use environment variable or default (same as visitor page)
+const BACKEND_URL = import.meta.env.VITE_API_TARGET || 'http://localhost:3000';
 
 interface Language {
   languageId: string;
@@ -364,9 +364,24 @@ const AudioManagement = () => {
       return;
     }
     
-    // Construct full URL same as visitor page
-    const fullAudioUrl = `${BACKEND_URL}${fileUrl}`;
-    console.log('Full audio URL:', fullAudioUrl);
+    // Ensure fileUrl starts with a slash for proper URL construction (same as visitor page)
+    let cleanFileUrl = fileUrl.startsWith("/")
+      ? fileUrl
+      : `/${fileUrl}`;
+    
+    // Convert /audios/ paths to /public/audios/ for correct static file serving (same as visitor page)
+    if (cleanFileUrl.startsWith("/audios/")) {
+      cleanFileUrl = cleanFileUrl.replace("/audios/", "/public/audios/");
+    }
+    
+    // Construct full URL - use BACKEND_URL if available, otherwise use relative path
+    const fullAudioUrl = BACKEND_URL 
+      ? `${BACKEND_URL}${cleanFileUrl}`
+      : cleanFileUrl;
+    console.log('Audio playback - Original fileUrl:', fileUrl);
+    console.log('Audio playback - Cleaned fileUrl:', cleanFileUrl);
+    console.log('Audio playback - BACKEND_URL:', BACKEND_URL);
+    console.log('Audio playback - Full audio URL:', fullAudioUrl);
     
     // Validate the constructed URL
     if (!fullAudioUrl || fullAudioUrl === BACKEND_URL || fullAudioUrl.endsWith('null') || fullAudioUrl.endsWith('undefined')) {
@@ -434,6 +449,11 @@ const AudioManagement = () => {
       
       // Always reset and reload the source to prevent corruption
       console.log('Setting audio source:', fullAudioUrl);
+      // Pause and reset current time before changing source
+      if (audio.src) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
       audio.src = fullAudioUrl;
       audio.load();
       
@@ -451,7 +471,7 @@ const AudioManagement = () => {
           setLoadingAudio(null);
           
           // If the audio failed due to no supported sources, recreate the element
-          if (error.name === 'NotSupportedError') {
+          if (error.name === 'NotSupportedError' || error.name === 'NotAllowedError') {
             console.log('Recreating corrupted audio element for:', audioId);
             // Remove the corrupted audio element
             setAudioElements(prev => {
@@ -461,9 +481,13 @@ const AudioManagement = () => {
             });
             alert(`Audio playback failed. Please try again.`);
           } else {
-            alert(`Failed to play audio: ${error.message}`);
+            alert(`Failed to play audio: ${error.message || 'Unknown error'}`);
           }
         });
+      } else {
+        // Fallback for browsers that don't return a promise
+        setPlayingAudio(audioId);
+        setLoadingAudio(null);
       }
     }
   };
@@ -1005,6 +1029,17 @@ const AudioManagement = () => {
                 {selectedAudioForTranscript && (
                   <div className="transcript-header">
                     <h3>{selectedAudioForTranscript.title || 'Untitled Audio'}</h3>
+                    {selectedAudioForTranscript.description && (
+                      <p className="transcript-description" style={{ 
+                        marginTop: '0.5rem', 
+                        marginBottom: '1rem', 
+                        color: '#666', 
+                        fontSize: '0.9rem',
+                        lineHeight: '1.5'
+                      }}>
+                        {selectedAudioForTranscript.description}
+                      </p>
+                    )}
                     <div className="transcript-meta">
                       <span className="exhibit-name">
                         {selectedAudioForTranscript.exhibit?.title || 'No exhibit'}

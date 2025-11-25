@@ -336,7 +336,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\damia\\Downloads\\CICD project\\cicdp-project-group-3-sdc\\api\\generated\\prisma",
+      "value": "C:\\Users\\damia\\Downloads\\cicd - sprint 1\\cicdp-project-group-3-sdc\\api\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -354,7 +354,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\damia\\Downloads\\CICD project\\cicdp-project-group-3-sdc\\api\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\damia\\Downloads\\cicd - sprint 1\\cicdp-project-group-3-sdc\\api\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {

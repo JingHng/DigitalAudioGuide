@@ -245,35 +245,6 @@ const Navbar: React.FC = () => {
             How It Works
           </a>
 
-          {/* Language Switcher in mobile menu (Keep) */}
-          <div className="language-switcher-container">
-            <button
-              className="language-switcher-button"
-              onClick={(e) => {
-                e.stopPropagation();
-                toggleLanguageDropdown();
-              }}
-              aria-label="Select language"
-            >
-              <Globe size={20} />
-            </button>
-            {isLanguageDropdownOpen && (
-              <div className="language-dropdown">
-                {languages.map((lang) => (
-                  <button
-                    key={lang.code}
-                    className={`language-option ${
-                      currentLanguage === lang.name ? "active" : ""
-                    }`}
-                    onClick={() => translatePage(lang.code, lang.name)}
-                  >
-                    <span className="flag">{lang.flag}</span>
-                    <span className="lang-name">{lang.name}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
         </div>
 
         {/* --- Desktop Navigation Links Container --- */}
@@ -342,35 +313,6 @@ const Navbar: React.FC = () => {
             </div>
           )}
 
-          {/* Desktop Language Switcher (Keep) */}
-          <div className="language-switcher-container desktop-language">
-            <button
-              className="language-switcher-button"
-              onClick={(e) => {
-                e.stopPropagation();
-                toggleLanguageDropdown();
-              }}
-              aria-label="Select language"
-            >
-              <Globe size={20} />
-            </button>
-            {isLanguageDropdownOpen && (
-              <div className="language-dropdown">
-                {languages.map((lang) => (
-                  <button
-                    key={lang.code}
-                    className={`language-option ${
-                      currentLanguage === lang.name ? "active" : ""
-                    }`}
-                    onClick={() => translatePage(lang.code, lang.name)}
-                  >
-                    <span className="flag">{lang.flag}</span>
-                    <span className="lang-name">{lang.name}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
         </div>
       </nav>
     </header>
