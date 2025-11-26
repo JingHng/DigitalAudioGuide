@@ -122,9 +122,29 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.SchoolScalarFieldEnum = {
+  schoolId: 'schoolId',
+  title: 'title',
+  description: 'description',
+  statusId: 'statusId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CourseScalarFieldEnum = {
+  courseId: 'courseId',
+  schoolId: 'schoolId',
+  badgeId: 'badgeId',
+  title: 'title',
+  description: 'description',
+  statusId: 'statusId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.AudioScalarFieldEnum = {
   audioId: 'audioId',
-  exhibitId: 'exhibitId',
+  courseId: 'courseId',
   languageId: 'languageId',
   fileUrl: 'fileUrl',
   title: 'title',
@@ -144,30 +164,10 @@ exports.Prisma.AudioPlaybackLogScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.ExhibitionScalarFieldEnum = {
-  exhibitionId: 'exhibitionId',
-  title: 'title',
-  description: 'description',
-  statusId: 'statusId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.ExhibitScalarFieldEnum = {
-  exhibitId: 'exhibitId',
-  exhibitionId: 'exhibitionId',
-  badgeId: 'badgeId',
-  title: 'title',
-  description: 'description',
-  statusId: 'statusId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
 exports.Prisma.FeedbackScalarFieldEnum = {
   feedbackId: 'feedbackId',
   userId: 'userId',
-  exhibitId: 'exhibitId',
+  courseId: 'courseId',
   rating: 'rating',
   description: 'description',
   createdAt: 'createdAt',
@@ -176,12 +176,20 @@ exports.Prisma.FeedbackScalarFieldEnum = {
 
 exports.Prisma.ImageScalarFieldEnum = {
   imageId: 'imageId',
-  exhibitId: 'exhibitId',
-  exhibitionId: 'exhibitionId',
+  courseId: 'courseId',
+  schoolId: 'schoolId',
   title: 'title',
   description: 'description',
   fileUrl: 'fileUrl',
   isPrimary: 'isPrimary',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.QRCodeScalarFieldEnum = {
+  qrId: 'qrId',
+  courseId: 'courseId',
+  qrUrl: 'qrUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -200,14 +208,6 @@ exports.Prisma.PermissionScalarFieldEnum = {
   permissionId: 'permissionId',
   permissionName: 'permissionName',
   description: 'description',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.QRCodeScalarFieldEnum = {
-  qrId: 'qrId',
-  exhibitId: 'exhibitId',
-  qrUrl: 'qrUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -334,15 +334,15 @@ exports.Prisma.JsonNullValueFilter = {
 
 
 exports.Prisma.ModelName = {
+  School: 'School',
+  Course: 'Course',
   Audio: 'Audio',
   AudioPlaybackLog: 'AudioPlaybackLog',
-  Exhibition: 'Exhibition',
-  Exhibit: 'Exhibit',
   Feedback: 'Feedback',
   Image: 'Image',
+  QRCode: 'QRCode',
   Language: 'Language',
   Permission: 'Permission',
-  QRCode: 'QRCode',
   Role: 'Role',
   RolePermission: 'RolePermission',
   Session: 'Session',

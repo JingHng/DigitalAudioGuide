@@ -15,10 +15,14 @@ import EmailVerificationPage from "./routes/EmailVerificationPage";
 import ScanPage from "./components/ScanPage.tsx";
 import UserBadgePage from "./routes/userBadgePage.tsx";
 
+// --- NEW IMPORTS FOR SCHOOLS AND COURSES ---
+import SchoolPage from "./components/SchoolPage.tsx"; 
+import CoursePage from "./components/coursePage.tsx";
+
 // --- MODIFIED/NEW IMPORTS FOR EXHIBITIONS --- (KEEP ALL)
-import AllExhibitions from "./components/ExhibitionsPage.tsx"; 
-import ExhibitionDetails from "./components/ExhibitionDetailsPage.tsx"; // New Page
-import ExhibitDetails from "./components/ExhibitDetails.tsx"; 
+// import AllExhibitions from "./components/ExhibitionsPage.tsx"; 
+// import ExhibitionDetails from "./components/ExhibitionDetailsPage.tsx"; // New Page
+// import ExhibitDetails from "./components/ExhibitDetails.tsx"; 
 
 // --- COMMENTED OUT: Other Public/Protected Components ---
 // import ReviewPage from "./components/reviewPage/ReviewPage";
@@ -38,71 +42,68 @@ import NotFoundPage from "./components/NotFoundPage.tsx"; // KEEP: Good practice
 // --- COMMENTED OUT: Loaders/Providers ---
 // import GoogleTranslateLoader from "./components/GoogleTranslateLoader";
 
-// const UnauthorizedPage: React.FC = () => (
-//   <div>Unauthorized</div>
-// );
-
 function App() {
-  const location = useLocation();
-  const isAdminRoute = location.pathname.startsWith('/admin');
-  
-  // NOTE: ensureLanguagePersistence call is removed since the import is commented out
-  useEffect(() => {
-    // ensureLanguagePersistence(); 
-  }, []);
-  
-  return (
-    <AuthProvider>
-      {/* <GoogleTranslateLoader /> */}
-      {/* Navbar is kept, as it's typically required for navigation */}
-      {!isAdminRoute && <Navbar />} 
-      
-      {/* Admin routes */}
-      {isAdminRoute ? (
-        <Routes>
-          <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
-          <Route path="/admin/exhibits" element={<AdminRoute><ExhibitsPage /></AdminRoute>} />
-          <Route path="/admin/audio" element={<AdminRoute><AudioManagement /></AdminRoute>} />
-          <Route path="/admin/roles" element={<AdminRoute><RolesPage /></AdminRoute>} />
-          <Route path="/admin/users" element={<AdminRoute><UsersPage /></AdminRoute>} />
-          <Route path="/admin/audit-logs" element={<AdminRoute><AuditLogsPage /></AdminRoute>} />
-          <Route path="/admin/audio-analytics" element={<AdminRoute><AudioAnalyticsPage /></AdminRoute>} />
-          <Route path="/admin/settings" element={<AdminRoute><SettingsPage /></AdminRoute>} />
-          <Route path="/admin/help" element={<AdminRoute><HelpAndInformationPage /></AdminRoute>} />
-          <Route path="/admin/*" element={<NotFoundPage />} />
-        </Routes>
-      ) : (
-        <div className="page-content">
-          <Routes>
-            {/* --- Public Visitor Routes (Enabled) --- */}
-            <Route path="/" element={<Homepage />} />
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
+  
+  useEffect(() => {
+    // ensureLanguagePersistence(); 
+  }, []);
+  
+  return (
+    <AuthProvider>
+      {!isAdminRoute && <Navbar />} 
+      
+      {/* Admin routes */}
+      {isAdminRoute ? (
+        <Routes>
+          <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+          <Route path="/admin/exhibits" element={<AdminRoute><ExhibitsPage /></AdminRoute>} />
+          <Route path="/admin/audio" element={<AdminRoute><AudioManagement /></AdminRoute>} />
+          <Route path="/admin/roles" element={<AdminRoute><RolesPage /></AdminRoute>} />
+          <Route path="/admin/users" element={<AdminRoute><UsersPage /></AdminRoute>} />
+          <Route path="/admin/audit-logs" element={<AdminRoute><AuditLogsPage /></AdminRoute>} />
+          <Route path="/admin/audio-analytics" element={<AdminRoute><AudioAnalyticsPage /></AdminRoute>} />
+          <Route path="/admin/settings" element={<AdminRoute><SettingsPage /></AdminRoute>} />
+          <Route path="/admin/help" element={<AdminRoute><HelpAndInformationPage /></AdminRoute>} />
+          <Route path="/admin/*" element={<NotFoundPage />} />
+        </Routes>
+      ) : (
+        <div className="page-content">
+          <Routes>
+            {/* --- Public Visitor Routes (Enabled) --- */}
+            <Route path="/" element={<Homepage />} />
 
-            {/* --- NEW/MODIFIED Public Exhibition Routes (Enabled) --- */}
-            <Route path="/exhibitions" element={<AllExhibitions />} />
-            <Route path="/exhibitions/:id" element={<ExhibitionDetails />} />
-              <Route path="/exhibit/:id" element={<ExhibitDetails />} />  
+                {/* --- NEW ROUTES FOR SCHOOLS AND COURSES --- */}
+                <Route path="/schools/:schoolId" element={<SchoolPage />} />
+                <Route path="/courses/:courseId" element={<CoursePage />} />
 
-            {/* --- Other Public/Auth Routes --- */}
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-            <Route path="/reset-password" element={<ResetPasswordPage />} />
-            <Route path="/verify-email" element={<EmailVerificationPage />} />
-            { 
-            // <Route path="/unauthorized" element={<UnauthorizedPage />} />
-            <Route path="/scan" element={<ScanPage />} />
-            // <Route path="/reviews" element={<ReviewPage />} />
-            // <Route path="/exhibits/:exhibitId/reviews" element={<ReviewPage />} />
-            // <Route path="/dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} /> 
-            }
-            {<Route path="/user-badge" element={<UserBadgePage />} />}
-            {/* Catch-all route is kept */}
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </div>
-      )}
-    </AuthProvider>
-  );
+            {/* --- NEW/MODIFIED Public Exhibition Routes (Enabled) --- */}
+            {/* <Route path="/exhibitions" element={<AllExhibitions />} />
+            <Route path="/exhibitions/:id" element={<ExhibitionDetails />} />
+              <Route path="/exhibit/:id" element={<ExhibitDetails />} />   */}
+
+            {/* --- Other Public/Auth Routes --- */}
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/verify-email" element={<EmailVerificationPage />} />
+            { 
+            // <Route path="/unauthorized" element={<UnauthorizedPage />} />
+            <Route path="/scan" element={<ScanPage />} />
+            // <Route path="/reviews" element={<ReviewPage />} />
+            // <Route path="/exhibits/:exhibitId/reviews" element={<ReviewPage />} />
+            // <Route path="/dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} /> 
+            }
+            {<Route path="/user-badge" element={<UserBadgePage />} />}
+            {/* Catch-all route is kept */}
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </div>
+      )}
+    </AuthProvider>
+  );
 }
 
 export default App;

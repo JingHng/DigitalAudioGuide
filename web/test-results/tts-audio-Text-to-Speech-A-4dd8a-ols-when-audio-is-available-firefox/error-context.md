@@ -1,0 +1,49 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - navigation [ref=e4]:
+      - link "Singapore Discovery Centre" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e6]:
+          - generic [ref=e7]: Singapore
+          - generic [ref=e8]: Discovery Centre
+      - generic [ref=e9]:
+        - link "Exhibits" [ref=e10] [cursor=pointer]:
+          - /url: /exhibitions
+        - link "Reviews" [ref=e11] [cursor=pointer]:
+          - /url: /reviews
+        - link "How It Works" [ref=e12] [cursor=pointer]:
+          - /url: /#how-it-works
+        - generic [ref=e13]:
+          - link "Login" [ref=e14] [cursor=pointer]:
+            - /url: /login
+            - img [ref=e15]
+            - generic [ref=e19]: Login
+          - link "Register" [ref=e20] [cursor=pointer]:
+            - /url: /register
+            - img [ref=e21]
+            - generic [ref=e26]: Register
+        - button "Select language" [ref=e28] [cursor=pointer]:
+          - img [ref=e29]
+  - generic [ref=e35]:
+    - img [ref=e37]
+    - generic [ref=e41]:
+      - heading "404" [level=1] [ref=e42]
+      - heading "Page Not Found" [level=2] [ref=e43]
+      - paragraph [ref=e44]: Sorry, the page you are looking for doesn't exist or has been moved. Let's get you back on track!
+    - generic [ref=e45]:
+      - button "Go Back" [ref=e46] [cursor=pointer]:
+        - img [ref=e47]
+        - text: Go Back
+      - link "Go Home" [ref=e50] [cursor=pointer]:
+        - /url: /
+        - img [ref=e51]
+        - text: Go Home
+    - paragraph [ref=e55]:
+      - text: If you believe this is an error, please
+      - link "contact support" [ref=e56] [cursor=pointer]:
+        - /url: mailto:support@audiomuseum.com
+      - text: .
+```
