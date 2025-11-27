@@ -16,8 +16,8 @@
     "lint": "eslint ."
   },
   "prisma": {
-    "seed": "ts-node -r dotenv/config prisma/seed.js"
-  },
+  "seed": "node prisma/seed.js"  
+},
   "keywords": [],
   "author": "",
   "license": "ISC",

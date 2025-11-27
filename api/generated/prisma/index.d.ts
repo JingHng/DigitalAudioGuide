@@ -14,15 +14,15 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
 
 
 /**
- * Model School
+ * Model Exhibition
  * 
  */
-export type School = $Result.DefaultSelection<Prisma.$SchoolPayload>
+export type Exhibition = $Result.DefaultSelection<Prisma.$ExhibitionPayload>
 /**
- * Model Course
+ * Model Exhibit
  * 
  */
-export type Course = $Result.DefaultSelection<Prisma.$CoursePayload>
+export type Exhibit = $Result.DefaultSelection<Prisma.$ExhibitPayload>
 /**
  * Model Audio
  * 
@@ -126,8 +126,8 @@ export type UserBadge = $Result.DefaultSelection<Prisma.$UserBadgePayload>
  * @example
  * ```
  * const prisma = new PrismaClient()
- * // Fetch zero or more Schools
- * const schools = await prisma.school.findMany()
+ * // Fetch zero or more Exhibitions
+ * const exhibitions = await prisma.exhibition.findMany()
  * ```
  *
  * 
@@ -147,8 +147,8 @@ export class PrismaClient<
    * @example
    * ```
    * const prisma = new PrismaClient()
-   * // Fetch zero or more Schools
-   * const schools = await prisma.school.findMany()
+   * // Fetch zero or more Exhibitions
+   * const exhibitions = await prisma.exhibition.findMany()
    * ```
    *
    * 
@@ -243,24 +243,24 @@ export class PrismaClient<
   $extends: $Extensions.ExtendsHook<"extends", Prisma.TypeMapCb, ExtArgs>
 
       /**
-   * `prisma.school`: Exposes CRUD operations for the **School** model.
+   * `prisma.exhibition`: Exposes CRUD operations for the **Exhibition** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more Schools
-    * const schools = await prisma.school.findMany()
+    * // Fetch zero or more Exhibitions
+    * const exhibitions = await prisma.exhibition.findMany()
     * ```
     */
-  get school(): Prisma.SchoolDelegate<ExtArgs>;
+  get exhibition(): Prisma.ExhibitionDelegate<ExtArgs>;
 
   /**
-   * `prisma.course`: Exposes CRUD operations for the **Course** model.
+   * `prisma.exhibit`: Exposes CRUD operations for the **Exhibit** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more Courses
-    * const courses = await prisma.course.findMany()
+    * // Fetch zero or more Exhibits
+    * const exhibits = await prisma.exhibit.findMany()
     * ```
     */
-  get course(): Prisma.CourseDelegate<ExtArgs>;
+  get exhibit(): Prisma.ExhibitDelegate<ExtArgs>;
 
   /**
    * `prisma.audio`: Exposes CRUD operations for the **Audio** model.
@@ -892,8 +892,8 @@ export namespace Prisma {
 
 
   export const ModelName: {
-    School: 'School',
-    Course: 'Course',
+    Exhibition: 'Exhibition',
+    Exhibit: 'Exhibit',
     Audio: 'Audio',
     AudioPlaybackLog: 'AudioPlaybackLog',
     Feedback: 'Feedback',
@@ -928,147 +928,147 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "school" | "course" | "audio" | "audioPlaybackLog" | "feedback" | "image" | "qRCode" | "language" | "permission" | "role" | "rolePermission" | "session" | "status" | "subtitle" | "user" | "userRole" | "auditLog" | "passwordResetToken" | "emailVerificationToken" | "badge" | "userBadge"
+      modelProps: "exhibition" | "exhibit" | "audio" | "audioPlaybackLog" | "feedback" | "image" | "qRCode" | "language" | "permission" | "role" | "rolePermission" | "session" | "status" | "subtitle" | "user" | "userRole" | "auditLog" | "passwordResetToken" | "emailVerificationToken" | "badge" | "userBadge"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
-      School: {
-        payload: Prisma.$SchoolPayload<ExtArgs>
-        fields: Prisma.SchoolFieldRefs
+      Exhibition: {
+        payload: Prisma.$ExhibitionPayload<ExtArgs>
+        fields: Prisma.ExhibitionFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.SchoolFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SchoolPayload> | null
+            args: Prisma.ExhibitionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExhibitionPayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.SchoolFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SchoolPayload>
+            args: Prisma.ExhibitionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExhibitionPayload>
           }
           findFirst: {
-            args: Prisma.SchoolFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SchoolPayload> | null
+            args: Prisma.ExhibitionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExhibitionPayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.SchoolFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SchoolPayload>
+            args: Prisma.ExhibitionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExhibitionPayload>
           }
           findMany: {
-            args: Prisma.SchoolFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SchoolPayload>[]
+            args: Prisma.ExhibitionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExhibitionPayload>[]
           }
           create: {
-            args: Prisma.SchoolCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SchoolPayload>
+            args: Prisma.ExhibitionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExhibitionPayload>
           }
           createMany: {
-            args: Prisma.SchoolCreateManyArgs<ExtArgs>
+            args: Prisma.ExhibitionCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           createManyAndReturn: {
-            args: Prisma.SchoolCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SchoolPayload>[]
+            args: Prisma.ExhibitionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExhibitionPayload>[]
           }
           delete: {
-            args: Prisma.SchoolDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SchoolPayload>
+            args: Prisma.ExhibitionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExhibitionPayload>
           }
           update: {
-            args: Prisma.SchoolUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SchoolPayload>
+            args: Prisma.ExhibitionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExhibitionPayload>
           }
           deleteMany: {
-            args: Prisma.SchoolDeleteManyArgs<ExtArgs>
+            args: Prisma.ExhibitionDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.SchoolUpdateManyArgs<ExtArgs>
+            args: Prisma.ExhibitionUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           upsert: {
-            args: Prisma.SchoolUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SchoolPayload>
+            args: Prisma.ExhibitionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExhibitionPayload>
           }
           aggregate: {
-            args: Prisma.SchoolAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateSchool>
+            args: Prisma.ExhibitionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateExhibition>
           }
           groupBy: {
-            args: Prisma.SchoolGroupByArgs<ExtArgs>
-            result: $Utils.Optional<SchoolGroupByOutputType>[]
+            args: Prisma.ExhibitionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ExhibitionGroupByOutputType>[]
           }
           count: {
-            args: Prisma.SchoolCountArgs<ExtArgs>
-            result: $Utils.Optional<SchoolCountAggregateOutputType> | number
+            args: Prisma.ExhibitionCountArgs<ExtArgs>
+            result: $Utils.Optional<ExhibitionCountAggregateOutputType> | number
           }
         }
       }
-      Course: {
-        payload: Prisma.$CoursePayload<ExtArgs>
-        fields: Prisma.CourseFieldRefs
+      Exhibit: {
+        payload: Prisma.$ExhibitPayload<ExtArgs>
+        fields: Prisma.ExhibitFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.CourseFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CoursePayload> | null
+            args: Prisma.ExhibitFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExhibitPayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.CourseFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CoursePayload>
+            args: Prisma.ExhibitFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExhibitPayload>
           }
           findFirst: {
-            args: Prisma.CourseFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CoursePayload> | null
+            args: Prisma.ExhibitFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExhibitPayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.CourseFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CoursePayload>
+            args: Prisma.ExhibitFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExhibitPayload>
           }
           findMany: {
-            args: Prisma.CourseFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CoursePayload>[]
+            args: Prisma.ExhibitFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExhibitPayload>[]
           }
           create: {
-            args: Prisma.CourseCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CoursePayload>
+            args: Prisma.ExhibitCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExhibitPayload>
           }
           createMany: {
-            args: Prisma.CourseCreateManyArgs<ExtArgs>
+            args: Prisma.ExhibitCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           createManyAndReturn: {
-            args: Prisma.CourseCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CoursePayload>[]
+            args: Prisma.ExhibitCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExhibitPayload>[]
           }
           delete: {
-            args: Prisma.CourseDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CoursePayload>
+            args: Prisma.ExhibitDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExhibitPayload>
           }
           update: {
-            args: Prisma.CourseUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CoursePayload>
+            args: Prisma.ExhibitUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExhibitPayload>
           }
           deleteMany: {
-            args: Prisma.CourseDeleteManyArgs<ExtArgs>
+            args: Prisma.ExhibitDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.CourseUpdateManyArgs<ExtArgs>
+            args: Prisma.ExhibitUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           upsert: {
-            args: Prisma.CourseUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CoursePayload>
+            args: Prisma.ExhibitUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExhibitPayload>
           }
           aggregate: {
-            args: Prisma.CourseAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateCourse>
+            args: Prisma.ExhibitAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateExhibit>
           }
           groupBy: {
-            args: Prisma.CourseGroupByArgs<ExtArgs>
-            result: $Utils.Optional<CourseGroupByOutputType>[]
+            args: Prisma.ExhibitGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ExhibitGroupByOutputType>[]
           }
           count: {
-            args: Prisma.CourseCountArgs<ExtArgs>
-            result: $Utils.Optional<CourseCountAggregateOutputType> | number
+            args: Prisma.ExhibitCountArgs<ExtArgs>
+            result: $Utils.Optional<ExhibitCountAggregateOutputType> | number
           }
         }
       }
@@ -2559,99 +2559,99 @@ export namespace Prisma {
 
 
   /**
-   * Count Type SchoolCountOutputType
+   * Count Type ExhibitionCountOutputType
    */
 
-  export type SchoolCountOutputType = {
-    courses: number
+  export type ExhibitionCountOutputType = {
+    exhibits: number
     images: number
   }
 
-  export type SchoolCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    courses?: boolean | SchoolCountOutputTypeCountCoursesArgs
-    images?: boolean | SchoolCountOutputTypeCountImagesArgs
+  export type ExhibitionCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    exhibits?: boolean | ExhibitionCountOutputTypeCountExhibitsArgs
+    images?: boolean | ExhibitionCountOutputTypeCountImagesArgs
   }
 
   // Custom InputTypes
   /**
-   * SchoolCountOutputType without action
+   * ExhibitionCountOutputType without action
    */
-  export type SchoolCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitionCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the SchoolCountOutputType
+     * Select specific fields to fetch from the ExhibitionCountOutputType
      */
-    select?: SchoolCountOutputTypeSelect<ExtArgs> | null
+    select?: ExhibitionCountOutputTypeSelect<ExtArgs> | null
   }
 
   /**
-   * SchoolCountOutputType without action
+   * ExhibitionCountOutputType without action
    */
-  export type SchoolCountOutputTypeCountCoursesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CourseWhereInput
+  export type ExhibitionCountOutputTypeCountExhibitsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExhibitWhereInput
   }
 
   /**
-   * SchoolCountOutputType without action
+   * ExhibitionCountOutputType without action
    */
-  export type SchoolCountOutputTypeCountImagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitionCountOutputTypeCountImagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ImageWhereInput
   }
 
 
   /**
-   * Count Type CourseCountOutputType
+   * Count Type ExhibitCountOutputType
    */
 
-  export type CourseCountOutputType = {
+  export type ExhibitCountOutputType = {
     audio: number
     feedbacks: number
     images: number
     qrCodes: number
   }
 
-  export type CourseCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    audio?: boolean | CourseCountOutputTypeCountAudioArgs
-    feedbacks?: boolean | CourseCountOutputTypeCountFeedbacksArgs
-    images?: boolean | CourseCountOutputTypeCountImagesArgs
-    qrCodes?: boolean | CourseCountOutputTypeCountQrCodesArgs
+  export type ExhibitCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    audio?: boolean | ExhibitCountOutputTypeCountAudioArgs
+    feedbacks?: boolean | ExhibitCountOutputTypeCountFeedbacksArgs
+    images?: boolean | ExhibitCountOutputTypeCountImagesArgs
+    qrCodes?: boolean | ExhibitCountOutputTypeCountQrCodesArgs
   }
 
   // Custom InputTypes
   /**
-   * CourseCountOutputType without action
+   * ExhibitCountOutputType without action
    */
-  export type CourseCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CourseCountOutputType
+     * Select specific fields to fetch from the ExhibitCountOutputType
      */
-    select?: CourseCountOutputTypeSelect<ExtArgs> | null
+    select?: ExhibitCountOutputTypeSelect<ExtArgs> | null
   }
 
   /**
-   * CourseCountOutputType without action
+   * ExhibitCountOutputType without action
    */
-  export type CourseCountOutputTypeCountAudioArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitCountOutputTypeCountAudioArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AudioWhereInput
   }
 
   /**
-   * CourseCountOutputType without action
+   * ExhibitCountOutputType without action
    */
-  export type CourseCountOutputTypeCountFeedbacksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitCountOutputTypeCountFeedbacksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: FeedbackWhereInput
   }
 
   /**
-   * CourseCountOutputType without action
+   * ExhibitCountOutputType without action
    */
-  export type CourseCountOutputTypeCountImagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitCountOutputTypeCountImagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ImageWhereInput
   }
 
   /**
-   * CourseCountOutputType without action
+   * ExhibitCountOutputType without action
    */
-  export type CourseCountOutputTypeCountQrCodesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitCountOutputTypeCountQrCodesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: QRCodeWhereInput
   }
 
@@ -2814,15 +2814,15 @@ export namespace Prisma {
   export type StatusCountOutputType = {
     users: number
     languages: number
-    schools: number
-    courses: number
+    exhibitions: number
+    exhibits: number
   }
 
   export type StatusCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | StatusCountOutputTypeCountUsersArgs
     languages?: boolean | StatusCountOutputTypeCountLanguagesArgs
-    schools?: boolean | StatusCountOutputTypeCountSchoolsArgs
-    courses?: boolean | StatusCountOutputTypeCountCoursesArgs
+    exhibitions?: boolean | StatusCountOutputTypeCountExhibitionsArgs
+    exhibits?: boolean | StatusCountOutputTypeCountExhibitsArgs
   }
 
   // Custom InputTypes
@@ -2853,15 +2853,15 @@ export namespace Prisma {
   /**
    * StatusCountOutputType without action
    */
-  export type StatusCountOutputTypeCountSchoolsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: SchoolWhereInput
+  export type StatusCountOutputTypeCountExhibitionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExhibitionWhereInput
   }
 
   /**
    * StatusCountOutputType without action
    */
-  export type StatusCountOutputTypeCountCoursesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CourseWhereInput
+  export type StatusCountOutputTypeCountExhibitsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExhibitWhereInput
   }
 
 
@@ -3013,29 +3013,29 @@ export namespace Prisma {
    */
 
   /**
-   * Model School
+   * Model Exhibition
    */
 
-  export type AggregateSchool = {
-    _count: SchoolCountAggregateOutputType | null
-    _avg: SchoolAvgAggregateOutputType | null
-    _sum: SchoolSumAggregateOutputType | null
-    _min: SchoolMinAggregateOutputType | null
-    _max: SchoolMaxAggregateOutputType | null
+  export type AggregateExhibition = {
+    _count: ExhibitionCountAggregateOutputType | null
+    _avg: ExhibitionAvgAggregateOutputType | null
+    _sum: ExhibitionSumAggregateOutputType | null
+    _min: ExhibitionMinAggregateOutputType | null
+    _max: ExhibitionMaxAggregateOutputType | null
   }
 
-  export type SchoolAvgAggregateOutputType = {
-    schoolId: number | null
+  export type ExhibitionAvgAggregateOutputType = {
+    exhibitionId: number | null
     statusId: number | null
   }
 
-  export type SchoolSumAggregateOutputType = {
-    schoolId: bigint | null
+  export type ExhibitionSumAggregateOutputType = {
+    exhibitionId: bigint | null
     statusId: number | null
   }
 
-  export type SchoolMinAggregateOutputType = {
-    schoolId: bigint | null
+  export type ExhibitionMinAggregateOutputType = {
+    exhibitionId: bigint | null
     title: string | null
     description: string | null
     statusId: number | null
@@ -3043,8 +3043,8 @@ export namespace Prisma {
     updatedAt: Date | null
   }
 
-  export type SchoolMaxAggregateOutputType = {
-    schoolId: bigint | null
+  export type ExhibitionMaxAggregateOutputType = {
+    exhibitionId: bigint | null
     title: string | null
     description: string | null
     statusId: number | null
@@ -3052,8 +3052,8 @@ export namespace Prisma {
     updatedAt: Date | null
   }
 
-  export type SchoolCountAggregateOutputType = {
-    schoolId: number
+  export type ExhibitionCountAggregateOutputType = {
+    exhibitionId: number
     title: number
     description: number
     statusId: number
@@ -3063,18 +3063,18 @@ export namespace Prisma {
   }
 
 
-  export type SchoolAvgAggregateInputType = {
-    schoolId?: true
+  export type ExhibitionAvgAggregateInputType = {
+    exhibitionId?: true
     statusId?: true
   }
 
-  export type SchoolSumAggregateInputType = {
-    schoolId?: true
+  export type ExhibitionSumAggregateInputType = {
+    exhibitionId?: true
     statusId?: true
   }
 
-  export type SchoolMinAggregateInputType = {
-    schoolId?: true
+  export type ExhibitionMinAggregateInputType = {
+    exhibitionId?: true
     title?: true
     description?: true
     statusId?: true
@@ -3082,8 +3082,8 @@ export namespace Prisma {
     updatedAt?: true
   }
 
-  export type SchoolMaxAggregateInputType = {
-    schoolId?: true
+  export type ExhibitionMaxAggregateInputType = {
+    exhibitionId?: true
     title?: true
     description?: true
     statusId?: true
@@ -3091,8 +3091,8 @@ export namespace Prisma {
     updatedAt?: true
   }
 
-  export type SchoolCountAggregateInputType = {
-    schoolId?: true
+  export type ExhibitionCountAggregateInputType = {
+    exhibitionId?: true
     title?: true
     description?: true
     statusId?: true
@@ -3101,145 +3101,145 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type SchoolAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which School to aggregate.
+     * Filter which Exhibition to aggregate.
      */
-    where?: SchoolWhereInput
+    where?: ExhibitionWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Schools to fetch.
+     * Determine the order of Exhibitions to fetch.
      */
-    orderBy?: SchoolOrderByWithRelationInput | SchoolOrderByWithRelationInput[]
+    orderBy?: ExhibitionOrderByWithRelationInput | ExhibitionOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: SchoolWhereUniqueInput
+    cursor?: ExhibitionWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Schools from the position of the cursor.
+     * Take `±n` Exhibitions from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Schools.
+     * Skip the first `n` Exhibitions.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Count returned Schools
+     * Count returned Exhibitions
     **/
-    _count?: true | SchoolCountAggregateInputType
+    _count?: true | ExhibitionCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to average
     **/
-    _avg?: SchoolAvgAggregateInputType
+    _avg?: ExhibitionAvgAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to sum
     **/
-    _sum?: SchoolSumAggregateInputType
+    _sum?: ExhibitionSumAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the minimum value
     **/
-    _min?: SchoolMinAggregateInputType
+    _min?: ExhibitionMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the maximum value
     **/
-    _max?: SchoolMaxAggregateInputType
+    _max?: ExhibitionMaxAggregateInputType
   }
 
-  export type GetSchoolAggregateType<T extends SchoolAggregateArgs> = {
-        [P in keyof T & keyof AggregateSchool]: P extends '_count' | 'count'
+  export type GetExhibitionAggregateType<T extends ExhibitionAggregateArgs> = {
+        [P in keyof T & keyof AggregateExhibition]: P extends '_count' | 'count'
       ? T[P] extends true
         ? number
-        : GetScalarType<T[P], AggregateSchool[P]>
-      : GetScalarType<T[P], AggregateSchool[P]>
+        : GetScalarType<T[P], AggregateExhibition[P]>
+      : GetScalarType<T[P], AggregateExhibition[P]>
   }
 
 
 
 
-  export type SchoolGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: SchoolWhereInput
-    orderBy?: SchoolOrderByWithAggregationInput | SchoolOrderByWithAggregationInput[]
-    by: SchoolScalarFieldEnum[] | SchoolScalarFieldEnum
-    having?: SchoolScalarWhereWithAggregatesInput
+  export type ExhibitionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExhibitionWhereInput
+    orderBy?: ExhibitionOrderByWithAggregationInput | ExhibitionOrderByWithAggregationInput[]
+    by: ExhibitionScalarFieldEnum[] | ExhibitionScalarFieldEnum
+    having?: ExhibitionScalarWhereWithAggregatesInput
     take?: number
     skip?: number
-    _count?: SchoolCountAggregateInputType | true
-    _avg?: SchoolAvgAggregateInputType
-    _sum?: SchoolSumAggregateInputType
-    _min?: SchoolMinAggregateInputType
-    _max?: SchoolMaxAggregateInputType
+    _count?: ExhibitionCountAggregateInputType | true
+    _avg?: ExhibitionAvgAggregateInputType
+    _sum?: ExhibitionSumAggregateInputType
+    _min?: ExhibitionMinAggregateInputType
+    _max?: ExhibitionMaxAggregateInputType
   }
 
-  export type SchoolGroupByOutputType = {
-    schoolId: bigint
+  export type ExhibitionGroupByOutputType = {
+    exhibitionId: bigint
     title: string
     description: string | null
     statusId: number | null
     createdAt: Date
     updatedAt: Date
-    _count: SchoolCountAggregateOutputType | null
-    _avg: SchoolAvgAggregateOutputType | null
-    _sum: SchoolSumAggregateOutputType | null
-    _min: SchoolMinAggregateOutputType | null
-    _max: SchoolMaxAggregateOutputType | null
+    _count: ExhibitionCountAggregateOutputType | null
+    _avg: ExhibitionAvgAggregateOutputType | null
+    _sum: ExhibitionSumAggregateOutputType | null
+    _min: ExhibitionMinAggregateOutputType | null
+    _max: ExhibitionMaxAggregateOutputType | null
   }
 
-  type GetSchoolGroupByPayload<T extends SchoolGroupByArgs> = Prisma.PrismaPromise<
+  type GetExhibitionGroupByPayload<T extends ExhibitionGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<SchoolGroupByOutputType, T['by']> &
+      PickEnumerable<ExhibitionGroupByOutputType, T['by']> &
         {
-          [P in ((keyof T) & (keyof SchoolGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof ExhibitionGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
               ? number
-              : GetScalarType<T[P], SchoolGroupByOutputType[P]>
-            : GetScalarType<T[P], SchoolGroupByOutputType[P]>
+              : GetScalarType<T[P], ExhibitionGroupByOutputType[P]>
+            : GetScalarType<T[P], ExhibitionGroupByOutputType[P]>
         }
       >
     >
 
 
-  export type SchoolSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    schoolId?: boolean
+  export type ExhibitionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    exhibitionId?: boolean
     title?: boolean
     description?: boolean
     statusId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    status?: boolean | School$statusArgs<ExtArgs>
-    courses?: boolean | School$coursesArgs<ExtArgs>
-    images?: boolean | School$imagesArgs<ExtArgs>
-    _count?: boolean | SchoolCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["school"]>
+    status?: boolean | Exhibition$statusArgs<ExtArgs>
+    exhibits?: boolean | Exhibition$exhibitsArgs<ExtArgs>
+    images?: boolean | Exhibition$imagesArgs<ExtArgs>
+    _count?: boolean | ExhibitionCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["exhibition"]>
 
-  export type SchoolSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    schoolId?: boolean
+  export type ExhibitionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    exhibitionId?: boolean
     title?: boolean
     description?: boolean
     statusId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    status?: boolean | School$statusArgs<ExtArgs>
-  }, ExtArgs["result"]["school"]>
+    status?: boolean | Exhibition$statusArgs<ExtArgs>
+  }, ExtArgs["result"]["exhibition"]>
 
-  export type SchoolSelectScalar = {
-    schoolId?: boolean
+  export type ExhibitionSelectScalar = {
+    exhibitionId?: boolean
     title?: boolean
     description?: boolean
     statusId?: boolean
@@ -3247,161 +3247,161 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type SchoolInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    status?: boolean | School$statusArgs<ExtArgs>
-    courses?: boolean | School$coursesArgs<ExtArgs>
-    images?: boolean | School$imagesArgs<ExtArgs>
-    _count?: boolean | SchoolCountOutputTypeDefaultArgs<ExtArgs>
+  export type ExhibitionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    status?: boolean | Exhibition$statusArgs<ExtArgs>
+    exhibits?: boolean | Exhibition$exhibitsArgs<ExtArgs>
+    images?: boolean | Exhibition$imagesArgs<ExtArgs>
+    _count?: boolean | ExhibitionCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type SchoolIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    status?: boolean | School$statusArgs<ExtArgs>
+  export type ExhibitionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    status?: boolean | Exhibition$statusArgs<ExtArgs>
   }
 
-  export type $SchoolPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "School"
+  export type $ExhibitionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Exhibition"
     objects: {
       status: Prisma.$StatusPayload<ExtArgs> | null
-      courses: Prisma.$CoursePayload<ExtArgs>[]
+      exhibits: Prisma.$ExhibitPayload<ExtArgs>[]
       images: Prisma.$ImagePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
-      schoolId: bigint
+      exhibitionId: bigint
       title: string
       description: string | null
       statusId: number | null
       createdAt: Date
       updatedAt: Date
-    }, ExtArgs["result"]["school"]>
+    }, ExtArgs["result"]["exhibition"]>
     composites: {}
   }
 
-  type SchoolGetPayload<S extends boolean | null | undefined | SchoolDefaultArgs> = $Result.GetResult<Prisma.$SchoolPayload, S>
+  type ExhibitionGetPayload<S extends boolean | null | undefined | ExhibitionDefaultArgs> = $Result.GetResult<Prisma.$ExhibitionPayload, S>
 
-  type SchoolCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
-    Omit<SchoolFindManyArgs, 'select' | 'include' | 'distinct'> & {
-      select?: SchoolCountAggregateInputType | true
+  type ExhibitionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<ExhibitionFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: ExhibitionCountAggregateInputType | true
     }
 
-  export interface SchoolDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['School'], meta: { name: 'School' } }
+  export interface ExhibitionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Exhibition'], meta: { name: 'Exhibition' } }
     /**
-     * Find zero or one School that matches the filter.
-     * @param {SchoolFindUniqueArgs} args - Arguments to find a School
+     * Find zero or one Exhibition that matches the filter.
+     * @param {ExhibitionFindUniqueArgs} args - Arguments to find a Exhibition
      * @example
-     * // Get one School
-     * const school = await prisma.school.findUnique({
+     * // Get one Exhibition
+     * const exhibition = await prisma.exhibition.findUnique({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUnique<T extends SchoolFindUniqueArgs>(args: SelectSubset<T, SchoolFindUniqueArgs<ExtArgs>>): Prisma__SchoolClient<$Result.GetResult<Prisma.$SchoolPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+    findUnique<T extends ExhibitionFindUniqueArgs>(args: SelectSubset<T, ExhibitionFindUniqueArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
 
     /**
-     * Find one School that matches the filter or throw an error with `error.code='P2025'` 
+     * Find one Exhibition that matches the filter or throw an error with `error.code='P2025'` 
      * if no matches were found.
-     * @param {SchoolFindUniqueOrThrowArgs} args - Arguments to find a School
+     * @param {ExhibitionFindUniqueOrThrowArgs} args - Arguments to find a Exhibition
      * @example
-     * // Get one School
-     * const school = await prisma.school.findUniqueOrThrow({
+     * // Get one Exhibition
+     * const exhibition = await prisma.exhibition.findUniqueOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUniqueOrThrow<T extends SchoolFindUniqueOrThrowArgs>(args: SelectSubset<T, SchoolFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SchoolClient<$Result.GetResult<Prisma.$SchoolPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+    findUniqueOrThrow<T extends ExhibitionFindUniqueOrThrowArgs>(args: SelectSubset<T, ExhibitionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
 
     /**
-     * Find the first School that matches the filter.
+     * Find the first Exhibition that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {SchoolFindFirstArgs} args - Arguments to find a School
+     * @param {ExhibitionFindFirstArgs} args - Arguments to find a Exhibition
      * @example
-     * // Get one School
-     * const school = await prisma.school.findFirst({
+     * // Get one Exhibition
+     * const exhibition = await prisma.exhibition.findFirst({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirst<T extends SchoolFindFirstArgs>(args?: SelectSubset<T, SchoolFindFirstArgs<ExtArgs>>): Prisma__SchoolClient<$Result.GetResult<Prisma.$SchoolPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+    findFirst<T extends ExhibitionFindFirstArgs>(args?: SelectSubset<T, ExhibitionFindFirstArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
 
     /**
-     * Find the first School that matches the filter or
+     * Find the first Exhibition that matches the filter or
      * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {SchoolFindFirstOrThrowArgs} args - Arguments to find a School
+     * @param {ExhibitionFindFirstOrThrowArgs} args - Arguments to find a Exhibition
      * @example
-     * // Get one School
-     * const school = await prisma.school.findFirstOrThrow({
+     * // Get one Exhibition
+     * const exhibition = await prisma.exhibition.findFirstOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirstOrThrow<T extends SchoolFindFirstOrThrowArgs>(args?: SelectSubset<T, SchoolFindFirstOrThrowArgs<ExtArgs>>): Prisma__SchoolClient<$Result.GetResult<Prisma.$SchoolPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+    findFirstOrThrow<T extends ExhibitionFindFirstOrThrowArgs>(args?: SelectSubset<T, ExhibitionFindFirstOrThrowArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
 
     /**
-     * Find zero or more Schools that matches the filter.
+     * Find zero or more Exhibitions that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {SchoolFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @param {ExhibitionFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
-     * // Get all Schools
-     * const schools = await prisma.school.findMany()
+     * // Get all Exhibitions
+     * const exhibitions = await prisma.exhibition.findMany()
      * 
-     * // Get first 10 Schools
-     * const schools = await prisma.school.findMany({ take: 10 })
+     * // Get first 10 Exhibitions
+     * const exhibitions = await prisma.exhibition.findMany({ take: 10 })
      * 
-     * // Only select the `schoolId`
-     * const schoolWithSchoolIdOnly = await prisma.school.findMany({ select: { schoolId: true } })
+     * // Only select the `exhibitionId`
+     * const exhibitionWithExhibitionIdOnly = await prisma.exhibition.findMany({ select: { exhibitionId: true } })
      * 
      */
-    findMany<T extends SchoolFindManyArgs>(args?: SelectSubset<T, SchoolFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SchoolPayload<ExtArgs>, T, "findMany">>
+    findMany<T extends ExhibitionFindManyArgs>(args?: SelectSubset<T, ExhibitionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "findMany">>
 
     /**
-     * Create a School.
-     * @param {SchoolCreateArgs} args - Arguments to create a School.
+     * Create a Exhibition.
+     * @param {ExhibitionCreateArgs} args - Arguments to create a Exhibition.
      * @example
-     * // Create one School
-     * const School = await prisma.school.create({
+     * // Create one Exhibition
+     * const Exhibition = await prisma.exhibition.create({
      *   data: {
-     *     // ... data to create a School
+     *     // ... data to create a Exhibition
      *   }
      * })
      * 
      */
-    create<T extends SchoolCreateArgs>(args: SelectSubset<T, SchoolCreateArgs<ExtArgs>>): Prisma__SchoolClient<$Result.GetResult<Prisma.$SchoolPayload<ExtArgs>, T, "create">, never, ExtArgs>
+    create<T extends ExhibitionCreateArgs>(args: SelectSubset<T, ExhibitionCreateArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "create">, never, ExtArgs>
 
     /**
-     * Create many Schools.
-     * @param {SchoolCreateManyArgs} args - Arguments to create many Schools.
+     * Create many Exhibitions.
+     * @param {ExhibitionCreateManyArgs} args - Arguments to create many Exhibitions.
      * @example
-     * // Create many Schools
-     * const school = await prisma.school.createMany({
+     * // Create many Exhibitions
+     * const exhibition = await prisma.exhibition.createMany({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      *     
      */
-    createMany<T extends SchoolCreateManyArgs>(args?: SelectSubset<T, SchoolCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    createMany<T extends ExhibitionCreateManyArgs>(args?: SelectSubset<T, ExhibitionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Create many Schools and returns the data saved in the database.
-     * @param {SchoolCreateManyAndReturnArgs} args - Arguments to create many Schools.
+     * Create many Exhibitions and returns the data saved in the database.
+     * @param {ExhibitionCreateManyAndReturnArgs} args - Arguments to create many Exhibitions.
      * @example
-     * // Create many Schools
-     * const school = await prisma.school.createManyAndReturn({
+     * // Create many Exhibitions
+     * const exhibition = await prisma.exhibition.createManyAndReturn({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      * 
-     * // Create many Schools and only return the `schoolId`
-     * const schoolWithSchoolIdOnly = await prisma.school.createManyAndReturn({ 
-     *   select: { schoolId: true },
+     * // Create many Exhibitions and only return the `exhibitionId`
+     * const exhibitionWithExhibitionIdOnly = await prisma.exhibition.createManyAndReturn({ 
+     *   select: { exhibitionId: true },
      *   data: [
      *     // ... provide data here
      *   ]
@@ -3410,28 +3410,28 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    createManyAndReturn<T extends SchoolCreateManyAndReturnArgs>(args?: SelectSubset<T, SchoolCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SchoolPayload<ExtArgs>, T, "createManyAndReturn">>
+    createManyAndReturn<T extends ExhibitionCreateManyAndReturnArgs>(args?: SelectSubset<T, ExhibitionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "createManyAndReturn">>
 
     /**
-     * Delete a School.
-     * @param {SchoolDeleteArgs} args - Arguments to delete one School.
+     * Delete a Exhibition.
+     * @param {ExhibitionDeleteArgs} args - Arguments to delete one Exhibition.
      * @example
-     * // Delete one School
-     * const School = await prisma.school.delete({
+     * // Delete one Exhibition
+     * const Exhibition = await prisma.exhibition.delete({
      *   where: {
-     *     // ... filter to delete one School
+     *     // ... filter to delete one Exhibition
      *   }
      * })
      * 
      */
-    delete<T extends SchoolDeleteArgs>(args: SelectSubset<T, SchoolDeleteArgs<ExtArgs>>): Prisma__SchoolClient<$Result.GetResult<Prisma.$SchoolPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+    delete<T extends ExhibitionDeleteArgs>(args: SelectSubset<T, ExhibitionDeleteArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "delete">, never, ExtArgs>
 
     /**
-     * Update one School.
-     * @param {SchoolUpdateArgs} args - Arguments to update one School.
+     * Update one Exhibition.
+     * @param {ExhibitionUpdateArgs} args - Arguments to update one Exhibition.
      * @example
-     * // Update one School
-     * const school = await prisma.school.update({
+     * // Update one Exhibition
+     * const exhibition = await prisma.exhibition.update({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -3441,30 +3441,30 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends SchoolUpdateArgs>(args: SelectSubset<T, SchoolUpdateArgs<ExtArgs>>): Prisma__SchoolClient<$Result.GetResult<Prisma.$SchoolPayload<ExtArgs>, T, "update">, never, ExtArgs>
+    update<T extends ExhibitionUpdateArgs>(args: SelectSubset<T, ExhibitionUpdateArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "update">, never, ExtArgs>
 
     /**
-     * Delete zero or more Schools.
-     * @param {SchoolDeleteManyArgs} args - Arguments to filter Schools to delete.
+     * Delete zero or more Exhibitions.
+     * @param {ExhibitionDeleteManyArgs} args - Arguments to filter Exhibitions to delete.
      * @example
-     * // Delete a few Schools
-     * const { count } = await prisma.school.deleteMany({
+     * // Delete a few Exhibitions
+     * const { count } = await prisma.exhibition.deleteMany({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      * 
      */
-    deleteMany<T extends SchoolDeleteManyArgs>(args?: SelectSubset<T, SchoolDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    deleteMany<T extends ExhibitionDeleteManyArgs>(args?: SelectSubset<T, ExhibitionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more Schools.
+     * Update zero or more Exhibitions.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {SchoolUpdateManyArgs} args - Arguments to update one or more rows.
+     * @param {ExhibitionUpdateManyArgs} args - Arguments to update one or more rows.
      * @example
-     * // Update many Schools
-     * const school = await prisma.school.updateMany({
+     * // Update many Exhibitions
+     * const exhibition = await prisma.exhibition.updateMany({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -3474,56 +3474,56 @@ export namespace Prisma {
      * })
      * 
      */
-    updateMany<T extends SchoolUpdateManyArgs>(args: SelectSubset<T, SchoolUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    updateMany<T extends ExhibitionUpdateManyArgs>(args: SelectSubset<T, ExhibitionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Create or update one School.
-     * @param {SchoolUpsertArgs} args - Arguments to update or create a School.
+     * Create or update one Exhibition.
+     * @param {ExhibitionUpsertArgs} args - Arguments to update or create a Exhibition.
      * @example
-     * // Update or create a School
-     * const school = await prisma.school.upsert({
+     * // Update or create a Exhibition
+     * const exhibition = await prisma.exhibition.upsert({
      *   create: {
-     *     // ... data to create a School
+     *     // ... data to create a Exhibition
      *   },
      *   update: {
      *     // ... in case it already exists, update
      *   },
      *   where: {
-     *     // ... the filter for the School we want to update
+     *     // ... the filter for the Exhibition we want to update
      *   }
      * })
      */
-    upsert<T extends SchoolUpsertArgs>(args: SelectSubset<T, SchoolUpsertArgs<ExtArgs>>): Prisma__SchoolClient<$Result.GetResult<Prisma.$SchoolPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+    upsert<T extends ExhibitionUpsertArgs>(args: SelectSubset<T, ExhibitionUpsertArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
 
 
     /**
-     * Count the number of Schools.
+     * Count the number of Exhibitions.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {SchoolCountArgs} args - Arguments to filter Schools to count.
+     * @param {ExhibitionCountArgs} args - Arguments to filter Exhibitions to count.
      * @example
-     * // Count the number of Schools
-     * const count = await prisma.school.count({
+     * // Count the number of Exhibitions
+     * const count = await prisma.exhibition.count({
      *   where: {
-     *     // ... the filter for the Schools we want to count
+     *     // ... the filter for the Exhibitions we want to count
      *   }
      * })
     **/
-    count<T extends SchoolCountArgs>(
-      args?: Subset<T, SchoolCountArgs>,
+    count<T extends ExhibitionCountArgs>(
+      args?: Subset<T, ExhibitionCountArgs>,
     ): Prisma.PrismaPromise<
       T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
-          : GetScalarType<T['select'], SchoolCountAggregateOutputType>
+          : GetScalarType<T['select'], ExhibitionCountAggregateOutputType>
         : number
     >
 
     /**
-     * Allows you to perform aggregations operations on a School.
+     * Allows you to perform aggregations operations on a Exhibition.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {SchoolAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @param {ExhibitionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
      * @example
      * // Ordered by age ascending
      * // Where email contains prisma.io
@@ -3543,13 +3543,13 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends SchoolAggregateArgs>(args: Subset<T, SchoolAggregateArgs>): Prisma.PrismaPromise<GetSchoolAggregateType<T>>
+    aggregate<T extends ExhibitionAggregateArgs>(args: Subset<T, ExhibitionAggregateArgs>): Prisma.PrismaPromise<GetExhibitionAggregateType<T>>
 
     /**
-     * Group by School.
+     * Group by Exhibition.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {SchoolGroupByArgs} args - Group by arguments.
+     * @param {ExhibitionGroupByArgs} args - Group by arguments.
      * @example
      * // Group by city, order by createdAt, get count
      * const result = await prisma.user.groupBy({
@@ -3564,14 +3564,14 @@ export namespace Prisma {
      * 
     **/
     groupBy<
-      T extends SchoolGroupByArgs,
+      T extends ExhibitionGroupByArgs,
       HasSelectOrTake extends Or<
         Extends<'skip', Keys<T>>,
         Extends<'take', Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: SchoolGroupByArgs['orderBy'] }
-        : { orderBy?: SchoolGroupByArgs['orderBy'] },
+        ? { orderBy: ExhibitionGroupByArgs['orderBy'] }
+        : { orderBy?: ExhibitionGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
       ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
@@ -3620,24 +3620,24 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, SchoolGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSchoolGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, ExhibitionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetExhibitionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
   /**
-   * Fields of the School model
+   * Fields of the Exhibition model
    */
-  readonly fields: SchoolFieldRefs;
+  readonly fields: ExhibitionFieldRefs;
   }
 
   /**
-   * The delegate class that acts as a "Promise-like" for School.
+   * The delegate class that acts as a "Promise-like" for Exhibition.
    * Why is this prefixed with `Prisma__`?
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__SchoolClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__ExhibitionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    status<T extends School$statusArgs<ExtArgs> = {}>(args?: Subset<T, School$statusArgs<ExtArgs>>): Prisma__StatusClient<$Result.GetResult<Prisma.$StatusPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
-    courses<T extends School$coursesArgs<ExtArgs> = {}>(args?: Subset<T, School$coursesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CoursePayload<ExtArgs>, T, "findMany"> | Null>
-    images<T extends School$imagesArgs<ExtArgs> = {}>(args?: Subset<T, School$imagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImagePayload<ExtArgs>, T, "findMany"> | Null>
+    status<T extends Exhibition$statusArgs<ExtArgs> = {}>(args?: Subset<T, Exhibition$statusArgs<ExtArgs>>): Prisma__StatusClient<$Result.GetResult<Prisma.$StatusPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    exhibits<T extends Exhibition$exhibitsArgs<ExtArgs> = {}>(args?: Subset<T, Exhibition$exhibitsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findMany"> | Null>
+    images<T extends Exhibition$imagesArgs<ExtArgs> = {}>(args?: Subset<T, Exhibition$imagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImagePayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3664,336 +3664,336 @@ export namespace Prisma {
 
 
   /**
-   * Fields of the School model
+   * Fields of the Exhibition model
    */ 
-  interface SchoolFieldRefs {
-    readonly schoolId: FieldRef<"School", 'BigInt'>
-    readonly title: FieldRef<"School", 'String'>
-    readonly description: FieldRef<"School", 'String'>
-    readonly statusId: FieldRef<"School", 'Int'>
-    readonly createdAt: FieldRef<"School", 'DateTime'>
-    readonly updatedAt: FieldRef<"School", 'DateTime'>
+  interface ExhibitionFieldRefs {
+    readonly exhibitionId: FieldRef<"Exhibition", 'BigInt'>
+    readonly title: FieldRef<"Exhibition", 'String'>
+    readonly description: FieldRef<"Exhibition", 'String'>
+    readonly statusId: FieldRef<"Exhibition", 'Int'>
+    readonly createdAt: FieldRef<"Exhibition", 'DateTime'>
+    readonly updatedAt: FieldRef<"Exhibition", 'DateTime'>
   }
     
 
   // Custom InputTypes
   /**
-   * School findUnique
+   * Exhibition findUnique
    */
-  export type SchoolFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the School
+     * Select specific fields to fetch from the Exhibition
      */
-    select?: SchoolSelect<ExtArgs> | null
+    select?: ExhibitionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SchoolInclude<ExtArgs> | null
+    include?: ExhibitionInclude<ExtArgs> | null
     /**
-     * Filter, which School to fetch.
+     * Filter, which Exhibition to fetch.
      */
-    where: SchoolWhereUniqueInput
+    where: ExhibitionWhereUniqueInput
   }
 
   /**
-   * School findUniqueOrThrow
+   * Exhibition findUniqueOrThrow
    */
-  export type SchoolFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the School
+     * Select specific fields to fetch from the Exhibition
      */
-    select?: SchoolSelect<ExtArgs> | null
+    select?: ExhibitionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SchoolInclude<ExtArgs> | null
+    include?: ExhibitionInclude<ExtArgs> | null
     /**
-     * Filter, which School to fetch.
+     * Filter, which Exhibition to fetch.
      */
-    where: SchoolWhereUniqueInput
+    where: ExhibitionWhereUniqueInput
   }
 
   /**
-   * School findFirst
+   * Exhibition findFirst
    */
-  export type SchoolFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the School
+     * Select specific fields to fetch from the Exhibition
      */
-    select?: SchoolSelect<ExtArgs> | null
+    select?: ExhibitionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SchoolInclude<ExtArgs> | null
+    include?: ExhibitionInclude<ExtArgs> | null
     /**
-     * Filter, which School to fetch.
+     * Filter, which Exhibition to fetch.
      */
-    where?: SchoolWhereInput
+    where?: ExhibitionWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Schools to fetch.
+     * Determine the order of Exhibitions to fetch.
      */
-    orderBy?: SchoolOrderByWithRelationInput | SchoolOrderByWithRelationInput[]
+    orderBy?: ExhibitionOrderByWithRelationInput | ExhibitionOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for Schools.
+     * Sets the position for searching for Exhibitions.
      */
-    cursor?: SchoolWhereUniqueInput
+    cursor?: ExhibitionWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Schools from the position of the cursor.
+     * Take `±n` Exhibitions from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Schools.
+     * Skip the first `n` Exhibitions.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of Schools.
+     * Filter by unique combinations of Exhibitions.
      */
-    distinct?: SchoolScalarFieldEnum | SchoolScalarFieldEnum[]
+    distinct?: ExhibitionScalarFieldEnum | ExhibitionScalarFieldEnum[]
   }
 
   /**
-   * School findFirstOrThrow
+   * Exhibition findFirstOrThrow
    */
-  export type SchoolFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the School
+     * Select specific fields to fetch from the Exhibition
      */
-    select?: SchoolSelect<ExtArgs> | null
+    select?: ExhibitionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SchoolInclude<ExtArgs> | null
+    include?: ExhibitionInclude<ExtArgs> | null
     /**
-     * Filter, which School to fetch.
+     * Filter, which Exhibition to fetch.
      */
-    where?: SchoolWhereInput
+    where?: ExhibitionWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Schools to fetch.
+     * Determine the order of Exhibitions to fetch.
      */
-    orderBy?: SchoolOrderByWithRelationInput | SchoolOrderByWithRelationInput[]
+    orderBy?: ExhibitionOrderByWithRelationInput | ExhibitionOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for Schools.
+     * Sets the position for searching for Exhibitions.
      */
-    cursor?: SchoolWhereUniqueInput
+    cursor?: ExhibitionWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Schools from the position of the cursor.
+     * Take `±n` Exhibitions from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Schools.
+     * Skip the first `n` Exhibitions.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of Schools.
+     * Filter by unique combinations of Exhibitions.
      */
-    distinct?: SchoolScalarFieldEnum | SchoolScalarFieldEnum[]
+    distinct?: ExhibitionScalarFieldEnum | ExhibitionScalarFieldEnum[]
   }
 
   /**
-   * School findMany
+   * Exhibition findMany
    */
-  export type SchoolFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the School
+     * Select specific fields to fetch from the Exhibition
      */
-    select?: SchoolSelect<ExtArgs> | null
+    select?: ExhibitionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SchoolInclude<ExtArgs> | null
+    include?: ExhibitionInclude<ExtArgs> | null
     /**
-     * Filter, which Schools to fetch.
+     * Filter, which Exhibitions to fetch.
      */
-    where?: SchoolWhereInput
+    where?: ExhibitionWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Schools to fetch.
+     * Determine the order of Exhibitions to fetch.
      */
-    orderBy?: SchoolOrderByWithRelationInput | SchoolOrderByWithRelationInput[]
+    orderBy?: ExhibitionOrderByWithRelationInput | ExhibitionOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing Schools.
+     * Sets the position for listing Exhibitions.
      */
-    cursor?: SchoolWhereUniqueInput
+    cursor?: ExhibitionWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Schools from the position of the cursor.
+     * Take `±n` Exhibitions from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Schools.
+     * Skip the first `n` Exhibitions.
      */
     skip?: number
-    distinct?: SchoolScalarFieldEnum | SchoolScalarFieldEnum[]
+    distinct?: ExhibitionScalarFieldEnum | ExhibitionScalarFieldEnum[]
   }
 
   /**
-   * School create
+   * Exhibition create
    */
-  export type SchoolCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the School
+     * Select specific fields to fetch from the Exhibition
      */
-    select?: SchoolSelect<ExtArgs> | null
+    select?: ExhibitionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SchoolInclude<ExtArgs> | null
+    include?: ExhibitionInclude<ExtArgs> | null
     /**
-     * The data needed to create a School.
+     * The data needed to create a Exhibition.
      */
-    data: XOR<SchoolCreateInput, SchoolUncheckedCreateInput>
+    data: XOR<ExhibitionCreateInput, ExhibitionUncheckedCreateInput>
   }
 
   /**
-   * School createMany
+   * Exhibition createMany
    */
-  export type SchoolCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to create many Schools.
+     * The data used to create many Exhibitions.
      */
-    data: SchoolCreateManyInput | SchoolCreateManyInput[]
+    data: ExhibitionCreateManyInput | ExhibitionCreateManyInput[]
     skipDuplicates?: boolean
   }
 
   /**
-   * School createManyAndReturn
+   * Exhibition createManyAndReturn
    */
-  export type SchoolCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the School
+     * Select specific fields to fetch from the Exhibition
      */
-    select?: SchoolSelectCreateManyAndReturn<ExtArgs> | null
+    select?: ExhibitionSelectCreateManyAndReturn<ExtArgs> | null
     /**
-     * The data used to create many Schools.
+     * The data used to create many Exhibitions.
      */
-    data: SchoolCreateManyInput | SchoolCreateManyInput[]
+    data: ExhibitionCreateManyInput | ExhibitionCreateManyInput[]
     skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SchoolIncludeCreateManyAndReturn<ExtArgs> | null
+    include?: ExhibitionIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * School update
+   * Exhibition update
    */
-  export type SchoolUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the School
+     * Select specific fields to fetch from the Exhibition
      */
-    select?: SchoolSelect<ExtArgs> | null
+    select?: ExhibitionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SchoolInclude<ExtArgs> | null
+    include?: ExhibitionInclude<ExtArgs> | null
     /**
-     * The data needed to update a School.
+     * The data needed to update a Exhibition.
      */
-    data: XOR<SchoolUpdateInput, SchoolUncheckedUpdateInput>
+    data: XOR<ExhibitionUpdateInput, ExhibitionUncheckedUpdateInput>
     /**
-     * Choose, which School to update.
+     * Choose, which Exhibition to update.
      */
-    where: SchoolWhereUniqueInput
+    where: ExhibitionWhereUniqueInput
   }
 
   /**
-   * School updateMany
+   * Exhibition updateMany
    */
-  export type SchoolUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to update Schools.
+     * The data used to update Exhibitions.
      */
-    data: XOR<SchoolUpdateManyMutationInput, SchoolUncheckedUpdateManyInput>
+    data: XOR<ExhibitionUpdateManyMutationInput, ExhibitionUncheckedUpdateManyInput>
     /**
-     * Filter which Schools to update
+     * Filter which Exhibitions to update
      */
-    where?: SchoolWhereInput
+    where?: ExhibitionWhereInput
   }
 
   /**
-   * School upsert
+   * Exhibition upsert
    */
-  export type SchoolUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the School
+     * Select specific fields to fetch from the Exhibition
      */
-    select?: SchoolSelect<ExtArgs> | null
+    select?: ExhibitionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SchoolInclude<ExtArgs> | null
+    include?: ExhibitionInclude<ExtArgs> | null
     /**
-     * The filter to search for the School to update in case it exists.
+     * The filter to search for the Exhibition to update in case it exists.
      */
-    where: SchoolWhereUniqueInput
+    where: ExhibitionWhereUniqueInput
     /**
-     * In case the School found by the `where` argument doesn't exist, create a new School with this data.
+     * In case the Exhibition found by the `where` argument doesn't exist, create a new Exhibition with this data.
      */
-    create: XOR<SchoolCreateInput, SchoolUncheckedCreateInput>
+    create: XOR<ExhibitionCreateInput, ExhibitionUncheckedCreateInput>
     /**
-     * In case the School was found with the provided `where` argument, update it with this data.
+     * In case the Exhibition was found with the provided `where` argument, update it with this data.
      */
-    update: XOR<SchoolUpdateInput, SchoolUncheckedUpdateInput>
+    update: XOR<ExhibitionUpdateInput, ExhibitionUncheckedUpdateInput>
   }
 
   /**
-   * School delete
+   * Exhibition delete
    */
-  export type SchoolDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the School
+     * Select specific fields to fetch from the Exhibition
      */
-    select?: SchoolSelect<ExtArgs> | null
+    select?: ExhibitionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SchoolInclude<ExtArgs> | null
+    include?: ExhibitionInclude<ExtArgs> | null
     /**
-     * Filter which School to delete.
+     * Filter which Exhibition to delete.
      */
-    where: SchoolWhereUniqueInput
+    where: ExhibitionWhereUniqueInput
   }
 
   /**
-   * School deleteMany
+   * Exhibition deleteMany
    */
-  export type SchoolDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which Schools to delete
+     * Filter which Exhibitions to delete
      */
-    where?: SchoolWhereInput
+    where?: ExhibitionWhereInput
   }
 
   /**
-   * School.status
+   * Exhibition.status
    */
-  export type School$statusArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Exhibition$statusArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Status
      */
@@ -4006,29 +4006,29 @@ export namespace Prisma {
   }
 
   /**
-   * School.courses
+   * Exhibition.exhibits
    */
-  export type School$coursesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Exhibition$exhibitsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Course
+     * Select specific fields to fetch from the Exhibit
      */
-    select?: CourseSelect<ExtArgs> | null
+    select?: ExhibitSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CourseInclude<ExtArgs> | null
-    where?: CourseWhereInput
-    orderBy?: CourseOrderByWithRelationInput | CourseOrderByWithRelationInput[]
-    cursor?: CourseWhereUniqueInput
+    include?: ExhibitInclude<ExtArgs> | null
+    where?: ExhibitWhereInput
+    orderBy?: ExhibitOrderByWithRelationInput | ExhibitOrderByWithRelationInput[]
+    cursor?: ExhibitWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: CourseScalarFieldEnum | CourseScalarFieldEnum[]
+    distinct?: ExhibitScalarFieldEnum | ExhibitScalarFieldEnum[]
   }
 
   /**
-   * School.images
+   * Exhibition.images
    */
-  export type School$imagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Exhibition$imagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Image
      */
@@ -4046,60 +4046,49 @@ export namespace Prisma {
   }
 
   /**
-   * School without action
+   * Exhibition without action
    */
-  export type SchoolDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the School
+     * Select specific fields to fetch from the Exhibition
      */
-    select?: SchoolSelect<ExtArgs> | null
+    select?: ExhibitionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SchoolInclude<ExtArgs> | null
+    include?: ExhibitionInclude<ExtArgs> | null
   }
 
 
   /**
-   * Model Course
+   * Model Exhibit
    */
 
-  export type AggregateCourse = {
-    _count: CourseCountAggregateOutputType | null
-    _avg: CourseAvgAggregateOutputType | null
-    _sum: CourseSumAggregateOutputType | null
-    _min: CourseMinAggregateOutputType | null
-    _max: CourseMaxAggregateOutputType | null
+  export type AggregateExhibit = {
+    _count: ExhibitCountAggregateOutputType | null
+    _avg: ExhibitAvgAggregateOutputType | null
+    _sum: ExhibitSumAggregateOutputType | null
+    _min: ExhibitMinAggregateOutputType | null
+    _max: ExhibitMaxAggregateOutputType | null
   }
 
-  export type CourseAvgAggregateOutputType = {
-    courseId: number | null
-    schoolId: number | null
+  export type ExhibitAvgAggregateOutputType = {
+    exhibitId: number | null
+    exhibitionId: number | null
     badgeId: number | null
     statusId: number | null
   }
 
-  export type CourseSumAggregateOutputType = {
-    courseId: bigint | null
-    schoolId: bigint | null
+  export type ExhibitSumAggregateOutputType = {
+    exhibitId: bigint | null
+    exhibitionId: bigint | null
     badgeId: bigint | null
     statusId: number | null
   }
 
-  export type CourseMinAggregateOutputType = {
-    courseId: bigint | null
-    schoolId: bigint | null
-    badgeId: bigint | null
-    title: string | null
-    description: string | null
-    statusId: number | null
-    createdAt: Date | null
-    updatedAt: Date | null
-  }
-
-  export type CourseMaxAggregateOutputType = {
-    courseId: bigint | null
-    schoolId: bigint | null
+  export type ExhibitMinAggregateOutputType = {
+    exhibitId: bigint | null
+    exhibitionId: bigint | null
     badgeId: bigint | null
     title: string | null
     description: string | null
@@ -4108,9 +4097,20 @@ export namespace Prisma {
     updatedAt: Date | null
   }
 
-  export type CourseCountAggregateOutputType = {
-    courseId: number
-    schoolId: number
+  export type ExhibitMaxAggregateOutputType = {
+    exhibitId: bigint | null
+    exhibitionId: bigint | null
+    badgeId: bigint | null
+    title: string | null
+    description: string | null
+    statusId: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ExhibitCountAggregateOutputType = {
+    exhibitId: number
+    exhibitionId: number
     badgeId: number
     title: number
     description: number
@@ -4121,34 +4121,23 @@ export namespace Prisma {
   }
 
 
-  export type CourseAvgAggregateInputType = {
-    courseId?: true
-    schoolId?: true
+  export type ExhibitAvgAggregateInputType = {
+    exhibitId?: true
+    exhibitionId?: true
     badgeId?: true
     statusId?: true
   }
 
-  export type CourseSumAggregateInputType = {
-    courseId?: true
-    schoolId?: true
+  export type ExhibitSumAggregateInputType = {
+    exhibitId?: true
+    exhibitionId?: true
     badgeId?: true
     statusId?: true
   }
 
-  export type CourseMinAggregateInputType = {
-    courseId?: true
-    schoolId?: true
-    badgeId?: true
-    title?: true
-    description?: true
-    statusId?: true
-    createdAt?: true
-    updatedAt?: true
-  }
-
-  export type CourseMaxAggregateInputType = {
-    courseId?: true
-    schoolId?: true
+  export type ExhibitMinAggregateInputType = {
+    exhibitId?: true
+    exhibitionId?: true
     badgeId?: true
     title?: true
     description?: true
@@ -4157,9 +4146,20 @@ export namespace Prisma {
     updatedAt?: true
   }
 
-  export type CourseCountAggregateInputType = {
-    courseId?: true
-    schoolId?: true
+  export type ExhibitMaxAggregateInputType = {
+    exhibitId?: true
+    exhibitionId?: true
+    badgeId?: true
+    title?: true
+    description?: true
+    statusId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ExhibitCountAggregateInputType = {
+    exhibitId?: true
+    exhibitionId?: true
     badgeId?: true
     title?: true
     description?: true
@@ -4169,158 +4169,158 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type CourseAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which Course to aggregate.
+     * Filter which Exhibit to aggregate.
      */
-    where?: CourseWhereInput
+    where?: ExhibitWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Courses to fetch.
+     * Determine the order of Exhibits to fetch.
      */
-    orderBy?: CourseOrderByWithRelationInput | CourseOrderByWithRelationInput[]
+    orderBy?: ExhibitOrderByWithRelationInput | ExhibitOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: CourseWhereUniqueInput
+    cursor?: ExhibitWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Courses from the position of the cursor.
+     * Take `±n` Exhibits from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Courses.
+     * Skip the first `n` Exhibits.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Count returned Courses
+     * Count returned Exhibits
     **/
-    _count?: true | CourseCountAggregateInputType
+    _count?: true | ExhibitCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to average
     **/
-    _avg?: CourseAvgAggregateInputType
+    _avg?: ExhibitAvgAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to sum
     **/
-    _sum?: CourseSumAggregateInputType
+    _sum?: ExhibitSumAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the minimum value
     **/
-    _min?: CourseMinAggregateInputType
+    _min?: ExhibitMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the maximum value
     **/
-    _max?: CourseMaxAggregateInputType
+    _max?: ExhibitMaxAggregateInputType
   }
 
-  export type GetCourseAggregateType<T extends CourseAggregateArgs> = {
-        [P in keyof T & keyof AggregateCourse]: P extends '_count' | 'count'
+  export type GetExhibitAggregateType<T extends ExhibitAggregateArgs> = {
+        [P in keyof T & keyof AggregateExhibit]: P extends '_count' | 'count'
       ? T[P] extends true
         ? number
-        : GetScalarType<T[P], AggregateCourse[P]>
-      : GetScalarType<T[P], AggregateCourse[P]>
+        : GetScalarType<T[P], AggregateExhibit[P]>
+      : GetScalarType<T[P], AggregateExhibit[P]>
   }
 
 
 
 
-  export type CourseGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CourseWhereInput
-    orderBy?: CourseOrderByWithAggregationInput | CourseOrderByWithAggregationInput[]
-    by: CourseScalarFieldEnum[] | CourseScalarFieldEnum
-    having?: CourseScalarWhereWithAggregatesInput
+  export type ExhibitGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExhibitWhereInput
+    orderBy?: ExhibitOrderByWithAggregationInput | ExhibitOrderByWithAggregationInput[]
+    by: ExhibitScalarFieldEnum[] | ExhibitScalarFieldEnum
+    having?: ExhibitScalarWhereWithAggregatesInput
     take?: number
     skip?: number
-    _count?: CourseCountAggregateInputType | true
-    _avg?: CourseAvgAggregateInputType
-    _sum?: CourseSumAggregateInputType
-    _min?: CourseMinAggregateInputType
-    _max?: CourseMaxAggregateInputType
+    _count?: ExhibitCountAggregateInputType | true
+    _avg?: ExhibitAvgAggregateInputType
+    _sum?: ExhibitSumAggregateInputType
+    _min?: ExhibitMinAggregateInputType
+    _max?: ExhibitMaxAggregateInputType
   }
 
-  export type CourseGroupByOutputType = {
-    courseId: bigint
-    schoolId: bigint
+  export type ExhibitGroupByOutputType = {
+    exhibitId: bigint
+    exhibitionId: bigint
     badgeId: bigint | null
     title: string
     description: string | null
     statusId: number | null
     createdAt: Date | null
     updatedAt: Date | null
-    _count: CourseCountAggregateOutputType | null
-    _avg: CourseAvgAggregateOutputType | null
-    _sum: CourseSumAggregateOutputType | null
-    _min: CourseMinAggregateOutputType | null
-    _max: CourseMaxAggregateOutputType | null
+    _count: ExhibitCountAggregateOutputType | null
+    _avg: ExhibitAvgAggregateOutputType | null
+    _sum: ExhibitSumAggregateOutputType | null
+    _min: ExhibitMinAggregateOutputType | null
+    _max: ExhibitMaxAggregateOutputType | null
   }
 
-  type GetCourseGroupByPayload<T extends CourseGroupByArgs> = Prisma.PrismaPromise<
+  type GetExhibitGroupByPayload<T extends ExhibitGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<CourseGroupByOutputType, T['by']> &
+      PickEnumerable<ExhibitGroupByOutputType, T['by']> &
         {
-          [P in ((keyof T) & (keyof CourseGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof ExhibitGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
               ? number
-              : GetScalarType<T[P], CourseGroupByOutputType[P]>
-            : GetScalarType<T[P], CourseGroupByOutputType[P]>
+              : GetScalarType<T[P], ExhibitGroupByOutputType[P]>
+            : GetScalarType<T[P], ExhibitGroupByOutputType[P]>
         }
       >
     >
 
 
-  export type CourseSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    courseId?: boolean
-    schoolId?: boolean
+  export type ExhibitSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    exhibitId?: boolean
+    exhibitionId?: boolean
     badgeId?: boolean
     title?: boolean
     description?: boolean
     statusId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    school?: boolean | SchoolDefaultArgs<ExtArgs>
-    status?: boolean | Course$statusArgs<ExtArgs>
-    badge?: boolean | Course$badgeArgs<ExtArgs>
-    audio?: boolean | Course$audioArgs<ExtArgs>
-    feedbacks?: boolean | Course$feedbacksArgs<ExtArgs>
-    images?: boolean | Course$imagesArgs<ExtArgs>
-    qrCodes?: boolean | Course$qrCodesArgs<ExtArgs>
-    _count?: boolean | CourseCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["course"]>
+    exhibition?: boolean | ExhibitionDefaultArgs<ExtArgs>
+    status?: boolean | Exhibit$statusArgs<ExtArgs>
+    badge?: boolean | Exhibit$badgeArgs<ExtArgs>
+    audio?: boolean | Exhibit$audioArgs<ExtArgs>
+    feedbacks?: boolean | Exhibit$feedbacksArgs<ExtArgs>
+    images?: boolean | Exhibit$imagesArgs<ExtArgs>
+    qrCodes?: boolean | Exhibit$qrCodesArgs<ExtArgs>
+    _count?: boolean | ExhibitCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["exhibit"]>
 
-  export type CourseSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    courseId?: boolean
-    schoolId?: boolean
+  export type ExhibitSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    exhibitId?: boolean
+    exhibitionId?: boolean
     badgeId?: boolean
     title?: boolean
     description?: boolean
     statusId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    school?: boolean | SchoolDefaultArgs<ExtArgs>
-    status?: boolean | Course$statusArgs<ExtArgs>
-    badge?: boolean | Course$badgeArgs<ExtArgs>
-  }, ExtArgs["result"]["course"]>
+    exhibition?: boolean | ExhibitionDefaultArgs<ExtArgs>
+    status?: boolean | Exhibit$statusArgs<ExtArgs>
+    badge?: boolean | Exhibit$badgeArgs<ExtArgs>
+  }, ExtArgs["result"]["exhibit"]>
 
-  export type CourseSelectScalar = {
-    courseId?: boolean
-    schoolId?: boolean
+  export type ExhibitSelectScalar = {
+    exhibitId?: boolean
+    exhibitionId?: boolean
     badgeId?: boolean
     title?: boolean
     description?: boolean
@@ -4329,26 +4329,26 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type CourseInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    school?: boolean | SchoolDefaultArgs<ExtArgs>
-    status?: boolean | Course$statusArgs<ExtArgs>
-    badge?: boolean | Course$badgeArgs<ExtArgs>
-    audio?: boolean | Course$audioArgs<ExtArgs>
-    feedbacks?: boolean | Course$feedbacksArgs<ExtArgs>
-    images?: boolean | Course$imagesArgs<ExtArgs>
-    qrCodes?: boolean | Course$qrCodesArgs<ExtArgs>
-    _count?: boolean | CourseCountOutputTypeDefaultArgs<ExtArgs>
+  export type ExhibitInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    exhibition?: boolean | ExhibitionDefaultArgs<ExtArgs>
+    status?: boolean | Exhibit$statusArgs<ExtArgs>
+    badge?: boolean | Exhibit$badgeArgs<ExtArgs>
+    audio?: boolean | Exhibit$audioArgs<ExtArgs>
+    feedbacks?: boolean | Exhibit$feedbacksArgs<ExtArgs>
+    images?: boolean | Exhibit$imagesArgs<ExtArgs>
+    qrCodes?: boolean | Exhibit$qrCodesArgs<ExtArgs>
+    _count?: boolean | ExhibitCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type CourseIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    school?: boolean | SchoolDefaultArgs<ExtArgs>
-    status?: boolean | Course$statusArgs<ExtArgs>
-    badge?: boolean | Course$badgeArgs<ExtArgs>
+  export type ExhibitIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    exhibition?: boolean | ExhibitionDefaultArgs<ExtArgs>
+    status?: boolean | Exhibit$statusArgs<ExtArgs>
+    badge?: boolean | Exhibit$badgeArgs<ExtArgs>
   }
 
-  export type $CoursePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Course"
+  export type $ExhibitPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Exhibit"
     objects: {
-      school: Prisma.$SchoolPayload<ExtArgs>
+      exhibition: Prisma.$ExhibitionPayload<ExtArgs>
       status: Prisma.$StatusPayload<ExtArgs> | null
       badge: Prisma.$BadgePayload<ExtArgs> | null
       audio: Prisma.$AudioPayload<ExtArgs>[]
@@ -4357,145 +4357,145 @@ export namespace Prisma {
       qrCodes: Prisma.$QRCodePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
-      courseId: bigint
-      schoolId: bigint
+      exhibitId: bigint
+      exhibitionId: bigint
       badgeId: bigint | null
       title: string
       description: string | null
       statusId: number | null
       createdAt: Date | null
       updatedAt: Date | null
-    }, ExtArgs["result"]["course"]>
+    }, ExtArgs["result"]["exhibit"]>
     composites: {}
   }
 
-  type CourseGetPayload<S extends boolean | null | undefined | CourseDefaultArgs> = $Result.GetResult<Prisma.$CoursePayload, S>
+  type ExhibitGetPayload<S extends boolean | null | undefined | ExhibitDefaultArgs> = $Result.GetResult<Prisma.$ExhibitPayload, S>
 
-  type CourseCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
-    Omit<CourseFindManyArgs, 'select' | 'include' | 'distinct'> & {
-      select?: CourseCountAggregateInputType | true
+  type ExhibitCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<ExhibitFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: ExhibitCountAggregateInputType | true
     }
 
-  export interface CourseDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Course'], meta: { name: 'Course' } }
+  export interface ExhibitDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Exhibit'], meta: { name: 'Exhibit' } }
     /**
-     * Find zero or one Course that matches the filter.
-     * @param {CourseFindUniqueArgs} args - Arguments to find a Course
+     * Find zero or one Exhibit that matches the filter.
+     * @param {ExhibitFindUniqueArgs} args - Arguments to find a Exhibit
      * @example
-     * // Get one Course
-     * const course = await prisma.course.findUnique({
+     * // Get one Exhibit
+     * const exhibit = await prisma.exhibit.findUnique({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUnique<T extends CourseFindUniqueArgs>(args: SelectSubset<T, CourseFindUniqueArgs<ExtArgs>>): Prisma__CourseClient<$Result.GetResult<Prisma.$CoursePayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+    findUnique<T extends ExhibitFindUniqueArgs>(args: SelectSubset<T, ExhibitFindUniqueArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
 
     /**
-     * Find one Course that matches the filter or throw an error with `error.code='P2025'` 
+     * Find one Exhibit that matches the filter or throw an error with `error.code='P2025'` 
      * if no matches were found.
-     * @param {CourseFindUniqueOrThrowArgs} args - Arguments to find a Course
+     * @param {ExhibitFindUniqueOrThrowArgs} args - Arguments to find a Exhibit
      * @example
-     * // Get one Course
-     * const course = await prisma.course.findUniqueOrThrow({
+     * // Get one Exhibit
+     * const exhibit = await prisma.exhibit.findUniqueOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUniqueOrThrow<T extends CourseFindUniqueOrThrowArgs>(args: SelectSubset<T, CourseFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CourseClient<$Result.GetResult<Prisma.$CoursePayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+    findUniqueOrThrow<T extends ExhibitFindUniqueOrThrowArgs>(args: SelectSubset<T, ExhibitFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
 
     /**
-     * Find the first Course that matches the filter.
+     * Find the first Exhibit that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CourseFindFirstArgs} args - Arguments to find a Course
+     * @param {ExhibitFindFirstArgs} args - Arguments to find a Exhibit
      * @example
-     * // Get one Course
-     * const course = await prisma.course.findFirst({
+     * // Get one Exhibit
+     * const exhibit = await prisma.exhibit.findFirst({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirst<T extends CourseFindFirstArgs>(args?: SelectSubset<T, CourseFindFirstArgs<ExtArgs>>): Prisma__CourseClient<$Result.GetResult<Prisma.$CoursePayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+    findFirst<T extends ExhibitFindFirstArgs>(args?: SelectSubset<T, ExhibitFindFirstArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
 
     /**
-     * Find the first Course that matches the filter or
+     * Find the first Exhibit that matches the filter or
      * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CourseFindFirstOrThrowArgs} args - Arguments to find a Course
+     * @param {ExhibitFindFirstOrThrowArgs} args - Arguments to find a Exhibit
      * @example
-     * // Get one Course
-     * const course = await prisma.course.findFirstOrThrow({
+     * // Get one Exhibit
+     * const exhibit = await prisma.exhibit.findFirstOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirstOrThrow<T extends CourseFindFirstOrThrowArgs>(args?: SelectSubset<T, CourseFindFirstOrThrowArgs<ExtArgs>>): Prisma__CourseClient<$Result.GetResult<Prisma.$CoursePayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+    findFirstOrThrow<T extends ExhibitFindFirstOrThrowArgs>(args?: SelectSubset<T, ExhibitFindFirstOrThrowArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
 
     /**
-     * Find zero or more Courses that matches the filter.
+     * Find zero or more Exhibits that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CourseFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @param {ExhibitFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
-     * // Get all Courses
-     * const courses = await prisma.course.findMany()
+     * // Get all Exhibits
+     * const exhibits = await prisma.exhibit.findMany()
      * 
-     * // Get first 10 Courses
-     * const courses = await prisma.course.findMany({ take: 10 })
+     * // Get first 10 Exhibits
+     * const exhibits = await prisma.exhibit.findMany({ take: 10 })
      * 
-     * // Only select the `courseId`
-     * const courseWithCourseIdOnly = await prisma.course.findMany({ select: { courseId: true } })
+     * // Only select the `exhibitId`
+     * const exhibitWithExhibitIdOnly = await prisma.exhibit.findMany({ select: { exhibitId: true } })
      * 
      */
-    findMany<T extends CourseFindManyArgs>(args?: SelectSubset<T, CourseFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CoursePayload<ExtArgs>, T, "findMany">>
+    findMany<T extends ExhibitFindManyArgs>(args?: SelectSubset<T, ExhibitFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findMany">>
 
     /**
-     * Create a Course.
-     * @param {CourseCreateArgs} args - Arguments to create a Course.
+     * Create a Exhibit.
+     * @param {ExhibitCreateArgs} args - Arguments to create a Exhibit.
      * @example
-     * // Create one Course
-     * const Course = await prisma.course.create({
+     * // Create one Exhibit
+     * const Exhibit = await prisma.exhibit.create({
      *   data: {
-     *     // ... data to create a Course
+     *     // ... data to create a Exhibit
      *   }
      * })
      * 
      */
-    create<T extends CourseCreateArgs>(args: SelectSubset<T, CourseCreateArgs<ExtArgs>>): Prisma__CourseClient<$Result.GetResult<Prisma.$CoursePayload<ExtArgs>, T, "create">, never, ExtArgs>
+    create<T extends ExhibitCreateArgs>(args: SelectSubset<T, ExhibitCreateArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "create">, never, ExtArgs>
 
     /**
-     * Create many Courses.
-     * @param {CourseCreateManyArgs} args - Arguments to create many Courses.
+     * Create many Exhibits.
+     * @param {ExhibitCreateManyArgs} args - Arguments to create many Exhibits.
      * @example
-     * // Create many Courses
-     * const course = await prisma.course.createMany({
+     * // Create many Exhibits
+     * const exhibit = await prisma.exhibit.createMany({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      *     
      */
-    createMany<T extends CourseCreateManyArgs>(args?: SelectSubset<T, CourseCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    createMany<T extends ExhibitCreateManyArgs>(args?: SelectSubset<T, ExhibitCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Create many Courses and returns the data saved in the database.
-     * @param {CourseCreateManyAndReturnArgs} args - Arguments to create many Courses.
+     * Create many Exhibits and returns the data saved in the database.
+     * @param {ExhibitCreateManyAndReturnArgs} args - Arguments to create many Exhibits.
      * @example
-     * // Create many Courses
-     * const course = await prisma.course.createManyAndReturn({
+     * // Create many Exhibits
+     * const exhibit = await prisma.exhibit.createManyAndReturn({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      * 
-     * // Create many Courses and only return the `courseId`
-     * const courseWithCourseIdOnly = await prisma.course.createManyAndReturn({ 
-     *   select: { courseId: true },
+     * // Create many Exhibits and only return the `exhibitId`
+     * const exhibitWithExhibitIdOnly = await prisma.exhibit.createManyAndReturn({ 
+     *   select: { exhibitId: true },
      *   data: [
      *     // ... provide data here
      *   ]
@@ -4504,28 +4504,28 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    createManyAndReturn<T extends CourseCreateManyAndReturnArgs>(args?: SelectSubset<T, CourseCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CoursePayload<ExtArgs>, T, "createManyAndReturn">>
+    createManyAndReturn<T extends ExhibitCreateManyAndReturnArgs>(args?: SelectSubset<T, ExhibitCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "createManyAndReturn">>
 
     /**
-     * Delete a Course.
-     * @param {CourseDeleteArgs} args - Arguments to delete one Course.
+     * Delete a Exhibit.
+     * @param {ExhibitDeleteArgs} args - Arguments to delete one Exhibit.
      * @example
-     * // Delete one Course
-     * const Course = await prisma.course.delete({
+     * // Delete one Exhibit
+     * const Exhibit = await prisma.exhibit.delete({
      *   where: {
-     *     // ... filter to delete one Course
+     *     // ... filter to delete one Exhibit
      *   }
      * })
      * 
      */
-    delete<T extends CourseDeleteArgs>(args: SelectSubset<T, CourseDeleteArgs<ExtArgs>>): Prisma__CourseClient<$Result.GetResult<Prisma.$CoursePayload<ExtArgs>, T, "delete">, never, ExtArgs>
+    delete<T extends ExhibitDeleteArgs>(args: SelectSubset<T, ExhibitDeleteArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "delete">, never, ExtArgs>
 
     /**
-     * Update one Course.
-     * @param {CourseUpdateArgs} args - Arguments to update one Course.
+     * Update one Exhibit.
+     * @param {ExhibitUpdateArgs} args - Arguments to update one Exhibit.
      * @example
-     * // Update one Course
-     * const course = await prisma.course.update({
+     * // Update one Exhibit
+     * const exhibit = await prisma.exhibit.update({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -4535,30 +4535,30 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends CourseUpdateArgs>(args: SelectSubset<T, CourseUpdateArgs<ExtArgs>>): Prisma__CourseClient<$Result.GetResult<Prisma.$CoursePayload<ExtArgs>, T, "update">, never, ExtArgs>
+    update<T extends ExhibitUpdateArgs>(args: SelectSubset<T, ExhibitUpdateArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "update">, never, ExtArgs>
 
     /**
-     * Delete zero or more Courses.
-     * @param {CourseDeleteManyArgs} args - Arguments to filter Courses to delete.
+     * Delete zero or more Exhibits.
+     * @param {ExhibitDeleteManyArgs} args - Arguments to filter Exhibits to delete.
      * @example
-     * // Delete a few Courses
-     * const { count } = await prisma.course.deleteMany({
+     * // Delete a few Exhibits
+     * const { count } = await prisma.exhibit.deleteMany({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      * 
      */
-    deleteMany<T extends CourseDeleteManyArgs>(args?: SelectSubset<T, CourseDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    deleteMany<T extends ExhibitDeleteManyArgs>(args?: SelectSubset<T, ExhibitDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more Courses.
+     * Update zero or more Exhibits.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CourseUpdateManyArgs} args - Arguments to update one or more rows.
+     * @param {ExhibitUpdateManyArgs} args - Arguments to update one or more rows.
      * @example
-     * // Update many Courses
-     * const course = await prisma.course.updateMany({
+     * // Update many Exhibits
+     * const exhibit = await prisma.exhibit.updateMany({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -4568,56 +4568,56 @@ export namespace Prisma {
      * })
      * 
      */
-    updateMany<T extends CourseUpdateManyArgs>(args: SelectSubset<T, CourseUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    updateMany<T extends ExhibitUpdateManyArgs>(args: SelectSubset<T, ExhibitUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Create or update one Course.
-     * @param {CourseUpsertArgs} args - Arguments to update or create a Course.
+     * Create or update one Exhibit.
+     * @param {ExhibitUpsertArgs} args - Arguments to update or create a Exhibit.
      * @example
-     * // Update or create a Course
-     * const course = await prisma.course.upsert({
+     * // Update or create a Exhibit
+     * const exhibit = await prisma.exhibit.upsert({
      *   create: {
-     *     // ... data to create a Course
+     *     // ... data to create a Exhibit
      *   },
      *   update: {
      *     // ... in case it already exists, update
      *   },
      *   where: {
-     *     // ... the filter for the Course we want to update
+     *     // ... the filter for the Exhibit we want to update
      *   }
      * })
      */
-    upsert<T extends CourseUpsertArgs>(args: SelectSubset<T, CourseUpsertArgs<ExtArgs>>): Prisma__CourseClient<$Result.GetResult<Prisma.$CoursePayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+    upsert<T extends ExhibitUpsertArgs>(args: SelectSubset<T, ExhibitUpsertArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
 
 
     /**
-     * Count the number of Courses.
+     * Count the number of Exhibits.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CourseCountArgs} args - Arguments to filter Courses to count.
+     * @param {ExhibitCountArgs} args - Arguments to filter Exhibits to count.
      * @example
-     * // Count the number of Courses
-     * const count = await prisma.course.count({
+     * // Count the number of Exhibits
+     * const count = await prisma.exhibit.count({
      *   where: {
-     *     // ... the filter for the Courses we want to count
+     *     // ... the filter for the Exhibits we want to count
      *   }
      * })
     **/
-    count<T extends CourseCountArgs>(
-      args?: Subset<T, CourseCountArgs>,
+    count<T extends ExhibitCountArgs>(
+      args?: Subset<T, ExhibitCountArgs>,
     ): Prisma.PrismaPromise<
       T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
-          : GetScalarType<T['select'], CourseCountAggregateOutputType>
+          : GetScalarType<T['select'], ExhibitCountAggregateOutputType>
         : number
     >
 
     /**
-     * Allows you to perform aggregations operations on a Course.
+     * Allows you to perform aggregations operations on a Exhibit.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CourseAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @param {ExhibitAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
      * @example
      * // Ordered by age ascending
      * // Where email contains prisma.io
@@ -4637,13 +4637,13 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends CourseAggregateArgs>(args: Subset<T, CourseAggregateArgs>): Prisma.PrismaPromise<GetCourseAggregateType<T>>
+    aggregate<T extends ExhibitAggregateArgs>(args: Subset<T, ExhibitAggregateArgs>): Prisma.PrismaPromise<GetExhibitAggregateType<T>>
 
     /**
-     * Group by Course.
+     * Group by Exhibit.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CourseGroupByArgs} args - Group by arguments.
+     * @param {ExhibitGroupByArgs} args - Group by arguments.
      * @example
      * // Group by city, order by createdAt, get count
      * const result = await prisma.user.groupBy({
@@ -4658,14 +4658,14 @@ export namespace Prisma {
      * 
     **/
     groupBy<
-      T extends CourseGroupByArgs,
+      T extends ExhibitGroupByArgs,
       HasSelectOrTake extends Or<
         Extends<'skip', Keys<T>>,
         Extends<'take', Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: CourseGroupByArgs['orderBy'] }
-        : { orderBy?: CourseGroupByArgs['orderBy'] },
+        ? { orderBy: ExhibitGroupByArgs['orderBy'] }
+        : { orderBy?: ExhibitGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
       ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
@@ -4714,28 +4714,28 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, CourseGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCourseGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, ExhibitGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetExhibitGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
   /**
-   * Fields of the Course model
+   * Fields of the Exhibit model
    */
-  readonly fields: CourseFieldRefs;
+  readonly fields: ExhibitFieldRefs;
   }
 
   /**
-   * The delegate class that acts as a "Promise-like" for Course.
+   * The delegate class that acts as a "Promise-like" for Exhibit.
    * Why is this prefixed with `Prisma__`?
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__CourseClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__ExhibitClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    school<T extends SchoolDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SchoolDefaultArgs<ExtArgs>>): Prisma__SchoolClient<$Result.GetResult<Prisma.$SchoolPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
-    status<T extends Course$statusArgs<ExtArgs> = {}>(args?: Subset<T, Course$statusArgs<ExtArgs>>): Prisma__StatusClient<$Result.GetResult<Prisma.$StatusPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
-    badge<T extends Course$badgeArgs<ExtArgs> = {}>(args?: Subset<T, Course$badgeArgs<ExtArgs>>): Prisma__BadgeClient<$Result.GetResult<Prisma.$BadgePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
-    audio<T extends Course$audioArgs<ExtArgs> = {}>(args?: Subset<T, Course$audioArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AudioPayload<ExtArgs>, T, "findMany"> | Null>
-    feedbacks<T extends Course$feedbacksArgs<ExtArgs> = {}>(args?: Subset<T, Course$feedbacksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FeedbackPayload<ExtArgs>, T, "findMany"> | Null>
-    images<T extends Course$imagesArgs<ExtArgs> = {}>(args?: Subset<T, Course$imagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImagePayload<ExtArgs>, T, "findMany"> | Null>
-    qrCodes<T extends Course$qrCodesArgs<ExtArgs> = {}>(args?: Subset<T, Course$qrCodesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QRCodePayload<ExtArgs>, T, "findMany"> | Null>
+    exhibition<T extends ExhibitionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ExhibitionDefaultArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    status<T extends Exhibit$statusArgs<ExtArgs> = {}>(args?: Subset<T, Exhibit$statusArgs<ExtArgs>>): Prisma__StatusClient<$Result.GetResult<Prisma.$StatusPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    badge<T extends Exhibit$badgeArgs<ExtArgs> = {}>(args?: Subset<T, Exhibit$badgeArgs<ExtArgs>>): Prisma__BadgeClient<$Result.GetResult<Prisma.$BadgePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    audio<T extends Exhibit$audioArgs<ExtArgs> = {}>(args?: Subset<T, Exhibit$audioArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AudioPayload<ExtArgs>, T, "findMany"> | Null>
+    feedbacks<T extends Exhibit$feedbacksArgs<ExtArgs> = {}>(args?: Subset<T, Exhibit$feedbacksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FeedbackPayload<ExtArgs>, T, "findMany"> | Null>
+    images<T extends Exhibit$imagesArgs<ExtArgs> = {}>(args?: Subset<T, Exhibit$imagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImagePayload<ExtArgs>, T, "findMany"> | Null>
+    qrCodes<T extends Exhibit$qrCodesArgs<ExtArgs> = {}>(args?: Subset<T, Exhibit$qrCodesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QRCodePayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4762,338 +4762,338 @@ export namespace Prisma {
 
 
   /**
-   * Fields of the Course model
+   * Fields of the Exhibit model
    */ 
-  interface CourseFieldRefs {
-    readonly courseId: FieldRef<"Course", 'BigInt'>
-    readonly schoolId: FieldRef<"Course", 'BigInt'>
-    readonly badgeId: FieldRef<"Course", 'BigInt'>
-    readonly title: FieldRef<"Course", 'String'>
-    readonly description: FieldRef<"Course", 'String'>
-    readonly statusId: FieldRef<"Course", 'Int'>
-    readonly createdAt: FieldRef<"Course", 'DateTime'>
-    readonly updatedAt: FieldRef<"Course", 'DateTime'>
+  interface ExhibitFieldRefs {
+    readonly exhibitId: FieldRef<"Exhibit", 'BigInt'>
+    readonly exhibitionId: FieldRef<"Exhibit", 'BigInt'>
+    readonly badgeId: FieldRef<"Exhibit", 'BigInt'>
+    readonly title: FieldRef<"Exhibit", 'String'>
+    readonly description: FieldRef<"Exhibit", 'String'>
+    readonly statusId: FieldRef<"Exhibit", 'Int'>
+    readonly createdAt: FieldRef<"Exhibit", 'DateTime'>
+    readonly updatedAt: FieldRef<"Exhibit", 'DateTime'>
   }
     
 
   // Custom InputTypes
   /**
-   * Course findUnique
+   * Exhibit findUnique
    */
-  export type CourseFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Course
+     * Select specific fields to fetch from the Exhibit
      */
-    select?: CourseSelect<ExtArgs> | null
+    select?: ExhibitSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CourseInclude<ExtArgs> | null
+    include?: ExhibitInclude<ExtArgs> | null
     /**
-     * Filter, which Course to fetch.
+     * Filter, which Exhibit to fetch.
      */
-    where: CourseWhereUniqueInput
+    where: ExhibitWhereUniqueInput
   }
 
   /**
-   * Course findUniqueOrThrow
+   * Exhibit findUniqueOrThrow
    */
-  export type CourseFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Course
+     * Select specific fields to fetch from the Exhibit
      */
-    select?: CourseSelect<ExtArgs> | null
+    select?: ExhibitSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CourseInclude<ExtArgs> | null
+    include?: ExhibitInclude<ExtArgs> | null
     /**
-     * Filter, which Course to fetch.
+     * Filter, which Exhibit to fetch.
      */
-    where: CourseWhereUniqueInput
+    where: ExhibitWhereUniqueInput
   }
 
   /**
-   * Course findFirst
+   * Exhibit findFirst
    */
-  export type CourseFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Course
+     * Select specific fields to fetch from the Exhibit
      */
-    select?: CourseSelect<ExtArgs> | null
+    select?: ExhibitSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CourseInclude<ExtArgs> | null
+    include?: ExhibitInclude<ExtArgs> | null
     /**
-     * Filter, which Course to fetch.
+     * Filter, which Exhibit to fetch.
      */
-    where?: CourseWhereInput
+    where?: ExhibitWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Courses to fetch.
+     * Determine the order of Exhibits to fetch.
      */
-    orderBy?: CourseOrderByWithRelationInput | CourseOrderByWithRelationInput[]
+    orderBy?: ExhibitOrderByWithRelationInput | ExhibitOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for Courses.
+     * Sets the position for searching for Exhibits.
      */
-    cursor?: CourseWhereUniqueInput
+    cursor?: ExhibitWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Courses from the position of the cursor.
+     * Take `±n` Exhibits from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Courses.
+     * Skip the first `n` Exhibits.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of Courses.
+     * Filter by unique combinations of Exhibits.
      */
-    distinct?: CourseScalarFieldEnum | CourseScalarFieldEnum[]
+    distinct?: ExhibitScalarFieldEnum | ExhibitScalarFieldEnum[]
   }
 
   /**
-   * Course findFirstOrThrow
+   * Exhibit findFirstOrThrow
    */
-  export type CourseFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Course
+     * Select specific fields to fetch from the Exhibit
      */
-    select?: CourseSelect<ExtArgs> | null
+    select?: ExhibitSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CourseInclude<ExtArgs> | null
+    include?: ExhibitInclude<ExtArgs> | null
     /**
-     * Filter, which Course to fetch.
+     * Filter, which Exhibit to fetch.
      */
-    where?: CourseWhereInput
+    where?: ExhibitWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Courses to fetch.
+     * Determine the order of Exhibits to fetch.
      */
-    orderBy?: CourseOrderByWithRelationInput | CourseOrderByWithRelationInput[]
+    orderBy?: ExhibitOrderByWithRelationInput | ExhibitOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for Courses.
+     * Sets the position for searching for Exhibits.
      */
-    cursor?: CourseWhereUniqueInput
+    cursor?: ExhibitWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Courses from the position of the cursor.
+     * Take `±n` Exhibits from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Courses.
+     * Skip the first `n` Exhibits.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of Courses.
+     * Filter by unique combinations of Exhibits.
      */
-    distinct?: CourseScalarFieldEnum | CourseScalarFieldEnum[]
+    distinct?: ExhibitScalarFieldEnum | ExhibitScalarFieldEnum[]
   }
 
   /**
-   * Course findMany
+   * Exhibit findMany
    */
-  export type CourseFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Course
+     * Select specific fields to fetch from the Exhibit
      */
-    select?: CourseSelect<ExtArgs> | null
+    select?: ExhibitSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CourseInclude<ExtArgs> | null
+    include?: ExhibitInclude<ExtArgs> | null
     /**
-     * Filter, which Courses to fetch.
+     * Filter, which Exhibits to fetch.
      */
-    where?: CourseWhereInput
+    where?: ExhibitWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of Courses to fetch.
+     * Determine the order of Exhibits to fetch.
      */
-    orderBy?: CourseOrderByWithRelationInput | CourseOrderByWithRelationInput[]
+    orderBy?: ExhibitOrderByWithRelationInput | ExhibitOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing Courses.
+     * Sets the position for listing Exhibits.
      */
-    cursor?: CourseWhereUniqueInput
+    cursor?: ExhibitWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` Courses from the position of the cursor.
+     * Take `±n` Exhibits from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` Courses.
+     * Skip the first `n` Exhibits.
      */
     skip?: number
-    distinct?: CourseScalarFieldEnum | CourseScalarFieldEnum[]
+    distinct?: ExhibitScalarFieldEnum | ExhibitScalarFieldEnum[]
   }
 
   /**
-   * Course create
+   * Exhibit create
    */
-  export type CourseCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Course
+     * Select specific fields to fetch from the Exhibit
      */
-    select?: CourseSelect<ExtArgs> | null
+    select?: ExhibitSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CourseInclude<ExtArgs> | null
+    include?: ExhibitInclude<ExtArgs> | null
     /**
-     * The data needed to create a Course.
+     * The data needed to create a Exhibit.
      */
-    data: XOR<CourseCreateInput, CourseUncheckedCreateInput>
+    data: XOR<ExhibitCreateInput, ExhibitUncheckedCreateInput>
   }
 
   /**
-   * Course createMany
+   * Exhibit createMany
    */
-  export type CourseCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to create many Courses.
+     * The data used to create many Exhibits.
      */
-    data: CourseCreateManyInput | CourseCreateManyInput[]
+    data: ExhibitCreateManyInput | ExhibitCreateManyInput[]
     skipDuplicates?: boolean
   }
 
   /**
-   * Course createManyAndReturn
+   * Exhibit createManyAndReturn
    */
-  export type CourseCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Course
+     * Select specific fields to fetch from the Exhibit
      */
-    select?: CourseSelectCreateManyAndReturn<ExtArgs> | null
+    select?: ExhibitSelectCreateManyAndReturn<ExtArgs> | null
     /**
-     * The data used to create many Courses.
+     * The data used to create many Exhibits.
      */
-    data: CourseCreateManyInput | CourseCreateManyInput[]
+    data: ExhibitCreateManyInput | ExhibitCreateManyInput[]
     skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CourseIncludeCreateManyAndReturn<ExtArgs> | null
+    include?: ExhibitIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * Course update
+   * Exhibit update
    */
-  export type CourseUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Course
+     * Select specific fields to fetch from the Exhibit
      */
-    select?: CourseSelect<ExtArgs> | null
+    select?: ExhibitSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CourseInclude<ExtArgs> | null
+    include?: ExhibitInclude<ExtArgs> | null
     /**
-     * The data needed to update a Course.
+     * The data needed to update a Exhibit.
      */
-    data: XOR<CourseUpdateInput, CourseUncheckedUpdateInput>
+    data: XOR<ExhibitUpdateInput, ExhibitUncheckedUpdateInput>
     /**
-     * Choose, which Course to update.
+     * Choose, which Exhibit to update.
      */
-    where: CourseWhereUniqueInput
+    where: ExhibitWhereUniqueInput
   }
 
   /**
-   * Course updateMany
+   * Exhibit updateMany
    */
-  export type CourseUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to update Courses.
+     * The data used to update Exhibits.
      */
-    data: XOR<CourseUpdateManyMutationInput, CourseUncheckedUpdateManyInput>
+    data: XOR<ExhibitUpdateManyMutationInput, ExhibitUncheckedUpdateManyInput>
     /**
-     * Filter which Courses to update
+     * Filter which Exhibits to update
      */
-    where?: CourseWhereInput
+    where?: ExhibitWhereInput
   }
 
   /**
-   * Course upsert
+   * Exhibit upsert
    */
-  export type CourseUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Course
+     * Select specific fields to fetch from the Exhibit
      */
-    select?: CourseSelect<ExtArgs> | null
+    select?: ExhibitSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CourseInclude<ExtArgs> | null
+    include?: ExhibitInclude<ExtArgs> | null
     /**
-     * The filter to search for the Course to update in case it exists.
+     * The filter to search for the Exhibit to update in case it exists.
      */
-    where: CourseWhereUniqueInput
+    where: ExhibitWhereUniqueInput
     /**
-     * In case the Course found by the `where` argument doesn't exist, create a new Course with this data.
+     * In case the Exhibit found by the `where` argument doesn't exist, create a new Exhibit with this data.
      */
-    create: XOR<CourseCreateInput, CourseUncheckedCreateInput>
+    create: XOR<ExhibitCreateInput, ExhibitUncheckedCreateInput>
     /**
-     * In case the Course was found with the provided `where` argument, update it with this data.
+     * In case the Exhibit was found with the provided `where` argument, update it with this data.
      */
-    update: XOR<CourseUpdateInput, CourseUncheckedUpdateInput>
+    update: XOR<ExhibitUpdateInput, ExhibitUncheckedUpdateInput>
   }
 
   /**
-   * Course delete
+   * Exhibit delete
    */
-  export type CourseDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Course
+     * Select specific fields to fetch from the Exhibit
      */
-    select?: CourseSelect<ExtArgs> | null
+    select?: ExhibitSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CourseInclude<ExtArgs> | null
+    include?: ExhibitInclude<ExtArgs> | null
     /**
-     * Filter which Course to delete.
+     * Filter which Exhibit to delete.
      */
-    where: CourseWhereUniqueInput
+    where: ExhibitWhereUniqueInput
   }
 
   /**
-   * Course deleteMany
+   * Exhibit deleteMany
    */
-  export type CourseDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which Courses to delete
+     * Filter which Exhibits to delete
      */
-    where?: CourseWhereInput
+    where?: ExhibitWhereInput
   }
 
   /**
-   * Course.status
+   * Exhibit.status
    */
-  export type Course$statusArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Exhibit$statusArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Status
      */
@@ -5106,9 +5106,9 @@ export namespace Prisma {
   }
 
   /**
-   * Course.badge
+   * Exhibit.badge
    */
-  export type Course$badgeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Exhibit$badgeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Badge
      */
@@ -5121,9 +5121,9 @@ export namespace Prisma {
   }
 
   /**
-   * Course.audio
+   * Exhibit.audio
    */
-  export type Course$audioArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Exhibit$audioArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Audio
      */
@@ -5141,9 +5141,9 @@ export namespace Prisma {
   }
 
   /**
-   * Course.feedbacks
+   * Exhibit.feedbacks
    */
-  export type Course$feedbacksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Exhibit$feedbacksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Feedback
      */
@@ -5161,9 +5161,9 @@ export namespace Prisma {
   }
 
   /**
-   * Course.images
+   * Exhibit.images
    */
-  export type Course$imagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Exhibit$imagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Image
      */
@@ -5181,9 +5181,9 @@ export namespace Prisma {
   }
 
   /**
-   * Course.qrCodes
+   * Exhibit.qrCodes
    */
-  export type Course$qrCodesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Exhibit$qrCodesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the QRCode
      */
@@ -5201,17 +5201,17 @@ export namespace Prisma {
   }
 
   /**
-   * Course without action
+   * Exhibit without action
    */
-  export type CourseDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ExhibitDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Course
+     * Select specific fields to fetch from the Exhibit
      */
-    select?: CourseSelect<ExtArgs> | null
+    select?: ExhibitSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CourseInclude<ExtArgs> | null
+    include?: ExhibitInclude<ExtArgs> | null
   }
 
 
@@ -5229,19 +5229,19 @@ export namespace Prisma {
 
   export type AudioAvgAggregateOutputType = {
     audioId: number | null
-    courseId: number | null
+    exhibitId: number | null
     languageId: number | null
   }
 
   export type AudioSumAggregateOutputType = {
     audioId: number | null
-    courseId: bigint | null
+    exhibitId: bigint | null
     languageId: bigint | null
   }
 
   export type AudioMinAggregateOutputType = {
     audioId: number | null
-    courseId: bigint | null
+    exhibitId: bigint | null
     languageId: bigint | null
     fileUrl: string | null
     title: string | null
@@ -5252,7 +5252,7 @@ export namespace Prisma {
 
   export type AudioMaxAggregateOutputType = {
     audioId: number | null
-    courseId: bigint | null
+    exhibitId: bigint | null
     languageId: bigint | null
     fileUrl: string | null
     title: string | null
@@ -5263,7 +5263,7 @@ export namespace Prisma {
 
   export type AudioCountAggregateOutputType = {
     audioId: number
-    courseId: number
+    exhibitId: number
     languageId: number
     fileUrl: number
     title: number
@@ -5276,19 +5276,19 @@ export namespace Prisma {
 
   export type AudioAvgAggregateInputType = {
     audioId?: true
-    courseId?: true
+    exhibitId?: true
     languageId?: true
   }
 
   export type AudioSumAggregateInputType = {
     audioId?: true
-    courseId?: true
+    exhibitId?: true
     languageId?: true
   }
 
   export type AudioMinAggregateInputType = {
     audioId?: true
-    courseId?: true
+    exhibitId?: true
     languageId?: true
     fileUrl?: true
     title?: true
@@ -5299,7 +5299,7 @@ export namespace Prisma {
 
   export type AudioMaxAggregateInputType = {
     audioId?: true
-    courseId?: true
+    exhibitId?: true
     languageId?: true
     fileUrl?: true
     title?: true
@@ -5310,7 +5310,7 @@ export namespace Prisma {
 
   export type AudioCountAggregateInputType = {
     audioId?: true
-    courseId?: true
+    exhibitId?: true
     languageId?: true
     fileUrl?: true
     title?: true
@@ -5408,7 +5408,7 @@ export namespace Prisma {
 
   export type AudioGroupByOutputType = {
     audioId: number
-    courseId: bigint | null
+    exhibitId: bigint | null
     languageId: bigint | null
     fileUrl: string | null
     title: string | null
@@ -5438,14 +5438,14 @@ export namespace Prisma {
 
   export type AudioSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     audioId?: boolean
-    courseId?: boolean
+    exhibitId?: boolean
     languageId?: boolean
     fileUrl?: boolean
     title?: boolean
     description?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    course?: boolean | Audio$courseArgs<ExtArgs>
+    exhibit?: boolean | Audio$exhibitArgs<ExtArgs>
     language?: boolean | Audio$languageArgs<ExtArgs>
     playbackLogs?: boolean | Audio$playbackLogsArgs<ExtArgs>
     subtitles?: boolean | Audio$subtitlesArgs<ExtArgs>
@@ -5454,20 +5454,20 @@ export namespace Prisma {
 
   export type AudioSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     audioId?: boolean
-    courseId?: boolean
+    exhibitId?: boolean
     languageId?: boolean
     fileUrl?: boolean
     title?: boolean
     description?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    course?: boolean | Audio$courseArgs<ExtArgs>
+    exhibit?: boolean | Audio$exhibitArgs<ExtArgs>
     language?: boolean | Audio$languageArgs<ExtArgs>
   }, ExtArgs["result"]["audio"]>
 
   export type AudioSelectScalar = {
     audioId?: boolean
-    courseId?: boolean
+    exhibitId?: boolean
     languageId?: boolean
     fileUrl?: boolean
     title?: boolean
@@ -5477,28 +5477,28 @@ export namespace Prisma {
   }
 
   export type AudioInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    course?: boolean | Audio$courseArgs<ExtArgs>
+    exhibit?: boolean | Audio$exhibitArgs<ExtArgs>
     language?: boolean | Audio$languageArgs<ExtArgs>
     playbackLogs?: boolean | Audio$playbackLogsArgs<ExtArgs>
     subtitles?: boolean | Audio$subtitlesArgs<ExtArgs>
     _count?: boolean | AudioCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AudioIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    course?: boolean | Audio$courseArgs<ExtArgs>
+    exhibit?: boolean | Audio$exhibitArgs<ExtArgs>
     language?: boolean | Audio$languageArgs<ExtArgs>
   }
 
   export type $AudioPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Audio"
     objects: {
-      course: Prisma.$CoursePayload<ExtArgs> | null
+      exhibit: Prisma.$ExhibitPayload<ExtArgs> | null
       language: Prisma.$LanguagePayload<ExtArgs> | null
       playbackLogs: Prisma.$AudioPlaybackLogPayload<ExtArgs>[]
       subtitles: Prisma.$SubtitlePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       audioId: number
-      courseId: bigint | null
+      exhibitId: bigint | null
       languageId: bigint | null
       fileUrl: string | null
       title: string | null
@@ -5869,7 +5869,7 @@ export namespace Prisma {
    */
   export interface Prisma__AudioClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    course<T extends Audio$courseArgs<ExtArgs> = {}>(args?: Subset<T, Audio$courseArgs<ExtArgs>>): Prisma__CourseClient<$Result.GetResult<Prisma.$CoursePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    exhibit<T extends Audio$exhibitArgs<ExtArgs> = {}>(args?: Subset<T, Audio$exhibitArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     language<T extends Audio$languageArgs<ExtArgs> = {}>(args?: Subset<T, Audio$languageArgs<ExtArgs>>): Prisma__LanguageClient<$Result.GetResult<Prisma.$LanguagePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     playbackLogs<T extends Audio$playbackLogsArgs<ExtArgs> = {}>(args?: Subset<T, Audio$playbackLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AudioPlaybackLogPayload<ExtArgs>, T, "findMany"> | Null>
     subtitles<T extends Audio$subtitlesArgs<ExtArgs> = {}>(args?: Subset<T, Audio$subtitlesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SubtitlePayload<ExtArgs>, T, "findMany"> | Null>
@@ -5903,7 +5903,7 @@ export namespace Prisma {
    */ 
   interface AudioFieldRefs {
     readonly audioId: FieldRef<"Audio", 'Int'>
-    readonly courseId: FieldRef<"Audio", 'BigInt'>
+    readonly exhibitId: FieldRef<"Audio", 'BigInt'>
     readonly languageId: FieldRef<"Audio", 'BigInt'>
     readonly fileUrl: FieldRef<"Audio", 'String'>
     readonly title: FieldRef<"Audio", 'String'>
@@ -6228,18 +6228,18 @@ export namespace Prisma {
   }
 
   /**
-   * Audio.course
+   * Audio.exhibit
    */
-  export type Audio$courseArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Audio$exhibitArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Course
+     * Select specific fields to fetch from the Exhibit
      */
-    select?: CourseSelect<ExtArgs> | null
+    select?: ExhibitSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CourseInclude<ExtArgs> | null
-    where?: CourseWhereInput
+    include?: ExhibitInclude<ExtArgs> | null
+    where?: ExhibitWhereInput
   }
 
   /**
@@ -7378,21 +7378,21 @@ export namespace Prisma {
   export type FeedbackAvgAggregateOutputType = {
     feedbackId: number | null
     userId: number | null
-    courseId: number | null
+    exhibitId: number | null
     rating: number | null
   }
 
   export type FeedbackSumAggregateOutputType = {
     feedbackId: bigint | null
     userId: bigint | null
-    courseId: bigint | null
+    exhibitId: bigint | null
     rating: number | null
   }
 
   export type FeedbackMinAggregateOutputType = {
     feedbackId: bigint | null
     userId: bigint | null
-    courseId: bigint | null
+    exhibitId: bigint | null
     rating: number | null
     description: string | null
     createdAt: Date | null
@@ -7402,7 +7402,7 @@ export namespace Prisma {
   export type FeedbackMaxAggregateOutputType = {
     feedbackId: bigint | null
     userId: bigint | null
-    courseId: bigint | null
+    exhibitId: bigint | null
     rating: number | null
     description: string | null
     createdAt: Date | null
@@ -7412,7 +7412,7 @@ export namespace Prisma {
   export type FeedbackCountAggregateOutputType = {
     feedbackId: number
     userId: number
-    courseId: number
+    exhibitId: number
     rating: number
     description: number
     createdAt: number
@@ -7424,21 +7424,21 @@ export namespace Prisma {
   export type FeedbackAvgAggregateInputType = {
     feedbackId?: true
     userId?: true
-    courseId?: true
+    exhibitId?: true
     rating?: true
   }
 
   export type FeedbackSumAggregateInputType = {
     feedbackId?: true
     userId?: true
-    courseId?: true
+    exhibitId?: true
     rating?: true
   }
 
   export type FeedbackMinAggregateInputType = {
     feedbackId?: true
     userId?: true
-    courseId?: true
+    exhibitId?: true
     rating?: true
     description?: true
     createdAt?: true
@@ -7448,7 +7448,7 @@ export namespace Prisma {
   export type FeedbackMaxAggregateInputType = {
     feedbackId?: true
     userId?: true
-    courseId?: true
+    exhibitId?: true
     rating?: true
     description?: true
     createdAt?: true
@@ -7458,7 +7458,7 @@ export namespace Prisma {
   export type FeedbackCountAggregateInputType = {
     feedbackId?: true
     userId?: true
-    courseId?: true
+    exhibitId?: true
     rating?: true
     description?: true
     createdAt?: true
@@ -7555,7 +7555,7 @@ export namespace Prisma {
   export type FeedbackGroupByOutputType = {
     feedbackId: bigint
     userId: bigint | null
-    courseId: bigint | null
+    exhibitId: bigint | null
     rating: number | null
     description: string | null
     createdAt: Date | null
@@ -7584,31 +7584,31 @@ export namespace Prisma {
   export type FeedbackSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     feedbackId?: boolean
     userId?: boolean
-    courseId?: boolean
+    exhibitId?: boolean
     rating?: boolean
     description?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | Feedback$userArgs<ExtArgs>
-    course?: boolean | Feedback$courseArgs<ExtArgs>
+    exhibit?: boolean | Feedback$exhibitArgs<ExtArgs>
   }, ExtArgs["result"]["feedback"]>
 
   export type FeedbackSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     feedbackId?: boolean
     userId?: boolean
-    courseId?: boolean
+    exhibitId?: boolean
     rating?: boolean
     description?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | Feedback$userArgs<ExtArgs>
-    course?: boolean | Feedback$courseArgs<ExtArgs>
+    exhibit?: boolean | Feedback$exhibitArgs<ExtArgs>
   }, ExtArgs["result"]["feedback"]>
 
   export type FeedbackSelectScalar = {
     feedbackId?: boolean
     userId?: boolean
-    courseId?: boolean
+    exhibitId?: boolean
     rating?: boolean
     description?: boolean
     createdAt?: boolean
@@ -7617,23 +7617,23 @@ export namespace Prisma {
 
   export type FeedbackInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | Feedback$userArgs<ExtArgs>
-    course?: boolean | Feedback$courseArgs<ExtArgs>
+    exhibit?: boolean | Feedback$exhibitArgs<ExtArgs>
   }
   export type FeedbackIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | Feedback$userArgs<ExtArgs>
-    course?: boolean | Feedback$courseArgs<ExtArgs>
+    exhibit?: boolean | Feedback$exhibitArgs<ExtArgs>
   }
 
   export type $FeedbackPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Feedback"
     objects: {
       user: Prisma.$UserPayload<ExtArgs> | null
-      course: Prisma.$CoursePayload<ExtArgs> | null
+      exhibit: Prisma.$ExhibitPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       feedbackId: bigint
       userId: bigint | null
-      courseId: bigint | null
+      exhibitId: bigint | null
       rating: number | null
       description: string | null
       createdAt: Date | null
@@ -8003,7 +8003,7 @@ export namespace Prisma {
   export interface Prisma__FeedbackClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends Feedback$userArgs<ExtArgs> = {}>(args?: Subset<T, Feedback$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
-    course<T extends Feedback$courseArgs<ExtArgs> = {}>(args?: Subset<T, Feedback$courseArgs<ExtArgs>>): Prisma__CourseClient<$Result.GetResult<Prisma.$CoursePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    exhibit<T extends Feedback$exhibitArgs<ExtArgs> = {}>(args?: Subset<T, Feedback$exhibitArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8035,7 +8035,7 @@ export namespace Prisma {
   interface FeedbackFieldRefs {
     readonly feedbackId: FieldRef<"Feedback", 'BigInt'>
     readonly userId: FieldRef<"Feedback", 'BigInt'>
-    readonly courseId: FieldRef<"Feedback", 'BigInt'>
+    readonly exhibitId: FieldRef<"Feedback", 'BigInt'>
     readonly rating: FieldRef<"Feedback", 'Int'>
     readonly description: FieldRef<"Feedback", 'String'>
     readonly createdAt: FieldRef<"Feedback", 'DateTime'>
@@ -8373,18 +8373,18 @@ export namespace Prisma {
   }
 
   /**
-   * Feedback.course
+   * Feedback.exhibit
    */
-  export type Feedback$courseArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Feedback$exhibitArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Course
+     * Select specific fields to fetch from the Exhibit
      */
-    select?: CourseSelect<ExtArgs> | null
+    select?: ExhibitSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CourseInclude<ExtArgs> | null
-    where?: CourseWhereInput
+    include?: ExhibitInclude<ExtArgs> | null
+    where?: ExhibitWhereInput
   }
 
   /**
@@ -8416,20 +8416,20 @@ export namespace Prisma {
 
   export type ImageAvgAggregateOutputType = {
     imageId: number | null
-    courseId: number | null
-    schoolId: number | null
+    exhibitId: number | null
+    exhibitionId: number | null
   }
 
   export type ImageSumAggregateOutputType = {
     imageId: bigint | null
-    courseId: bigint | null
-    schoolId: bigint | null
+    exhibitId: bigint | null
+    exhibitionId: bigint | null
   }
 
   export type ImageMinAggregateOutputType = {
     imageId: bigint | null
-    courseId: bigint | null
-    schoolId: bigint | null
+    exhibitId: bigint | null
+    exhibitionId: bigint | null
     title: string | null
     description: string | null
     fileUrl: string | null
@@ -8440,8 +8440,8 @@ export namespace Prisma {
 
   export type ImageMaxAggregateOutputType = {
     imageId: bigint | null
-    courseId: bigint | null
-    schoolId: bigint | null
+    exhibitId: bigint | null
+    exhibitionId: bigint | null
     title: string | null
     description: string | null
     fileUrl: string | null
@@ -8452,8 +8452,8 @@ export namespace Prisma {
 
   export type ImageCountAggregateOutputType = {
     imageId: number
-    courseId: number
-    schoolId: number
+    exhibitId: number
+    exhibitionId: number
     title: number
     description: number
     fileUrl: number
@@ -8466,20 +8466,20 @@ export namespace Prisma {
 
   export type ImageAvgAggregateInputType = {
     imageId?: true
-    courseId?: true
-    schoolId?: true
+    exhibitId?: true
+    exhibitionId?: true
   }
 
   export type ImageSumAggregateInputType = {
     imageId?: true
-    courseId?: true
-    schoolId?: true
+    exhibitId?: true
+    exhibitionId?: true
   }
 
   export type ImageMinAggregateInputType = {
     imageId?: true
-    courseId?: true
-    schoolId?: true
+    exhibitId?: true
+    exhibitionId?: true
     title?: true
     description?: true
     fileUrl?: true
@@ -8490,8 +8490,8 @@ export namespace Prisma {
 
   export type ImageMaxAggregateInputType = {
     imageId?: true
-    courseId?: true
-    schoolId?: true
+    exhibitId?: true
+    exhibitionId?: true
     title?: true
     description?: true
     fileUrl?: true
@@ -8502,8 +8502,8 @@ export namespace Prisma {
 
   export type ImageCountAggregateInputType = {
     imageId?: true
-    courseId?: true
-    schoolId?: true
+    exhibitId?: true
+    exhibitionId?: true
     title?: true
     description?: true
     fileUrl?: true
@@ -8601,8 +8601,8 @@ export namespace Prisma {
 
   export type ImageGroupByOutputType = {
     imageId: bigint
-    courseId: bigint | null
-    schoolId: bigint | null
+    exhibitId: bigint | null
+    exhibitionId: bigint | null
     title: string | null
     description: string | null
     fileUrl: string | null
@@ -8632,36 +8632,36 @@ export namespace Prisma {
 
   export type ImageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     imageId?: boolean
-    courseId?: boolean
-    schoolId?: boolean
+    exhibitId?: boolean
+    exhibitionId?: boolean
     title?: boolean
     description?: boolean
     fileUrl?: boolean
     isPrimary?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    course?: boolean | Image$courseArgs<ExtArgs>
-    school?: boolean | Image$schoolArgs<ExtArgs>
+    exhibit?: boolean | Image$exhibitArgs<ExtArgs>
+    exhibition?: boolean | Image$exhibitionArgs<ExtArgs>
   }, ExtArgs["result"]["image"]>
 
   export type ImageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     imageId?: boolean
-    courseId?: boolean
-    schoolId?: boolean
+    exhibitId?: boolean
+    exhibitionId?: boolean
     title?: boolean
     description?: boolean
     fileUrl?: boolean
     isPrimary?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    course?: boolean | Image$courseArgs<ExtArgs>
-    school?: boolean | Image$schoolArgs<ExtArgs>
+    exhibit?: boolean | Image$exhibitArgs<ExtArgs>
+    exhibition?: boolean | Image$exhibitionArgs<ExtArgs>
   }, ExtArgs["result"]["image"]>
 
   export type ImageSelectScalar = {
     imageId?: boolean
-    courseId?: boolean
-    schoolId?: boolean
+    exhibitId?: boolean
+    exhibitionId?: boolean
     title?: boolean
     description?: boolean
     fileUrl?: boolean
@@ -8671,24 +8671,24 @@ export namespace Prisma {
   }
 
   export type ImageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    course?: boolean | Image$courseArgs<ExtArgs>
-    school?: boolean | Image$schoolArgs<ExtArgs>
+    exhibit?: boolean | Image$exhibitArgs<ExtArgs>
+    exhibition?: boolean | Image$exhibitionArgs<ExtArgs>
   }
   export type ImageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    course?: boolean | Image$courseArgs<ExtArgs>
-    school?: boolean | Image$schoolArgs<ExtArgs>
+    exhibit?: boolean | Image$exhibitArgs<ExtArgs>
+    exhibition?: boolean | Image$exhibitionArgs<ExtArgs>
   }
 
   export type $ImagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Image"
     objects: {
-      course: Prisma.$CoursePayload<ExtArgs> | null
-      school: Prisma.$SchoolPayload<ExtArgs> | null
+      exhibit: Prisma.$ExhibitPayload<ExtArgs> | null
+      exhibition: Prisma.$ExhibitionPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       imageId: bigint
-      courseId: bigint | null
-      schoolId: bigint | null
+      exhibitId: bigint | null
+      exhibitionId: bigint | null
       title: string | null
       description: string | null
       fileUrl: string | null
@@ -9059,8 +9059,8 @@ export namespace Prisma {
    */
   export interface Prisma__ImageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    course<T extends Image$courseArgs<ExtArgs> = {}>(args?: Subset<T, Image$courseArgs<ExtArgs>>): Prisma__CourseClient<$Result.GetResult<Prisma.$CoursePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
-    school<T extends Image$schoolArgs<ExtArgs> = {}>(args?: Subset<T, Image$schoolArgs<ExtArgs>>): Prisma__SchoolClient<$Result.GetResult<Prisma.$SchoolPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    exhibit<T extends Image$exhibitArgs<ExtArgs> = {}>(args?: Subset<T, Image$exhibitArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    exhibition<T extends Image$exhibitionArgs<ExtArgs> = {}>(args?: Subset<T, Image$exhibitionArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9091,8 +9091,8 @@ export namespace Prisma {
    */ 
   interface ImageFieldRefs {
     readonly imageId: FieldRef<"Image", 'BigInt'>
-    readonly courseId: FieldRef<"Image", 'BigInt'>
-    readonly schoolId: FieldRef<"Image", 'BigInt'>
+    readonly exhibitId: FieldRef<"Image", 'BigInt'>
+    readonly exhibitionId: FieldRef<"Image", 'BigInt'>
     readonly title: FieldRef<"Image", 'String'>
     readonly description: FieldRef<"Image", 'String'>
     readonly fileUrl: FieldRef<"Image", 'String'>
@@ -9417,33 +9417,33 @@ export namespace Prisma {
   }
 
   /**
-   * Image.course
+   * Image.exhibit
    */
-  export type Image$courseArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Image$exhibitArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Course
+     * Select specific fields to fetch from the Exhibit
      */
-    select?: CourseSelect<ExtArgs> | null
+    select?: ExhibitSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CourseInclude<ExtArgs> | null
-    where?: CourseWhereInput
+    include?: ExhibitInclude<ExtArgs> | null
+    where?: ExhibitWhereInput
   }
 
   /**
-   * Image.school
+   * Image.exhibition
    */
-  export type Image$schoolArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Image$exhibitionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the School
+     * Select specific fields to fetch from the Exhibition
      */
-    select?: SchoolSelect<ExtArgs> | null
+    select?: ExhibitionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SchoolInclude<ExtArgs> | null
-    where?: SchoolWhereInput
+    include?: ExhibitionInclude<ExtArgs> | null
+    where?: ExhibitionWhereInput
   }
 
   /**
@@ -9475,17 +9475,17 @@ export namespace Prisma {
 
   export type QRCodeAvgAggregateOutputType = {
     qrId: number | null
-    courseId: number | null
+    exhibitId: number | null
   }
 
   export type QRCodeSumAggregateOutputType = {
     qrId: number | null
-    courseId: bigint | null
+    exhibitId: bigint | null
   }
 
   export type QRCodeMinAggregateOutputType = {
     qrId: number | null
-    courseId: bigint | null
+    exhibitId: bigint | null
     qrUrl: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -9493,7 +9493,7 @@ export namespace Prisma {
 
   export type QRCodeMaxAggregateOutputType = {
     qrId: number | null
-    courseId: bigint | null
+    exhibitId: bigint | null
     qrUrl: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -9501,7 +9501,7 @@ export namespace Prisma {
 
   export type QRCodeCountAggregateOutputType = {
     qrId: number
-    courseId: number
+    exhibitId: number
     qrUrl: number
     createdAt: number
     updatedAt: number
@@ -9511,17 +9511,17 @@ export namespace Prisma {
 
   export type QRCodeAvgAggregateInputType = {
     qrId?: true
-    courseId?: true
+    exhibitId?: true
   }
 
   export type QRCodeSumAggregateInputType = {
     qrId?: true
-    courseId?: true
+    exhibitId?: true
   }
 
   export type QRCodeMinAggregateInputType = {
     qrId?: true
-    courseId?: true
+    exhibitId?: true
     qrUrl?: true
     createdAt?: true
     updatedAt?: true
@@ -9529,7 +9529,7 @@ export namespace Prisma {
 
   export type QRCodeMaxAggregateInputType = {
     qrId?: true
-    courseId?: true
+    exhibitId?: true
     qrUrl?: true
     createdAt?: true
     updatedAt?: true
@@ -9537,7 +9537,7 @@ export namespace Prisma {
 
   export type QRCodeCountAggregateInputType = {
     qrId?: true
-    courseId?: true
+    exhibitId?: true
     qrUrl?: true
     createdAt?: true
     updatedAt?: true
@@ -9632,7 +9632,7 @@ export namespace Prisma {
 
   export type QRCodeGroupByOutputType = {
     qrId: number
-    courseId: bigint
+    exhibitId: bigint
     qrUrl: string
     createdAt: Date | null
     updatedAt: Date | null
@@ -9659,45 +9659,45 @@ export namespace Prisma {
 
   export type QRCodeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     qrId?: boolean
-    courseId?: boolean
+    exhibitId?: boolean
     qrUrl?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    course?: boolean | CourseDefaultArgs<ExtArgs>
+    exhibit?: boolean | ExhibitDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["qRCode"]>
 
   export type QRCodeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     qrId?: boolean
-    courseId?: boolean
+    exhibitId?: boolean
     qrUrl?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    course?: boolean | CourseDefaultArgs<ExtArgs>
+    exhibit?: boolean | ExhibitDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["qRCode"]>
 
   export type QRCodeSelectScalar = {
     qrId?: boolean
-    courseId?: boolean
+    exhibitId?: boolean
     qrUrl?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
   export type QRCodeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    course?: boolean | CourseDefaultArgs<ExtArgs>
+    exhibit?: boolean | ExhibitDefaultArgs<ExtArgs>
   }
   export type QRCodeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    course?: boolean | CourseDefaultArgs<ExtArgs>
+    exhibit?: boolean | ExhibitDefaultArgs<ExtArgs>
   }
 
   export type $QRCodePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "QRCode"
     objects: {
-      course: Prisma.$CoursePayload<ExtArgs>
+      exhibit: Prisma.$ExhibitPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       qrId: number
-      courseId: bigint
+      exhibitId: bigint
       qrUrl: string
       createdAt: Date | null
       updatedAt: Date | null
@@ -10065,7 +10065,7 @@ export namespace Prisma {
    */
   export interface Prisma__QRCodeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    course<T extends CourseDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CourseDefaultArgs<ExtArgs>>): Prisma__CourseClient<$Result.GetResult<Prisma.$CoursePayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    exhibit<T extends ExhibitDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ExhibitDefaultArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10096,7 +10096,7 @@ export namespace Prisma {
    */ 
   interface QRCodeFieldRefs {
     readonly qrId: FieldRef<"QRCode", 'Int'>
-    readonly courseId: FieldRef<"QRCode", 'BigInt'>
+    readonly exhibitId: FieldRef<"QRCode", 'BigInt'>
     readonly qrUrl: FieldRef<"QRCode", 'String'>
     readonly createdAt: FieldRef<"QRCode", 'DateTime'>
     readonly updatedAt: FieldRef<"QRCode", 'DateTime'>
@@ -15540,8 +15540,8 @@ export namespace Prisma {
     statusName?: boolean
     users?: boolean | Status$usersArgs<ExtArgs>
     languages?: boolean | Status$languagesArgs<ExtArgs>
-    schools?: boolean | Status$schoolsArgs<ExtArgs>
-    courses?: boolean | Status$coursesArgs<ExtArgs>
+    exhibitions?: boolean | Status$exhibitionsArgs<ExtArgs>
+    exhibits?: boolean | Status$exhibitsArgs<ExtArgs>
     _count?: boolean | StatusCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["status"]>
 
@@ -15558,8 +15558,8 @@ export namespace Prisma {
   export type StatusInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | Status$usersArgs<ExtArgs>
     languages?: boolean | Status$languagesArgs<ExtArgs>
-    schools?: boolean | Status$schoolsArgs<ExtArgs>
-    courses?: boolean | Status$coursesArgs<ExtArgs>
+    exhibitions?: boolean | Status$exhibitionsArgs<ExtArgs>
+    exhibits?: boolean | Status$exhibitsArgs<ExtArgs>
     _count?: boolean | StatusCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type StatusIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -15569,8 +15569,8 @@ export namespace Prisma {
     objects: {
       users: Prisma.$UserPayload<ExtArgs>[]
       languages: Prisma.$LanguagePayload<ExtArgs>[]
-      schools: Prisma.$SchoolPayload<ExtArgs>[]
-      courses: Prisma.$CoursePayload<ExtArgs>[]
+      exhibitions: Prisma.$ExhibitionPayload<ExtArgs>[]
+      exhibits: Prisma.$ExhibitPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       statusId: number
@@ -15941,8 +15941,8 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     users<T extends Status$usersArgs<ExtArgs> = {}>(args?: Subset<T, Status$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany"> | Null>
     languages<T extends Status$languagesArgs<ExtArgs> = {}>(args?: Subset<T, Status$languagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LanguagePayload<ExtArgs>, T, "findMany"> | Null>
-    schools<T extends Status$schoolsArgs<ExtArgs> = {}>(args?: Subset<T, Status$schoolsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SchoolPayload<ExtArgs>, T, "findMany"> | Null>
-    courses<T extends Status$coursesArgs<ExtArgs> = {}>(args?: Subset<T, Status$coursesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CoursePayload<ExtArgs>, T, "findMany"> | Null>
+    exhibitions<T extends Status$exhibitionsArgs<ExtArgs> = {}>(args?: Subset<T, Status$exhibitionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "findMany"> | Null>
+    exhibits<T extends Status$exhibitsArgs<ExtArgs> = {}>(args?: Subset<T, Status$exhibitsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -16328,43 +16328,43 @@ export namespace Prisma {
   }
 
   /**
-   * Status.schools
+   * Status.exhibitions
    */
-  export type Status$schoolsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Status$exhibitionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the School
+     * Select specific fields to fetch from the Exhibition
      */
-    select?: SchoolSelect<ExtArgs> | null
+    select?: ExhibitionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SchoolInclude<ExtArgs> | null
-    where?: SchoolWhereInput
-    orderBy?: SchoolOrderByWithRelationInput | SchoolOrderByWithRelationInput[]
-    cursor?: SchoolWhereUniqueInput
+    include?: ExhibitionInclude<ExtArgs> | null
+    where?: ExhibitionWhereInput
+    orderBy?: ExhibitionOrderByWithRelationInput | ExhibitionOrderByWithRelationInput[]
+    cursor?: ExhibitionWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: SchoolScalarFieldEnum | SchoolScalarFieldEnum[]
+    distinct?: ExhibitionScalarFieldEnum | ExhibitionScalarFieldEnum[]
   }
 
   /**
-   * Status.courses
+   * Status.exhibits
    */
-  export type Status$coursesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Status$exhibitsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Course
+     * Select specific fields to fetch from the Exhibit
      */
-    select?: CourseSelect<ExtArgs> | null
+    select?: ExhibitSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CourseInclude<ExtArgs> | null
-    where?: CourseWhereInput
-    orderBy?: CourseOrderByWithRelationInput | CourseOrderByWithRelationInput[]
-    cursor?: CourseWhereUniqueInput
+    include?: ExhibitInclude<ExtArgs> | null
+    where?: ExhibitWhereInput
+    orderBy?: ExhibitOrderByWithRelationInput | ExhibitOrderByWithRelationInput[]
+    cursor?: ExhibitWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: CourseScalarFieldEnum | CourseScalarFieldEnum[]
+    distinct?: ExhibitScalarFieldEnum | ExhibitScalarFieldEnum[]
   }
 
   /**
@@ -22862,7 +22862,7 @@ export namespace Prisma {
     imageUrl?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    course?: boolean | Badge$courseArgs<ExtArgs>
+    exhibit?: boolean | Badge$exhibitArgs<ExtArgs>
     userBadges?: boolean | Badge$userBadgesArgs<ExtArgs>
     _count?: boolean | BadgeCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["badge"]>
@@ -22886,7 +22886,7 @@ export namespace Prisma {
   }
 
   export type BadgeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    course?: boolean | Badge$courseArgs<ExtArgs>
+    exhibit?: boolean | Badge$exhibitArgs<ExtArgs>
     userBadges?: boolean | Badge$userBadgesArgs<ExtArgs>
     _count?: boolean | BadgeCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -22895,7 +22895,7 @@ export namespace Prisma {
   export type $BadgePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Badge"
     objects: {
-      course: Prisma.$CoursePayload<ExtArgs> | null
+      exhibit: Prisma.$ExhibitPayload<ExtArgs> | null
       userBadges: Prisma.$UserBadgePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -23269,7 +23269,7 @@ export namespace Prisma {
    */
   export interface Prisma__BadgeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    course<T extends Badge$courseArgs<ExtArgs> = {}>(args?: Subset<T, Badge$courseArgs<ExtArgs>>): Prisma__CourseClient<$Result.GetResult<Prisma.$CoursePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    exhibit<T extends Badge$exhibitArgs<ExtArgs> = {}>(args?: Subset<T, Badge$exhibitArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     userBadges<T extends Badge$userBadgesArgs<ExtArgs> = {}>(args?: Subset<T, Badge$userBadgesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserBadgePayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -23620,18 +23620,18 @@ export namespace Prisma {
   }
 
   /**
-   * Badge.course
+   * Badge.exhibit
    */
-  export type Badge$courseArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Badge$exhibitArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Course
+     * Select specific fields to fetch from the Exhibit
      */
-    select?: CourseSelect<ExtArgs> | null
+    select?: ExhibitSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CourseInclude<ExtArgs> | null
-    where?: CourseWhereInput
+    include?: ExhibitInclude<ExtArgs> | null
+    where?: ExhibitWhereInput
   }
 
   /**
@@ -24636,8 +24636,8 @@ export namespace Prisma {
   export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
-  export const SchoolScalarFieldEnum: {
-    schoolId: 'schoolId',
+  export const ExhibitionScalarFieldEnum: {
+    exhibitionId: 'exhibitionId',
     title: 'title',
     description: 'description',
     statusId: 'statusId',
@@ -24645,12 +24645,12 @@ export namespace Prisma {
     updatedAt: 'updatedAt'
   };
 
-  export type SchoolScalarFieldEnum = (typeof SchoolScalarFieldEnum)[keyof typeof SchoolScalarFieldEnum]
+  export type ExhibitionScalarFieldEnum = (typeof ExhibitionScalarFieldEnum)[keyof typeof ExhibitionScalarFieldEnum]
 
 
-  export const CourseScalarFieldEnum: {
-    courseId: 'courseId',
-    schoolId: 'schoolId',
+  export const ExhibitScalarFieldEnum: {
+    exhibitId: 'exhibitId',
+    exhibitionId: 'exhibitionId',
     badgeId: 'badgeId',
     title: 'title',
     description: 'description',
@@ -24659,12 +24659,12 @@ export namespace Prisma {
     updatedAt: 'updatedAt'
   };
 
-  export type CourseScalarFieldEnum = (typeof CourseScalarFieldEnum)[keyof typeof CourseScalarFieldEnum]
+  export type ExhibitScalarFieldEnum = (typeof ExhibitScalarFieldEnum)[keyof typeof ExhibitScalarFieldEnum]
 
 
   export const AudioScalarFieldEnum: {
     audioId: 'audioId',
-    courseId: 'courseId',
+    exhibitId: 'exhibitId',
     languageId: 'languageId',
     fileUrl: 'fileUrl',
     title: 'title',
@@ -24693,7 +24693,7 @@ export namespace Prisma {
   export const FeedbackScalarFieldEnum: {
     feedbackId: 'feedbackId',
     userId: 'userId',
-    courseId: 'courseId',
+    exhibitId: 'exhibitId',
     rating: 'rating',
     description: 'description',
     createdAt: 'createdAt',
@@ -24705,8 +24705,8 @@ export namespace Prisma {
 
   export const ImageScalarFieldEnum: {
     imageId: 'imageId',
-    courseId: 'courseId',
-    schoolId: 'schoolId',
+    exhibitId: 'exhibitId',
+    exhibitionId: 'exhibitionId',
     title: 'title',
     description: 'description',
     fileUrl: 'fileUrl',
@@ -24720,7 +24720,7 @@ export namespace Prisma {
 
   export const QRCodeScalarFieldEnum: {
     qrId: 'qrId',
-    courseId: 'courseId',
+    exhibitId: 'exhibitId',
     qrUrl: 'qrUrl',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -25016,87 +25016,87 @@ export namespace Prisma {
    */
 
 
-  export type SchoolWhereInput = {
-    AND?: SchoolWhereInput | SchoolWhereInput[]
-    OR?: SchoolWhereInput[]
-    NOT?: SchoolWhereInput | SchoolWhereInput[]
-    schoolId?: BigIntFilter<"School"> | bigint | number
-    title?: StringFilter<"School"> | string
-    description?: StringNullableFilter<"School"> | string | null
-    statusId?: IntNullableFilter<"School"> | number | null
-    createdAt?: DateTimeFilter<"School"> | Date | string
-    updatedAt?: DateTimeFilter<"School"> | Date | string
+  export type ExhibitionWhereInput = {
+    AND?: ExhibitionWhereInput | ExhibitionWhereInput[]
+    OR?: ExhibitionWhereInput[]
+    NOT?: ExhibitionWhereInput | ExhibitionWhereInput[]
+    exhibitionId?: BigIntFilter<"Exhibition"> | bigint | number
+    title?: StringFilter<"Exhibition"> | string
+    description?: StringNullableFilter<"Exhibition"> | string | null
+    statusId?: IntNullableFilter<"Exhibition"> | number | null
+    createdAt?: DateTimeFilter<"Exhibition"> | Date | string
+    updatedAt?: DateTimeFilter<"Exhibition"> | Date | string
     status?: XOR<StatusNullableRelationFilter, StatusWhereInput> | null
-    courses?: CourseListRelationFilter
+    exhibits?: ExhibitListRelationFilter
     images?: ImageListRelationFilter
   }
 
-  export type SchoolOrderByWithRelationInput = {
-    schoolId?: SortOrder
+  export type ExhibitionOrderByWithRelationInput = {
+    exhibitionId?: SortOrder
     title?: SortOrder
     description?: SortOrderInput | SortOrder
     statusId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     status?: StatusOrderByWithRelationInput
-    courses?: CourseOrderByRelationAggregateInput
+    exhibits?: ExhibitOrderByRelationAggregateInput
     images?: ImageOrderByRelationAggregateInput
   }
 
-  export type SchoolWhereUniqueInput = Prisma.AtLeast<{
-    schoolId?: bigint | number
+  export type ExhibitionWhereUniqueInput = Prisma.AtLeast<{
+    exhibitionId?: bigint | number
     title?: string
-    AND?: SchoolWhereInput | SchoolWhereInput[]
-    OR?: SchoolWhereInput[]
-    NOT?: SchoolWhereInput | SchoolWhereInput[]
-    description?: StringNullableFilter<"School"> | string | null
-    statusId?: IntNullableFilter<"School"> | number | null
-    createdAt?: DateTimeFilter<"School"> | Date | string
-    updatedAt?: DateTimeFilter<"School"> | Date | string
+    AND?: ExhibitionWhereInput | ExhibitionWhereInput[]
+    OR?: ExhibitionWhereInput[]
+    NOT?: ExhibitionWhereInput | ExhibitionWhereInput[]
+    description?: StringNullableFilter<"Exhibition"> | string | null
+    statusId?: IntNullableFilter<"Exhibition"> | number | null
+    createdAt?: DateTimeFilter<"Exhibition"> | Date | string
+    updatedAt?: DateTimeFilter<"Exhibition"> | Date | string
     status?: XOR<StatusNullableRelationFilter, StatusWhereInput> | null
-    courses?: CourseListRelationFilter
+    exhibits?: ExhibitListRelationFilter
     images?: ImageListRelationFilter
-  }, "schoolId" | "title">
+  }, "exhibitionId" | "title">
 
-  export type SchoolOrderByWithAggregationInput = {
-    schoolId?: SortOrder
+  export type ExhibitionOrderByWithAggregationInput = {
+    exhibitionId?: SortOrder
     title?: SortOrder
     description?: SortOrderInput | SortOrder
     statusId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    _count?: SchoolCountOrderByAggregateInput
-    _avg?: SchoolAvgOrderByAggregateInput
-    _max?: SchoolMaxOrderByAggregateInput
-    _min?: SchoolMinOrderByAggregateInput
-    _sum?: SchoolSumOrderByAggregateInput
+    _count?: ExhibitionCountOrderByAggregateInput
+    _avg?: ExhibitionAvgOrderByAggregateInput
+    _max?: ExhibitionMaxOrderByAggregateInput
+    _min?: ExhibitionMinOrderByAggregateInput
+    _sum?: ExhibitionSumOrderByAggregateInput
   }
 
-  export type SchoolScalarWhereWithAggregatesInput = {
-    AND?: SchoolScalarWhereWithAggregatesInput | SchoolScalarWhereWithAggregatesInput[]
-    OR?: SchoolScalarWhereWithAggregatesInput[]
-    NOT?: SchoolScalarWhereWithAggregatesInput | SchoolScalarWhereWithAggregatesInput[]
-    schoolId?: BigIntWithAggregatesFilter<"School"> | bigint | number
-    title?: StringWithAggregatesFilter<"School"> | string
-    description?: StringNullableWithAggregatesFilter<"School"> | string | null
-    statusId?: IntNullableWithAggregatesFilter<"School"> | number | null
-    createdAt?: DateTimeWithAggregatesFilter<"School"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"School"> | Date | string
+  export type ExhibitionScalarWhereWithAggregatesInput = {
+    AND?: ExhibitionScalarWhereWithAggregatesInput | ExhibitionScalarWhereWithAggregatesInput[]
+    OR?: ExhibitionScalarWhereWithAggregatesInput[]
+    NOT?: ExhibitionScalarWhereWithAggregatesInput | ExhibitionScalarWhereWithAggregatesInput[]
+    exhibitionId?: BigIntWithAggregatesFilter<"Exhibition"> | bigint | number
+    title?: StringWithAggregatesFilter<"Exhibition"> | string
+    description?: StringNullableWithAggregatesFilter<"Exhibition"> | string | null
+    statusId?: IntNullableWithAggregatesFilter<"Exhibition"> | number | null
+    createdAt?: DateTimeWithAggregatesFilter<"Exhibition"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Exhibition"> | Date | string
   }
 
-  export type CourseWhereInput = {
-    AND?: CourseWhereInput | CourseWhereInput[]
-    OR?: CourseWhereInput[]
-    NOT?: CourseWhereInput | CourseWhereInput[]
-    courseId?: BigIntFilter<"Course"> | bigint | number
-    schoolId?: BigIntFilter<"Course"> | bigint | number
-    badgeId?: BigIntNullableFilter<"Course"> | bigint | number | null
-    title?: StringFilter<"Course"> | string
-    description?: StringNullableFilter<"Course"> | string | null
-    statusId?: IntNullableFilter<"Course"> | number | null
-    createdAt?: DateTimeNullableFilter<"Course"> | Date | string | null
-    updatedAt?: DateTimeNullableFilter<"Course"> | Date | string | null
-    school?: XOR<SchoolRelationFilter, SchoolWhereInput>
+  export type ExhibitWhereInput = {
+    AND?: ExhibitWhereInput | ExhibitWhereInput[]
+    OR?: ExhibitWhereInput[]
+    NOT?: ExhibitWhereInput | ExhibitWhereInput[]
+    exhibitId?: BigIntFilter<"Exhibit"> | bigint | number
+    exhibitionId?: BigIntFilter<"Exhibit"> | bigint | number
+    badgeId?: BigIntNullableFilter<"Exhibit"> | bigint | number | null
+    title?: StringFilter<"Exhibit"> | string
+    description?: StringNullableFilter<"Exhibit"> | string | null
+    statusId?: IntNullableFilter<"Exhibit"> | number | null
+    createdAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
+    exhibition?: XOR<ExhibitionRelationFilter, ExhibitionWhereInput>
     status?: XOR<StatusNullableRelationFilter, StatusWhereInput> | null
     badge?: XOR<BadgeNullableRelationFilter, BadgeWhereInput> | null
     audio?: AudioListRelationFilter
@@ -25105,16 +25105,16 @@ export namespace Prisma {
     qrCodes?: QRCodeListRelationFilter
   }
 
-  export type CourseOrderByWithRelationInput = {
-    courseId?: SortOrder
-    schoolId?: SortOrder
+  export type ExhibitOrderByWithRelationInput = {
+    exhibitId?: SortOrder
+    exhibitionId?: SortOrder
     badgeId?: SortOrderInput | SortOrder
     title?: SortOrder
     description?: SortOrderInput | SortOrder
     statusId?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrderInput | SortOrder
-    school?: SchoolOrderByWithRelationInput
+    exhibition?: ExhibitionOrderByWithRelationInput
     status?: StatusOrderByWithRelationInput
     badge?: BadgeOrderByWithRelationInput
     audio?: AudioOrderByRelationAggregateInput
@@ -25123,55 +25123,55 @@ export namespace Prisma {
     qrCodes?: QRCodeOrderByRelationAggregateInput
   }
 
-  export type CourseWhereUniqueInput = Prisma.AtLeast<{
-    courseId?: bigint | number
+  export type ExhibitWhereUniqueInput = Prisma.AtLeast<{
+    exhibitId?: bigint | number
     badgeId?: bigint | number
-    AND?: CourseWhereInput | CourseWhereInput[]
-    OR?: CourseWhereInput[]
-    NOT?: CourseWhereInput | CourseWhereInput[]
-    schoolId?: BigIntFilter<"Course"> | bigint | number
-    title?: StringFilter<"Course"> | string
-    description?: StringNullableFilter<"Course"> | string | null
-    statusId?: IntNullableFilter<"Course"> | number | null
-    createdAt?: DateTimeNullableFilter<"Course"> | Date | string | null
-    updatedAt?: DateTimeNullableFilter<"Course"> | Date | string | null
-    school?: XOR<SchoolRelationFilter, SchoolWhereInput>
+    AND?: ExhibitWhereInput | ExhibitWhereInput[]
+    OR?: ExhibitWhereInput[]
+    NOT?: ExhibitWhereInput | ExhibitWhereInput[]
+    exhibitionId?: BigIntFilter<"Exhibit"> | bigint | number
+    title?: StringFilter<"Exhibit"> | string
+    description?: StringNullableFilter<"Exhibit"> | string | null
+    statusId?: IntNullableFilter<"Exhibit"> | number | null
+    createdAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
+    exhibition?: XOR<ExhibitionRelationFilter, ExhibitionWhereInput>
     status?: XOR<StatusNullableRelationFilter, StatusWhereInput> | null
     badge?: XOR<BadgeNullableRelationFilter, BadgeWhereInput> | null
     audio?: AudioListRelationFilter
     feedbacks?: FeedbackListRelationFilter
     images?: ImageListRelationFilter
     qrCodes?: QRCodeListRelationFilter
-  }, "courseId" | "badgeId">
+  }, "exhibitId" | "badgeId">
 
-  export type CourseOrderByWithAggregationInput = {
-    courseId?: SortOrder
-    schoolId?: SortOrder
+  export type ExhibitOrderByWithAggregationInput = {
+    exhibitId?: SortOrder
+    exhibitionId?: SortOrder
     badgeId?: SortOrderInput | SortOrder
     title?: SortOrder
     description?: SortOrderInput | SortOrder
     statusId?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrderInput | SortOrder
-    _count?: CourseCountOrderByAggregateInput
-    _avg?: CourseAvgOrderByAggregateInput
-    _max?: CourseMaxOrderByAggregateInput
-    _min?: CourseMinOrderByAggregateInput
-    _sum?: CourseSumOrderByAggregateInput
+    _count?: ExhibitCountOrderByAggregateInput
+    _avg?: ExhibitAvgOrderByAggregateInput
+    _max?: ExhibitMaxOrderByAggregateInput
+    _min?: ExhibitMinOrderByAggregateInput
+    _sum?: ExhibitSumOrderByAggregateInput
   }
 
-  export type CourseScalarWhereWithAggregatesInput = {
-    AND?: CourseScalarWhereWithAggregatesInput | CourseScalarWhereWithAggregatesInput[]
-    OR?: CourseScalarWhereWithAggregatesInput[]
-    NOT?: CourseScalarWhereWithAggregatesInput | CourseScalarWhereWithAggregatesInput[]
-    courseId?: BigIntWithAggregatesFilter<"Course"> | bigint | number
-    schoolId?: BigIntWithAggregatesFilter<"Course"> | bigint | number
-    badgeId?: BigIntNullableWithAggregatesFilter<"Course"> | bigint | number | null
-    title?: StringWithAggregatesFilter<"Course"> | string
-    description?: StringNullableWithAggregatesFilter<"Course"> | string | null
-    statusId?: IntNullableWithAggregatesFilter<"Course"> | number | null
-    createdAt?: DateTimeNullableWithAggregatesFilter<"Course"> | Date | string | null
-    updatedAt?: DateTimeNullableWithAggregatesFilter<"Course"> | Date | string | null
+  export type ExhibitScalarWhereWithAggregatesInput = {
+    AND?: ExhibitScalarWhereWithAggregatesInput | ExhibitScalarWhereWithAggregatesInput[]
+    OR?: ExhibitScalarWhereWithAggregatesInput[]
+    NOT?: ExhibitScalarWhereWithAggregatesInput | ExhibitScalarWhereWithAggregatesInput[]
+    exhibitId?: BigIntWithAggregatesFilter<"Exhibit"> | bigint | number
+    exhibitionId?: BigIntWithAggregatesFilter<"Exhibit"> | bigint | number
+    badgeId?: BigIntNullableWithAggregatesFilter<"Exhibit"> | bigint | number | null
+    title?: StringWithAggregatesFilter<"Exhibit"> | string
+    description?: StringNullableWithAggregatesFilter<"Exhibit"> | string | null
+    statusId?: IntNullableWithAggregatesFilter<"Exhibit"> | number | null
+    createdAt?: DateTimeNullableWithAggregatesFilter<"Exhibit"> | Date | string | null
+    updatedAt?: DateTimeNullableWithAggregatesFilter<"Exhibit"> | Date | string | null
   }
 
   export type AudioWhereInput = {
@@ -25179,14 +25179,14 @@ export namespace Prisma {
     OR?: AudioWhereInput[]
     NOT?: AudioWhereInput | AudioWhereInput[]
     audioId?: IntFilter<"Audio"> | number
-    courseId?: BigIntNullableFilter<"Audio"> | bigint | number | null
+    exhibitId?: BigIntNullableFilter<"Audio"> | bigint | number | null
     languageId?: BigIntNullableFilter<"Audio"> | bigint | number | null
     fileUrl?: StringNullableFilter<"Audio"> | string | null
     title?: StringNullableFilter<"Audio"> | string | null
     description?: StringNullableFilter<"Audio"> | string | null
     createdAt?: DateTimeNullableFilter<"Audio"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Audio"> | Date | string | null
-    course?: XOR<CourseNullableRelationFilter, CourseWhereInput> | null
+    exhibit?: XOR<ExhibitNullableRelationFilter, ExhibitWhereInput> | null
     language?: XOR<LanguageNullableRelationFilter, LanguageWhereInput> | null
     playbackLogs?: AudioPlaybackLogListRelationFilter
     subtitles?: SubtitleListRelationFilter
@@ -25194,14 +25194,14 @@ export namespace Prisma {
 
   export type AudioOrderByWithRelationInput = {
     audioId?: SortOrder
-    courseId?: SortOrderInput | SortOrder
+    exhibitId?: SortOrderInput | SortOrder
     languageId?: SortOrderInput | SortOrder
     fileUrl?: SortOrderInput | SortOrder
     title?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrderInput | SortOrder
-    course?: CourseOrderByWithRelationInput
+    exhibit?: ExhibitOrderByWithRelationInput
     language?: LanguageOrderByWithRelationInput
     playbackLogs?: AudioPlaybackLogOrderByRelationAggregateInput
     subtitles?: SubtitleOrderByRelationAggregateInput
@@ -25212,14 +25212,14 @@ export namespace Prisma {
     AND?: AudioWhereInput | AudioWhereInput[]
     OR?: AudioWhereInput[]
     NOT?: AudioWhereInput | AudioWhereInput[]
-    courseId?: BigIntNullableFilter<"Audio"> | bigint | number | null
+    exhibitId?: BigIntNullableFilter<"Audio"> | bigint | number | null
     languageId?: BigIntNullableFilter<"Audio"> | bigint | number | null
     fileUrl?: StringNullableFilter<"Audio"> | string | null
     title?: StringNullableFilter<"Audio"> | string | null
     description?: StringNullableFilter<"Audio"> | string | null
     createdAt?: DateTimeNullableFilter<"Audio"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Audio"> | Date | string | null
-    course?: XOR<CourseNullableRelationFilter, CourseWhereInput> | null
+    exhibit?: XOR<ExhibitNullableRelationFilter, ExhibitWhereInput> | null
     language?: XOR<LanguageNullableRelationFilter, LanguageWhereInput> | null
     playbackLogs?: AudioPlaybackLogListRelationFilter
     subtitles?: SubtitleListRelationFilter
@@ -25227,7 +25227,7 @@ export namespace Prisma {
 
   export type AudioOrderByWithAggregationInput = {
     audioId?: SortOrder
-    courseId?: SortOrderInput | SortOrder
+    exhibitId?: SortOrderInput | SortOrder
     languageId?: SortOrderInput | SortOrder
     fileUrl?: SortOrderInput | SortOrder
     title?: SortOrderInput | SortOrder
@@ -25246,7 +25246,7 @@ export namespace Prisma {
     OR?: AudioScalarWhereWithAggregatesInput[]
     NOT?: AudioScalarWhereWithAggregatesInput | AudioScalarWhereWithAggregatesInput[]
     audioId?: IntWithAggregatesFilter<"Audio"> | number
-    courseId?: BigIntNullableWithAggregatesFilter<"Audio"> | bigint | number | null
+    exhibitId?: BigIntNullableWithAggregatesFilter<"Audio"> | bigint | number | null
     languageId?: BigIntNullableWithAggregatesFilter<"Audio"> | bigint | number | null
     fileUrl?: StringNullableWithAggregatesFilter<"Audio"> | string | null
     title?: StringNullableWithAggregatesFilter<"Audio"> | string | null
@@ -25336,25 +25336,25 @@ export namespace Prisma {
     NOT?: FeedbackWhereInput | FeedbackWhereInput[]
     feedbackId?: BigIntFilter<"Feedback"> | bigint | number
     userId?: BigIntNullableFilter<"Feedback"> | bigint | number | null
-    courseId?: BigIntNullableFilter<"Feedback"> | bigint | number | null
+    exhibitId?: BigIntNullableFilter<"Feedback"> | bigint | number | null
     rating?: IntNullableFilter<"Feedback"> | number | null
     description?: StringNullableFilter<"Feedback"> | string | null
     createdAt?: DateTimeNullableFilter<"Feedback"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Feedback"> | Date | string | null
     user?: XOR<UserNullableRelationFilter, UserWhereInput> | null
-    course?: XOR<CourseNullableRelationFilter, CourseWhereInput> | null
+    exhibit?: XOR<ExhibitNullableRelationFilter, ExhibitWhereInput> | null
   }
 
   export type FeedbackOrderByWithRelationInput = {
     feedbackId?: SortOrder
     userId?: SortOrderInput | SortOrder
-    courseId?: SortOrderInput | SortOrder
+    exhibitId?: SortOrderInput | SortOrder
     rating?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
-    course?: CourseOrderByWithRelationInput
+    exhibit?: ExhibitOrderByWithRelationInput
   }
 
   export type FeedbackWhereUniqueInput = Prisma.AtLeast<{
@@ -25363,19 +25363,19 @@ export namespace Prisma {
     OR?: FeedbackWhereInput[]
     NOT?: FeedbackWhereInput | FeedbackWhereInput[]
     userId?: BigIntNullableFilter<"Feedback"> | bigint | number | null
-    courseId?: BigIntNullableFilter<"Feedback"> | bigint | number | null
+    exhibitId?: BigIntNullableFilter<"Feedback"> | bigint | number | null
     rating?: IntNullableFilter<"Feedback"> | number | null
     description?: StringNullableFilter<"Feedback"> | string | null
     createdAt?: DateTimeNullableFilter<"Feedback"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Feedback"> | Date | string | null
     user?: XOR<UserNullableRelationFilter, UserWhereInput> | null
-    course?: XOR<CourseNullableRelationFilter, CourseWhereInput> | null
+    exhibit?: XOR<ExhibitNullableRelationFilter, ExhibitWhereInput> | null
   }, "feedbackId">
 
   export type FeedbackOrderByWithAggregationInput = {
     feedbackId?: SortOrder
     userId?: SortOrderInput | SortOrder
-    courseId?: SortOrderInput | SortOrder
+    exhibitId?: SortOrderInput | SortOrder
     rating?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
@@ -25393,7 +25393,7 @@ export namespace Prisma {
     NOT?: FeedbackScalarWhereWithAggregatesInput | FeedbackScalarWhereWithAggregatesInput[]
     feedbackId?: BigIntWithAggregatesFilter<"Feedback"> | bigint | number
     userId?: BigIntNullableWithAggregatesFilter<"Feedback"> | bigint | number | null
-    courseId?: BigIntNullableWithAggregatesFilter<"Feedback"> | bigint | number | null
+    exhibitId?: BigIntNullableWithAggregatesFilter<"Feedback"> | bigint | number | null
     rating?: IntNullableWithAggregatesFilter<"Feedback"> | number | null
     description?: StringNullableWithAggregatesFilter<"Feedback"> | string | null
     createdAt?: DateTimeNullableWithAggregatesFilter<"Feedback"> | Date | string | null
@@ -25405,30 +25405,30 @@ export namespace Prisma {
     OR?: ImageWhereInput[]
     NOT?: ImageWhereInput | ImageWhereInput[]
     imageId?: BigIntFilter<"Image"> | bigint | number
-    courseId?: BigIntNullableFilter<"Image"> | bigint | number | null
-    schoolId?: BigIntNullableFilter<"Image"> | bigint | number | null
+    exhibitId?: BigIntNullableFilter<"Image"> | bigint | number | null
+    exhibitionId?: BigIntNullableFilter<"Image"> | bigint | number | null
     title?: StringNullableFilter<"Image"> | string | null
     description?: StringNullableFilter<"Image"> | string | null
     fileUrl?: StringNullableFilter<"Image"> | string | null
     isPrimary?: BoolFilter<"Image"> | boolean
     createdAt?: DateTimeNullableFilter<"Image"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Image"> | Date | string | null
-    course?: XOR<CourseNullableRelationFilter, CourseWhereInput> | null
-    school?: XOR<SchoolNullableRelationFilter, SchoolWhereInput> | null
+    exhibit?: XOR<ExhibitNullableRelationFilter, ExhibitWhereInput> | null
+    exhibition?: XOR<ExhibitionNullableRelationFilter, ExhibitionWhereInput> | null
   }
 
   export type ImageOrderByWithRelationInput = {
     imageId?: SortOrder
-    courseId?: SortOrderInput | SortOrder
-    schoolId?: SortOrderInput | SortOrder
+    exhibitId?: SortOrderInput | SortOrder
+    exhibitionId?: SortOrderInput | SortOrder
     title?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
     fileUrl?: SortOrderInput | SortOrder
     isPrimary?: SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrderInput | SortOrder
-    course?: CourseOrderByWithRelationInput
-    school?: SchoolOrderByWithRelationInput
+    exhibit?: ExhibitOrderByWithRelationInput
+    exhibition?: ExhibitionOrderByWithRelationInput
   }
 
   export type ImageWhereUniqueInput = Prisma.AtLeast<{
@@ -25436,22 +25436,22 @@ export namespace Prisma {
     AND?: ImageWhereInput | ImageWhereInput[]
     OR?: ImageWhereInput[]
     NOT?: ImageWhereInput | ImageWhereInput[]
-    courseId?: BigIntNullableFilter<"Image"> | bigint | number | null
-    schoolId?: BigIntNullableFilter<"Image"> | bigint | number | null
+    exhibitId?: BigIntNullableFilter<"Image"> | bigint | number | null
+    exhibitionId?: BigIntNullableFilter<"Image"> | bigint | number | null
     title?: StringNullableFilter<"Image"> | string | null
     description?: StringNullableFilter<"Image"> | string | null
     fileUrl?: StringNullableFilter<"Image"> | string | null
     isPrimary?: BoolFilter<"Image"> | boolean
     createdAt?: DateTimeNullableFilter<"Image"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Image"> | Date | string | null
-    course?: XOR<CourseNullableRelationFilter, CourseWhereInput> | null
-    school?: XOR<SchoolNullableRelationFilter, SchoolWhereInput> | null
+    exhibit?: XOR<ExhibitNullableRelationFilter, ExhibitWhereInput> | null
+    exhibition?: XOR<ExhibitionNullableRelationFilter, ExhibitionWhereInput> | null
   }, "imageId">
 
   export type ImageOrderByWithAggregationInput = {
     imageId?: SortOrder
-    courseId?: SortOrderInput | SortOrder
-    schoolId?: SortOrderInput | SortOrder
+    exhibitId?: SortOrderInput | SortOrder
+    exhibitionId?: SortOrderInput | SortOrder
     title?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
     fileUrl?: SortOrderInput | SortOrder
@@ -25470,8 +25470,8 @@ export namespace Prisma {
     OR?: ImageScalarWhereWithAggregatesInput[]
     NOT?: ImageScalarWhereWithAggregatesInput | ImageScalarWhereWithAggregatesInput[]
     imageId?: BigIntWithAggregatesFilter<"Image"> | bigint | number
-    courseId?: BigIntNullableWithAggregatesFilter<"Image"> | bigint | number | null
-    schoolId?: BigIntNullableWithAggregatesFilter<"Image"> | bigint | number | null
+    exhibitId?: BigIntNullableWithAggregatesFilter<"Image"> | bigint | number | null
+    exhibitionId?: BigIntNullableWithAggregatesFilter<"Image"> | bigint | number | null
     title?: StringNullableWithAggregatesFilter<"Image"> | string | null
     description?: StringNullableWithAggregatesFilter<"Image"> | string | null
     fileUrl?: StringNullableWithAggregatesFilter<"Image"> | string | null
@@ -25485,20 +25485,20 @@ export namespace Prisma {
     OR?: QRCodeWhereInput[]
     NOT?: QRCodeWhereInput | QRCodeWhereInput[]
     qrId?: IntFilter<"QRCode"> | number
-    courseId?: BigIntFilter<"QRCode"> | bigint | number
+    exhibitId?: BigIntFilter<"QRCode"> | bigint | number
     qrUrl?: StringFilter<"QRCode"> | string
     createdAt?: DateTimeNullableFilter<"QRCode"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"QRCode"> | Date | string | null
-    course?: XOR<CourseRelationFilter, CourseWhereInput>
+    exhibit?: XOR<ExhibitRelationFilter, ExhibitWhereInput>
   }
 
   export type QRCodeOrderByWithRelationInput = {
     qrId?: SortOrder
-    courseId?: SortOrder
+    exhibitId?: SortOrder
     qrUrl?: SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrderInput | SortOrder
-    course?: CourseOrderByWithRelationInput
+    exhibit?: ExhibitOrderByWithRelationInput
   }
 
   export type QRCodeWhereUniqueInput = Prisma.AtLeast<{
@@ -25506,16 +25506,16 @@ export namespace Prisma {
     AND?: QRCodeWhereInput | QRCodeWhereInput[]
     OR?: QRCodeWhereInput[]
     NOT?: QRCodeWhereInput | QRCodeWhereInput[]
-    courseId?: BigIntFilter<"QRCode"> | bigint | number
+    exhibitId?: BigIntFilter<"QRCode"> | bigint | number
     qrUrl?: StringFilter<"QRCode"> | string
     createdAt?: DateTimeNullableFilter<"QRCode"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"QRCode"> | Date | string | null
-    course?: XOR<CourseRelationFilter, CourseWhereInput>
+    exhibit?: XOR<ExhibitRelationFilter, ExhibitWhereInput>
   }, "qrId">
 
   export type QRCodeOrderByWithAggregationInput = {
     qrId?: SortOrder
-    courseId?: SortOrder
+    exhibitId?: SortOrder
     qrUrl?: SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrderInput | SortOrder
@@ -25531,7 +25531,7 @@ export namespace Prisma {
     OR?: QRCodeScalarWhereWithAggregatesInput[]
     NOT?: QRCodeScalarWhereWithAggregatesInput | QRCodeScalarWhereWithAggregatesInput[]
     qrId?: IntWithAggregatesFilter<"QRCode"> | number
-    courseId?: BigIntWithAggregatesFilter<"QRCode"> | bigint | number
+    exhibitId?: BigIntWithAggregatesFilter<"QRCode"> | bigint | number
     qrUrl?: StringWithAggregatesFilter<"QRCode"> | string
     createdAt?: DateTimeNullableWithAggregatesFilter<"QRCode"> | Date | string | null
     updatedAt?: DateTimeNullableWithAggregatesFilter<"QRCode"> | Date | string | null
@@ -25569,18 +25569,18 @@ export namespace Prisma {
   export type LanguageWhereUniqueInput = Prisma.AtLeast<{
     languageId?: bigint | number
     code?: string
-    isDefault?: boolean
     AND?: LanguageWhereInput | LanguageWhereInput[]
     OR?: LanguageWhereInput[]
     NOT?: LanguageWhereInput | LanguageWhereInput[]
     statusId?: IntNullableFilter<"Language"> | number | null
     title?: StringFilter<"Language"> | string
+    isDefault?: BoolNullableFilter<"Language"> | boolean | null
     createdAt?: DateTimeNullableFilter<"Language"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Language"> | Date | string | null
     status?: XOR<StatusNullableRelationFilter, StatusWhereInput> | null
     audio?: AudioListRelationFilter
     subtitles?: SubtitleListRelationFilter
-  }, "languageId" | "code" | "unique_default_language">
+  }, "languageId" | "code">
 
   export type LanguageOrderByWithAggregationInput = {
     languageId?: SortOrder
@@ -25828,8 +25828,8 @@ export namespace Prisma {
     statusName?: StringFilter<"Status"> | string
     users?: UserListRelationFilter
     languages?: LanguageListRelationFilter
-    schools?: SchoolListRelationFilter
-    courses?: CourseListRelationFilter
+    exhibitions?: ExhibitionListRelationFilter
+    exhibits?: ExhibitListRelationFilter
   }
 
   export type StatusOrderByWithRelationInput = {
@@ -25837,8 +25837,8 @@ export namespace Prisma {
     statusName?: SortOrder
     users?: UserOrderByRelationAggregateInput
     languages?: LanguageOrderByRelationAggregateInput
-    schools?: SchoolOrderByRelationAggregateInput
-    courses?: CourseOrderByRelationAggregateInput
+    exhibitions?: ExhibitionOrderByRelationAggregateInput
+    exhibits?: ExhibitOrderByRelationAggregateInput
   }
 
   export type StatusWhereUniqueInput = Prisma.AtLeast<{
@@ -25849,8 +25849,8 @@ export namespace Prisma {
     NOT?: StatusWhereInput | StatusWhereInput[]
     users?: UserListRelationFilter
     languages?: LanguageListRelationFilter
-    schools?: SchoolListRelationFilter
-    courses?: CourseListRelationFilter
+    exhibitions?: ExhibitionListRelationFilter
+    exhibits?: ExhibitListRelationFilter
   }, "statusId" | "statusName">
 
   export type StatusOrderByWithAggregationInput = {
@@ -26301,7 +26301,7 @@ export namespace Prisma {
     imageUrl?: StringNullableFilter<"Badge"> | string | null
     createdAt?: DateTimeNullableFilter<"Badge"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Badge"> | Date | string | null
-    course?: XOR<CourseNullableRelationFilter, CourseWhereInput> | null
+    exhibit?: XOR<ExhibitNullableRelationFilter, ExhibitWhereInput> | null
     userBadges?: UserBadgeListRelationFilter
   }
 
@@ -26312,7 +26312,7 @@ export namespace Prisma {
     imageUrl?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrderInput | SortOrder
-    course?: CourseOrderByWithRelationInput
+    exhibit?: ExhibitOrderByWithRelationInput
     userBadges?: UserBadgeOrderByRelationAggregateInput
   }
 
@@ -26326,7 +26326,7 @@ export namespace Prisma {
     imageUrl?: StringNullableFilter<"Badge"> | string | null
     createdAt?: DateTimeNullableFilter<"Badge"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Badge"> | Date | string | null
-    course?: XOR<CourseNullableRelationFilter, CourseWhereInput> | null
+    exhibit?: XOR<ExhibitNullableRelationFilter, ExhibitWhereInput> | null
     userBadges?: UserBadgeListRelationFilter
   }, "badgeId">
 
@@ -26407,69 +26407,69 @@ export namespace Prisma {
     createdAt?: DateTimeNullableWithAggregatesFilter<"UserBadge"> | Date | string | null
   }
 
-  export type SchoolCreateInput = {
-    schoolId?: bigint | number
+  export type ExhibitionCreateInput = {
+    exhibitionId?: bigint | number
     title: string
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    status?: StatusCreateNestedOneWithoutSchoolsInput
-    courses?: CourseCreateNestedManyWithoutSchoolInput
-    images?: ImageCreateNestedManyWithoutSchoolInput
+    status?: StatusCreateNestedOneWithoutExhibitionsInput
+    exhibits?: ExhibitCreateNestedManyWithoutExhibitionInput
+    images?: ImageCreateNestedManyWithoutExhibitionInput
   }
 
-  export type SchoolUncheckedCreateInput = {
-    schoolId?: bigint | number
-    title: string
-    description?: string | null
-    statusId?: number | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    courses?: CourseUncheckedCreateNestedManyWithoutSchoolInput
-    images?: ImageUncheckedCreateNestedManyWithoutSchoolInput
-  }
-
-  export type SchoolUpdateInput = {
-    schoolId?: BigIntFieldUpdateOperationsInput | bigint | number
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    status?: StatusUpdateOneWithoutSchoolsNestedInput
-    courses?: CourseUpdateManyWithoutSchoolNestedInput
-    images?: ImageUpdateManyWithoutSchoolNestedInput
-  }
-
-  export type SchoolUncheckedUpdateInput = {
-    schoolId?: BigIntFieldUpdateOperationsInput | bigint | number
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    statusId?: NullableIntFieldUpdateOperationsInput | number | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    courses?: CourseUncheckedUpdateManyWithoutSchoolNestedInput
-    images?: ImageUncheckedUpdateManyWithoutSchoolNestedInput
-  }
-
-  export type SchoolCreateManyInput = {
-    schoolId?: bigint | number
+  export type ExhibitionUncheckedCreateInput = {
+    exhibitionId?: bigint | number
     title: string
     description?: string | null
     statusId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    exhibits?: ExhibitUncheckedCreateNestedManyWithoutExhibitionInput
+    images?: ImageUncheckedCreateNestedManyWithoutExhibitionInput
   }
 
-  export type SchoolUpdateManyMutationInput = {
-    schoolId?: BigIntFieldUpdateOperationsInput | bigint | number
+  export type ExhibitionUpdateInput = {
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StatusUpdateOneWithoutExhibitionsNestedInput
+    exhibits?: ExhibitUpdateManyWithoutExhibitionNestedInput
+    images?: ImageUpdateManyWithoutExhibitionNestedInput
+  }
+
+  export type ExhibitionUncheckedUpdateInput = {
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    statusId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exhibits?: ExhibitUncheckedUpdateManyWithoutExhibitionNestedInput
+    images?: ImageUncheckedUpdateManyWithoutExhibitionNestedInput
+  }
+
+  export type ExhibitionCreateManyInput = {
+    exhibitionId?: bigint | number
+    title: string
+    description?: string | null
+    statusId?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ExhibitionUpdateManyMutationInput = {
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type SchoolUncheckedUpdateManyInput = {
-    schoolId?: BigIntFieldUpdateOperationsInput | bigint | number
+  export type ExhibitionUncheckedUpdateManyInput = {
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -26477,69 +26477,69 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type CourseCreateInput = {
-    courseId?: bigint | number
+  export type ExhibitCreateInput = {
+    exhibitId?: bigint | number
     title: string
     description?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    school: SchoolCreateNestedOneWithoutCoursesInput
-    status?: StatusCreateNestedOneWithoutCoursesInput
-    badge?: BadgeCreateNestedOneWithoutCourseInput
-    audio?: AudioCreateNestedManyWithoutCourseInput
-    feedbacks?: FeedbackCreateNestedManyWithoutCourseInput
-    images?: ImageCreateNestedManyWithoutCourseInput
-    qrCodes?: QRCodeCreateNestedManyWithoutCourseInput
+    exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
+    status?: StatusCreateNestedOneWithoutExhibitsInput
+    badge?: BadgeCreateNestedOneWithoutExhibitInput
+    audio?: AudioCreateNestedManyWithoutExhibitInput
+    feedbacks?: FeedbackCreateNestedManyWithoutExhibitInput
+    images?: ImageCreateNestedManyWithoutExhibitInput
+    qrCodes?: QRCodeCreateNestedManyWithoutExhibitInput
   }
 
-  export type CourseUncheckedCreateInput = {
-    courseId?: bigint | number
-    schoolId: bigint | number
+  export type ExhibitUncheckedCreateInput = {
+    exhibitId?: bigint | number
+    exhibitionId: bigint | number
     badgeId?: bigint | number | null
     title: string
     description?: string | null
     statusId?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    audio?: AudioUncheckedCreateNestedManyWithoutCourseInput
-    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutCourseInput
-    images?: ImageUncheckedCreateNestedManyWithoutCourseInput
-    qrCodes?: QRCodeUncheckedCreateNestedManyWithoutCourseInput
+    audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutExhibitInput
+    images?: ImageUncheckedCreateNestedManyWithoutExhibitInput
+    qrCodes?: QRCodeUncheckedCreateNestedManyWithoutExhibitInput
   }
 
-  export type CourseUpdateInput = {
-    courseId?: BigIntFieldUpdateOperationsInput | bigint | number
+  export type ExhibitUpdateInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    school?: SchoolUpdateOneRequiredWithoutCoursesNestedInput
-    status?: StatusUpdateOneWithoutCoursesNestedInput
-    badge?: BadgeUpdateOneWithoutCourseNestedInput
-    audio?: AudioUpdateManyWithoutCourseNestedInput
-    feedbacks?: FeedbackUpdateManyWithoutCourseNestedInput
-    images?: ImageUpdateManyWithoutCourseNestedInput
-    qrCodes?: QRCodeUpdateManyWithoutCourseNestedInput
+    exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
+    status?: StatusUpdateOneWithoutExhibitsNestedInput
+    badge?: BadgeUpdateOneWithoutExhibitNestedInput
+    audio?: AudioUpdateManyWithoutExhibitNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutExhibitNestedInput
+    images?: ImageUpdateManyWithoutExhibitNestedInput
+    qrCodes?: QRCodeUpdateManyWithoutExhibitNestedInput
   }
 
-  export type CourseUncheckedUpdateInput = {
-    courseId?: BigIntFieldUpdateOperationsInput | bigint | number
-    schoolId?: BigIntFieldUpdateOperationsInput | bigint | number
+  export type ExhibitUncheckedUpdateInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    audio?: AudioUncheckedUpdateManyWithoutCourseNestedInput
-    feedbacks?: FeedbackUncheckedUpdateManyWithoutCourseNestedInput
-    images?: ImageUncheckedUpdateManyWithoutCourseNestedInput
-    qrCodes?: QRCodeUncheckedUpdateManyWithoutCourseNestedInput
+    audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutExhibitNestedInput
+    images?: ImageUncheckedUpdateManyWithoutExhibitNestedInput
+    qrCodes?: QRCodeUncheckedUpdateManyWithoutExhibitNestedInput
   }
 
-  export type CourseCreateManyInput = {
-    courseId?: bigint | number
-    schoolId: bigint | number
+  export type ExhibitCreateManyInput = {
+    exhibitId?: bigint | number
+    exhibitionId: bigint | number
     badgeId?: bigint | number | null
     title: string
     description?: string | null
@@ -26548,17 +26548,17 @@ export namespace Prisma {
     updatedAt?: Date | string | null
   }
 
-  export type CourseUpdateManyMutationInput = {
-    courseId?: BigIntFieldUpdateOperationsInput | bigint | number
+  export type ExhibitUpdateManyMutationInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type CourseUncheckedUpdateManyInput = {
-    courseId?: BigIntFieldUpdateOperationsInput | bigint | number
-    schoolId?: BigIntFieldUpdateOperationsInput | bigint | number
+  export type ExhibitUncheckedUpdateManyInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26573,7 +26573,7 @@ export namespace Prisma {
     description?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    course?: CourseCreateNestedOneWithoutAudioInput
+    exhibit?: ExhibitCreateNestedOneWithoutAudioInput
     language?: LanguageCreateNestedOneWithoutAudioInput
     playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutAudioInput
     subtitles?: SubtitleCreateNestedManyWithoutAudioInput
@@ -26581,7 +26581,7 @@ export namespace Prisma {
 
   export type AudioUncheckedCreateInput = {
     audioId?: number
-    courseId?: bigint | number | null
+    exhibitId?: bigint | number | null
     languageId?: bigint | number | null
     fileUrl?: string | null
     title?: string | null
@@ -26598,7 +26598,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    course?: CourseUpdateOneWithoutAudioNestedInput
+    exhibit?: ExhibitUpdateOneWithoutAudioNestedInput
     language?: LanguageUpdateOneWithoutAudioNestedInput
     playbackLogs?: AudioPlaybackLogUpdateManyWithoutAudioNestedInput
     subtitles?: SubtitleUpdateManyWithoutAudioNestedInput
@@ -26606,7 +26606,7 @@ export namespace Prisma {
 
   export type AudioUncheckedUpdateInput = {
     audioId?: IntFieldUpdateOperationsInput | number
-    courseId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    exhibitId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     languageId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     title?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26619,7 +26619,7 @@ export namespace Prisma {
 
   export type AudioCreateManyInput = {
     audioId?: number
-    courseId?: bigint | number | null
+    exhibitId?: bigint | number | null
     languageId?: bigint | number | null
     fileUrl?: string | null
     title?: string | null
@@ -26638,7 +26638,7 @@ export namespace Prisma {
 
   export type AudioUncheckedUpdateManyInput = {
     audioId?: IntFieldUpdateOperationsInput | number
-    courseId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    exhibitId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     languageId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     title?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26726,13 +26726,13 @@ export namespace Prisma {
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     user?: UserCreateNestedOneWithoutFeedbacksInput
-    course?: CourseCreateNestedOneWithoutFeedbacksInput
+    exhibit?: ExhibitCreateNestedOneWithoutFeedbacksInput
   }
 
   export type FeedbackUncheckedCreateInput = {
     feedbackId?: bigint | number
     userId?: bigint | number | null
-    courseId?: bigint | number | null
+    exhibitId?: bigint | number | null
     rating?: number | null
     description?: string | null
     createdAt?: Date | string | null
@@ -26746,13 +26746,13 @@ export namespace Prisma {
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneWithoutFeedbacksNestedInput
-    course?: CourseUpdateOneWithoutFeedbacksNestedInput
+    exhibit?: ExhibitUpdateOneWithoutFeedbacksNestedInput
   }
 
   export type FeedbackUncheckedUpdateInput = {
     feedbackId?: BigIntFieldUpdateOperationsInput | bigint | number
     userId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    courseId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    exhibitId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     rating?: NullableIntFieldUpdateOperationsInput | number | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -26762,7 +26762,7 @@ export namespace Prisma {
   export type FeedbackCreateManyInput = {
     feedbackId?: bigint | number
     userId?: bigint | number | null
-    courseId?: bigint | number | null
+    exhibitId?: bigint | number | null
     rating?: number | null
     description?: string | null
     createdAt?: Date | string | null
@@ -26780,7 +26780,7 @@ export namespace Prisma {
   export type FeedbackUncheckedUpdateManyInput = {
     feedbackId?: BigIntFieldUpdateOperationsInput | bigint | number
     userId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    courseId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    exhibitId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     rating?: NullableIntFieldUpdateOperationsInput | number | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -26795,14 +26795,14 @@ export namespace Prisma {
     isPrimary?: boolean
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    course?: CourseCreateNestedOneWithoutImagesInput
-    school?: SchoolCreateNestedOneWithoutImagesInput
+    exhibit?: ExhibitCreateNestedOneWithoutImagesInput
+    exhibition?: ExhibitionCreateNestedOneWithoutImagesInput
   }
 
   export type ImageUncheckedCreateInput = {
     imageId?: bigint | number
-    courseId?: bigint | number | null
-    schoolId?: bigint | number | null
+    exhibitId?: bigint | number | null
+    exhibitionId?: bigint | number | null
     title?: string | null
     description?: string | null
     fileUrl?: string | null
@@ -26819,14 +26819,14 @@ export namespace Prisma {
     isPrimary?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    course?: CourseUpdateOneWithoutImagesNestedInput
-    school?: SchoolUpdateOneWithoutImagesNestedInput
+    exhibit?: ExhibitUpdateOneWithoutImagesNestedInput
+    exhibition?: ExhibitionUpdateOneWithoutImagesNestedInput
   }
 
   export type ImageUncheckedUpdateInput = {
     imageId?: BigIntFieldUpdateOperationsInput | bigint | number
-    courseId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    schoolId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    exhibitId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    exhibitionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26837,8 +26837,8 @@ export namespace Prisma {
 
   export type ImageCreateManyInput = {
     imageId?: bigint | number
-    courseId?: bigint | number | null
-    schoolId?: bigint | number | null
+    exhibitId?: bigint | number | null
+    exhibitionId?: bigint | number | null
     title?: string | null
     description?: string | null
     fileUrl?: string | null
@@ -26859,8 +26859,8 @@ export namespace Prisma {
 
   export type ImageUncheckedUpdateManyInput = {
     imageId?: BigIntFieldUpdateOperationsInput | bigint | number
-    courseId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    schoolId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    exhibitId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    exhibitionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26873,12 +26873,12 @@ export namespace Prisma {
     qrUrl: string
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    course: CourseCreateNestedOneWithoutQrCodesInput
+    exhibit: ExhibitCreateNestedOneWithoutQrCodesInput
   }
 
   export type QRCodeUncheckedCreateInput = {
     qrId?: number
-    courseId: bigint | number
+    exhibitId: bigint | number
     qrUrl: string
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
@@ -26888,12 +26888,12 @@ export namespace Prisma {
     qrUrl?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    course?: CourseUpdateOneRequiredWithoutQrCodesNestedInput
+    exhibit?: ExhibitUpdateOneRequiredWithoutQrCodesNestedInput
   }
 
   export type QRCodeUncheckedUpdateInput = {
     qrId?: IntFieldUpdateOperationsInput | number
-    courseId?: BigIntFieldUpdateOperationsInput | bigint | number
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
     qrUrl?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -26901,7 +26901,7 @@ export namespace Prisma {
 
   export type QRCodeCreateManyInput = {
     qrId?: number
-    courseId: bigint | number
+    exhibitId: bigint | number
     qrUrl: string
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
@@ -26915,7 +26915,7 @@ export namespace Prisma {
 
   export type QRCodeUncheckedUpdateManyInput = {
     qrId?: IntFieldUpdateOperationsInput | number
-    courseId?: BigIntFieldUpdateOperationsInput | bigint | number
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
     qrUrl?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -27195,8 +27195,8 @@ export namespace Prisma {
     statusName: string
     users?: UserCreateNestedManyWithoutStatusInput
     languages?: LanguageCreateNestedManyWithoutStatusInput
-    schools?: SchoolCreateNestedManyWithoutStatusInput
-    courses?: CourseCreateNestedManyWithoutStatusInput
+    exhibitions?: ExhibitionCreateNestedManyWithoutStatusInput
+    exhibits?: ExhibitCreateNestedManyWithoutStatusInput
   }
 
   export type StatusUncheckedCreateInput = {
@@ -27204,16 +27204,16 @@ export namespace Prisma {
     statusName: string
     users?: UserUncheckedCreateNestedManyWithoutStatusInput
     languages?: LanguageUncheckedCreateNestedManyWithoutStatusInput
-    schools?: SchoolUncheckedCreateNestedManyWithoutStatusInput
-    courses?: CourseUncheckedCreateNestedManyWithoutStatusInput
+    exhibitions?: ExhibitionUncheckedCreateNestedManyWithoutStatusInput
+    exhibits?: ExhibitUncheckedCreateNestedManyWithoutStatusInput
   }
 
   export type StatusUpdateInput = {
     statusName?: StringFieldUpdateOperationsInput | string
     users?: UserUpdateManyWithoutStatusNestedInput
     languages?: LanguageUpdateManyWithoutStatusNestedInput
-    schools?: SchoolUpdateManyWithoutStatusNestedInput
-    courses?: CourseUpdateManyWithoutStatusNestedInput
+    exhibitions?: ExhibitionUpdateManyWithoutStatusNestedInput
+    exhibits?: ExhibitUpdateManyWithoutStatusNestedInput
   }
 
   export type StatusUncheckedUpdateInput = {
@@ -27221,8 +27221,8 @@ export namespace Prisma {
     statusName?: StringFieldUpdateOperationsInput | string
     users?: UserUncheckedUpdateManyWithoutStatusNestedInput
     languages?: LanguageUncheckedUpdateManyWithoutStatusNestedInput
-    schools?: SchoolUncheckedUpdateManyWithoutStatusNestedInput
-    courses?: CourseUncheckedUpdateManyWithoutStatusNestedInput
+    exhibitions?: ExhibitionUncheckedUpdateManyWithoutStatusNestedInput
+    exhibits?: ExhibitUncheckedUpdateManyWithoutStatusNestedInput
   }
 
   export type StatusCreateManyInput = {
@@ -27661,7 +27661,7 @@ export namespace Prisma {
     imageUrl?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    course?: CourseCreateNestedOneWithoutBadgeInput
+    exhibit?: ExhibitCreateNestedOneWithoutBadgeInput
     userBadges?: UserBadgeCreateNestedManyWithoutBadgeInput
   }
 
@@ -27672,7 +27672,7 @@ export namespace Prisma {
     imageUrl?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    course?: CourseUncheckedCreateNestedOneWithoutBadgeInput
+    exhibit?: ExhibitUncheckedCreateNestedOneWithoutBadgeInput
     userBadges?: UserBadgeUncheckedCreateNestedManyWithoutBadgeInput
   }
 
@@ -27683,7 +27683,7 @@ export namespace Prisma {
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    course?: CourseUpdateOneWithoutBadgeNestedInput
+    exhibit?: ExhibitUpdateOneWithoutBadgeNestedInput
     userBadges?: UserBadgeUpdateManyWithoutBadgeNestedInput
   }
 
@@ -27694,7 +27694,7 @@ export namespace Prisma {
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    course?: CourseUncheckedUpdateOneWithoutBadgeNestedInput
+    exhibit?: ExhibitUncheckedUpdateOneWithoutBadgeNestedInput
     userBadges?: UserBadgeUncheckedUpdateManyWithoutBadgeNestedInput
   }
 
@@ -27833,10 +27833,10 @@ export namespace Prisma {
     isNot?: StatusWhereInput | null
   }
 
-  export type CourseListRelationFilter = {
-    every?: CourseWhereInput
-    some?: CourseWhereInput
-    none?: CourseWhereInput
+  export type ExhibitListRelationFilter = {
+    every?: ExhibitWhereInput
+    some?: ExhibitWhereInput
+    none?: ExhibitWhereInput
   }
 
   export type ImageListRelationFilter = {
@@ -27850,7 +27850,7 @@ export namespace Prisma {
     nulls?: NullsOrder
   }
 
-  export type CourseOrderByRelationAggregateInput = {
+  export type ExhibitOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -27858,8 +27858,8 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type SchoolCountOrderByAggregateInput = {
-    schoolId?: SortOrder
+  export type ExhibitionCountOrderByAggregateInput = {
+    exhibitionId?: SortOrder
     title?: SortOrder
     description?: SortOrder
     statusId?: SortOrder
@@ -27867,13 +27867,13 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type SchoolAvgOrderByAggregateInput = {
-    schoolId?: SortOrder
+  export type ExhibitionAvgOrderByAggregateInput = {
+    exhibitionId?: SortOrder
     statusId?: SortOrder
   }
 
-  export type SchoolMaxOrderByAggregateInput = {
-    schoolId?: SortOrder
+  export type ExhibitionMaxOrderByAggregateInput = {
+    exhibitionId?: SortOrder
     title?: SortOrder
     description?: SortOrder
     statusId?: SortOrder
@@ -27881,8 +27881,8 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type SchoolMinOrderByAggregateInput = {
-    schoolId?: SortOrder
+  export type ExhibitionMinOrderByAggregateInput = {
+    exhibitionId?: SortOrder
     title?: SortOrder
     description?: SortOrder
     statusId?: SortOrder
@@ -27890,8 +27890,8 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type SchoolSumOrderByAggregateInput = {
-    schoolId?: SortOrder
+  export type ExhibitionSumOrderByAggregateInput = {
+    exhibitionId?: SortOrder
     statusId?: SortOrder
   }
 
@@ -27999,9 +27999,9 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
-  export type SchoolRelationFilter = {
-    is?: SchoolWhereInput
-    isNot?: SchoolWhereInput
+  export type ExhibitionRelationFilter = {
+    is?: ExhibitionWhereInput
+    isNot?: ExhibitionWhereInput
   }
 
   export type BadgeNullableRelationFilter = {
@@ -28039,9 +28039,9 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type CourseCountOrderByAggregateInput = {
-    courseId?: SortOrder
-    schoolId?: SortOrder
+  export type ExhibitCountOrderByAggregateInput = {
+    exhibitId?: SortOrder
+    exhibitionId?: SortOrder
     badgeId?: SortOrder
     title?: SortOrder
     description?: SortOrder
@@ -28050,27 +28050,16 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type CourseAvgOrderByAggregateInput = {
-    courseId?: SortOrder
-    schoolId?: SortOrder
+  export type ExhibitAvgOrderByAggregateInput = {
+    exhibitId?: SortOrder
+    exhibitionId?: SortOrder
     badgeId?: SortOrder
     statusId?: SortOrder
   }
 
-  export type CourseMaxOrderByAggregateInput = {
-    courseId?: SortOrder
-    schoolId?: SortOrder
-    badgeId?: SortOrder
-    title?: SortOrder
-    description?: SortOrder
-    statusId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type CourseMinOrderByAggregateInput = {
-    courseId?: SortOrder
-    schoolId?: SortOrder
+  export type ExhibitMaxOrderByAggregateInput = {
+    exhibitId?: SortOrder
+    exhibitionId?: SortOrder
     badgeId?: SortOrder
     title?: SortOrder
     description?: SortOrder
@@ -28079,9 +28068,20 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type CourseSumOrderByAggregateInput = {
-    courseId?: SortOrder
-    schoolId?: SortOrder
+  export type ExhibitMinOrderByAggregateInput = {
+    exhibitId?: SortOrder
+    exhibitionId?: SortOrder
+    badgeId?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    statusId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ExhibitSumOrderByAggregateInput = {
+    exhibitId?: SortOrder
+    exhibitionId?: SortOrder
     badgeId?: SortOrder
     statusId?: SortOrder
   }
@@ -28127,9 +28127,9 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
-  export type CourseNullableRelationFilter = {
-    is?: CourseWhereInput | null
-    isNot?: CourseWhereInput | null
+  export type ExhibitNullableRelationFilter = {
+    is?: ExhibitWhereInput | null
+    isNot?: ExhibitWhereInput | null
   }
 
   export type LanguageNullableRelationFilter = {
@@ -28159,7 +28159,7 @@ export namespace Prisma {
 
   export type AudioCountOrderByAggregateInput = {
     audioId?: SortOrder
-    courseId?: SortOrder
+    exhibitId?: SortOrder
     languageId?: SortOrder
     fileUrl?: SortOrder
     title?: SortOrder
@@ -28170,13 +28170,13 @@ export namespace Prisma {
 
   export type AudioAvgOrderByAggregateInput = {
     audioId?: SortOrder
-    courseId?: SortOrder
+    exhibitId?: SortOrder
     languageId?: SortOrder
   }
 
   export type AudioMaxOrderByAggregateInput = {
     audioId?: SortOrder
-    courseId?: SortOrder
+    exhibitId?: SortOrder
     languageId?: SortOrder
     fileUrl?: SortOrder
     title?: SortOrder
@@ -28187,7 +28187,7 @@ export namespace Prisma {
 
   export type AudioMinOrderByAggregateInput = {
     audioId?: SortOrder
-    courseId?: SortOrder
+    exhibitId?: SortOrder
     languageId?: SortOrder
     fileUrl?: SortOrder
     title?: SortOrder
@@ -28198,7 +28198,7 @@ export namespace Prisma {
 
   export type AudioSumOrderByAggregateInput = {
     audioId?: SortOrder
-    courseId?: SortOrder
+    exhibitId?: SortOrder
     languageId?: SortOrder
   }
 
@@ -28278,7 +28278,7 @@ export namespace Prisma {
   export type FeedbackCountOrderByAggregateInput = {
     feedbackId?: SortOrder
     userId?: SortOrder
-    courseId?: SortOrder
+    exhibitId?: SortOrder
     rating?: SortOrder
     description?: SortOrder
     createdAt?: SortOrder
@@ -28288,14 +28288,14 @@ export namespace Prisma {
   export type FeedbackAvgOrderByAggregateInput = {
     feedbackId?: SortOrder
     userId?: SortOrder
-    courseId?: SortOrder
+    exhibitId?: SortOrder
     rating?: SortOrder
   }
 
   export type FeedbackMaxOrderByAggregateInput = {
     feedbackId?: SortOrder
     userId?: SortOrder
-    courseId?: SortOrder
+    exhibitId?: SortOrder
     rating?: SortOrder
     description?: SortOrder
     createdAt?: SortOrder
@@ -28305,7 +28305,7 @@ export namespace Prisma {
   export type FeedbackMinOrderByAggregateInput = {
     feedbackId?: SortOrder
     userId?: SortOrder
-    courseId?: SortOrder
+    exhibitId?: SortOrder
     rating?: SortOrder
     description?: SortOrder
     createdAt?: SortOrder
@@ -28315,7 +28315,7 @@ export namespace Prisma {
   export type FeedbackSumOrderByAggregateInput = {
     feedbackId?: SortOrder
     userId?: SortOrder
-    courseId?: SortOrder
+    exhibitId?: SortOrder
     rating?: SortOrder
   }
 
@@ -28324,15 +28324,15 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
-  export type SchoolNullableRelationFilter = {
-    is?: SchoolWhereInput | null
-    isNot?: SchoolWhereInput | null
+  export type ExhibitionNullableRelationFilter = {
+    is?: ExhibitionWhereInput | null
+    isNot?: ExhibitionWhereInput | null
   }
 
   export type ImageCountOrderByAggregateInput = {
     imageId?: SortOrder
-    courseId?: SortOrder
-    schoolId?: SortOrder
+    exhibitId?: SortOrder
+    exhibitionId?: SortOrder
     title?: SortOrder
     description?: SortOrder
     fileUrl?: SortOrder
@@ -28343,14 +28343,14 @@ export namespace Prisma {
 
   export type ImageAvgOrderByAggregateInput = {
     imageId?: SortOrder
-    courseId?: SortOrder
-    schoolId?: SortOrder
+    exhibitId?: SortOrder
+    exhibitionId?: SortOrder
   }
 
   export type ImageMaxOrderByAggregateInput = {
     imageId?: SortOrder
-    courseId?: SortOrder
-    schoolId?: SortOrder
+    exhibitId?: SortOrder
+    exhibitionId?: SortOrder
     title?: SortOrder
     description?: SortOrder
     fileUrl?: SortOrder
@@ -28361,8 +28361,8 @@ export namespace Prisma {
 
   export type ImageMinOrderByAggregateInput = {
     imageId?: SortOrder
-    courseId?: SortOrder
-    schoolId?: SortOrder
+    exhibitId?: SortOrder
+    exhibitionId?: SortOrder
     title?: SortOrder
     description?: SortOrder
     fileUrl?: SortOrder
@@ -28373,8 +28373,8 @@ export namespace Prisma {
 
   export type ImageSumOrderByAggregateInput = {
     imageId?: SortOrder
-    courseId?: SortOrder
-    schoolId?: SortOrder
+    exhibitId?: SortOrder
+    exhibitionId?: SortOrder
   }
 
   export type BoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -28385,14 +28385,14 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
-  export type CourseRelationFilter = {
-    is?: CourseWhereInput
-    isNot?: CourseWhereInput
+  export type ExhibitRelationFilter = {
+    is?: ExhibitWhereInput
+    isNot?: ExhibitWhereInput
   }
 
   export type QRCodeCountOrderByAggregateInput = {
     qrId?: SortOrder
-    courseId?: SortOrder
+    exhibitId?: SortOrder
     qrUrl?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -28400,12 +28400,12 @@ export namespace Prisma {
 
   export type QRCodeAvgOrderByAggregateInput = {
     qrId?: SortOrder
-    courseId?: SortOrder
+    exhibitId?: SortOrder
   }
 
   export type QRCodeMaxOrderByAggregateInput = {
     qrId?: SortOrder
-    courseId?: SortOrder
+    exhibitId?: SortOrder
     qrUrl?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -28413,7 +28413,7 @@ export namespace Prisma {
 
   export type QRCodeMinOrderByAggregateInput = {
     qrId?: SortOrder
-    courseId?: SortOrder
+    exhibitId?: SortOrder
     qrUrl?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -28421,7 +28421,7 @@ export namespace Prisma {
 
   export type QRCodeSumOrderByAggregateInput = {
     qrId?: SortOrder
-    courseId?: SortOrder
+    exhibitId?: SortOrder
   }
 
   export type BoolNullableFilter<$PrismaModel = never> = {
@@ -28671,10 +28671,10 @@ export namespace Prisma {
     none?: LanguageWhereInput
   }
 
-  export type SchoolListRelationFilter = {
-    every?: SchoolWhereInput
-    some?: SchoolWhereInput
-    none?: SchoolWhereInput
+  export type ExhibitionListRelationFilter = {
+    every?: ExhibitionWhereInput
+    some?: ExhibitionWhereInput
+    none?: ExhibitionWhereInput
   }
 
   export type UserOrderByRelationAggregateInput = {
@@ -28685,7 +28685,7 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type SchoolOrderByRelationAggregateInput = {
+  export type ExhibitionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -29116,37 +29116,37 @@ export namespace Prisma {
     badgeId?: SortOrder
   }
 
-  export type StatusCreateNestedOneWithoutSchoolsInput = {
-    create?: XOR<StatusCreateWithoutSchoolsInput, StatusUncheckedCreateWithoutSchoolsInput>
-    connectOrCreate?: StatusCreateOrConnectWithoutSchoolsInput
+  export type StatusCreateNestedOneWithoutExhibitionsInput = {
+    create?: XOR<StatusCreateWithoutExhibitionsInput, StatusUncheckedCreateWithoutExhibitionsInput>
+    connectOrCreate?: StatusCreateOrConnectWithoutExhibitionsInput
     connect?: StatusWhereUniqueInput
   }
 
-  export type CourseCreateNestedManyWithoutSchoolInput = {
-    create?: XOR<CourseCreateWithoutSchoolInput, CourseUncheckedCreateWithoutSchoolInput> | CourseCreateWithoutSchoolInput[] | CourseUncheckedCreateWithoutSchoolInput[]
-    connectOrCreate?: CourseCreateOrConnectWithoutSchoolInput | CourseCreateOrConnectWithoutSchoolInput[]
-    createMany?: CourseCreateManySchoolInputEnvelope
-    connect?: CourseWhereUniqueInput | CourseWhereUniqueInput[]
+  export type ExhibitCreateNestedManyWithoutExhibitionInput = {
+    create?: XOR<ExhibitCreateWithoutExhibitionInput, ExhibitUncheckedCreateWithoutExhibitionInput> | ExhibitCreateWithoutExhibitionInput[] | ExhibitUncheckedCreateWithoutExhibitionInput[]
+    connectOrCreate?: ExhibitCreateOrConnectWithoutExhibitionInput | ExhibitCreateOrConnectWithoutExhibitionInput[]
+    createMany?: ExhibitCreateManyExhibitionInputEnvelope
+    connect?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
   }
 
-  export type ImageCreateNestedManyWithoutSchoolInput = {
-    create?: XOR<ImageCreateWithoutSchoolInput, ImageUncheckedCreateWithoutSchoolInput> | ImageCreateWithoutSchoolInput[] | ImageUncheckedCreateWithoutSchoolInput[]
-    connectOrCreate?: ImageCreateOrConnectWithoutSchoolInput | ImageCreateOrConnectWithoutSchoolInput[]
-    createMany?: ImageCreateManySchoolInputEnvelope
+  export type ImageCreateNestedManyWithoutExhibitionInput = {
+    create?: XOR<ImageCreateWithoutExhibitionInput, ImageUncheckedCreateWithoutExhibitionInput> | ImageCreateWithoutExhibitionInput[] | ImageUncheckedCreateWithoutExhibitionInput[]
+    connectOrCreate?: ImageCreateOrConnectWithoutExhibitionInput | ImageCreateOrConnectWithoutExhibitionInput[]
+    createMany?: ImageCreateManyExhibitionInputEnvelope
     connect?: ImageWhereUniqueInput | ImageWhereUniqueInput[]
   }
 
-  export type CourseUncheckedCreateNestedManyWithoutSchoolInput = {
-    create?: XOR<CourseCreateWithoutSchoolInput, CourseUncheckedCreateWithoutSchoolInput> | CourseCreateWithoutSchoolInput[] | CourseUncheckedCreateWithoutSchoolInput[]
-    connectOrCreate?: CourseCreateOrConnectWithoutSchoolInput | CourseCreateOrConnectWithoutSchoolInput[]
-    createMany?: CourseCreateManySchoolInputEnvelope
-    connect?: CourseWhereUniqueInput | CourseWhereUniqueInput[]
+  export type ExhibitUncheckedCreateNestedManyWithoutExhibitionInput = {
+    create?: XOR<ExhibitCreateWithoutExhibitionInput, ExhibitUncheckedCreateWithoutExhibitionInput> | ExhibitCreateWithoutExhibitionInput[] | ExhibitUncheckedCreateWithoutExhibitionInput[]
+    connectOrCreate?: ExhibitCreateOrConnectWithoutExhibitionInput | ExhibitCreateOrConnectWithoutExhibitionInput[]
+    createMany?: ExhibitCreateManyExhibitionInputEnvelope
+    connect?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
   }
 
-  export type ImageUncheckedCreateNestedManyWithoutSchoolInput = {
-    create?: XOR<ImageCreateWithoutSchoolInput, ImageUncheckedCreateWithoutSchoolInput> | ImageCreateWithoutSchoolInput[] | ImageUncheckedCreateWithoutSchoolInput[]
-    connectOrCreate?: ImageCreateOrConnectWithoutSchoolInput | ImageCreateOrConnectWithoutSchoolInput[]
-    createMany?: ImageCreateManySchoolInputEnvelope
+  export type ImageUncheckedCreateNestedManyWithoutExhibitionInput = {
+    create?: XOR<ImageCreateWithoutExhibitionInput, ImageUncheckedCreateWithoutExhibitionInput> | ImageCreateWithoutExhibitionInput[] | ImageUncheckedCreateWithoutExhibitionInput[]
+    connectOrCreate?: ImageCreateOrConnectWithoutExhibitionInput | ImageCreateOrConnectWithoutExhibitionInput[]
+    createMany?: ImageCreateManyExhibitionInputEnvelope
     connect?: ImageWhereUniqueInput | ImageWhereUniqueInput[]
   }
 
@@ -29170,41 +29170,41 @@ export namespace Prisma {
     set?: Date | string
   }
 
-  export type StatusUpdateOneWithoutSchoolsNestedInput = {
-    create?: XOR<StatusCreateWithoutSchoolsInput, StatusUncheckedCreateWithoutSchoolsInput>
-    connectOrCreate?: StatusCreateOrConnectWithoutSchoolsInput
-    upsert?: StatusUpsertWithoutSchoolsInput
+  export type StatusUpdateOneWithoutExhibitionsNestedInput = {
+    create?: XOR<StatusCreateWithoutExhibitionsInput, StatusUncheckedCreateWithoutExhibitionsInput>
+    connectOrCreate?: StatusCreateOrConnectWithoutExhibitionsInput
+    upsert?: StatusUpsertWithoutExhibitionsInput
     disconnect?: StatusWhereInput | boolean
     delete?: StatusWhereInput | boolean
     connect?: StatusWhereUniqueInput
-    update?: XOR<XOR<StatusUpdateToOneWithWhereWithoutSchoolsInput, StatusUpdateWithoutSchoolsInput>, StatusUncheckedUpdateWithoutSchoolsInput>
+    update?: XOR<XOR<StatusUpdateToOneWithWhereWithoutExhibitionsInput, StatusUpdateWithoutExhibitionsInput>, StatusUncheckedUpdateWithoutExhibitionsInput>
   }
 
-  export type CourseUpdateManyWithoutSchoolNestedInput = {
-    create?: XOR<CourseCreateWithoutSchoolInput, CourseUncheckedCreateWithoutSchoolInput> | CourseCreateWithoutSchoolInput[] | CourseUncheckedCreateWithoutSchoolInput[]
-    connectOrCreate?: CourseCreateOrConnectWithoutSchoolInput | CourseCreateOrConnectWithoutSchoolInput[]
-    upsert?: CourseUpsertWithWhereUniqueWithoutSchoolInput | CourseUpsertWithWhereUniqueWithoutSchoolInput[]
-    createMany?: CourseCreateManySchoolInputEnvelope
-    set?: CourseWhereUniqueInput | CourseWhereUniqueInput[]
-    disconnect?: CourseWhereUniqueInput | CourseWhereUniqueInput[]
-    delete?: CourseWhereUniqueInput | CourseWhereUniqueInput[]
-    connect?: CourseWhereUniqueInput | CourseWhereUniqueInput[]
-    update?: CourseUpdateWithWhereUniqueWithoutSchoolInput | CourseUpdateWithWhereUniqueWithoutSchoolInput[]
-    updateMany?: CourseUpdateManyWithWhereWithoutSchoolInput | CourseUpdateManyWithWhereWithoutSchoolInput[]
-    deleteMany?: CourseScalarWhereInput | CourseScalarWhereInput[]
+  export type ExhibitUpdateManyWithoutExhibitionNestedInput = {
+    create?: XOR<ExhibitCreateWithoutExhibitionInput, ExhibitUncheckedCreateWithoutExhibitionInput> | ExhibitCreateWithoutExhibitionInput[] | ExhibitUncheckedCreateWithoutExhibitionInput[]
+    connectOrCreate?: ExhibitCreateOrConnectWithoutExhibitionInput | ExhibitCreateOrConnectWithoutExhibitionInput[]
+    upsert?: ExhibitUpsertWithWhereUniqueWithoutExhibitionInput | ExhibitUpsertWithWhereUniqueWithoutExhibitionInput[]
+    createMany?: ExhibitCreateManyExhibitionInputEnvelope
+    set?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
+    disconnect?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
+    delete?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
+    connect?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
+    update?: ExhibitUpdateWithWhereUniqueWithoutExhibitionInput | ExhibitUpdateWithWhereUniqueWithoutExhibitionInput[]
+    updateMany?: ExhibitUpdateManyWithWhereWithoutExhibitionInput | ExhibitUpdateManyWithWhereWithoutExhibitionInput[]
+    deleteMany?: ExhibitScalarWhereInput | ExhibitScalarWhereInput[]
   }
 
-  export type ImageUpdateManyWithoutSchoolNestedInput = {
-    create?: XOR<ImageCreateWithoutSchoolInput, ImageUncheckedCreateWithoutSchoolInput> | ImageCreateWithoutSchoolInput[] | ImageUncheckedCreateWithoutSchoolInput[]
-    connectOrCreate?: ImageCreateOrConnectWithoutSchoolInput | ImageCreateOrConnectWithoutSchoolInput[]
-    upsert?: ImageUpsertWithWhereUniqueWithoutSchoolInput | ImageUpsertWithWhereUniqueWithoutSchoolInput[]
-    createMany?: ImageCreateManySchoolInputEnvelope
+  export type ImageUpdateManyWithoutExhibitionNestedInput = {
+    create?: XOR<ImageCreateWithoutExhibitionInput, ImageUncheckedCreateWithoutExhibitionInput> | ImageCreateWithoutExhibitionInput[] | ImageUncheckedCreateWithoutExhibitionInput[]
+    connectOrCreate?: ImageCreateOrConnectWithoutExhibitionInput | ImageCreateOrConnectWithoutExhibitionInput[]
+    upsert?: ImageUpsertWithWhereUniqueWithoutExhibitionInput | ImageUpsertWithWhereUniqueWithoutExhibitionInput[]
+    createMany?: ImageCreateManyExhibitionInputEnvelope
     set?: ImageWhereUniqueInput | ImageWhereUniqueInput[]
     disconnect?: ImageWhereUniqueInput | ImageWhereUniqueInput[]
     delete?: ImageWhereUniqueInput | ImageWhereUniqueInput[]
     connect?: ImageWhereUniqueInput | ImageWhereUniqueInput[]
-    update?: ImageUpdateWithWhereUniqueWithoutSchoolInput | ImageUpdateWithWhereUniqueWithoutSchoolInput[]
-    updateMany?: ImageUpdateManyWithWhereWithoutSchoolInput | ImageUpdateManyWithWhereWithoutSchoolInput[]
+    update?: ImageUpdateWithWhereUniqueWithoutExhibitionInput | ImageUpdateWithWhereUniqueWithoutExhibitionInput[]
+    updateMany?: ImageUpdateManyWithWhereWithoutExhibitionInput | ImageUpdateManyWithWhereWithoutExhibitionInput[]
     deleteMany?: ImageScalarWhereInput | ImageScalarWhereInput[]
   }
 
@@ -29216,105 +29216,105 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type CourseUncheckedUpdateManyWithoutSchoolNestedInput = {
-    create?: XOR<CourseCreateWithoutSchoolInput, CourseUncheckedCreateWithoutSchoolInput> | CourseCreateWithoutSchoolInput[] | CourseUncheckedCreateWithoutSchoolInput[]
-    connectOrCreate?: CourseCreateOrConnectWithoutSchoolInput | CourseCreateOrConnectWithoutSchoolInput[]
-    upsert?: CourseUpsertWithWhereUniqueWithoutSchoolInput | CourseUpsertWithWhereUniqueWithoutSchoolInput[]
-    createMany?: CourseCreateManySchoolInputEnvelope
-    set?: CourseWhereUniqueInput | CourseWhereUniqueInput[]
-    disconnect?: CourseWhereUniqueInput | CourseWhereUniqueInput[]
-    delete?: CourseWhereUniqueInput | CourseWhereUniqueInput[]
-    connect?: CourseWhereUniqueInput | CourseWhereUniqueInput[]
-    update?: CourseUpdateWithWhereUniqueWithoutSchoolInput | CourseUpdateWithWhereUniqueWithoutSchoolInput[]
-    updateMany?: CourseUpdateManyWithWhereWithoutSchoolInput | CourseUpdateManyWithWhereWithoutSchoolInput[]
-    deleteMany?: CourseScalarWhereInput | CourseScalarWhereInput[]
+  export type ExhibitUncheckedUpdateManyWithoutExhibitionNestedInput = {
+    create?: XOR<ExhibitCreateWithoutExhibitionInput, ExhibitUncheckedCreateWithoutExhibitionInput> | ExhibitCreateWithoutExhibitionInput[] | ExhibitUncheckedCreateWithoutExhibitionInput[]
+    connectOrCreate?: ExhibitCreateOrConnectWithoutExhibitionInput | ExhibitCreateOrConnectWithoutExhibitionInput[]
+    upsert?: ExhibitUpsertWithWhereUniqueWithoutExhibitionInput | ExhibitUpsertWithWhereUniqueWithoutExhibitionInput[]
+    createMany?: ExhibitCreateManyExhibitionInputEnvelope
+    set?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
+    disconnect?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
+    delete?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
+    connect?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
+    update?: ExhibitUpdateWithWhereUniqueWithoutExhibitionInput | ExhibitUpdateWithWhereUniqueWithoutExhibitionInput[]
+    updateMany?: ExhibitUpdateManyWithWhereWithoutExhibitionInput | ExhibitUpdateManyWithWhereWithoutExhibitionInput[]
+    deleteMany?: ExhibitScalarWhereInput | ExhibitScalarWhereInput[]
   }
 
-  export type ImageUncheckedUpdateManyWithoutSchoolNestedInput = {
-    create?: XOR<ImageCreateWithoutSchoolInput, ImageUncheckedCreateWithoutSchoolInput> | ImageCreateWithoutSchoolInput[] | ImageUncheckedCreateWithoutSchoolInput[]
-    connectOrCreate?: ImageCreateOrConnectWithoutSchoolInput | ImageCreateOrConnectWithoutSchoolInput[]
-    upsert?: ImageUpsertWithWhereUniqueWithoutSchoolInput | ImageUpsertWithWhereUniqueWithoutSchoolInput[]
-    createMany?: ImageCreateManySchoolInputEnvelope
+  export type ImageUncheckedUpdateManyWithoutExhibitionNestedInput = {
+    create?: XOR<ImageCreateWithoutExhibitionInput, ImageUncheckedCreateWithoutExhibitionInput> | ImageCreateWithoutExhibitionInput[] | ImageUncheckedCreateWithoutExhibitionInput[]
+    connectOrCreate?: ImageCreateOrConnectWithoutExhibitionInput | ImageCreateOrConnectWithoutExhibitionInput[]
+    upsert?: ImageUpsertWithWhereUniqueWithoutExhibitionInput | ImageUpsertWithWhereUniqueWithoutExhibitionInput[]
+    createMany?: ImageCreateManyExhibitionInputEnvelope
     set?: ImageWhereUniqueInput | ImageWhereUniqueInput[]
     disconnect?: ImageWhereUniqueInput | ImageWhereUniqueInput[]
     delete?: ImageWhereUniqueInput | ImageWhereUniqueInput[]
     connect?: ImageWhereUniqueInput | ImageWhereUniqueInput[]
-    update?: ImageUpdateWithWhereUniqueWithoutSchoolInput | ImageUpdateWithWhereUniqueWithoutSchoolInput[]
-    updateMany?: ImageUpdateManyWithWhereWithoutSchoolInput | ImageUpdateManyWithWhereWithoutSchoolInput[]
+    update?: ImageUpdateWithWhereUniqueWithoutExhibitionInput | ImageUpdateWithWhereUniqueWithoutExhibitionInput[]
+    updateMany?: ImageUpdateManyWithWhereWithoutExhibitionInput | ImageUpdateManyWithWhereWithoutExhibitionInput[]
     deleteMany?: ImageScalarWhereInput | ImageScalarWhereInput[]
   }
 
-  export type SchoolCreateNestedOneWithoutCoursesInput = {
-    create?: XOR<SchoolCreateWithoutCoursesInput, SchoolUncheckedCreateWithoutCoursesInput>
-    connectOrCreate?: SchoolCreateOrConnectWithoutCoursesInput
-    connect?: SchoolWhereUniqueInput
+  export type ExhibitionCreateNestedOneWithoutExhibitsInput = {
+    create?: XOR<ExhibitionCreateWithoutExhibitsInput, ExhibitionUncheckedCreateWithoutExhibitsInput>
+    connectOrCreate?: ExhibitionCreateOrConnectWithoutExhibitsInput
+    connect?: ExhibitionWhereUniqueInput
   }
 
-  export type StatusCreateNestedOneWithoutCoursesInput = {
-    create?: XOR<StatusCreateWithoutCoursesInput, StatusUncheckedCreateWithoutCoursesInput>
-    connectOrCreate?: StatusCreateOrConnectWithoutCoursesInput
+  export type StatusCreateNestedOneWithoutExhibitsInput = {
+    create?: XOR<StatusCreateWithoutExhibitsInput, StatusUncheckedCreateWithoutExhibitsInput>
+    connectOrCreate?: StatusCreateOrConnectWithoutExhibitsInput
     connect?: StatusWhereUniqueInput
   }
 
-  export type BadgeCreateNestedOneWithoutCourseInput = {
-    create?: XOR<BadgeCreateWithoutCourseInput, BadgeUncheckedCreateWithoutCourseInput>
-    connectOrCreate?: BadgeCreateOrConnectWithoutCourseInput
+  export type BadgeCreateNestedOneWithoutExhibitInput = {
+    create?: XOR<BadgeCreateWithoutExhibitInput, BadgeUncheckedCreateWithoutExhibitInput>
+    connectOrCreate?: BadgeCreateOrConnectWithoutExhibitInput
     connect?: BadgeWhereUniqueInput
   }
 
-  export type AudioCreateNestedManyWithoutCourseInput = {
-    create?: XOR<AudioCreateWithoutCourseInput, AudioUncheckedCreateWithoutCourseInput> | AudioCreateWithoutCourseInput[] | AudioUncheckedCreateWithoutCourseInput[]
-    connectOrCreate?: AudioCreateOrConnectWithoutCourseInput | AudioCreateOrConnectWithoutCourseInput[]
-    createMany?: AudioCreateManyCourseInputEnvelope
+  export type AudioCreateNestedManyWithoutExhibitInput = {
+    create?: XOR<AudioCreateWithoutExhibitInput, AudioUncheckedCreateWithoutExhibitInput> | AudioCreateWithoutExhibitInput[] | AudioUncheckedCreateWithoutExhibitInput[]
+    connectOrCreate?: AudioCreateOrConnectWithoutExhibitInput | AudioCreateOrConnectWithoutExhibitInput[]
+    createMany?: AudioCreateManyExhibitInputEnvelope
     connect?: AudioWhereUniqueInput | AudioWhereUniqueInput[]
   }
 
-  export type FeedbackCreateNestedManyWithoutCourseInput = {
-    create?: XOR<FeedbackCreateWithoutCourseInput, FeedbackUncheckedCreateWithoutCourseInput> | FeedbackCreateWithoutCourseInput[] | FeedbackUncheckedCreateWithoutCourseInput[]
-    connectOrCreate?: FeedbackCreateOrConnectWithoutCourseInput | FeedbackCreateOrConnectWithoutCourseInput[]
-    createMany?: FeedbackCreateManyCourseInputEnvelope
+  export type FeedbackCreateNestedManyWithoutExhibitInput = {
+    create?: XOR<FeedbackCreateWithoutExhibitInput, FeedbackUncheckedCreateWithoutExhibitInput> | FeedbackCreateWithoutExhibitInput[] | FeedbackUncheckedCreateWithoutExhibitInput[]
+    connectOrCreate?: FeedbackCreateOrConnectWithoutExhibitInput | FeedbackCreateOrConnectWithoutExhibitInput[]
+    createMany?: FeedbackCreateManyExhibitInputEnvelope
     connect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
   }
 
-  export type ImageCreateNestedManyWithoutCourseInput = {
-    create?: XOR<ImageCreateWithoutCourseInput, ImageUncheckedCreateWithoutCourseInput> | ImageCreateWithoutCourseInput[] | ImageUncheckedCreateWithoutCourseInput[]
-    connectOrCreate?: ImageCreateOrConnectWithoutCourseInput | ImageCreateOrConnectWithoutCourseInput[]
-    createMany?: ImageCreateManyCourseInputEnvelope
+  export type ImageCreateNestedManyWithoutExhibitInput = {
+    create?: XOR<ImageCreateWithoutExhibitInput, ImageUncheckedCreateWithoutExhibitInput> | ImageCreateWithoutExhibitInput[] | ImageUncheckedCreateWithoutExhibitInput[]
+    connectOrCreate?: ImageCreateOrConnectWithoutExhibitInput | ImageCreateOrConnectWithoutExhibitInput[]
+    createMany?: ImageCreateManyExhibitInputEnvelope
     connect?: ImageWhereUniqueInput | ImageWhereUniqueInput[]
   }
 
-  export type QRCodeCreateNestedManyWithoutCourseInput = {
-    create?: XOR<QRCodeCreateWithoutCourseInput, QRCodeUncheckedCreateWithoutCourseInput> | QRCodeCreateWithoutCourseInput[] | QRCodeUncheckedCreateWithoutCourseInput[]
-    connectOrCreate?: QRCodeCreateOrConnectWithoutCourseInput | QRCodeCreateOrConnectWithoutCourseInput[]
-    createMany?: QRCodeCreateManyCourseInputEnvelope
+  export type QRCodeCreateNestedManyWithoutExhibitInput = {
+    create?: XOR<QRCodeCreateWithoutExhibitInput, QRCodeUncheckedCreateWithoutExhibitInput> | QRCodeCreateWithoutExhibitInput[] | QRCodeUncheckedCreateWithoutExhibitInput[]
+    connectOrCreate?: QRCodeCreateOrConnectWithoutExhibitInput | QRCodeCreateOrConnectWithoutExhibitInput[]
+    createMany?: QRCodeCreateManyExhibitInputEnvelope
     connect?: QRCodeWhereUniqueInput | QRCodeWhereUniqueInput[]
   }
 
-  export type AudioUncheckedCreateNestedManyWithoutCourseInput = {
-    create?: XOR<AudioCreateWithoutCourseInput, AudioUncheckedCreateWithoutCourseInput> | AudioCreateWithoutCourseInput[] | AudioUncheckedCreateWithoutCourseInput[]
-    connectOrCreate?: AudioCreateOrConnectWithoutCourseInput | AudioCreateOrConnectWithoutCourseInput[]
-    createMany?: AudioCreateManyCourseInputEnvelope
+  export type AudioUncheckedCreateNestedManyWithoutExhibitInput = {
+    create?: XOR<AudioCreateWithoutExhibitInput, AudioUncheckedCreateWithoutExhibitInput> | AudioCreateWithoutExhibitInput[] | AudioUncheckedCreateWithoutExhibitInput[]
+    connectOrCreate?: AudioCreateOrConnectWithoutExhibitInput | AudioCreateOrConnectWithoutExhibitInput[]
+    createMany?: AudioCreateManyExhibitInputEnvelope
     connect?: AudioWhereUniqueInput | AudioWhereUniqueInput[]
   }
 
-  export type FeedbackUncheckedCreateNestedManyWithoutCourseInput = {
-    create?: XOR<FeedbackCreateWithoutCourseInput, FeedbackUncheckedCreateWithoutCourseInput> | FeedbackCreateWithoutCourseInput[] | FeedbackUncheckedCreateWithoutCourseInput[]
-    connectOrCreate?: FeedbackCreateOrConnectWithoutCourseInput | FeedbackCreateOrConnectWithoutCourseInput[]
-    createMany?: FeedbackCreateManyCourseInputEnvelope
+  export type FeedbackUncheckedCreateNestedManyWithoutExhibitInput = {
+    create?: XOR<FeedbackCreateWithoutExhibitInput, FeedbackUncheckedCreateWithoutExhibitInput> | FeedbackCreateWithoutExhibitInput[] | FeedbackUncheckedCreateWithoutExhibitInput[]
+    connectOrCreate?: FeedbackCreateOrConnectWithoutExhibitInput | FeedbackCreateOrConnectWithoutExhibitInput[]
+    createMany?: FeedbackCreateManyExhibitInputEnvelope
     connect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
   }
 
-  export type ImageUncheckedCreateNestedManyWithoutCourseInput = {
-    create?: XOR<ImageCreateWithoutCourseInput, ImageUncheckedCreateWithoutCourseInput> | ImageCreateWithoutCourseInput[] | ImageUncheckedCreateWithoutCourseInput[]
-    connectOrCreate?: ImageCreateOrConnectWithoutCourseInput | ImageCreateOrConnectWithoutCourseInput[]
-    createMany?: ImageCreateManyCourseInputEnvelope
+  export type ImageUncheckedCreateNestedManyWithoutExhibitInput = {
+    create?: XOR<ImageCreateWithoutExhibitInput, ImageUncheckedCreateWithoutExhibitInput> | ImageCreateWithoutExhibitInput[] | ImageUncheckedCreateWithoutExhibitInput[]
+    connectOrCreate?: ImageCreateOrConnectWithoutExhibitInput | ImageCreateOrConnectWithoutExhibitInput[]
+    createMany?: ImageCreateManyExhibitInputEnvelope
     connect?: ImageWhereUniqueInput | ImageWhereUniqueInput[]
   }
 
-  export type QRCodeUncheckedCreateNestedManyWithoutCourseInput = {
-    create?: XOR<QRCodeCreateWithoutCourseInput, QRCodeUncheckedCreateWithoutCourseInput> | QRCodeCreateWithoutCourseInput[] | QRCodeUncheckedCreateWithoutCourseInput[]
-    connectOrCreate?: QRCodeCreateOrConnectWithoutCourseInput | QRCodeCreateOrConnectWithoutCourseInput[]
-    createMany?: QRCodeCreateManyCourseInputEnvelope
+  export type QRCodeUncheckedCreateNestedManyWithoutExhibitInput = {
+    create?: XOR<QRCodeCreateWithoutExhibitInput, QRCodeUncheckedCreateWithoutExhibitInput> | QRCodeCreateWithoutExhibitInput[] | QRCodeUncheckedCreateWithoutExhibitInput[]
+    connectOrCreate?: QRCodeCreateOrConnectWithoutExhibitInput | QRCodeCreateOrConnectWithoutExhibitInput[]
+    createMany?: QRCodeCreateManyExhibitInputEnvelope
     connect?: QRCodeWhereUniqueInput | QRCodeWhereUniqueInput[]
   }
 
@@ -29322,87 +29322,87 @@ export namespace Prisma {
     set?: Date | string | null
   }
 
-  export type SchoolUpdateOneRequiredWithoutCoursesNestedInput = {
-    create?: XOR<SchoolCreateWithoutCoursesInput, SchoolUncheckedCreateWithoutCoursesInput>
-    connectOrCreate?: SchoolCreateOrConnectWithoutCoursesInput
-    upsert?: SchoolUpsertWithoutCoursesInput
-    connect?: SchoolWhereUniqueInput
-    update?: XOR<XOR<SchoolUpdateToOneWithWhereWithoutCoursesInput, SchoolUpdateWithoutCoursesInput>, SchoolUncheckedUpdateWithoutCoursesInput>
+  export type ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput = {
+    create?: XOR<ExhibitionCreateWithoutExhibitsInput, ExhibitionUncheckedCreateWithoutExhibitsInput>
+    connectOrCreate?: ExhibitionCreateOrConnectWithoutExhibitsInput
+    upsert?: ExhibitionUpsertWithoutExhibitsInput
+    connect?: ExhibitionWhereUniqueInput
+    update?: XOR<XOR<ExhibitionUpdateToOneWithWhereWithoutExhibitsInput, ExhibitionUpdateWithoutExhibitsInput>, ExhibitionUncheckedUpdateWithoutExhibitsInput>
   }
 
-  export type StatusUpdateOneWithoutCoursesNestedInput = {
-    create?: XOR<StatusCreateWithoutCoursesInput, StatusUncheckedCreateWithoutCoursesInput>
-    connectOrCreate?: StatusCreateOrConnectWithoutCoursesInput
-    upsert?: StatusUpsertWithoutCoursesInput
+  export type StatusUpdateOneWithoutExhibitsNestedInput = {
+    create?: XOR<StatusCreateWithoutExhibitsInput, StatusUncheckedCreateWithoutExhibitsInput>
+    connectOrCreate?: StatusCreateOrConnectWithoutExhibitsInput
+    upsert?: StatusUpsertWithoutExhibitsInput
     disconnect?: StatusWhereInput | boolean
     delete?: StatusWhereInput | boolean
     connect?: StatusWhereUniqueInput
-    update?: XOR<XOR<StatusUpdateToOneWithWhereWithoutCoursesInput, StatusUpdateWithoutCoursesInput>, StatusUncheckedUpdateWithoutCoursesInput>
+    update?: XOR<XOR<StatusUpdateToOneWithWhereWithoutExhibitsInput, StatusUpdateWithoutExhibitsInput>, StatusUncheckedUpdateWithoutExhibitsInput>
   }
 
-  export type BadgeUpdateOneWithoutCourseNestedInput = {
-    create?: XOR<BadgeCreateWithoutCourseInput, BadgeUncheckedCreateWithoutCourseInput>
-    connectOrCreate?: BadgeCreateOrConnectWithoutCourseInput
-    upsert?: BadgeUpsertWithoutCourseInput
+  export type BadgeUpdateOneWithoutExhibitNestedInput = {
+    create?: XOR<BadgeCreateWithoutExhibitInput, BadgeUncheckedCreateWithoutExhibitInput>
+    connectOrCreate?: BadgeCreateOrConnectWithoutExhibitInput
+    upsert?: BadgeUpsertWithoutExhibitInput
     disconnect?: BadgeWhereInput | boolean
     delete?: BadgeWhereInput | boolean
     connect?: BadgeWhereUniqueInput
-    update?: XOR<XOR<BadgeUpdateToOneWithWhereWithoutCourseInput, BadgeUpdateWithoutCourseInput>, BadgeUncheckedUpdateWithoutCourseInput>
+    update?: XOR<XOR<BadgeUpdateToOneWithWhereWithoutExhibitInput, BadgeUpdateWithoutExhibitInput>, BadgeUncheckedUpdateWithoutExhibitInput>
   }
 
-  export type AudioUpdateManyWithoutCourseNestedInput = {
-    create?: XOR<AudioCreateWithoutCourseInput, AudioUncheckedCreateWithoutCourseInput> | AudioCreateWithoutCourseInput[] | AudioUncheckedCreateWithoutCourseInput[]
-    connectOrCreate?: AudioCreateOrConnectWithoutCourseInput | AudioCreateOrConnectWithoutCourseInput[]
-    upsert?: AudioUpsertWithWhereUniqueWithoutCourseInput | AudioUpsertWithWhereUniqueWithoutCourseInput[]
-    createMany?: AudioCreateManyCourseInputEnvelope
+  export type AudioUpdateManyWithoutExhibitNestedInput = {
+    create?: XOR<AudioCreateWithoutExhibitInput, AudioUncheckedCreateWithoutExhibitInput> | AudioCreateWithoutExhibitInput[] | AudioUncheckedCreateWithoutExhibitInput[]
+    connectOrCreate?: AudioCreateOrConnectWithoutExhibitInput | AudioCreateOrConnectWithoutExhibitInput[]
+    upsert?: AudioUpsertWithWhereUniqueWithoutExhibitInput | AudioUpsertWithWhereUniqueWithoutExhibitInput[]
+    createMany?: AudioCreateManyExhibitInputEnvelope
     set?: AudioWhereUniqueInput | AudioWhereUniqueInput[]
     disconnect?: AudioWhereUniqueInput | AudioWhereUniqueInput[]
     delete?: AudioWhereUniqueInput | AudioWhereUniqueInput[]
     connect?: AudioWhereUniqueInput | AudioWhereUniqueInput[]
-    update?: AudioUpdateWithWhereUniqueWithoutCourseInput | AudioUpdateWithWhereUniqueWithoutCourseInput[]
-    updateMany?: AudioUpdateManyWithWhereWithoutCourseInput | AudioUpdateManyWithWhereWithoutCourseInput[]
+    update?: AudioUpdateWithWhereUniqueWithoutExhibitInput | AudioUpdateWithWhereUniqueWithoutExhibitInput[]
+    updateMany?: AudioUpdateManyWithWhereWithoutExhibitInput | AudioUpdateManyWithWhereWithoutExhibitInput[]
     deleteMany?: AudioScalarWhereInput | AudioScalarWhereInput[]
   }
 
-  export type FeedbackUpdateManyWithoutCourseNestedInput = {
-    create?: XOR<FeedbackCreateWithoutCourseInput, FeedbackUncheckedCreateWithoutCourseInput> | FeedbackCreateWithoutCourseInput[] | FeedbackUncheckedCreateWithoutCourseInput[]
-    connectOrCreate?: FeedbackCreateOrConnectWithoutCourseInput | FeedbackCreateOrConnectWithoutCourseInput[]
-    upsert?: FeedbackUpsertWithWhereUniqueWithoutCourseInput | FeedbackUpsertWithWhereUniqueWithoutCourseInput[]
-    createMany?: FeedbackCreateManyCourseInputEnvelope
+  export type FeedbackUpdateManyWithoutExhibitNestedInput = {
+    create?: XOR<FeedbackCreateWithoutExhibitInput, FeedbackUncheckedCreateWithoutExhibitInput> | FeedbackCreateWithoutExhibitInput[] | FeedbackUncheckedCreateWithoutExhibitInput[]
+    connectOrCreate?: FeedbackCreateOrConnectWithoutExhibitInput | FeedbackCreateOrConnectWithoutExhibitInput[]
+    upsert?: FeedbackUpsertWithWhereUniqueWithoutExhibitInput | FeedbackUpsertWithWhereUniqueWithoutExhibitInput[]
+    createMany?: FeedbackCreateManyExhibitInputEnvelope
     set?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
     disconnect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
     delete?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
     connect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
-    update?: FeedbackUpdateWithWhereUniqueWithoutCourseInput | FeedbackUpdateWithWhereUniqueWithoutCourseInput[]
-    updateMany?: FeedbackUpdateManyWithWhereWithoutCourseInput | FeedbackUpdateManyWithWhereWithoutCourseInput[]
+    update?: FeedbackUpdateWithWhereUniqueWithoutExhibitInput | FeedbackUpdateWithWhereUniqueWithoutExhibitInput[]
+    updateMany?: FeedbackUpdateManyWithWhereWithoutExhibitInput | FeedbackUpdateManyWithWhereWithoutExhibitInput[]
     deleteMany?: FeedbackScalarWhereInput | FeedbackScalarWhereInput[]
   }
 
-  export type ImageUpdateManyWithoutCourseNestedInput = {
-    create?: XOR<ImageCreateWithoutCourseInput, ImageUncheckedCreateWithoutCourseInput> | ImageCreateWithoutCourseInput[] | ImageUncheckedCreateWithoutCourseInput[]
-    connectOrCreate?: ImageCreateOrConnectWithoutCourseInput | ImageCreateOrConnectWithoutCourseInput[]
-    upsert?: ImageUpsertWithWhereUniqueWithoutCourseInput | ImageUpsertWithWhereUniqueWithoutCourseInput[]
-    createMany?: ImageCreateManyCourseInputEnvelope
+  export type ImageUpdateManyWithoutExhibitNestedInput = {
+    create?: XOR<ImageCreateWithoutExhibitInput, ImageUncheckedCreateWithoutExhibitInput> | ImageCreateWithoutExhibitInput[] | ImageUncheckedCreateWithoutExhibitInput[]
+    connectOrCreate?: ImageCreateOrConnectWithoutExhibitInput | ImageCreateOrConnectWithoutExhibitInput[]
+    upsert?: ImageUpsertWithWhereUniqueWithoutExhibitInput | ImageUpsertWithWhereUniqueWithoutExhibitInput[]
+    createMany?: ImageCreateManyExhibitInputEnvelope
     set?: ImageWhereUniqueInput | ImageWhereUniqueInput[]
     disconnect?: ImageWhereUniqueInput | ImageWhereUniqueInput[]
     delete?: ImageWhereUniqueInput | ImageWhereUniqueInput[]
     connect?: ImageWhereUniqueInput | ImageWhereUniqueInput[]
-    update?: ImageUpdateWithWhereUniqueWithoutCourseInput | ImageUpdateWithWhereUniqueWithoutCourseInput[]
-    updateMany?: ImageUpdateManyWithWhereWithoutCourseInput | ImageUpdateManyWithWhereWithoutCourseInput[]
+    update?: ImageUpdateWithWhereUniqueWithoutExhibitInput | ImageUpdateWithWhereUniqueWithoutExhibitInput[]
+    updateMany?: ImageUpdateManyWithWhereWithoutExhibitInput | ImageUpdateManyWithWhereWithoutExhibitInput[]
     deleteMany?: ImageScalarWhereInput | ImageScalarWhereInput[]
   }
 
-  export type QRCodeUpdateManyWithoutCourseNestedInput = {
-    create?: XOR<QRCodeCreateWithoutCourseInput, QRCodeUncheckedCreateWithoutCourseInput> | QRCodeCreateWithoutCourseInput[] | QRCodeUncheckedCreateWithoutCourseInput[]
-    connectOrCreate?: QRCodeCreateOrConnectWithoutCourseInput | QRCodeCreateOrConnectWithoutCourseInput[]
-    upsert?: QRCodeUpsertWithWhereUniqueWithoutCourseInput | QRCodeUpsertWithWhereUniqueWithoutCourseInput[]
-    createMany?: QRCodeCreateManyCourseInputEnvelope
+  export type QRCodeUpdateManyWithoutExhibitNestedInput = {
+    create?: XOR<QRCodeCreateWithoutExhibitInput, QRCodeUncheckedCreateWithoutExhibitInput> | QRCodeCreateWithoutExhibitInput[] | QRCodeUncheckedCreateWithoutExhibitInput[]
+    connectOrCreate?: QRCodeCreateOrConnectWithoutExhibitInput | QRCodeCreateOrConnectWithoutExhibitInput[]
+    upsert?: QRCodeUpsertWithWhereUniqueWithoutExhibitInput | QRCodeUpsertWithWhereUniqueWithoutExhibitInput[]
+    createMany?: QRCodeCreateManyExhibitInputEnvelope
     set?: QRCodeWhereUniqueInput | QRCodeWhereUniqueInput[]
     disconnect?: QRCodeWhereUniqueInput | QRCodeWhereUniqueInput[]
     delete?: QRCodeWhereUniqueInput | QRCodeWhereUniqueInput[]
     connect?: QRCodeWhereUniqueInput | QRCodeWhereUniqueInput[]
-    update?: QRCodeUpdateWithWhereUniqueWithoutCourseInput | QRCodeUpdateWithWhereUniqueWithoutCourseInput[]
-    updateMany?: QRCodeUpdateManyWithWhereWithoutCourseInput | QRCodeUpdateManyWithWhereWithoutCourseInput[]
+    update?: QRCodeUpdateWithWhereUniqueWithoutExhibitInput | QRCodeUpdateWithWhereUniqueWithoutExhibitInput[]
+    updateMany?: QRCodeUpdateManyWithWhereWithoutExhibitInput | QRCodeUpdateManyWithWhereWithoutExhibitInput[]
     deleteMany?: QRCodeScalarWhereInput | QRCodeScalarWhereInput[]
   }
 
@@ -29414,66 +29414,66 @@ export namespace Prisma {
     divide?: bigint | number
   }
 
-  export type AudioUncheckedUpdateManyWithoutCourseNestedInput = {
-    create?: XOR<AudioCreateWithoutCourseInput, AudioUncheckedCreateWithoutCourseInput> | AudioCreateWithoutCourseInput[] | AudioUncheckedCreateWithoutCourseInput[]
-    connectOrCreate?: AudioCreateOrConnectWithoutCourseInput | AudioCreateOrConnectWithoutCourseInput[]
-    upsert?: AudioUpsertWithWhereUniqueWithoutCourseInput | AudioUpsertWithWhereUniqueWithoutCourseInput[]
-    createMany?: AudioCreateManyCourseInputEnvelope
+  export type AudioUncheckedUpdateManyWithoutExhibitNestedInput = {
+    create?: XOR<AudioCreateWithoutExhibitInput, AudioUncheckedCreateWithoutExhibitInput> | AudioCreateWithoutExhibitInput[] | AudioUncheckedCreateWithoutExhibitInput[]
+    connectOrCreate?: AudioCreateOrConnectWithoutExhibitInput | AudioCreateOrConnectWithoutExhibitInput[]
+    upsert?: AudioUpsertWithWhereUniqueWithoutExhibitInput | AudioUpsertWithWhereUniqueWithoutExhibitInput[]
+    createMany?: AudioCreateManyExhibitInputEnvelope
     set?: AudioWhereUniqueInput | AudioWhereUniqueInput[]
     disconnect?: AudioWhereUniqueInput | AudioWhereUniqueInput[]
     delete?: AudioWhereUniqueInput | AudioWhereUniqueInput[]
     connect?: AudioWhereUniqueInput | AudioWhereUniqueInput[]
-    update?: AudioUpdateWithWhereUniqueWithoutCourseInput | AudioUpdateWithWhereUniqueWithoutCourseInput[]
-    updateMany?: AudioUpdateManyWithWhereWithoutCourseInput | AudioUpdateManyWithWhereWithoutCourseInput[]
+    update?: AudioUpdateWithWhereUniqueWithoutExhibitInput | AudioUpdateWithWhereUniqueWithoutExhibitInput[]
+    updateMany?: AudioUpdateManyWithWhereWithoutExhibitInput | AudioUpdateManyWithWhereWithoutExhibitInput[]
     deleteMany?: AudioScalarWhereInput | AudioScalarWhereInput[]
   }
 
-  export type FeedbackUncheckedUpdateManyWithoutCourseNestedInput = {
-    create?: XOR<FeedbackCreateWithoutCourseInput, FeedbackUncheckedCreateWithoutCourseInput> | FeedbackCreateWithoutCourseInput[] | FeedbackUncheckedCreateWithoutCourseInput[]
-    connectOrCreate?: FeedbackCreateOrConnectWithoutCourseInput | FeedbackCreateOrConnectWithoutCourseInput[]
-    upsert?: FeedbackUpsertWithWhereUniqueWithoutCourseInput | FeedbackUpsertWithWhereUniqueWithoutCourseInput[]
-    createMany?: FeedbackCreateManyCourseInputEnvelope
+  export type FeedbackUncheckedUpdateManyWithoutExhibitNestedInput = {
+    create?: XOR<FeedbackCreateWithoutExhibitInput, FeedbackUncheckedCreateWithoutExhibitInput> | FeedbackCreateWithoutExhibitInput[] | FeedbackUncheckedCreateWithoutExhibitInput[]
+    connectOrCreate?: FeedbackCreateOrConnectWithoutExhibitInput | FeedbackCreateOrConnectWithoutExhibitInput[]
+    upsert?: FeedbackUpsertWithWhereUniqueWithoutExhibitInput | FeedbackUpsertWithWhereUniqueWithoutExhibitInput[]
+    createMany?: FeedbackCreateManyExhibitInputEnvelope
     set?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
     disconnect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
     delete?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
     connect?: FeedbackWhereUniqueInput | FeedbackWhereUniqueInput[]
-    update?: FeedbackUpdateWithWhereUniqueWithoutCourseInput | FeedbackUpdateWithWhereUniqueWithoutCourseInput[]
-    updateMany?: FeedbackUpdateManyWithWhereWithoutCourseInput | FeedbackUpdateManyWithWhereWithoutCourseInput[]
+    update?: FeedbackUpdateWithWhereUniqueWithoutExhibitInput | FeedbackUpdateWithWhereUniqueWithoutExhibitInput[]
+    updateMany?: FeedbackUpdateManyWithWhereWithoutExhibitInput | FeedbackUpdateManyWithWhereWithoutExhibitInput[]
     deleteMany?: FeedbackScalarWhereInput | FeedbackScalarWhereInput[]
   }
 
-  export type ImageUncheckedUpdateManyWithoutCourseNestedInput = {
-    create?: XOR<ImageCreateWithoutCourseInput, ImageUncheckedCreateWithoutCourseInput> | ImageCreateWithoutCourseInput[] | ImageUncheckedCreateWithoutCourseInput[]
-    connectOrCreate?: ImageCreateOrConnectWithoutCourseInput | ImageCreateOrConnectWithoutCourseInput[]
-    upsert?: ImageUpsertWithWhereUniqueWithoutCourseInput | ImageUpsertWithWhereUniqueWithoutCourseInput[]
-    createMany?: ImageCreateManyCourseInputEnvelope
+  export type ImageUncheckedUpdateManyWithoutExhibitNestedInput = {
+    create?: XOR<ImageCreateWithoutExhibitInput, ImageUncheckedCreateWithoutExhibitInput> | ImageCreateWithoutExhibitInput[] | ImageUncheckedCreateWithoutExhibitInput[]
+    connectOrCreate?: ImageCreateOrConnectWithoutExhibitInput | ImageCreateOrConnectWithoutExhibitInput[]
+    upsert?: ImageUpsertWithWhereUniqueWithoutExhibitInput | ImageUpsertWithWhereUniqueWithoutExhibitInput[]
+    createMany?: ImageCreateManyExhibitInputEnvelope
     set?: ImageWhereUniqueInput | ImageWhereUniqueInput[]
     disconnect?: ImageWhereUniqueInput | ImageWhereUniqueInput[]
     delete?: ImageWhereUniqueInput | ImageWhereUniqueInput[]
     connect?: ImageWhereUniqueInput | ImageWhereUniqueInput[]
-    update?: ImageUpdateWithWhereUniqueWithoutCourseInput | ImageUpdateWithWhereUniqueWithoutCourseInput[]
-    updateMany?: ImageUpdateManyWithWhereWithoutCourseInput | ImageUpdateManyWithWhereWithoutCourseInput[]
+    update?: ImageUpdateWithWhereUniqueWithoutExhibitInput | ImageUpdateWithWhereUniqueWithoutExhibitInput[]
+    updateMany?: ImageUpdateManyWithWhereWithoutExhibitInput | ImageUpdateManyWithWhereWithoutExhibitInput[]
     deleteMany?: ImageScalarWhereInput | ImageScalarWhereInput[]
   }
 
-  export type QRCodeUncheckedUpdateManyWithoutCourseNestedInput = {
-    create?: XOR<QRCodeCreateWithoutCourseInput, QRCodeUncheckedCreateWithoutCourseInput> | QRCodeCreateWithoutCourseInput[] | QRCodeUncheckedCreateWithoutCourseInput[]
-    connectOrCreate?: QRCodeCreateOrConnectWithoutCourseInput | QRCodeCreateOrConnectWithoutCourseInput[]
-    upsert?: QRCodeUpsertWithWhereUniqueWithoutCourseInput | QRCodeUpsertWithWhereUniqueWithoutCourseInput[]
-    createMany?: QRCodeCreateManyCourseInputEnvelope
+  export type QRCodeUncheckedUpdateManyWithoutExhibitNestedInput = {
+    create?: XOR<QRCodeCreateWithoutExhibitInput, QRCodeUncheckedCreateWithoutExhibitInput> | QRCodeCreateWithoutExhibitInput[] | QRCodeUncheckedCreateWithoutExhibitInput[]
+    connectOrCreate?: QRCodeCreateOrConnectWithoutExhibitInput | QRCodeCreateOrConnectWithoutExhibitInput[]
+    upsert?: QRCodeUpsertWithWhereUniqueWithoutExhibitInput | QRCodeUpsertWithWhereUniqueWithoutExhibitInput[]
+    createMany?: QRCodeCreateManyExhibitInputEnvelope
     set?: QRCodeWhereUniqueInput | QRCodeWhereUniqueInput[]
     disconnect?: QRCodeWhereUniqueInput | QRCodeWhereUniqueInput[]
     delete?: QRCodeWhereUniqueInput | QRCodeWhereUniqueInput[]
     connect?: QRCodeWhereUniqueInput | QRCodeWhereUniqueInput[]
-    update?: QRCodeUpdateWithWhereUniqueWithoutCourseInput | QRCodeUpdateWithWhereUniqueWithoutCourseInput[]
-    updateMany?: QRCodeUpdateManyWithWhereWithoutCourseInput | QRCodeUpdateManyWithWhereWithoutCourseInput[]
+    update?: QRCodeUpdateWithWhereUniqueWithoutExhibitInput | QRCodeUpdateWithWhereUniqueWithoutExhibitInput[]
+    updateMany?: QRCodeUpdateManyWithWhereWithoutExhibitInput | QRCodeUpdateManyWithWhereWithoutExhibitInput[]
     deleteMany?: QRCodeScalarWhereInput | QRCodeScalarWhereInput[]
   }
 
-  export type CourseCreateNestedOneWithoutAudioInput = {
-    create?: XOR<CourseCreateWithoutAudioInput, CourseUncheckedCreateWithoutAudioInput>
-    connectOrCreate?: CourseCreateOrConnectWithoutAudioInput
-    connect?: CourseWhereUniqueInput
+  export type ExhibitCreateNestedOneWithoutAudioInput = {
+    create?: XOR<ExhibitCreateWithoutAudioInput, ExhibitUncheckedCreateWithoutAudioInput>
+    connectOrCreate?: ExhibitCreateOrConnectWithoutAudioInput
+    connect?: ExhibitWhereUniqueInput
   }
 
   export type LanguageCreateNestedOneWithoutAudioInput = {
@@ -29510,14 +29510,14 @@ export namespace Prisma {
     connect?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
   }
 
-  export type CourseUpdateOneWithoutAudioNestedInput = {
-    create?: XOR<CourseCreateWithoutAudioInput, CourseUncheckedCreateWithoutAudioInput>
-    connectOrCreate?: CourseCreateOrConnectWithoutAudioInput
-    upsert?: CourseUpsertWithoutAudioInput
-    disconnect?: CourseWhereInput | boolean
-    delete?: CourseWhereInput | boolean
-    connect?: CourseWhereUniqueInput
-    update?: XOR<XOR<CourseUpdateToOneWithWhereWithoutAudioInput, CourseUpdateWithoutAudioInput>, CourseUncheckedUpdateWithoutAudioInput>
+  export type ExhibitUpdateOneWithoutAudioNestedInput = {
+    create?: XOR<ExhibitCreateWithoutAudioInput, ExhibitUncheckedCreateWithoutAudioInput>
+    connectOrCreate?: ExhibitCreateOrConnectWithoutAudioInput
+    upsert?: ExhibitUpsertWithoutAudioInput
+    disconnect?: ExhibitWhereInput | boolean
+    delete?: ExhibitWhereInput | boolean
+    connect?: ExhibitWhereUniqueInput
+    update?: XOR<XOR<ExhibitUpdateToOneWithWhereWithoutAudioInput, ExhibitUpdateWithoutAudioInput>, ExhibitUncheckedUpdateWithoutAudioInput>
   }
 
   export type LanguageUpdateOneWithoutAudioNestedInput = {
@@ -29632,10 +29632,10 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
-  export type CourseCreateNestedOneWithoutFeedbacksInput = {
-    create?: XOR<CourseCreateWithoutFeedbacksInput, CourseUncheckedCreateWithoutFeedbacksInput>
-    connectOrCreate?: CourseCreateOrConnectWithoutFeedbacksInput
-    connect?: CourseWhereUniqueInput
+  export type ExhibitCreateNestedOneWithoutFeedbacksInput = {
+    create?: XOR<ExhibitCreateWithoutFeedbacksInput, ExhibitUncheckedCreateWithoutFeedbacksInput>
+    connectOrCreate?: ExhibitCreateOrConnectWithoutFeedbacksInput
+    connect?: ExhibitWhereUniqueInput
   }
 
   export type UserUpdateOneWithoutFeedbacksNestedInput = {
@@ -29648,64 +29648,64 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutFeedbacksInput, UserUpdateWithoutFeedbacksInput>, UserUncheckedUpdateWithoutFeedbacksInput>
   }
 
-  export type CourseUpdateOneWithoutFeedbacksNestedInput = {
-    create?: XOR<CourseCreateWithoutFeedbacksInput, CourseUncheckedCreateWithoutFeedbacksInput>
-    connectOrCreate?: CourseCreateOrConnectWithoutFeedbacksInput
-    upsert?: CourseUpsertWithoutFeedbacksInput
-    disconnect?: CourseWhereInput | boolean
-    delete?: CourseWhereInput | boolean
-    connect?: CourseWhereUniqueInput
-    update?: XOR<XOR<CourseUpdateToOneWithWhereWithoutFeedbacksInput, CourseUpdateWithoutFeedbacksInput>, CourseUncheckedUpdateWithoutFeedbacksInput>
+  export type ExhibitUpdateOneWithoutFeedbacksNestedInput = {
+    create?: XOR<ExhibitCreateWithoutFeedbacksInput, ExhibitUncheckedCreateWithoutFeedbacksInput>
+    connectOrCreate?: ExhibitCreateOrConnectWithoutFeedbacksInput
+    upsert?: ExhibitUpsertWithoutFeedbacksInput
+    disconnect?: ExhibitWhereInput | boolean
+    delete?: ExhibitWhereInput | boolean
+    connect?: ExhibitWhereUniqueInput
+    update?: XOR<XOR<ExhibitUpdateToOneWithWhereWithoutFeedbacksInput, ExhibitUpdateWithoutFeedbacksInput>, ExhibitUncheckedUpdateWithoutFeedbacksInput>
   }
 
-  export type CourseCreateNestedOneWithoutImagesInput = {
-    create?: XOR<CourseCreateWithoutImagesInput, CourseUncheckedCreateWithoutImagesInput>
-    connectOrCreate?: CourseCreateOrConnectWithoutImagesInput
-    connect?: CourseWhereUniqueInput
+  export type ExhibitCreateNestedOneWithoutImagesInput = {
+    create?: XOR<ExhibitCreateWithoutImagesInput, ExhibitUncheckedCreateWithoutImagesInput>
+    connectOrCreate?: ExhibitCreateOrConnectWithoutImagesInput
+    connect?: ExhibitWhereUniqueInput
   }
 
-  export type SchoolCreateNestedOneWithoutImagesInput = {
-    create?: XOR<SchoolCreateWithoutImagesInput, SchoolUncheckedCreateWithoutImagesInput>
-    connectOrCreate?: SchoolCreateOrConnectWithoutImagesInput
-    connect?: SchoolWhereUniqueInput
+  export type ExhibitionCreateNestedOneWithoutImagesInput = {
+    create?: XOR<ExhibitionCreateWithoutImagesInput, ExhibitionUncheckedCreateWithoutImagesInput>
+    connectOrCreate?: ExhibitionCreateOrConnectWithoutImagesInput
+    connect?: ExhibitionWhereUniqueInput
   }
 
   export type BoolFieldUpdateOperationsInput = {
     set?: boolean
   }
 
-  export type CourseUpdateOneWithoutImagesNestedInput = {
-    create?: XOR<CourseCreateWithoutImagesInput, CourseUncheckedCreateWithoutImagesInput>
-    connectOrCreate?: CourseCreateOrConnectWithoutImagesInput
-    upsert?: CourseUpsertWithoutImagesInput
-    disconnect?: CourseWhereInput | boolean
-    delete?: CourseWhereInput | boolean
-    connect?: CourseWhereUniqueInput
-    update?: XOR<XOR<CourseUpdateToOneWithWhereWithoutImagesInput, CourseUpdateWithoutImagesInput>, CourseUncheckedUpdateWithoutImagesInput>
+  export type ExhibitUpdateOneWithoutImagesNestedInput = {
+    create?: XOR<ExhibitCreateWithoutImagesInput, ExhibitUncheckedCreateWithoutImagesInput>
+    connectOrCreate?: ExhibitCreateOrConnectWithoutImagesInput
+    upsert?: ExhibitUpsertWithoutImagesInput
+    disconnect?: ExhibitWhereInput | boolean
+    delete?: ExhibitWhereInput | boolean
+    connect?: ExhibitWhereUniqueInput
+    update?: XOR<XOR<ExhibitUpdateToOneWithWhereWithoutImagesInput, ExhibitUpdateWithoutImagesInput>, ExhibitUncheckedUpdateWithoutImagesInput>
   }
 
-  export type SchoolUpdateOneWithoutImagesNestedInput = {
-    create?: XOR<SchoolCreateWithoutImagesInput, SchoolUncheckedCreateWithoutImagesInput>
-    connectOrCreate?: SchoolCreateOrConnectWithoutImagesInput
-    upsert?: SchoolUpsertWithoutImagesInput
-    disconnect?: SchoolWhereInput | boolean
-    delete?: SchoolWhereInput | boolean
-    connect?: SchoolWhereUniqueInput
-    update?: XOR<XOR<SchoolUpdateToOneWithWhereWithoutImagesInput, SchoolUpdateWithoutImagesInput>, SchoolUncheckedUpdateWithoutImagesInput>
+  export type ExhibitionUpdateOneWithoutImagesNestedInput = {
+    create?: XOR<ExhibitionCreateWithoutImagesInput, ExhibitionUncheckedCreateWithoutImagesInput>
+    connectOrCreate?: ExhibitionCreateOrConnectWithoutImagesInput
+    upsert?: ExhibitionUpsertWithoutImagesInput
+    disconnect?: ExhibitionWhereInput | boolean
+    delete?: ExhibitionWhereInput | boolean
+    connect?: ExhibitionWhereUniqueInput
+    update?: XOR<XOR<ExhibitionUpdateToOneWithWhereWithoutImagesInput, ExhibitionUpdateWithoutImagesInput>, ExhibitionUncheckedUpdateWithoutImagesInput>
   }
 
-  export type CourseCreateNestedOneWithoutQrCodesInput = {
-    create?: XOR<CourseCreateWithoutQrCodesInput, CourseUncheckedCreateWithoutQrCodesInput>
-    connectOrCreate?: CourseCreateOrConnectWithoutQrCodesInput
-    connect?: CourseWhereUniqueInput
+  export type ExhibitCreateNestedOneWithoutQrCodesInput = {
+    create?: XOR<ExhibitCreateWithoutQrCodesInput, ExhibitUncheckedCreateWithoutQrCodesInput>
+    connectOrCreate?: ExhibitCreateOrConnectWithoutQrCodesInput
+    connect?: ExhibitWhereUniqueInput
   }
 
-  export type CourseUpdateOneRequiredWithoutQrCodesNestedInput = {
-    create?: XOR<CourseCreateWithoutQrCodesInput, CourseUncheckedCreateWithoutQrCodesInput>
-    connectOrCreate?: CourseCreateOrConnectWithoutQrCodesInput
-    upsert?: CourseUpsertWithoutQrCodesInput
-    connect?: CourseWhereUniqueInput
-    update?: XOR<XOR<CourseUpdateToOneWithWhereWithoutQrCodesInput, CourseUpdateWithoutQrCodesInput>, CourseUncheckedUpdateWithoutQrCodesInput>
+  export type ExhibitUpdateOneRequiredWithoutQrCodesNestedInput = {
+    create?: XOR<ExhibitCreateWithoutQrCodesInput, ExhibitUncheckedCreateWithoutQrCodesInput>
+    connectOrCreate?: ExhibitCreateOrConnectWithoutQrCodesInput
+    upsert?: ExhibitUpsertWithoutQrCodesInput
+    connect?: ExhibitWhereUniqueInput
+    update?: XOR<XOR<ExhibitUpdateToOneWithWhereWithoutQrCodesInput, ExhibitUpdateWithoutQrCodesInput>, ExhibitUncheckedUpdateWithoutQrCodesInput>
   }
 
   export type StatusCreateNestedOneWithoutLanguagesInput = {
@@ -29994,18 +29994,18 @@ export namespace Prisma {
     connect?: LanguageWhereUniqueInput | LanguageWhereUniqueInput[]
   }
 
-  export type SchoolCreateNestedManyWithoutStatusInput = {
-    create?: XOR<SchoolCreateWithoutStatusInput, SchoolUncheckedCreateWithoutStatusInput> | SchoolCreateWithoutStatusInput[] | SchoolUncheckedCreateWithoutStatusInput[]
-    connectOrCreate?: SchoolCreateOrConnectWithoutStatusInput | SchoolCreateOrConnectWithoutStatusInput[]
-    createMany?: SchoolCreateManyStatusInputEnvelope
-    connect?: SchoolWhereUniqueInput | SchoolWhereUniqueInput[]
+  export type ExhibitionCreateNestedManyWithoutStatusInput = {
+    create?: XOR<ExhibitionCreateWithoutStatusInput, ExhibitionUncheckedCreateWithoutStatusInput> | ExhibitionCreateWithoutStatusInput[] | ExhibitionUncheckedCreateWithoutStatusInput[]
+    connectOrCreate?: ExhibitionCreateOrConnectWithoutStatusInput | ExhibitionCreateOrConnectWithoutStatusInput[]
+    createMany?: ExhibitionCreateManyStatusInputEnvelope
+    connect?: ExhibitionWhereUniqueInput | ExhibitionWhereUniqueInput[]
   }
 
-  export type CourseCreateNestedManyWithoutStatusInput = {
-    create?: XOR<CourseCreateWithoutStatusInput, CourseUncheckedCreateWithoutStatusInput> | CourseCreateWithoutStatusInput[] | CourseUncheckedCreateWithoutStatusInput[]
-    connectOrCreate?: CourseCreateOrConnectWithoutStatusInput | CourseCreateOrConnectWithoutStatusInput[]
-    createMany?: CourseCreateManyStatusInputEnvelope
-    connect?: CourseWhereUniqueInput | CourseWhereUniqueInput[]
+  export type ExhibitCreateNestedManyWithoutStatusInput = {
+    create?: XOR<ExhibitCreateWithoutStatusInput, ExhibitUncheckedCreateWithoutStatusInput> | ExhibitCreateWithoutStatusInput[] | ExhibitUncheckedCreateWithoutStatusInput[]
+    connectOrCreate?: ExhibitCreateOrConnectWithoutStatusInput | ExhibitCreateOrConnectWithoutStatusInput[]
+    createMany?: ExhibitCreateManyStatusInputEnvelope
+    connect?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
   }
 
   export type UserUncheckedCreateNestedManyWithoutStatusInput = {
@@ -30022,18 +30022,18 @@ export namespace Prisma {
     connect?: LanguageWhereUniqueInput | LanguageWhereUniqueInput[]
   }
 
-  export type SchoolUncheckedCreateNestedManyWithoutStatusInput = {
-    create?: XOR<SchoolCreateWithoutStatusInput, SchoolUncheckedCreateWithoutStatusInput> | SchoolCreateWithoutStatusInput[] | SchoolUncheckedCreateWithoutStatusInput[]
-    connectOrCreate?: SchoolCreateOrConnectWithoutStatusInput | SchoolCreateOrConnectWithoutStatusInput[]
-    createMany?: SchoolCreateManyStatusInputEnvelope
-    connect?: SchoolWhereUniqueInput | SchoolWhereUniqueInput[]
+  export type ExhibitionUncheckedCreateNestedManyWithoutStatusInput = {
+    create?: XOR<ExhibitionCreateWithoutStatusInput, ExhibitionUncheckedCreateWithoutStatusInput> | ExhibitionCreateWithoutStatusInput[] | ExhibitionUncheckedCreateWithoutStatusInput[]
+    connectOrCreate?: ExhibitionCreateOrConnectWithoutStatusInput | ExhibitionCreateOrConnectWithoutStatusInput[]
+    createMany?: ExhibitionCreateManyStatusInputEnvelope
+    connect?: ExhibitionWhereUniqueInput | ExhibitionWhereUniqueInput[]
   }
 
-  export type CourseUncheckedCreateNestedManyWithoutStatusInput = {
-    create?: XOR<CourseCreateWithoutStatusInput, CourseUncheckedCreateWithoutStatusInput> | CourseCreateWithoutStatusInput[] | CourseUncheckedCreateWithoutStatusInput[]
-    connectOrCreate?: CourseCreateOrConnectWithoutStatusInput | CourseCreateOrConnectWithoutStatusInput[]
-    createMany?: CourseCreateManyStatusInputEnvelope
-    connect?: CourseWhereUniqueInput | CourseWhereUniqueInput[]
+  export type ExhibitUncheckedCreateNestedManyWithoutStatusInput = {
+    create?: XOR<ExhibitCreateWithoutStatusInput, ExhibitUncheckedCreateWithoutStatusInput> | ExhibitCreateWithoutStatusInput[] | ExhibitUncheckedCreateWithoutStatusInput[]
+    connectOrCreate?: ExhibitCreateOrConnectWithoutStatusInput | ExhibitCreateOrConnectWithoutStatusInput[]
+    createMany?: ExhibitCreateManyStatusInputEnvelope
+    connect?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
   }
 
   export type UserUpdateManyWithoutStatusNestedInput = {
@@ -30064,32 +30064,32 @@ export namespace Prisma {
     deleteMany?: LanguageScalarWhereInput | LanguageScalarWhereInput[]
   }
 
-  export type SchoolUpdateManyWithoutStatusNestedInput = {
-    create?: XOR<SchoolCreateWithoutStatusInput, SchoolUncheckedCreateWithoutStatusInput> | SchoolCreateWithoutStatusInput[] | SchoolUncheckedCreateWithoutStatusInput[]
-    connectOrCreate?: SchoolCreateOrConnectWithoutStatusInput | SchoolCreateOrConnectWithoutStatusInput[]
-    upsert?: SchoolUpsertWithWhereUniqueWithoutStatusInput | SchoolUpsertWithWhereUniqueWithoutStatusInput[]
-    createMany?: SchoolCreateManyStatusInputEnvelope
-    set?: SchoolWhereUniqueInput | SchoolWhereUniqueInput[]
-    disconnect?: SchoolWhereUniqueInput | SchoolWhereUniqueInput[]
-    delete?: SchoolWhereUniqueInput | SchoolWhereUniqueInput[]
-    connect?: SchoolWhereUniqueInput | SchoolWhereUniqueInput[]
-    update?: SchoolUpdateWithWhereUniqueWithoutStatusInput | SchoolUpdateWithWhereUniqueWithoutStatusInput[]
-    updateMany?: SchoolUpdateManyWithWhereWithoutStatusInput | SchoolUpdateManyWithWhereWithoutStatusInput[]
-    deleteMany?: SchoolScalarWhereInput | SchoolScalarWhereInput[]
+  export type ExhibitionUpdateManyWithoutStatusNestedInput = {
+    create?: XOR<ExhibitionCreateWithoutStatusInput, ExhibitionUncheckedCreateWithoutStatusInput> | ExhibitionCreateWithoutStatusInput[] | ExhibitionUncheckedCreateWithoutStatusInput[]
+    connectOrCreate?: ExhibitionCreateOrConnectWithoutStatusInput | ExhibitionCreateOrConnectWithoutStatusInput[]
+    upsert?: ExhibitionUpsertWithWhereUniqueWithoutStatusInput | ExhibitionUpsertWithWhereUniqueWithoutStatusInput[]
+    createMany?: ExhibitionCreateManyStatusInputEnvelope
+    set?: ExhibitionWhereUniqueInput | ExhibitionWhereUniqueInput[]
+    disconnect?: ExhibitionWhereUniqueInput | ExhibitionWhereUniqueInput[]
+    delete?: ExhibitionWhereUniqueInput | ExhibitionWhereUniqueInput[]
+    connect?: ExhibitionWhereUniqueInput | ExhibitionWhereUniqueInput[]
+    update?: ExhibitionUpdateWithWhereUniqueWithoutStatusInput | ExhibitionUpdateWithWhereUniqueWithoutStatusInput[]
+    updateMany?: ExhibitionUpdateManyWithWhereWithoutStatusInput | ExhibitionUpdateManyWithWhereWithoutStatusInput[]
+    deleteMany?: ExhibitionScalarWhereInput | ExhibitionScalarWhereInput[]
   }
 
-  export type CourseUpdateManyWithoutStatusNestedInput = {
-    create?: XOR<CourseCreateWithoutStatusInput, CourseUncheckedCreateWithoutStatusInput> | CourseCreateWithoutStatusInput[] | CourseUncheckedCreateWithoutStatusInput[]
-    connectOrCreate?: CourseCreateOrConnectWithoutStatusInput | CourseCreateOrConnectWithoutStatusInput[]
-    upsert?: CourseUpsertWithWhereUniqueWithoutStatusInput | CourseUpsertWithWhereUniqueWithoutStatusInput[]
-    createMany?: CourseCreateManyStatusInputEnvelope
-    set?: CourseWhereUniqueInput | CourseWhereUniqueInput[]
-    disconnect?: CourseWhereUniqueInput | CourseWhereUniqueInput[]
-    delete?: CourseWhereUniqueInput | CourseWhereUniqueInput[]
-    connect?: CourseWhereUniqueInput | CourseWhereUniqueInput[]
-    update?: CourseUpdateWithWhereUniqueWithoutStatusInput | CourseUpdateWithWhereUniqueWithoutStatusInput[]
-    updateMany?: CourseUpdateManyWithWhereWithoutStatusInput | CourseUpdateManyWithWhereWithoutStatusInput[]
-    deleteMany?: CourseScalarWhereInput | CourseScalarWhereInput[]
+  export type ExhibitUpdateManyWithoutStatusNestedInput = {
+    create?: XOR<ExhibitCreateWithoutStatusInput, ExhibitUncheckedCreateWithoutStatusInput> | ExhibitCreateWithoutStatusInput[] | ExhibitUncheckedCreateWithoutStatusInput[]
+    connectOrCreate?: ExhibitCreateOrConnectWithoutStatusInput | ExhibitCreateOrConnectWithoutStatusInput[]
+    upsert?: ExhibitUpsertWithWhereUniqueWithoutStatusInput | ExhibitUpsertWithWhereUniqueWithoutStatusInput[]
+    createMany?: ExhibitCreateManyStatusInputEnvelope
+    set?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
+    disconnect?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
+    delete?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
+    connect?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
+    update?: ExhibitUpdateWithWhereUniqueWithoutStatusInput | ExhibitUpdateWithWhereUniqueWithoutStatusInput[]
+    updateMany?: ExhibitUpdateManyWithWhereWithoutStatusInput | ExhibitUpdateManyWithWhereWithoutStatusInput[]
+    deleteMany?: ExhibitScalarWhereInput | ExhibitScalarWhereInput[]
   }
 
   export type UserUncheckedUpdateManyWithoutStatusNestedInput = {
@@ -30120,32 +30120,32 @@ export namespace Prisma {
     deleteMany?: LanguageScalarWhereInput | LanguageScalarWhereInput[]
   }
 
-  export type SchoolUncheckedUpdateManyWithoutStatusNestedInput = {
-    create?: XOR<SchoolCreateWithoutStatusInput, SchoolUncheckedCreateWithoutStatusInput> | SchoolCreateWithoutStatusInput[] | SchoolUncheckedCreateWithoutStatusInput[]
-    connectOrCreate?: SchoolCreateOrConnectWithoutStatusInput | SchoolCreateOrConnectWithoutStatusInput[]
-    upsert?: SchoolUpsertWithWhereUniqueWithoutStatusInput | SchoolUpsertWithWhereUniqueWithoutStatusInput[]
-    createMany?: SchoolCreateManyStatusInputEnvelope
-    set?: SchoolWhereUniqueInput | SchoolWhereUniqueInput[]
-    disconnect?: SchoolWhereUniqueInput | SchoolWhereUniqueInput[]
-    delete?: SchoolWhereUniqueInput | SchoolWhereUniqueInput[]
-    connect?: SchoolWhereUniqueInput | SchoolWhereUniqueInput[]
-    update?: SchoolUpdateWithWhereUniqueWithoutStatusInput | SchoolUpdateWithWhereUniqueWithoutStatusInput[]
-    updateMany?: SchoolUpdateManyWithWhereWithoutStatusInput | SchoolUpdateManyWithWhereWithoutStatusInput[]
-    deleteMany?: SchoolScalarWhereInput | SchoolScalarWhereInput[]
+  export type ExhibitionUncheckedUpdateManyWithoutStatusNestedInput = {
+    create?: XOR<ExhibitionCreateWithoutStatusInput, ExhibitionUncheckedCreateWithoutStatusInput> | ExhibitionCreateWithoutStatusInput[] | ExhibitionUncheckedCreateWithoutStatusInput[]
+    connectOrCreate?: ExhibitionCreateOrConnectWithoutStatusInput | ExhibitionCreateOrConnectWithoutStatusInput[]
+    upsert?: ExhibitionUpsertWithWhereUniqueWithoutStatusInput | ExhibitionUpsertWithWhereUniqueWithoutStatusInput[]
+    createMany?: ExhibitionCreateManyStatusInputEnvelope
+    set?: ExhibitionWhereUniqueInput | ExhibitionWhereUniqueInput[]
+    disconnect?: ExhibitionWhereUniqueInput | ExhibitionWhereUniqueInput[]
+    delete?: ExhibitionWhereUniqueInput | ExhibitionWhereUniqueInput[]
+    connect?: ExhibitionWhereUniqueInput | ExhibitionWhereUniqueInput[]
+    update?: ExhibitionUpdateWithWhereUniqueWithoutStatusInput | ExhibitionUpdateWithWhereUniqueWithoutStatusInput[]
+    updateMany?: ExhibitionUpdateManyWithWhereWithoutStatusInput | ExhibitionUpdateManyWithWhereWithoutStatusInput[]
+    deleteMany?: ExhibitionScalarWhereInput | ExhibitionScalarWhereInput[]
   }
 
-  export type CourseUncheckedUpdateManyWithoutStatusNestedInput = {
-    create?: XOR<CourseCreateWithoutStatusInput, CourseUncheckedCreateWithoutStatusInput> | CourseCreateWithoutStatusInput[] | CourseUncheckedCreateWithoutStatusInput[]
-    connectOrCreate?: CourseCreateOrConnectWithoutStatusInput | CourseCreateOrConnectWithoutStatusInput[]
-    upsert?: CourseUpsertWithWhereUniqueWithoutStatusInput | CourseUpsertWithWhereUniqueWithoutStatusInput[]
-    createMany?: CourseCreateManyStatusInputEnvelope
-    set?: CourseWhereUniqueInput | CourseWhereUniqueInput[]
-    disconnect?: CourseWhereUniqueInput | CourseWhereUniqueInput[]
-    delete?: CourseWhereUniqueInput | CourseWhereUniqueInput[]
-    connect?: CourseWhereUniqueInput | CourseWhereUniqueInput[]
-    update?: CourseUpdateWithWhereUniqueWithoutStatusInput | CourseUpdateWithWhereUniqueWithoutStatusInput[]
-    updateMany?: CourseUpdateManyWithWhereWithoutStatusInput | CourseUpdateManyWithWhereWithoutStatusInput[]
-    deleteMany?: CourseScalarWhereInput | CourseScalarWhereInput[]
+  export type ExhibitUncheckedUpdateManyWithoutStatusNestedInput = {
+    create?: XOR<ExhibitCreateWithoutStatusInput, ExhibitUncheckedCreateWithoutStatusInput> | ExhibitCreateWithoutStatusInput[] | ExhibitUncheckedCreateWithoutStatusInput[]
+    connectOrCreate?: ExhibitCreateOrConnectWithoutStatusInput | ExhibitCreateOrConnectWithoutStatusInput[]
+    upsert?: ExhibitUpsertWithWhereUniqueWithoutStatusInput | ExhibitUpsertWithWhereUniqueWithoutStatusInput[]
+    createMany?: ExhibitCreateManyStatusInputEnvelope
+    set?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
+    disconnect?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
+    delete?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
+    connect?: ExhibitWhereUniqueInput | ExhibitWhereUniqueInput[]
+    update?: ExhibitUpdateWithWhereUniqueWithoutStatusInput | ExhibitUpdateWithWhereUniqueWithoutStatusInput[]
+    updateMany?: ExhibitUpdateManyWithWhereWithoutStatusInput | ExhibitUpdateManyWithWhereWithoutStatusInput[]
+    deleteMany?: ExhibitScalarWhereInput | ExhibitScalarWhereInput[]
   }
 
   export type AudioCreateNestedOneWithoutSubtitlesInput = {
@@ -30720,10 +30720,10 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutEmailVerificationTokensInput, UserUpdateWithoutEmailVerificationTokensInput>, UserUncheckedUpdateWithoutEmailVerificationTokensInput>
   }
 
-  export type CourseCreateNestedOneWithoutBadgeInput = {
-    create?: XOR<CourseCreateWithoutBadgeInput, CourseUncheckedCreateWithoutBadgeInput>
-    connectOrCreate?: CourseCreateOrConnectWithoutBadgeInput
-    connect?: CourseWhereUniqueInput
+  export type ExhibitCreateNestedOneWithoutBadgeInput = {
+    create?: XOR<ExhibitCreateWithoutBadgeInput, ExhibitUncheckedCreateWithoutBadgeInput>
+    connectOrCreate?: ExhibitCreateOrConnectWithoutBadgeInput
+    connect?: ExhibitWhereUniqueInput
   }
 
   export type UserBadgeCreateNestedManyWithoutBadgeInput = {
@@ -30733,10 +30733,10 @@ export namespace Prisma {
     connect?: UserBadgeWhereUniqueInput | UserBadgeWhereUniqueInput[]
   }
 
-  export type CourseUncheckedCreateNestedOneWithoutBadgeInput = {
-    create?: XOR<CourseCreateWithoutBadgeInput, CourseUncheckedCreateWithoutBadgeInput>
-    connectOrCreate?: CourseCreateOrConnectWithoutBadgeInput
-    connect?: CourseWhereUniqueInput
+  export type ExhibitUncheckedCreateNestedOneWithoutBadgeInput = {
+    create?: XOR<ExhibitCreateWithoutBadgeInput, ExhibitUncheckedCreateWithoutBadgeInput>
+    connectOrCreate?: ExhibitCreateOrConnectWithoutBadgeInput
+    connect?: ExhibitWhereUniqueInput
   }
 
   export type UserBadgeUncheckedCreateNestedManyWithoutBadgeInput = {
@@ -30746,14 +30746,14 @@ export namespace Prisma {
     connect?: UserBadgeWhereUniqueInput | UserBadgeWhereUniqueInput[]
   }
 
-  export type CourseUpdateOneWithoutBadgeNestedInput = {
-    create?: XOR<CourseCreateWithoutBadgeInput, CourseUncheckedCreateWithoutBadgeInput>
-    connectOrCreate?: CourseCreateOrConnectWithoutBadgeInput
-    upsert?: CourseUpsertWithoutBadgeInput
-    disconnect?: CourseWhereInput | boolean
-    delete?: CourseWhereInput | boolean
-    connect?: CourseWhereUniqueInput
-    update?: XOR<XOR<CourseUpdateToOneWithWhereWithoutBadgeInput, CourseUpdateWithoutBadgeInput>, CourseUncheckedUpdateWithoutBadgeInput>
+  export type ExhibitUpdateOneWithoutBadgeNestedInput = {
+    create?: XOR<ExhibitCreateWithoutBadgeInput, ExhibitUncheckedCreateWithoutBadgeInput>
+    connectOrCreate?: ExhibitCreateOrConnectWithoutBadgeInput
+    upsert?: ExhibitUpsertWithoutBadgeInput
+    disconnect?: ExhibitWhereInput | boolean
+    delete?: ExhibitWhereInput | boolean
+    connect?: ExhibitWhereUniqueInput
+    update?: XOR<XOR<ExhibitUpdateToOneWithWhereWithoutBadgeInput, ExhibitUpdateWithoutBadgeInput>, ExhibitUncheckedUpdateWithoutBadgeInput>
   }
 
   export type UserBadgeUpdateManyWithoutBadgeNestedInput = {
@@ -30770,14 +30770,14 @@ export namespace Prisma {
     deleteMany?: UserBadgeScalarWhereInput | UserBadgeScalarWhereInput[]
   }
 
-  export type CourseUncheckedUpdateOneWithoutBadgeNestedInput = {
-    create?: XOR<CourseCreateWithoutBadgeInput, CourseUncheckedCreateWithoutBadgeInput>
-    connectOrCreate?: CourseCreateOrConnectWithoutBadgeInput
-    upsert?: CourseUpsertWithoutBadgeInput
-    disconnect?: CourseWhereInput | boolean
-    delete?: CourseWhereInput | boolean
-    connect?: CourseWhereUniqueInput
-    update?: XOR<XOR<CourseUpdateToOneWithWhereWithoutBadgeInput, CourseUpdateWithoutBadgeInput>, CourseUncheckedUpdateWithoutBadgeInput>
+  export type ExhibitUncheckedUpdateOneWithoutBadgeNestedInput = {
+    create?: XOR<ExhibitCreateWithoutBadgeInput, ExhibitUncheckedCreateWithoutBadgeInput>
+    connectOrCreate?: ExhibitCreateOrConnectWithoutBadgeInput
+    upsert?: ExhibitUpsertWithoutBadgeInput
+    disconnect?: ExhibitWhereInput | boolean
+    delete?: ExhibitWhereInput | boolean
+    connect?: ExhibitWhereUniqueInput
+    update?: XOR<XOR<ExhibitUpdateToOneWithWhereWithoutBadgeInput, ExhibitUpdateWithoutBadgeInput>, ExhibitUncheckedUpdateWithoutBadgeInput>
   }
 
   export type UserBadgeUncheckedUpdateManyWithoutBadgeNestedInput = {
@@ -31137,65 +31137,65 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
-  export type StatusCreateWithoutSchoolsInput = {
+  export type StatusCreateWithoutExhibitionsInput = {
     statusName: string
     users?: UserCreateNestedManyWithoutStatusInput
     languages?: LanguageCreateNestedManyWithoutStatusInput
-    courses?: CourseCreateNestedManyWithoutStatusInput
+    exhibits?: ExhibitCreateNestedManyWithoutStatusInput
   }
 
-  export type StatusUncheckedCreateWithoutSchoolsInput = {
+  export type StatusUncheckedCreateWithoutExhibitionsInput = {
     statusId?: number
     statusName: string
     users?: UserUncheckedCreateNestedManyWithoutStatusInput
     languages?: LanguageUncheckedCreateNestedManyWithoutStatusInput
-    courses?: CourseUncheckedCreateNestedManyWithoutStatusInput
+    exhibits?: ExhibitUncheckedCreateNestedManyWithoutStatusInput
   }
 
-  export type StatusCreateOrConnectWithoutSchoolsInput = {
+  export type StatusCreateOrConnectWithoutExhibitionsInput = {
     where: StatusWhereUniqueInput
-    create: XOR<StatusCreateWithoutSchoolsInput, StatusUncheckedCreateWithoutSchoolsInput>
+    create: XOR<StatusCreateWithoutExhibitionsInput, StatusUncheckedCreateWithoutExhibitionsInput>
   }
 
-  export type CourseCreateWithoutSchoolInput = {
-    courseId?: bigint | number
+  export type ExhibitCreateWithoutExhibitionInput = {
+    exhibitId?: bigint | number
     title: string
     description?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    status?: StatusCreateNestedOneWithoutCoursesInput
-    badge?: BadgeCreateNestedOneWithoutCourseInput
-    audio?: AudioCreateNestedManyWithoutCourseInput
-    feedbacks?: FeedbackCreateNestedManyWithoutCourseInput
-    images?: ImageCreateNestedManyWithoutCourseInput
-    qrCodes?: QRCodeCreateNestedManyWithoutCourseInput
+    status?: StatusCreateNestedOneWithoutExhibitsInput
+    badge?: BadgeCreateNestedOneWithoutExhibitInput
+    audio?: AudioCreateNestedManyWithoutExhibitInput
+    feedbacks?: FeedbackCreateNestedManyWithoutExhibitInput
+    images?: ImageCreateNestedManyWithoutExhibitInput
+    qrCodes?: QRCodeCreateNestedManyWithoutExhibitInput
   }
 
-  export type CourseUncheckedCreateWithoutSchoolInput = {
-    courseId?: bigint | number
+  export type ExhibitUncheckedCreateWithoutExhibitionInput = {
+    exhibitId?: bigint | number
     badgeId?: bigint | number | null
     title: string
     description?: string | null
     statusId?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    audio?: AudioUncheckedCreateNestedManyWithoutCourseInput
-    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutCourseInput
-    images?: ImageUncheckedCreateNestedManyWithoutCourseInput
-    qrCodes?: QRCodeUncheckedCreateNestedManyWithoutCourseInput
+    audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutExhibitInput
+    images?: ImageUncheckedCreateNestedManyWithoutExhibitInput
+    qrCodes?: QRCodeUncheckedCreateNestedManyWithoutExhibitInput
   }
 
-  export type CourseCreateOrConnectWithoutSchoolInput = {
-    where: CourseWhereUniqueInput
-    create: XOR<CourseCreateWithoutSchoolInput, CourseUncheckedCreateWithoutSchoolInput>
+  export type ExhibitCreateOrConnectWithoutExhibitionInput = {
+    where: ExhibitWhereUniqueInput
+    create: XOR<ExhibitCreateWithoutExhibitionInput, ExhibitUncheckedCreateWithoutExhibitionInput>
   }
 
-  export type CourseCreateManySchoolInputEnvelope = {
-    data: CourseCreateManySchoolInput | CourseCreateManySchoolInput[]
+  export type ExhibitCreateManyExhibitionInputEnvelope = {
+    data: ExhibitCreateManyExhibitionInput | ExhibitCreateManyExhibitionInput[]
     skipDuplicates?: boolean
   }
 
-  export type ImageCreateWithoutSchoolInput = {
+  export type ImageCreateWithoutExhibitionInput = {
     imageId?: bigint | number
     title?: string | null
     description?: string | null
@@ -31203,12 +31203,12 @@ export namespace Prisma {
     isPrimary?: boolean
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    course?: CourseCreateNestedOneWithoutImagesInput
+    exhibit?: ExhibitCreateNestedOneWithoutImagesInput
   }
 
-  export type ImageUncheckedCreateWithoutSchoolInput = {
+  export type ImageUncheckedCreateWithoutExhibitionInput = {
     imageId?: bigint | number
-    courseId?: bigint | number | null
+    exhibitId?: bigint | number | null
     title?: string | null
     description?: string | null
     fileUrl?: string | null
@@ -31217,86 +31217,86 @@ export namespace Prisma {
     updatedAt?: Date | string | null
   }
 
-  export type ImageCreateOrConnectWithoutSchoolInput = {
+  export type ImageCreateOrConnectWithoutExhibitionInput = {
     where: ImageWhereUniqueInput
-    create: XOR<ImageCreateWithoutSchoolInput, ImageUncheckedCreateWithoutSchoolInput>
+    create: XOR<ImageCreateWithoutExhibitionInput, ImageUncheckedCreateWithoutExhibitionInput>
   }
 
-  export type ImageCreateManySchoolInputEnvelope = {
-    data: ImageCreateManySchoolInput | ImageCreateManySchoolInput[]
+  export type ImageCreateManyExhibitionInputEnvelope = {
+    data: ImageCreateManyExhibitionInput | ImageCreateManyExhibitionInput[]
     skipDuplicates?: boolean
   }
 
-  export type StatusUpsertWithoutSchoolsInput = {
-    update: XOR<StatusUpdateWithoutSchoolsInput, StatusUncheckedUpdateWithoutSchoolsInput>
-    create: XOR<StatusCreateWithoutSchoolsInput, StatusUncheckedCreateWithoutSchoolsInput>
+  export type StatusUpsertWithoutExhibitionsInput = {
+    update: XOR<StatusUpdateWithoutExhibitionsInput, StatusUncheckedUpdateWithoutExhibitionsInput>
+    create: XOR<StatusCreateWithoutExhibitionsInput, StatusUncheckedCreateWithoutExhibitionsInput>
     where?: StatusWhereInput
   }
 
-  export type StatusUpdateToOneWithWhereWithoutSchoolsInput = {
+  export type StatusUpdateToOneWithWhereWithoutExhibitionsInput = {
     where?: StatusWhereInput
-    data: XOR<StatusUpdateWithoutSchoolsInput, StatusUncheckedUpdateWithoutSchoolsInput>
+    data: XOR<StatusUpdateWithoutExhibitionsInput, StatusUncheckedUpdateWithoutExhibitionsInput>
   }
 
-  export type StatusUpdateWithoutSchoolsInput = {
+  export type StatusUpdateWithoutExhibitionsInput = {
     statusName?: StringFieldUpdateOperationsInput | string
     users?: UserUpdateManyWithoutStatusNestedInput
     languages?: LanguageUpdateManyWithoutStatusNestedInput
-    courses?: CourseUpdateManyWithoutStatusNestedInput
+    exhibits?: ExhibitUpdateManyWithoutStatusNestedInput
   }
 
-  export type StatusUncheckedUpdateWithoutSchoolsInput = {
+  export type StatusUncheckedUpdateWithoutExhibitionsInput = {
     statusId?: IntFieldUpdateOperationsInput | number
     statusName?: StringFieldUpdateOperationsInput | string
     users?: UserUncheckedUpdateManyWithoutStatusNestedInput
     languages?: LanguageUncheckedUpdateManyWithoutStatusNestedInput
-    courses?: CourseUncheckedUpdateManyWithoutStatusNestedInput
+    exhibits?: ExhibitUncheckedUpdateManyWithoutStatusNestedInput
   }
 
-  export type CourseUpsertWithWhereUniqueWithoutSchoolInput = {
-    where: CourseWhereUniqueInput
-    update: XOR<CourseUpdateWithoutSchoolInput, CourseUncheckedUpdateWithoutSchoolInput>
-    create: XOR<CourseCreateWithoutSchoolInput, CourseUncheckedCreateWithoutSchoolInput>
+  export type ExhibitUpsertWithWhereUniqueWithoutExhibitionInput = {
+    where: ExhibitWhereUniqueInput
+    update: XOR<ExhibitUpdateWithoutExhibitionInput, ExhibitUncheckedUpdateWithoutExhibitionInput>
+    create: XOR<ExhibitCreateWithoutExhibitionInput, ExhibitUncheckedCreateWithoutExhibitionInput>
   }
 
-  export type CourseUpdateWithWhereUniqueWithoutSchoolInput = {
-    where: CourseWhereUniqueInput
-    data: XOR<CourseUpdateWithoutSchoolInput, CourseUncheckedUpdateWithoutSchoolInput>
+  export type ExhibitUpdateWithWhereUniqueWithoutExhibitionInput = {
+    where: ExhibitWhereUniqueInput
+    data: XOR<ExhibitUpdateWithoutExhibitionInput, ExhibitUncheckedUpdateWithoutExhibitionInput>
   }
 
-  export type CourseUpdateManyWithWhereWithoutSchoolInput = {
-    where: CourseScalarWhereInput
-    data: XOR<CourseUpdateManyMutationInput, CourseUncheckedUpdateManyWithoutSchoolInput>
+  export type ExhibitUpdateManyWithWhereWithoutExhibitionInput = {
+    where: ExhibitScalarWhereInput
+    data: XOR<ExhibitUpdateManyMutationInput, ExhibitUncheckedUpdateManyWithoutExhibitionInput>
   }
 
-  export type CourseScalarWhereInput = {
-    AND?: CourseScalarWhereInput | CourseScalarWhereInput[]
-    OR?: CourseScalarWhereInput[]
-    NOT?: CourseScalarWhereInput | CourseScalarWhereInput[]
-    courseId?: BigIntFilter<"Course"> | bigint | number
-    schoolId?: BigIntFilter<"Course"> | bigint | number
-    badgeId?: BigIntNullableFilter<"Course"> | bigint | number | null
-    title?: StringFilter<"Course"> | string
-    description?: StringNullableFilter<"Course"> | string | null
-    statusId?: IntNullableFilter<"Course"> | number | null
-    createdAt?: DateTimeNullableFilter<"Course"> | Date | string | null
-    updatedAt?: DateTimeNullableFilter<"Course"> | Date | string | null
+  export type ExhibitScalarWhereInput = {
+    AND?: ExhibitScalarWhereInput | ExhibitScalarWhereInput[]
+    OR?: ExhibitScalarWhereInput[]
+    NOT?: ExhibitScalarWhereInput | ExhibitScalarWhereInput[]
+    exhibitId?: BigIntFilter<"Exhibit"> | bigint | number
+    exhibitionId?: BigIntFilter<"Exhibit"> | bigint | number
+    badgeId?: BigIntNullableFilter<"Exhibit"> | bigint | number | null
+    title?: StringFilter<"Exhibit"> | string
+    description?: StringNullableFilter<"Exhibit"> | string | null
+    statusId?: IntNullableFilter<"Exhibit"> | number | null
+    createdAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
   }
 
-  export type ImageUpsertWithWhereUniqueWithoutSchoolInput = {
+  export type ImageUpsertWithWhereUniqueWithoutExhibitionInput = {
     where: ImageWhereUniqueInput
-    update: XOR<ImageUpdateWithoutSchoolInput, ImageUncheckedUpdateWithoutSchoolInput>
-    create: XOR<ImageCreateWithoutSchoolInput, ImageUncheckedCreateWithoutSchoolInput>
+    update: XOR<ImageUpdateWithoutExhibitionInput, ImageUncheckedUpdateWithoutExhibitionInput>
+    create: XOR<ImageCreateWithoutExhibitionInput, ImageUncheckedCreateWithoutExhibitionInput>
   }
 
-  export type ImageUpdateWithWhereUniqueWithoutSchoolInput = {
+  export type ImageUpdateWithWhereUniqueWithoutExhibitionInput = {
     where: ImageWhereUniqueInput
-    data: XOR<ImageUpdateWithoutSchoolInput, ImageUncheckedUpdateWithoutSchoolInput>
+    data: XOR<ImageUpdateWithoutExhibitionInput, ImageUncheckedUpdateWithoutExhibitionInput>
   }
 
-  export type ImageUpdateManyWithWhereWithoutSchoolInput = {
+  export type ImageUpdateManyWithWhereWithoutExhibitionInput = {
     where: ImageScalarWhereInput
-    data: XOR<ImageUpdateManyMutationInput, ImageUncheckedUpdateManyWithoutSchoolInput>
+    data: XOR<ImageUpdateManyMutationInput, ImageUncheckedUpdateManyWithoutExhibitionInput>
   }
 
   export type ImageScalarWhereInput = {
@@ -31304,8 +31304,8 @@ export namespace Prisma {
     OR?: ImageScalarWhereInput[]
     NOT?: ImageScalarWhereInput | ImageScalarWhereInput[]
     imageId?: BigIntFilter<"Image"> | bigint | number
-    courseId?: BigIntNullableFilter<"Image"> | bigint | number | null
-    schoolId?: BigIntNullableFilter<"Image"> | bigint | number | null
+    exhibitId?: BigIntNullableFilter<"Image"> | bigint | number | null
+    exhibitionId?: BigIntNullableFilter<"Image"> | bigint | number | null
     title?: StringNullableFilter<"Image"> | string | null
     description?: StringNullableFilter<"Image"> | string | null
     fileUrl?: StringNullableFilter<"Image"> | string | null
@@ -31314,52 +31314,52 @@ export namespace Prisma {
     updatedAt?: DateTimeNullableFilter<"Image"> | Date | string | null
   }
 
-  export type SchoolCreateWithoutCoursesInput = {
-    schoolId?: bigint | number
+  export type ExhibitionCreateWithoutExhibitsInput = {
+    exhibitionId?: bigint | number
     title: string
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    status?: StatusCreateNestedOneWithoutSchoolsInput
-    images?: ImageCreateNestedManyWithoutSchoolInput
+    status?: StatusCreateNestedOneWithoutExhibitionsInput
+    images?: ImageCreateNestedManyWithoutExhibitionInput
   }
 
-  export type SchoolUncheckedCreateWithoutCoursesInput = {
-    schoolId?: bigint | number
+  export type ExhibitionUncheckedCreateWithoutExhibitsInput = {
+    exhibitionId?: bigint | number
     title: string
     description?: string | null
     statusId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    images?: ImageUncheckedCreateNestedManyWithoutSchoolInput
+    images?: ImageUncheckedCreateNestedManyWithoutExhibitionInput
   }
 
-  export type SchoolCreateOrConnectWithoutCoursesInput = {
-    where: SchoolWhereUniqueInput
-    create: XOR<SchoolCreateWithoutCoursesInput, SchoolUncheckedCreateWithoutCoursesInput>
+  export type ExhibitionCreateOrConnectWithoutExhibitsInput = {
+    where: ExhibitionWhereUniqueInput
+    create: XOR<ExhibitionCreateWithoutExhibitsInput, ExhibitionUncheckedCreateWithoutExhibitsInput>
   }
 
-  export type StatusCreateWithoutCoursesInput = {
+  export type StatusCreateWithoutExhibitsInput = {
     statusName: string
     users?: UserCreateNestedManyWithoutStatusInput
     languages?: LanguageCreateNestedManyWithoutStatusInput
-    schools?: SchoolCreateNestedManyWithoutStatusInput
+    exhibitions?: ExhibitionCreateNestedManyWithoutStatusInput
   }
 
-  export type StatusUncheckedCreateWithoutCoursesInput = {
+  export type StatusUncheckedCreateWithoutExhibitsInput = {
     statusId?: number
     statusName: string
     users?: UserUncheckedCreateNestedManyWithoutStatusInput
     languages?: LanguageUncheckedCreateNestedManyWithoutStatusInput
-    schools?: SchoolUncheckedCreateNestedManyWithoutStatusInput
+    exhibitions?: ExhibitionUncheckedCreateNestedManyWithoutStatusInput
   }
 
-  export type StatusCreateOrConnectWithoutCoursesInput = {
+  export type StatusCreateOrConnectWithoutExhibitsInput = {
     where: StatusWhereUniqueInput
-    create: XOR<StatusCreateWithoutCoursesInput, StatusUncheckedCreateWithoutCoursesInput>
+    create: XOR<StatusCreateWithoutExhibitsInput, StatusUncheckedCreateWithoutExhibitsInput>
   }
 
-  export type BadgeCreateWithoutCourseInput = {
+  export type BadgeCreateWithoutExhibitInput = {
     badgeId?: bigint | number
     name?: string | null
     description?: string | null
@@ -31369,7 +31369,7 @@ export namespace Prisma {
     userBadges?: UserBadgeCreateNestedManyWithoutBadgeInput
   }
 
-  export type BadgeUncheckedCreateWithoutCourseInput = {
+  export type BadgeUncheckedCreateWithoutExhibitInput = {
     badgeId?: bigint | number
     name?: string | null
     description?: string | null
@@ -31379,12 +31379,12 @@ export namespace Prisma {
     userBadges?: UserBadgeUncheckedCreateNestedManyWithoutBadgeInput
   }
 
-  export type BadgeCreateOrConnectWithoutCourseInput = {
+  export type BadgeCreateOrConnectWithoutExhibitInput = {
     where: BadgeWhereUniqueInput
-    create: XOR<BadgeCreateWithoutCourseInput, BadgeUncheckedCreateWithoutCourseInput>
+    create: XOR<BadgeCreateWithoutExhibitInput, BadgeUncheckedCreateWithoutExhibitInput>
   }
 
-  export type AudioCreateWithoutCourseInput = {
+  export type AudioCreateWithoutExhibitInput = {
     fileUrl?: string | null
     title?: string | null
     description?: string | null
@@ -31395,7 +31395,7 @@ export namespace Prisma {
     subtitles?: SubtitleCreateNestedManyWithoutAudioInput
   }
 
-  export type AudioUncheckedCreateWithoutCourseInput = {
+  export type AudioUncheckedCreateWithoutExhibitInput = {
     audioId?: number
     languageId?: bigint | number | null
     fileUrl?: string | null
@@ -31407,17 +31407,17 @@ export namespace Prisma {
     subtitles?: SubtitleUncheckedCreateNestedManyWithoutAudioInput
   }
 
-  export type AudioCreateOrConnectWithoutCourseInput = {
+  export type AudioCreateOrConnectWithoutExhibitInput = {
     where: AudioWhereUniqueInput
-    create: XOR<AudioCreateWithoutCourseInput, AudioUncheckedCreateWithoutCourseInput>
+    create: XOR<AudioCreateWithoutExhibitInput, AudioUncheckedCreateWithoutExhibitInput>
   }
 
-  export type AudioCreateManyCourseInputEnvelope = {
-    data: AudioCreateManyCourseInput | AudioCreateManyCourseInput[]
+  export type AudioCreateManyExhibitInputEnvelope = {
+    data: AudioCreateManyExhibitInput | AudioCreateManyExhibitInput[]
     skipDuplicates?: boolean
   }
 
-  export type FeedbackCreateWithoutCourseInput = {
+  export type FeedbackCreateWithoutExhibitInput = {
     feedbackId?: bigint | number
     rating?: number | null
     description?: string | null
@@ -31426,7 +31426,7 @@ export namespace Prisma {
     user?: UserCreateNestedOneWithoutFeedbacksInput
   }
 
-  export type FeedbackUncheckedCreateWithoutCourseInput = {
+  export type FeedbackUncheckedCreateWithoutExhibitInput = {
     feedbackId?: bigint | number
     userId?: bigint | number | null
     rating?: number | null
@@ -31435,17 +31435,17 @@ export namespace Prisma {
     updatedAt?: Date | string | null
   }
 
-  export type FeedbackCreateOrConnectWithoutCourseInput = {
+  export type FeedbackCreateOrConnectWithoutExhibitInput = {
     where: FeedbackWhereUniqueInput
-    create: XOR<FeedbackCreateWithoutCourseInput, FeedbackUncheckedCreateWithoutCourseInput>
+    create: XOR<FeedbackCreateWithoutExhibitInput, FeedbackUncheckedCreateWithoutExhibitInput>
   }
 
-  export type FeedbackCreateManyCourseInputEnvelope = {
-    data: FeedbackCreateManyCourseInput | FeedbackCreateManyCourseInput[]
+  export type FeedbackCreateManyExhibitInputEnvelope = {
+    data: FeedbackCreateManyExhibitInput | FeedbackCreateManyExhibitInput[]
     skipDuplicates?: boolean
   }
 
-  export type ImageCreateWithoutCourseInput = {
+  export type ImageCreateWithoutExhibitInput = {
     imageId?: bigint | number
     title?: string | null
     description?: string | null
@@ -31453,12 +31453,12 @@ export namespace Prisma {
     isPrimary?: boolean
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    school?: SchoolCreateNestedOneWithoutImagesInput
+    exhibition?: ExhibitionCreateNestedOneWithoutImagesInput
   }
 
-  export type ImageUncheckedCreateWithoutCourseInput = {
+  export type ImageUncheckedCreateWithoutExhibitInput = {
     imageId?: bigint | number
-    schoolId?: bigint | number | null
+    exhibitionId?: bigint | number | null
     title?: string | null
     description?: string | null
     fileUrl?: string | null
@@ -31467,108 +31467,108 @@ export namespace Prisma {
     updatedAt?: Date | string | null
   }
 
-  export type ImageCreateOrConnectWithoutCourseInput = {
+  export type ImageCreateOrConnectWithoutExhibitInput = {
     where: ImageWhereUniqueInput
-    create: XOR<ImageCreateWithoutCourseInput, ImageUncheckedCreateWithoutCourseInput>
+    create: XOR<ImageCreateWithoutExhibitInput, ImageUncheckedCreateWithoutExhibitInput>
   }
 
-  export type ImageCreateManyCourseInputEnvelope = {
-    data: ImageCreateManyCourseInput | ImageCreateManyCourseInput[]
+  export type ImageCreateManyExhibitInputEnvelope = {
+    data: ImageCreateManyExhibitInput | ImageCreateManyExhibitInput[]
     skipDuplicates?: boolean
   }
 
-  export type QRCodeCreateWithoutCourseInput = {
+  export type QRCodeCreateWithoutExhibitInput = {
     qrUrl: string
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
   }
 
-  export type QRCodeUncheckedCreateWithoutCourseInput = {
+  export type QRCodeUncheckedCreateWithoutExhibitInput = {
     qrId?: number
     qrUrl: string
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
   }
 
-  export type QRCodeCreateOrConnectWithoutCourseInput = {
+  export type QRCodeCreateOrConnectWithoutExhibitInput = {
     where: QRCodeWhereUniqueInput
-    create: XOR<QRCodeCreateWithoutCourseInput, QRCodeUncheckedCreateWithoutCourseInput>
+    create: XOR<QRCodeCreateWithoutExhibitInput, QRCodeUncheckedCreateWithoutExhibitInput>
   }
 
-  export type QRCodeCreateManyCourseInputEnvelope = {
-    data: QRCodeCreateManyCourseInput | QRCodeCreateManyCourseInput[]
+  export type QRCodeCreateManyExhibitInputEnvelope = {
+    data: QRCodeCreateManyExhibitInput | QRCodeCreateManyExhibitInput[]
     skipDuplicates?: boolean
   }
 
-  export type SchoolUpsertWithoutCoursesInput = {
-    update: XOR<SchoolUpdateWithoutCoursesInput, SchoolUncheckedUpdateWithoutCoursesInput>
-    create: XOR<SchoolCreateWithoutCoursesInput, SchoolUncheckedCreateWithoutCoursesInput>
-    where?: SchoolWhereInput
+  export type ExhibitionUpsertWithoutExhibitsInput = {
+    update: XOR<ExhibitionUpdateWithoutExhibitsInput, ExhibitionUncheckedUpdateWithoutExhibitsInput>
+    create: XOR<ExhibitionCreateWithoutExhibitsInput, ExhibitionUncheckedCreateWithoutExhibitsInput>
+    where?: ExhibitionWhereInput
   }
 
-  export type SchoolUpdateToOneWithWhereWithoutCoursesInput = {
-    where?: SchoolWhereInput
-    data: XOR<SchoolUpdateWithoutCoursesInput, SchoolUncheckedUpdateWithoutCoursesInput>
+  export type ExhibitionUpdateToOneWithWhereWithoutExhibitsInput = {
+    where?: ExhibitionWhereInput
+    data: XOR<ExhibitionUpdateWithoutExhibitsInput, ExhibitionUncheckedUpdateWithoutExhibitsInput>
   }
 
-  export type SchoolUpdateWithoutCoursesInput = {
-    schoolId?: BigIntFieldUpdateOperationsInput | bigint | number
+  export type ExhibitionUpdateWithoutExhibitsInput = {
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    status?: StatusUpdateOneWithoutSchoolsNestedInput
-    images?: ImageUpdateManyWithoutSchoolNestedInput
+    status?: StatusUpdateOneWithoutExhibitionsNestedInput
+    images?: ImageUpdateManyWithoutExhibitionNestedInput
   }
 
-  export type SchoolUncheckedUpdateWithoutCoursesInput = {
-    schoolId?: BigIntFieldUpdateOperationsInput | bigint | number
+  export type ExhibitionUncheckedUpdateWithoutExhibitsInput = {
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    images?: ImageUncheckedUpdateManyWithoutSchoolNestedInput
+    images?: ImageUncheckedUpdateManyWithoutExhibitionNestedInput
   }
 
-  export type StatusUpsertWithoutCoursesInput = {
-    update: XOR<StatusUpdateWithoutCoursesInput, StatusUncheckedUpdateWithoutCoursesInput>
-    create: XOR<StatusCreateWithoutCoursesInput, StatusUncheckedCreateWithoutCoursesInput>
+  export type StatusUpsertWithoutExhibitsInput = {
+    update: XOR<StatusUpdateWithoutExhibitsInput, StatusUncheckedUpdateWithoutExhibitsInput>
+    create: XOR<StatusCreateWithoutExhibitsInput, StatusUncheckedCreateWithoutExhibitsInput>
     where?: StatusWhereInput
   }
 
-  export type StatusUpdateToOneWithWhereWithoutCoursesInput = {
+  export type StatusUpdateToOneWithWhereWithoutExhibitsInput = {
     where?: StatusWhereInput
-    data: XOR<StatusUpdateWithoutCoursesInput, StatusUncheckedUpdateWithoutCoursesInput>
+    data: XOR<StatusUpdateWithoutExhibitsInput, StatusUncheckedUpdateWithoutExhibitsInput>
   }
 
-  export type StatusUpdateWithoutCoursesInput = {
+  export type StatusUpdateWithoutExhibitsInput = {
     statusName?: StringFieldUpdateOperationsInput | string
     users?: UserUpdateManyWithoutStatusNestedInput
     languages?: LanguageUpdateManyWithoutStatusNestedInput
-    schools?: SchoolUpdateManyWithoutStatusNestedInput
+    exhibitions?: ExhibitionUpdateManyWithoutStatusNestedInput
   }
 
-  export type StatusUncheckedUpdateWithoutCoursesInput = {
+  export type StatusUncheckedUpdateWithoutExhibitsInput = {
     statusId?: IntFieldUpdateOperationsInput | number
     statusName?: StringFieldUpdateOperationsInput | string
     users?: UserUncheckedUpdateManyWithoutStatusNestedInput
     languages?: LanguageUncheckedUpdateManyWithoutStatusNestedInput
-    schools?: SchoolUncheckedUpdateManyWithoutStatusNestedInput
+    exhibitions?: ExhibitionUncheckedUpdateManyWithoutStatusNestedInput
   }
 
-  export type BadgeUpsertWithoutCourseInput = {
-    update: XOR<BadgeUpdateWithoutCourseInput, BadgeUncheckedUpdateWithoutCourseInput>
-    create: XOR<BadgeCreateWithoutCourseInput, BadgeUncheckedCreateWithoutCourseInput>
+  export type BadgeUpsertWithoutExhibitInput = {
+    update: XOR<BadgeUpdateWithoutExhibitInput, BadgeUncheckedUpdateWithoutExhibitInput>
+    create: XOR<BadgeCreateWithoutExhibitInput, BadgeUncheckedCreateWithoutExhibitInput>
     where?: BadgeWhereInput
   }
 
-  export type BadgeUpdateToOneWithWhereWithoutCourseInput = {
+  export type BadgeUpdateToOneWithWhereWithoutExhibitInput = {
     where?: BadgeWhereInput
-    data: XOR<BadgeUpdateWithoutCourseInput, BadgeUncheckedUpdateWithoutCourseInput>
+    data: XOR<BadgeUpdateWithoutExhibitInput, BadgeUncheckedUpdateWithoutExhibitInput>
   }
 
-  export type BadgeUpdateWithoutCourseInput = {
+  export type BadgeUpdateWithoutExhibitInput = {
     badgeId?: BigIntFieldUpdateOperationsInput | bigint | number
     name?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31578,7 +31578,7 @@ export namespace Prisma {
     userBadges?: UserBadgeUpdateManyWithoutBadgeNestedInput
   }
 
-  export type BadgeUncheckedUpdateWithoutCourseInput = {
+  export type BadgeUncheckedUpdateWithoutExhibitInput = {
     badgeId?: BigIntFieldUpdateOperationsInput | bigint | number
     name?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31588,20 +31588,20 @@ export namespace Prisma {
     userBadges?: UserBadgeUncheckedUpdateManyWithoutBadgeNestedInput
   }
 
-  export type AudioUpsertWithWhereUniqueWithoutCourseInput = {
+  export type AudioUpsertWithWhereUniqueWithoutExhibitInput = {
     where: AudioWhereUniqueInput
-    update: XOR<AudioUpdateWithoutCourseInput, AudioUncheckedUpdateWithoutCourseInput>
-    create: XOR<AudioCreateWithoutCourseInput, AudioUncheckedCreateWithoutCourseInput>
+    update: XOR<AudioUpdateWithoutExhibitInput, AudioUncheckedUpdateWithoutExhibitInput>
+    create: XOR<AudioCreateWithoutExhibitInput, AudioUncheckedCreateWithoutExhibitInput>
   }
 
-  export type AudioUpdateWithWhereUniqueWithoutCourseInput = {
+  export type AudioUpdateWithWhereUniqueWithoutExhibitInput = {
     where: AudioWhereUniqueInput
-    data: XOR<AudioUpdateWithoutCourseInput, AudioUncheckedUpdateWithoutCourseInput>
+    data: XOR<AudioUpdateWithoutExhibitInput, AudioUncheckedUpdateWithoutExhibitInput>
   }
 
-  export type AudioUpdateManyWithWhereWithoutCourseInput = {
+  export type AudioUpdateManyWithWhereWithoutExhibitInput = {
     where: AudioScalarWhereInput
-    data: XOR<AudioUpdateManyMutationInput, AudioUncheckedUpdateManyWithoutCourseInput>
+    data: XOR<AudioUpdateManyMutationInput, AudioUncheckedUpdateManyWithoutExhibitInput>
   }
 
   export type AudioScalarWhereInput = {
@@ -31609,7 +31609,7 @@ export namespace Prisma {
     OR?: AudioScalarWhereInput[]
     NOT?: AudioScalarWhereInput | AudioScalarWhereInput[]
     audioId?: IntFilter<"Audio"> | number
-    courseId?: BigIntNullableFilter<"Audio"> | bigint | number | null
+    exhibitId?: BigIntNullableFilter<"Audio"> | bigint | number | null
     languageId?: BigIntNullableFilter<"Audio"> | bigint | number | null
     fileUrl?: StringNullableFilter<"Audio"> | string | null
     title?: StringNullableFilter<"Audio"> | string | null
@@ -31618,20 +31618,20 @@ export namespace Prisma {
     updatedAt?: DateTimeNullableFilter<"Audio"> | Date | string | null
   }
 
-  export type FeedbackUpsertWithWhereUniqueWithoutCourseInput = {
+  export type FeedbackUpsertWithWhereUniqueWithoutExhibitInput = {
     where: FeedbackWhereUniqueInput
-    update: XOR<FeedbackUpdateWithoutCourseInput, FeedbackUncheckedUpdateWithoutCourseInput>
-    create: XOR<FeedbackCreateWithoutCourseInput, FeedbackUncheckedCreateWithoutCourseInput>
+    update: XOR<FeedbackUpdateWithoutExhibitInput, FeedbackUncheckedUpdateWithoutExhibitInput>
+    create: XOR<FeedbackCreateWithoutExhibitInput, FeedbackUncheckedCreateWithoutExhibitInput>
   }
 
-  export type FeedbackUpdateWithWhereUniqueWithoutCourseInput = {
+  export type FeedbackUpdateWithWhereUniqueWithoutExhibitInput = {
     where: FeedbackWhereUniqueInput
-    data: XOR<FeedbackUpdateWithoutCourseInput, FeedbackUncheckedUpdateWithoutCourseInput>
+    data: XOR<FeedbackUpdateWithoutExhibitInput, FeedbackUncheckedUpdateWithoutExhibitInput>
   }
 
-  export type FeedbackUpdateManyWithWhereWithoutCourseInput = {
+  export type FeedbackUpdateManyWithWhereWithoutExhibitInput = {
     where: FeedbackScalarWhereInput
-    data: XOR<FeedbackUpdateManyMutationInput, FeedbackUncheckedUpdateManyWithoutCourseInput>
+    data: XOR<FeedbackUpdateManyMutationInput, FeedbackUncheckedUpdateManyWithoutExhibitInput>
   }
 
   export type FeedbackScalarWhereInput = {
@@ -31640,43 +31640,43 @@ export namespace Prisma {
     NOT?: FeedbackScalarWhereInput | FeedbackScalarWhereInput[]
     feedbackId?: BigIntFilter<"Feedback"> | bigint | number
     userId?: BigIntNullableFilter<"Feedback"> | bigint | number | null
-    courseId?: BigIntNullableFilter<"Feedback"> | bigint | number | null
+    exhibitId?: BigIntNullableFilter<"Feedback"> | bigint | number | null
     rating?: IntNullableFilter<"Feedback"> | number | null
     description?: StringNullableFilter<"Feedback"> | string | null
     createdAt?: DateTimeNullableFilter<"Feedback"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Feedback"> | Date | string | null
   }
 
-  export type ImageUpsertWithWhereUniqueWithoutCourseInput = {
+  export type ImageUpsertWithWhereUniqueWithoutExhibitInput = {
     where: ImageWhereUniqueInput
-    update: XOR<ImageUpdateWithoutCourseInput, ImageUncheckedUpdateWithoutCourseInput>
-    create: XOR<ImageCreateWithoutCourseInput, ImageUncheckedCreateWithoutCourseInput>
+    update: XOR<ImageUpdateWithoutExhibitInput, ImageUncheckedUpdateWithoutExhibitInput>
+    create: XOR<ImageCreateWithoutExhibitInput, ImageUncheckedCreateWithoutExhibitInput>
   }
 
-  export type ImageUpdateWithWhereUniqueWithoutCourseInput = {
+  export type ImageUpdateWithWhereUniqueWithoutExhibitInput = {
     where: ImageWhereUniqueInput
-    data: XOR<ImageUpdateWithoutCourseInput, ImageUncheckedUpdateWithoutCourseInput>
+    data: XOR<ImageUpdateWithoutExhibitInput, ImageUncheckedUpdateWithoutExhibitInput>
   }
 
-  export type ImageUpdateManyWithWhereWithoutCourseInput = {
+  export type ImageUpdateManyWithWhereWithoutExhibitInput = {
     where: ImageScalarWhereInput
-    data: XOR<ImageUpdateManyMutationInput, ImageUncheckedUpdateManyWithoutCourseInput>
+    data: XOR<ImageUpdateManyMutationInput, ImageUncheckedUpdateManyWithoutExhibitInput>
   }
 
-  export type QRCodeUpsertWithWhereUniqueWithoutCourseInput = {
+  export type QRCodeUpsertWithWhereUniqueWithoutExhibitInput = {
     where: QRCodeWhereUniqueInput
-    update: XOR<QRCodeUpdateWithoutCourseInput, QRCodeUncheckedUpdateWithoutCourseInput>
-    create: XOR<QRCodeCreateWithoutCourseInput, QRCodeUncheckedCreateWithoutCourseInput>
+    update: XOR<QRCodeUpdateWithoutExhibitInput, QRCodeUncheckedUpdateWithoutExhibitInput>
+    create: XOR<QRCodeCreateWithoutExhibitInput, QRCodeUncheckedCreateWithoutExhibitInput>
   }
 
-  export type QRCodeUpdateWithWhereUniqueWithoutCourseInput = {
+  export type QRCodeUpdateWithWhereUniqueWithoutExhibitInput = {
     where: QRCodeWhereUniqueInput
-    data: XOR<QRCodeUpdateWithoutCourseInput, QRCodeUncheckedUpdateWithoutCourseInput>
+    data: XOR<QRCodeUpdateWithoutExhibitInput, QRCodeUncheckedUpdateWithoutExhibitInput>
   }
 
-  export type QRCodeUpdateManyWithWhereWithoutCourseInput = {
+  export type QRCodeUpdateManyWithWhereWithoutExhibitInput = {
     where: QRCodeScalarWhereInput
-    data: XOR<QRCodeUpdateManyMutationInput, QRCodeUncheckedUpdateManyWithoutCourseInput>
+    data: XOR<QRCodeUpdateManyMutationInput, QRCodeUncheckedUpdateManyWithoutExhibitInput>
   }
 
   export type QRCodeScalarWhereInput = {
@@ -31684,43 +31684,43 @@ export namespace Prisma {
     OR?: QRCodeScalarWhereInput[]
     NOT?: QRCodeScalarWhereInput | QRCodeScalarWhereInput[]
     qrId?: IntFilter<"QRCode"> | number
-    courseId?: BigIntFilter<"QRCode"> | bigint | number
+    exhibitId?: BigIntFilter<"QRCode"> | bigint | number
     qrUrl?: StringFilter<"QRCode"> | string
     createdAt?: DateTimeNullableFilter<"QRCode"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"QRCode"> | Date | string | null
   }
 
-  export type CourseCreateWithoutAudioInput = {
-    courseId?: bigint | number
+  export type ExhibitCreateWithoutAudioInput = {
+    exhibitId?: bigint | number
     title: string
     description?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    school: SchoolCreateNestedOneWithoutCoursesInput
-    status?: StatusCreateNestedOneWithoutCoursesInput
-    badge?: BadgeCreateNestedOneWithoutCourseInput
-    feedbacks?: FeedbackCreateNestedManyWithoutCourseInput
-    images?: ImageCreateNestedManyWithoutCourseInput
-    qrCodes?: QRCodeCreateNestedManyWithoutCourseInput
+    exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
+    status?: StatusCreateNestedOneWithoutExhibitsInput
+    badge?: BadgeCreateNestedOneWithoutExhibitInput
+    feedbacks?: FeedbackCreateNestedManyWithoutExhibitInput
+    images?: ImageCreateNestedManyWithoutExhibitInput
+    qrCodes?: QRCodeCreateNestedManyWithoutExhibitInput
   }
 
-  export type CourseUncheckedCreateWithoutAudioInput = {
-    courseId?: bigint | number
-    schoolId: bigint | number
+  export type ExhibitUncheckedCreateWithoutAudioInput = {
+    exhibitId?: bigint | number
+    exhibitionId: bigint | number
     badgeId?: bigint | number | null
     title: string
     description?: string | null
     statusId?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutCourseInput
-    images?: ImageUncheckedCreateNestedManyWithoutCourseInput
-    qrCodes?: QRCodeUncheckedCreateNestedManyWithoutCourseInput
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutExhibitInput
+    images?: ImageUncheckedCreateNestedManyWithoutExhibitInput
+    qrCodes?: QRCodeUncheckedCreateNestedManyWithoutExhibitInput
   }
 
-  export type CourseCreateOrConnectWithoutAudioInput = {
-    where: CourseWhereUniqueInput
-    create: XOR<CourseCreateWithoutAudioInput, CourseUncheckedCreateWithoutAudioInput>
+  export type ExhibitCreateOrConnectWithoutAudioInput = {
+    where: ExhibitWhereUniqueInput
+    create: XOR<ExhibitCreateWithoutAudioInput, ExhibitUncheckedCreateWithoutAudioInput>
   }
 
   export type LanguageCreateWithoutAudioInput = {
@@ -31807,43 +31807,43 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type CourseUpsertWithoutAudioInput = {
-    update: XOR<CourseUpdateWithoutAudioInput, CourseUncheckedUpdateWithoutAudioInput>
-    create: XOR<CourseCreateWithoutAudioInput, CourseUncheckedCreateWithoutAudioInput>
-    where?: CourseWhereInput
+  export type ExhibitUpsertWithoutAudioInput = {
+    update: XOR<ExhibitUpdateWithoutAudioInput, ExhibitUncheckedUpdateWithoutAudioInput>
+    create: XOR<ExhibitCreateWithoutAudioInput, ExhibitUncheckedCreateWithoutAudioInput>
+    where?: ExhibitWhereInput
   }
 
-  export type CourseUpdateToOneWithWhereWithoutAudioInput = {
-    where?: CourseWhereInput
-    data: XOR<CourseUpdateWithoutAudioInput, CourseUncheckedUpdateWithoutAudioInput>
+  export type ExhibitUpdateToOneWithWhereWithoutAudioInput = {
+    where?: ExhibitWhereInput
+    data: XOR<ExhibitUpdateWithoutAudioInput, ExhibitUncheckedUpdateWithoutAudioInput>
   }
 
-  export type CourseUpdateWithoutAudioInput = {
-    courseId?: BigIntFieldUpdateOperationsInput | bigint | number
+  export type ExhibitUpdateWithoutAudioInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    school?: SchoolUpdateOneRequiredWithoutCoursesNestedInput
-    status?: StatusUpdateOneWithoutCoursesNestedInput
-    badge?: BadgeUpdateOneWithoutCourseNestedInput
-    feedbacks?: FeedbackUpdateManyWithoutCourseNestedInput
-    images?: ImageUpdateManyWithoutCourseNestedInput
-    qrCodes?: QRCodeUpdateManyWithoutCourseNestedInput
+    exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
+    status?: StatusUpdateOneWithoutExhibitsNestedInput
+    badge?: BadgeUpdateOneWithoutExhibitNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutExhibitNestedInput
+    images?: ImageUpdateManyWithoutExhibitNestedInput
+    qrCodes?: QRCodeUpdateManyWithoutExhibitNestedInput
   }
 
-  export type CourseUncheckedUpdateWithoutAudioInput = {
-    courseId?: BigIntFieldUpdateOperationsInput | bigint | number
-    schoolId?: BigIntFieldUpdateOperationsInput | bigint | number
+  export type ExhibitUncheckedUpdateWithoutAudioInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    feedbacks?: FeedbackUncheckedUpdateManyWithoutCourseNestedInput
-    images?: ImageUncheckedUpdateManyWithoutCourseNestedInput
-    qrCodes?: QRCodeUncheckedUpdateManyWithoutCourseNestedInput
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutExhibitNestedInput
+    images?: ImageUncheckedUpdateManyWithoutExhibitNestedInput
+    qrCodes?: QRCodeUncheckedUpdateManyWithoutExhibitNestedInput
   }
 
   export type LanguageUpsertWithoutAudioInput = {
@@ -31991,14 +31991,14 @@ export namespace Prisma {
     description?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    course?: CourseCreateNestedOneWithoutAudioInput
+    exhibit?: ExhibitCreateNestedOneWithoutAudioInput
     language?: LanguageCreateNestedOneWithoutAudioInput
     subtitles?: SubtitleCreateNestedManyWithoutAudioInput
   }
 
   export type AudioUncheckedCreateWithoutPlaybackLogsInput = {
     audioId?: number
-    courseId?: bigint | number | null
+    exhibitId?: bigint | number | null
     languageId?: bigint | number | null
     fileUrl?: string | null
     title?: string | null
@@ -32083,14 +32083,14 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    course?: CourseUpdateOneWithoutAudioNestedInput
+    exhibit?: ExhibitUpdateOneWithoutAudioNestedInput
     language?: LanguageUpdateOneWithoutAudioNestedInput
     subtitles?: SubtitleUpdateManyWithoutAudioNestedInput
   }
 
   export type AudioUncheckedUpdateWithoutPlaybackLogsInput = {
     audioId?: IntFieldUpdateOperationsInput | number
-    courseId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    exhibitId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     languageId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     title?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32147,37 +32147,37 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutFeedbacksInput, UserUncheckedCreateWithoutFeedbacksInput>
   }
 
-  export type CourseCreateWithoutFeedbacksInput = {
-    courseId?: bigint | number
+  export type ExhibitCreateWithoutFeedbacksInput = {
+    exhibitId?: bigint | number
     title: string
     description?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    school: SchoolCreateNestedOneWithoutCoursesInput
-    status?: StatusCreateNestedOneWithoutCoursesInput
-    badge?: BadgeCreateNestedOneWithoutCourseInput
-    audio?: AudioCreateNestedManyWithoutCourseInput
-    images?: ImageCreateNestedManyWithoutCourseInput
-    qrCodes?: QRCodeCreateNestedManyWithoutCourseInput
+    exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
+    status?: StatusCreateNestedOneWithoutExhibitsInput
+    badge?: BadgeCreateNestedOneWithoutExhibitInput
+    audio?: AudioCreateNestedManyWithoutExhibitInput
+    images?: ImageCreateNestedManyWithoutExhibitInput
+    qrCodes?: QRCodeCreateNestedManyWithoutExhibitInput
   }
 
-  export type CourseUncheckedCreateWithoutFeedbacksInput = {
-    courseId?: bigint | number
-    schoolId: bigint | number
+  export type ExhibitUncheckedCreateWithoutFeedbacksInput = {
+    exhibitId?: bigint | number
+    exhibitionId: bigint | number
     badgeId?: bigint | number | null
     title: string
     description?: string | null
     statusId?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    audio?: AudioUncheckedCreateNestedManyWithoutCourseInput
-    images?: ImageUncheckedCreateNestedManyWithoutCourseInput
-    qrCodes?: QRCodeUncheckedCreateNestedManyWithoutCourseInput
+    audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
+    images?: ImageUncheckedCreateNestedManyWithoutExhibitInput
+    qrCodes?: QRCodeUncheckedCreateNestedManyWithoutExhibitInput
   }
 
-  export type CourseCreateOrConnectWithoutFeedbacksInput = {
-    where: CourseWhereUniqueInput
-    create: XOR<CourseCreateWithoutFeedbacksInput, CourseUncheckedCreateWithoutFeedbacksInput>
+  export type ExhibitCreateOrConnectWithoutFeedbacksInput = {
+    where: ExhibitWhereUniqueInput
+    create: XOR<ExhibitCreateWithoutFeedbacksInput, ExhibitUncheckedCreateWithoutFeedbacksInput>
   }
 
   export type UserUpsertWithoutFeedbacksInput = {
@@ -32233,258 +32233,258 @@ export namespace Prisma {
     userBadges?: UserBadgeUncheckedUpdateManyWithoutUserNestedInput
   }
 
-  export type CourseUpsertWithoutFeedbacksInput = {
-    update: XOR<CourseUpdateWithoutFeedbacksInput, CourseUncheckedUpdateWithoutFeedbacksInput>
-    create: XOR<CourseCreateWithoutFeedbacksInput, CourseUncheckedCreateWithoutFeedbacksInput>
-    where?: CourseWhereInput
+  export type ExhibitUpsertWithoutFeedbacksInput = {
+    update: XOR<ExhibitUpdateWithoutFeedbacksInput, ExhibitUncheckedUpdateWithoutFeedbacksInput>
+    create: XOR<ExhibitCreateWithoutFeedbacksInput, ExhibitUncheckedCreateWithoutFeedbacksInput>
+    where?: ExhibitWhereInput
   }
 
-  export type CourseUpdateToOneWithWhereWithoutFeedbacksInput = {
-    where?: CourseWhereInput
-    data: XOR<CourseUpdateWithoutFeedbacksInput, CourseUncheckedUpdateWithoutFeedbacksInput>
+  export type ExhibitUpdateToOneWithWhereWithoutFeedbacksInput = {
+    where?: ExhibitWhereInput
+    data: XOR<ExhibitUpdateWithoutFeedbacksInput, ExhibitUncheckedUpdateWithoutFeedbacksInput>
   }
 
-  export type CourseUpdateWithoutFeedbacksInput = {
-    courseId?: BigIntFieldUpdateOperationsInput | bigint | number
+  export type ExhibitUpdateWithoutFeedbacksInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    school?: SchoolUpdateOneRequiredWithoutCoursesNestedInput
-    status?: StatusUpdateOneWithoutCoursesNestedInput
-    badge?: BadgeUpdateOneWithoutCourseNestedInput
-    audio?: AudioUpdateManyWithoutCourseNestedInput
-    images?: ImageUpdateManyWithoutCourseNestedInput
-    qrCodes?: QRCodeUpdateManyWithoutCourseNestedInput
+    exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
+    status?: StatusUpdateOneWithoutExhibitsNestedInput
+    badge?: BadgeUpdateOneWithoutExhibitNestedInput
+    audio?: AudioUpdateManyWithoutExhibitNestedInput
+    images?: ImageUpdateManyWithoutExhibitNestedInput
+    qrCodes?: QRCodeUpdateManyWithoutExhibitNestedInput
   }
 
-  export type CourseUncheckedUpdateWithoutFeedbacksInput = {
-    courseId?: BigIntFieldUpdateOperationsInput | bigint | number
-    schoolId?: BigIntFieldUpdateOperationsInput | bigint | number
+  export type ExhibitUncheckedUpdateWithoutFeedbacksInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    audio?: AudioUncheckedUpdateManyWithoutCourseNestedInput
-    images?: ImageUncheckedUpdateManyWithoutCourseNestedInput
-    qrCodes?: QRCodeUncheckedUpdateManyWithoutCourseNestedInput
+    audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
+    images?: ImageUncheckedUpdateManyWithoutExhibitNestedInput
+    qrCodes?: QRCodeUncheckedUpdateManyWithoutExhibitNestedInput
   }
 
-  export type CourseCreateWithoutImagesInput = {
-    courseId?: bigint | number
+  export type ExhibitCreateWithoutImagesInput = {
+    exhibitId?: bigint | number
     title: string
     description?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    school: SchoolCreateNestedOneWithoutCoursesInput
-    status?: StatusCreateNestedOneWithoutCoursesInput
-    badge?: BadgeCreateNestedOneWithoutCourseInput
-    audio?: AudioCreateNestedManyWithoutCourseInput
-    feedbacks?: FeedbackCreateNestedManyWithoutCourseInput
-    qrCodes?: QRCodeCreateNestedManyWithoutCourseInput
+    exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
+    status?: StatusCreateNestedOneWithoutExhibitsInput
+    badge?: BadgeCreateNestedOneWithoutExhibitInput
+    audio?: AudioCreateNestedManyWithoutExhibitInput
+    feedbacks?: FeedbackCreateNestedManyWithoutExhibitInput
+    qrCodes?: QRCodeCreateNestedManyWithoutExhibitInput
   }
 
-  export type CourseUncheckedCreateWithoutImagesInput = {
-    courseId?: bigint | number
-    schoolId: bigint | number
+  export type ExhibitUncheckedCreateWithoutImagesInput = {
+    exhibitId?: bigint | number
+    exhibitionId: bigint | number
     badgeId?: bigint | number | null
     title: string
     description?: string | null
     statusId?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    audio?: AudioUncheckedCreateNestedManyWithoutCourseInput
-    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutCourseInput
-    qrCodes?: QRCodeUncheckedCreateNestedManyWithoutCourseInput
+    audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutExhibitInput
+    qrCodes?: QRCodeUncheckedCreateNestedManyWithoutExhibitInput
   }
 
-  export type CourseCreateOrConnectWithoutImagesInput = {
-    where: CourseWhereUniqueInput
-    create: XOR<CourseCreateWithoutImagesInput, CourseUncheckedCreateWithoutImagesInput>
+  export type ExhibitCreateOrConnectWithoutImagesInput = {
+    where: ExhibitWhereUniqueInput
+    create: XOR<ExhibitCreateWithoutImagesInput, ExhibitUncheckedCreateWithoutImagesInput>
   }
 
-  export type SchoolCreateWithoutImagesInput = {
-    schoolId?: bigint | number
+  export type ExhibitionCreateWithoutImagesInput = {
+    exhibitionId?: bigint | number
     title: string
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    status?: StatusCreateNestedOneWithoutSchoolsInput
-    courses?: CourseCreateNestedManyWithoutSchoolInput
+    status?: StatusCreateNestedOneWithoutExhibitionsInput
+    exhibits?: ExhibitCreateNestedManyWithoutExhibitionInput
   }
 
-  export type SchoolUncheckedCreateWithoutImagesInput = {
-    schoolId?: bigint | number
+  export type ExhibitionUncheckedCreateWithoutImagesInput = {
+    exhibitionId?: bigint | number
     title: string
     description?: string | null
     statusId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    courses?: CourseUncheckedCreateNestedManyWithoutSchoolInput
+    exhibits?: ExhibitUncheckedCreateNestedManyWithoutExhibitionInput
   }
 
-  export type SchoolCreateOrConnectWithoutImagesInput = {
-    where: SchoolWhereUniqueInput
-    create: XOR<SchoolCreateWithoutImagesInput, SchoolUncheckedCreateWithoutImagesInput>
+  export type ExhibitionCreateOrConnectWithoutImagesInput = {
+    where: ExhibitionWhereUniqueInput
+    create: XOR<ExhibitionCreateWithoutImagesInput, ExhibitionUncheckedCreateWithoutImagesInput>
   }
 
-  export type CourseUpsertWithoutImagesInput = {
-    update: XOR<CourseUpdateWithoutImagesInput, CourseUncheckedUpdateWithoutImagesInput>
-    create: XOR<CourseCreateWithoutImagesInput, CourseUncheckedCreateWithoutImagesInput>
-    where?: CourseWhereInput
+  export type ExhibitUpsertWithoutImagesInput = {
+    update: XOR<ExhibitUpdateWithoutImagesInput, ExhibitUncheckedUpdateWithoutImagesInput>
+    create: XOR<ExhibitCreateWithoutImagesInput, ExhibitUncheckedCreateWithoutImagesInput>
+    where?: ExhibitWhereInput
   }
 
-  export type CourseUpdateToOneWithWhereWithoutImagesInput = {
-    where?: CourseWhereInput
-    data: XOR<CourseUpdateWithoutImagesInput, CourseUncheckedUpdateWithoutImagesInput>
+  export type ExhibitUpdateToOneWithWhereWithoutImagesInput = {
+    where?: ExhibitWhereInput
+    data: XOR<ExhibitUpdateWithoutImagesInput, ExhibitUncheckedUpdateWithoutImagesInput>
   }
 
-  export type CourseUpdateWithoutImagesInput = {
-    courseId?: BigIntFieldUpdateOperationsInput | bigint | number
+  export type ExhibitUpdateWithoutImagesInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    school?: SchoolUpdateOneRequiredWithoutCoursesNestedInput
-    status?: StatusUpdateOneWithoutCoursesNestedInput
-    badge?: BadgeUpdateOneWithoutCourseNestedInput
-    audio?: AudioUpdateManyWithoutCourseNestedInput
-    feedbacks?: FeedbackUpdateManyWithoutCourseNestedInput
-    qrCodes?: QRCodeUpdateManyWithoutCourseNestedInput
+    exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
+    status?: StatusUpdateOneWithoutExhibitsNestedInput
+    badge?: BadgeUpdateOneWithoutExhibitNestedInput
+    audio?: AudioUpdateManyWithoutExhibitNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutExhibitNestedInput
+    qrCodes?: QRCodeUpdateManyWithoutExhibitNestedInput
   }
 
-  export type CourseUncheckedUpdateWithoutImagesInput = {
-    courseId?: BigIntFieldUpdateOperationsInput | bigint | number
-    schoolId?: BigIntFieldUpdateOperationsInput | bigint | number
+  export type ExhibitUncheckedUpdateWithoutImagesInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    audio?: AudioUncheckedUpdateManyWithoutCourseNestedInput
-    feedbacks?: FeedbackUncheckedUpdateManyWithoutCourseNestedInput
-    qrCodes?: QRCodeUncheckedUpdateManyWithoutCourseNestedInput
+    audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutExhibitNestedInput
+    qrCodes?: QRCodeUncheckedUpdateManyWithoutExhibitNestedInput
   }
 
-  export type SchoolUpsertWithoutImagesInput = {
-    update: XOR<SchoolUpdateWithoutImagesInput, SchoolUncheckedUpdateWithoutImagesInput>
-    create: XOR<SchoolCreateWithoutImagesInput, SchoolUncheckedCreateWithoutImagesInput>
-    where?: SchoolWhereInput
+  export type ExhibitionUpsertWithoutImagesInput = {
+    update: XOR<ExhibitionUpdateWithoutImagesInput, ExhibitionUncheckedUpdateWithoutImagesInput>
+    create: XOR<ExhibitionCreateWithoutImagesInput, ExhibitionUncheckedCreateWithoutImagesInput>
+    where?: ExhibitionWhereInput
   }
 
-  export type SchoolUpdateToOneWithWhereWithoutImagesInput = {
-    where?: SchoolWhereInput
-    data: XOR<SchoolUpdateWithoutImagesInput, SchoolUncheckedUpdateWithoutImagesInput>
+  export type ExhibitionUpdateToOneWithWhereWithoutImagesInput = {
+    where?: ExhibitionWhereInput
+    data: XOR<ExhibitionUpdateWithoutImagesInput, ExhibitionUncheckedUpdateWithoutImagesInput>
   }
 
-  export type SchoolUpdateWithoutImagesInput = {
-    schoolId?: BigIntFieldUpdateOperationsInput | bigint | number
+  export type ExhibitionUpdateWithoutImagesInput = {
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    status?: StatusUpdateOneWithoutSchoolsNestedInput
-    courses?: CourseUpdateManyWithoutSchoolNestedInput
+    status?: StatusUpdateOneWithoutExhibitionsNestedInput
+    exhibits?: ExhibitUpdateManyWithoutExhibitionNestedInput
   }
 
-  export type SchoolUncheckedUpdateWithoutImagesInput = {
-    schoolId?: BigIntFieldUpdateOperationsInput | bigint | number
+  export type ExhibitionUncheckedUpdateWithoutImagesInput = {
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    courses?: CourseUncheckedUpdateManyWithoutSchoolNestedInput
+    exhibits?: ExhibitUncheckedUpdateManyWithoutExhibitionNestedInput
   }
 
-  export type CourseCreateWithoutQrCodesInput = {
-    courseId?: bigint | number
+  export type ExhibitCreateWithoutQrCodesInput = {
+    exhibitId?: bigint | number
     title: string
     description?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    school: SchoolCreateNestedOneWithoutCoursesInput
-    status?: StatusCreateNestedOneWithoutCoursesInput
-    badge?: BadgeCreateNestedOneWithoutCourseInput
-    audio?: AudioCreateNestedManyWithoutCourseInput
-    feedbacks?: FeedbackCreateNestedManyWithoutCourseInput
-    images?: ImageCreateNestedManyWithoutCourseInput
+    exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
+    status?: StatusCreateNestedOneWithoutExhibitsInput
+    badge?: BadgeCreateNestedOneWithoutExhibitInput
+    audio?: AudioCreateNestedManyWithoutExhibitInput
+    feedbacks?: FeedbackCreateNestedManyWithoutExhibitInput
+    images?: ImageCreateNestedManyWithoutExhibitInput
   }
 
-  export type CourseUncheckedCreateWithoutQrCodesInput = {
-    courseId?: bigint | number
-    schoolId: bigint | number
+  export type ExhibitUncheckedCreateWithoutQrCodesInput = {
+    exhibitId?: bigint | number
+    exhibitionId: bigint | number
     badgeId?: bigint | number | null
     title: string
     description?: string | null
     statusId?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    audio?: AudioUncheckedCreateNestedManyWithoutCourseInput
-    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutCourseInput
-    images?: ImageUncheckedCreateNestedManyWithoutCourseInput
+    audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutExhibitInput
+    images?: ImageUncheckedCreateNestedManyWithoutExhibitInput
   }
 
-  export type CourseCreateOrConnectWithoutQrCodesInput = {
-    where: CourseWhereUniqueInput
-    create: XOR<CourseCreateWithoutQrCodesInput, CourseUncheckedCreateWithoutQrCodesInput>
+  export type ExhibitCreateOrConnectWithoutQrCodesInput = {
+    where: ExhibitWhereUniqueInput
+    create: XOR<ExhibitCreateWithoutQrCodesInput, ExhibitUncheckedCreateWithoutQrCodesInput>
   }
 
-  export type CourseUpsertWithoutQrCodesInput = {
-    update: XOR<CourseUpdateWithoutQrCodesInput, CourseUncheckedUpdateWithoutQrCodesInput>
-    create: XOR<CourseCreateWithoutQrCodesInput, CourseUncheckedCreateWithoutQrCodesInput>
-    where?: CourseWhereInput
+  export type ExhibitUpsertWithoutQrCodesInput = {
+    update: XOR<ExhibitUpdateWithoutQrCodesInput, ExhibitUncheckedUpdateWithoutQrCodesInput>
+    create: XOR<ExhibitCreateWithoutQrCodesInput, ExhibitUncheckedCreateWithoutQrCodesInput>
+    where?: ExhibitWhereInput
   }
 
-  export type CourseUpdateToOneWithWhereWithoutQrCodesInput = {
-    where?: CourseWhereInput
-    data: XOR<CourseUpdateWithoutQrCodesInput, CourseUncheckedUpdateWithoutQrCodesInput>
+  export type ExhibitUpdateToOneWithWhereWithoutQrCodesInput = {
+    where?: ExhibitWhereInput
+    data: XOR<ExhibitUpdateWithoutQrCodesInput, ExhibitUncheckedUpdateWithoutQrCodesInput>
   }
 
-  export type CourseUpdateWithoutQrCodesInput = {
-    courseId?: BigIntFieldUpdateOperationsInput | bigint | number
+  export type ExhibitUpdateWithoutQrCodesInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    school?: SchoolUpdateOneRequiredWithoutCoursesNestedInput
-    status?: StatusUpdateOneWithoutCoursesNestedInput
-    badge?: BadgeUpdateOneWithoutCourseNestedInput
-    audio?: AudioUpdateManyWithoutCourseNestedInput
-    feedbacks?: FeedbackUpdateManyWithoutCourseNestedInput
-    images?: ImageUpdateManyWithoutCourseNestedInput
+    exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
+    status?: StatusUpdateOneWithoutExhibitsNestedInput
+    badge?: BadgeUpdateOneWithoutExhibitNestedInput
+    audio?: AudioUpdateManyWithoutExhibitNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutExhibitNestedInput
+    images?: ImageUpdateManyWithoutExhibitNestedInput
   }
 
-  export type CourseUncheckedUpdateWithoutQrCodesInput = {
-    courseId?: BigIntFieldUpdateOperationsInput | bigint | number
-    schoolId?: BigIntFieldUpdateOperationsInput | bigint | number
+  export type ExhibitUncheckedUpdateWithoutQrCodesInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    audio?: AudioUncheckedUpdateManyWithoutCourseNestedInput
-    feedbacks?: FeedbackUncheckedUpdateManyWithoutCourseNestedInput
-    images?: ImageUncheckedUpdateManyWithoutCourseNestedInput
+    audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutExhibitNestedInput
+    images?: ImageUncheckedUpdateManyWithoutExhibitNestedInput
   }
 
   export type StatusCreateWithoutLanguagesInput = {
     statusName: string
     users?: UserCreateNestedManyWithoutStatusInput
-    schools?: SchoolCreateNestedManyWithoutStatusInput
-    courses?: CourseCreateNestedManyWithoutStatusInput
+    exhibitions?: ExhibitionCreateNestedManyWithoutStatusInput
+    exhibits?: ExhibitCreateNestedManyWithoutStatusInput
   }
 
   export type StatusUncheckedCreateWithoutLanguagesInput = {
     statusId?: number
     statusName: string
     users?: UserUncheckedCreateNestedManyWithoutStatusInput
-    schools?: SchoolUncheckedCreateNestedManyWithoutStatusInput
-    courses?: CourseUncheckedCreateNestedManyWithoutStatusInput
+    exhibitions?: ExhibitionUncheckedCreateNestedManyWithoutStatusInput
+    exhibits?: ExhibitUncheckedCreateNestedManyWithoutStatusInput
   }
 
   export type StatusCreateOrConnectWithoutLanguagesInput = {
@@ -32498,14 +32498,14 @@ export namespace Prisma {
     description?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    course?: CourseCreateNestedOneWithoutAudioInput
+    exhibit?: ExhibitCreateNestedOneWithoutAudioInput
     playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutAudioInput
     subtitles?: SubtitleCreateNestedManyWithoutAudioInput
   }
 
   export type AudioUncheckedCreateWithoutLanguageInput = {
     audioId?: number
-    courseId?: bigint | number | null
+    exhibitId?: bigint | number | null
     fileUrl?: string | null
     title?: string | null
     description?: string | null
@@ -32567,16 +32567,16 @@ export namespace Prisma {
   export type StatusUpdateWithoutLanguagesInput = {
     statusName?: StringFieldUpdateOperationsInput | string
     users?: UserUpdateManyWithoutStatusNestedInput
-    schools?: SchoolUpdateManyWithoutStatusNestedInput
-    courses?: CourseUpdateManyWithoutStatusNestedInput
+    exhibitions?: ExhibitionUpdateManyWithoutStatusNestedInput
+    exhibits?: ExhibitUpdateManyWithoutStatusNestedInput
   }
 
   export type StatusUncheckedUpdateWithoutLanguagesInput = {
     statusId?: IntFieldUpdateOperationsInput | number
     statusName?: StringFieldUpdateOperationsInput | string
     users?: UserUncheckedUpdateManyWithoutStatusNestedInput
-    schools?: SchoolUncheckedUpdateManyWithoutStatusNestedInput
-    courses?: CourseUncheckedUpdateManyWithoutStatusNestedInput
+    exhibitions?: ExhibitionUncheckedUpdateManyWithoutStatusNestedInput
+    exhibits?: ExhibitUncheckedUpdateManyWithoutStatusNestedInput
   }
 
   export type AudioUpsertWithWhereUniqueWithoutLanguageInput = {
@@ -33012,71 +33012,71 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type SchoolCreateWithoutStatusInput = {
-    schoolId?: bigint | number
+  export type ExhibitionCreateWithoutStatusInput = {
+    exhibitionId?: bigint | number
     title: string
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    courses?: CourseCreateNestedManyWithoutSchoolInput
-    images?: ImageCreateNestedManyWithoutSchoolInput
+    exhibits?: ExhibitCreateNestedManyWithoutExhibitionInput
+    images?: ImageCreateNestedManyWithoutExhibitionInput
   }
 
-  export type SchoolUncheckedCreateWithoutStatusInput = {
-    schoolId?: bigint | number
+  export type ExhibitionUncheckedCreateWithoutStatusInput = {
+    exhibitionId?: bigint | number
     title: string
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    courses?: CourseUncheckedCreateNestedManyWithoutSchoolInput
-    images?: ImageUncheckedCreateNestedManyWithoutSchoolInput
+    exhibits?: ExhibitUncheckedCreateNestedManyWithoutExhibitionInput
+    images?: ImageUncheckedCreateNestedManyWithoutExhibitionInput
   }
 
-  export type SchoolCreateOrConnectWithoutStatusInput = {
-    where: SchoolWhereUniqueInput
-    create: XOR<SchoolCreateWithoutStatusInput, SchoolUncheckedCreateWithoutStatusInput>
+  export type ExhibitionCreateOrConnectWithoutStatusInput = {
+    where: ExhibitionWhereUniqueInput
+    create: XOR<ExhibitionCreateWithoutStatusInput, ExhibitionUncheckedCreateWithoutStatusInput>
   }
 
-  export type SchoolCreateManyStatusInputEnvelope = {
-    data: SchoolCreateManyStatusInput | SchoolCreateManyStatusInput[]
+  export type ExhibitionCreateManyStatusInputEnvelope = {
+    data: ExhibitionCreateManyStatusInput | ExhibitionCreateManyStatusInput[]
     skipDuplicates?: boolean
   }
 
-  export type CourseCreateWithoutStatusInput = {
-    courseId?: bigint | number
+  export type ExhibitCreateWithoutStatusInput = {
+    exhibitId?: bigint | number
     title: string
     description?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    school: SchoolCreateNestedOneWithoutCoursesInput
-    badge?: BadgeCreateNestedOneWithoutCourseInput
-    audio?: AudioCreateNestedManyWithoutCourseInput
-    feedbacks?: FeedbackCreateNestedManyWithoutCourseInput
-    images?: ImageCreateNestedManyWithoutCourseInput
-    qrCodes?: QRCodeCreateNestedManyWithoutCourseInput
+    exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
+    badge?: BadgeCreateNestedOneWithoutExhibitInput
+    audio?: AudioCreateNestedManyWithoutExhibitInput
+    feedbacks?: FeedbackCreateNestedManyWithoutExhibitInput
+    images?: ImageCreateNestedManyWithoutExhibitInput
+    qrCodes?: QRCodeCreateNestedManyWithoutExhibitInput
   }
 
-  export type CourseUncheckedCreateWithoutStatusInput = {
-    courseId?: bigint | number
-    schoolId: bigint | number
+  export type ExhibitUncheckedCreateWithoutStatusInput = {
+    exhibitId?: bigint | number
+    exhibitionId: bigint | number
     badgeId?: bigint | number | null
     title: string
     description?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    audio?: AudioUncheckedCreateNestedManyWithoutCourseInput
-    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutCourseInput
-    images?: ImageUncheckedCreateNestedManyWithoutCourseInput
-    qrCodes?: QRCodeUncheckedCreateNestedManyWithoutCourseInput
+    audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutExhibitInput
+    images?: ImageUncheckedCreateNestedManyWithoutExhibitInput
+    qrCodes?: QRCodeUncheckedCreateNestedManyWithoutExhibitInput
   }
 
-  export type CourseCreateOrConnectWithoutStatusInput = {
-    where: CourseWhereUniqueInput
-    create: XOR<CourseCreateWithoutStatusInput, CourseUncheckedCreateWithoutStatusInput>
+  export type ExhibitCreateOrConnectWithoutStatusInput = {
+    where: ExhibitWhereUniqueInput
+    create: XOR<ExhibitCreateWithoutStatusInput, ExhibitUncheckedCreateWithoutStatusInput>
   }
 
-  export type CourseCreateManyStatusInputEnvelope = {
-    data: CourseCreateManyStatusInput | CourseCreateManyStatusInput[]
+  export type ExhibitCreateManyStatusInputEnvelope = {
+    data: ExhibitCreateManyStatusInput | ExhibitCreateManyStatusInput[]
     skipDuplicates?: boolean
   }
 
@@ -33140,48 +33140,48 @@ export namespace Prisma {
     updatedAt?: DateTimeNullableFilter<"Language"> | Date | string | null
   }
 
-  export type SchoolUpsertWithWhereUniqueWithoutStatusInput = {
-    where: SchoolWhereUniqueInput
-    update: XOR<SchoolUpdateWithoutStatusInput, SchoolUncheckedUpdateWithoutStatusInput>
-    create: XOR<SchoolCreateWithoutStatusInput, SchoolUncheckedCreateWithoutStatusInput>
+  export type ExhibitionUpsertWithWhereUniqueWithoutStatusInput = {
+    where: ExhibitionWhereUniqueInput
+    update: XOR<ExhibitionUpdateWithoutStatusInput, ExhibitionUncheckedUpdateWithoutStatusInput>
+    create: XOR<ExhibitionCreateWithoutStatusInput, ExhibitionUncheckedCreateWithoutStatusInput>
   }
 
-  export type SchoolUpdateWithWhereUniqueWithoutStatusInput = {
-    where: SchoolWhereUniqueInput
-    data: XOR<SchoolUpdateWithoutStatusInput, SchoolUncheckedUpdateWithoutStatusInput>
+  export type ExhibitionUpdateWithWhereUniqueWithoutStatusInput = {
+    where: ExhibitionWhereUniqueInput
+    data: XOR<ExhibitionUpdateWithoutStatusInput, ExhibitionUncheckedUpdateWithoutStatusInput>
   }
 
-  export type SchoolUpdateManyWithWhereWithoutStatusInput = {
-    where: SchoolScalarWhereInput
-    data: XOR<SchoolUpdateManyMutationInput, SchoolUncheckedUpdateManyWithoutStatusInput>
+  export type ExhibitionUpdateManyWithWhereWithoutStatusInput = {
+    where: ExhibitionScalarWhereInput
+    data: XOR<ExhibitionUpdateManyMutationInput, ExhibitionUncheckedUpdateManyWithoutStatusInput>
   }
 
-  export type SchoolScalarWhereInput = {
-    AND?: SchoolScalarWhereInput | SchoolScalarWhereInput[]
-    OR?: SchoolScalarWhereInput[]
-    NOT?: SchoolScalarWhereInput | SchoolScalarWhereInput[]
-    schoolId?: BigIntFilter<"School"> | bigint | number
-    title?: StringFilter<"School"> | string
-    description?: StringNullableFilter<"School"> | string | null
-    statusId?: IntNullableFilter<"School"> | number | null
-    createdAt?: DateTimeFilter<"School"> | Date | string
-    updatedAt?: DateTimeFilter<"School"> | Date | string
+  export type ExhibitionScalarWhereInput = {
+    AND?: ExhibitionScalarWhereInput | ExhibitionScalarWhereInput[]
+    OR?: ExhibitionScalarWhereInput[]
+    NOT?: ExhibitionScalarWhereInput | ExhibitionScalarWhereInput[]
+    exhibitionId?: BigIntFilter<"Exhibition"> | bigint | number
+    title?: StringFilter<"Exhibition"> | string
+    description?: StringNullableFilter<"Exhibition"> | string | null
+    statusId?: IntNullableFilter<"Exhibition"> | number | null
+    createdAt?: DateTimeFilter<"Exhibition"> | Date | string
+    updatedAt?: DateTimeFilter<"Exhibition"> | Date | string
   }
 
-  export type CourseUpsertWithWhereUniqueWithoutStatusInput = {
-    where: CourseWhereUniqueInput
-    update: XOR<CourseUpdateWithoutStatusInput, CourseUncheckedUpdateWithoutStatusInput>
-    create: XOR<CourseCreateWithoutStatusInput, CourseUncheckedCreateWithoutStatusInput>
+  export type ExhibitUpsertWithWhereUniqueWithoutStatusInput = {
+    where: ExhibitWhereUniqueInput
+    update: XOR<ExhibitUpdateWithoutStatusInput, ExhibitUncheckedUpdateWithoutStatusInput>
+    create: XOR<ExhibitCreateWithoutStatusInput, ExhibitUncheckedCreateWithoutStatusInput>
   }
 
-  export type CourseUpdateWithWhereUniqueWithoutStatusInput = {
-    where: CourseWhereUniqueInput
-    data: XOR<CourseUpdateWithoutStatusInput, CourseUncheckedUpdateWithoutStatusInput>
+  export type ExhibitUpdateWithWhereUniqueWithoutStatusInput = {
+    where: ExhibitWhereUniqueInput
+    data: XOR<ExhibitUpdateWithoutStatusInput, ExhibitUncheckedUpdateWithoutStatusInput>
   }
 
-  export type CourseUpdateManyWithWhereWithoutStatusInput = {
-    where: CourseScalarWhereInput
-    data: XOR<CourseUpdateManyMutationInput, CourseUncheckedUpdateManyWithoutStatusInput>
+  export type ExhibitUpdateManyWithWhereWithoutStatusInput = {
+    where: ExhibitScalarWhereInput
+    data: XOR<ExhibitUpdateManyMutationInput, ExhibitUncheckedUpdateManyWithoutStatusInput>
   }
 
   export type AudioCreateWithoutSubtitlesInput = {
@@ -33190,14 +33190,14 @@ export namespace Prisma {
     description?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    course?: CourseCreateNestedOneWithoutAudioInput
+    exhibit?: ExhibitCreateNestedOneWithoutAudioInput
     language?: LanguageCreateNestedOneWithoutAudioInput
     playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutAudioInput
   }
 
   export type AudioUncheckedCreateWithoutSubtitlesInput = {
     audioId?: number
-    courseId?: bigint | number | null
+    exhibitId?: bigint | number | null
     languageId?: bigint | number | null
     fileUrl?: string | null
     title?: string | null
@@ -33303,14 +33303,14 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    course?: CourseUpdateOneWithoutAudioNestedInput
+    exhibit?: ExhibitUpdateOneWithoutAudioNestedInput
     language?: LanguageUpdateOneWithoutAudioNestedInput
     playbackLogs?: AudioPlaybackLogUpdateManyWithoutAudioNestedInput
   }
 
   export type AudioUncheckedUpdateWithoutSubtitlesInput = {
     audioId?: IntFieldUpdateOperationsInput | number
-    courseId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    exhibitId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     languageId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     title?: NullableStringFieldUpdateOperationsInput | string | null
@@ -33409,16 +33409,16 @@ export namespace Prisma {
   export type StatusCreateWithoutUsersInput = {
     statusName: string
     languages?: LanguageCreateNestedManyWithoutStatusInput
-    schools?: SchoolCreateNestedManyWithoutStatusInput
-    courses?: CourseCreateNestedManyWithoutStatusInput
+    exhibitions?: ExhibitionCreateNestedManyWithoutStatusInput
+    exhibits?: ExhibitCreateNestedManyWithoutStatusInput
   }
 
   export type StatusUncheckedCreateWithoutUsersInput = {
     statusId?: number
     statusName: string
     languages?: LanguageUncheckedCreateNestedManyWithoutStatusInput
-    schools?: SchoolUncheckedCreateNestedManyWithoutStatusInput
-    courses?: CourseUncheckedCreateNestedManyWithoutStatusInput
+    exhibitions?: ExhibitionUncheckedCreateNestedManyWithoutStatusInput
+    exhibits?: ExhibitUncheckedCreateNestedManyWithoutStatusInput
   }
 
   export type StatusCreateOrConnectWithoutUsersInput = {
@@ -33432,12 +33432,12 @@ export namespace Prisma {
     description?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    course?: CourseCreateNestedOneWithoutFeedbacksInput
+    exhibit?: ExhibitCreateNestedOneWithoutFeedbacksInput
   }
 
   export type FeedbackUncheckedCreateWithoutUserInput = {
     feedbackId?: bigint | number
-    courseId?: bigint | number | null
+    exhibitId?: bigint | number | null
     rating?: number | null
     description?: string | null
     createdAt?: Date | string | null
@@ -33693,16 +33693,16 @@ export namespace Prisma {
   export type StatusUpdateWithoutUsersInput = {
     statusName?: StringFieldUpdateOperationsInput | string
     languages?: LanguageUpdateManyWithoutStatusNestedInput
-    schools?: SchoolUpdateManyWithoutStatusNestedInput
-    courses?: CourseUpdateManyWithoutStatusNestedInput
+    exhibitions?: ExhibitionUpdateManyWithoutStatusNestedInput
+    exhibits?: ExhibitUpdateManyWithoutStatusNestedInput
   }
 
   export type StatusUncheckedUpdateWithoutUsersInput = {
     statusId?: IntFieldUpdateOperationsInput | number
     statusName?: StringFieldUpdateOperationsInput | string
     languages?: LanguageUncheckedUpdateManyWithoutStatusNestedInput
-    schools?: SchoolUncheckedUpdateManyWithoutStatusNestedInput
-    courses?: CourseUncheckedUpdateManyWithoutStatusNestedInput
+    exhibitions?: ExhibitionUncheckedUpdateManyWithoutStatusNestedInput
+    exhibits?: ExhibitUncheckedUpdateManyWithoutStatusNestedInput
   }
 
   export type FeedbackUpsertWithWhereUniqueWithoutUserInput = {
@@ -34469,37 +34469,37 @@ export namespace Prisma {
     userBadges?: UserBadgeUncheckedUpdateManyWithoutUserNestedInput
   }
 
-  export type CourseCreateWithoutBadgeInput = {
-    courseId?: bigint | number
+  export type ExhibitCreateWithoutBadgeInput = {
+    exhibitId?: bigint | number
     title: string
     description?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    school: SchoolCreateNestedOneWithoutCoursesInput
-    status?: StatusCreateNestedOneWithoutCoursesInput
-    audio?: AudioCreateNestedManyWithoutCourseInput
-    feedbacks?: FeedbackCreateNestedManyWithoutCourseInput
-    images?: ImageCreateNestedManyWithoutCourseInput
-    qrCodes?: QRCodeCreateNestedManyWithoutCourseInput
+    exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
+    status?: StatusCreateNestedOneWithoutExhibitsInput
+    audio?: AudioCreateNestedManyWithoutExhibitInput
+    feedbacks?: FeedbackCreateNestedManyWithoutExhibitInput
+    images?: ImageCreateNestedManyWithoutExhibitInput
+    qrCodes?: QRCodeCreateNestedManyWithoutExhibitInput
   }
 
-  export type CourseUncheckedCreateWithoutBadgeInput = {
-    courseId?: bigint | number
-    schoolId: bigint | number
+  export type ExhibitUncheckedCreateWithoutBadgeInput = {
+    exhibitId?: bigint | number
+    exhibitionId: bigint | number
     title: string
     description?: string | null
     statusId?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    audio?: AudioUncheckedCreateNestedManyWithoutCourseInput
-    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutCourseInput
-    images?: ImageUncheckedCreateNestedManyWithoutCourseInput
-    qrCodes?: QRCodeUncheckedCreateNestedManyWithoutCourseInput
+    audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutExhibitInput
+    images?: ImageUncheckedCreateNestedManyWithoutExhibitInput
+    qrCodes?: QRCodeUncheckedCreateNestedManyWithoutExhibitInput
   }
 
-  export type CourseCreateOrConnectWithoutBadgeInput = {
-    where: CourseWhereUniqueInput
-    create: XOR<CourseCreateWithoutBadgeInput, CourseUncheckedCreateWithoutBadgeInput>
+  export type ExhibitCreateOrConnectWithoutBadgeInput = {
+    where: ExhibitWhereUniqueInput
+    create: XOR<ExhibitCreateWithoutBadgeInput, ExhibitUncheckedCreateWithoutBadgeInput>
   }
 
   export type UserBadgeCreateWithoutBadgeInput = {
@@ -34522,43 +34522,43 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type CourseUpsertWithoutBadgeInput = {
-    update: XOR<CourseUpdateWithoutBadgeInput, CourseUncheckedUpdateWithoutBadgeInput>
-    create: XOR<CourseCreateWithoutBadgeInput, CourseUncheckedCreateWithoutBadgeInput>
-    where?: CourseWhereInput
+  export type ExhibitUpsertWithoutBadgeInput = {
+    update: XOR<ExhibitUpdateWithoutBadgeInput, ExhibitUncheckedUpdateWithoutBadgeInput>
+    create: XOR<ExhibitCreateWithoutBadgeInput, ExhibitUncheckedCreateWithoutBadgeInput>
+    where?: ExhibitWhereInput
   }
 
-  export type CourseUpdateToOneWithWhereWithoutBadgeInput = {
-    where?: CourseWhereInput
-    data: XOR<CourseUpdateWithoutBadgeInput, CourseUncheckedUpdateWithoutBadgeInput>
+  export type ExhibitUpdateToOneWithWhereWithoutBadgeInput = {
+    where?: ExhibitWhereInput
+    data: XOR<ExhibitUpdateWithoutBadgeInput, ExhibitUncheckedUpdateWithoutBadgeInput>
   }
 
-  export type CourseUpdateWithoutBadgeInput = {
-    courseId?: BigIntFieldUpdateOperationsInput | bigint | number
+  export type ExhibitUpdateWithoutBadgeInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    school?: SchoolUpdateOneRequiredWithoutCoursesNestedInput
-    status?: StatusUpdateOneWithoutCoursesNestedInput
-    audio?: AudioUpdateManyWithoutCourseNestedInput
-    feedbacks?: FeedbackUpdateManyWithoutCourseNestedInput
-    images?: ImageUpdateManyWithoutCourseNestedInput
-    qrCodes?: QRCodeUpdateManyWithoutCourseNestedInput
+    exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
+    status?: StatusUpdateOneWithoutExhibitsNestedInput
+    audio?: AudioUpdateManyWithoutExhibitNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutExhibitNestedInput
+    images?: ImageUpdateManyWithoutExhibitNestedInput
+    qrCodes?: QRCodeUpdateManyWithoutExhibitNestedInput
   }
 
-  export type CourseUncheckedUpdateWithoutBadgeInput = {
-    courseId?: BigIntFieldUpdateOperationsInput | bigint | number
-    schoolId?: BigIntFieldUpdateOperationsInput | bigint | number
+  export type ExhibitUncheckedUpdateWithoutBadgeInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    audio?: AudioUncheckedUpdateManyWithoutCourseNestedInput
-    feedbacks?: FeedbackUncheckedUpdateManyWithoutCourseNestedInput
-    images?: ImageUncheckedUpdateManyWithoutCourseNestedInput
-    qrCodes?: QRCodeUncheckedUpdateManyWithoutCourseNestedInput
+    audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutExhibitNestedInput
+    images?: ImageUncheckedUpdateManyWithoutExhibitNestedInput
+    qrCodes?: QRCodeUncheckedUpdateManyWithoutExhibitNestedInput
   }
 
   export type UserBadgeUpsertWithWhereUniqueWithoutBadgeInput = {
@@ -34631,7 +34631,7 @@ export namespace Prisma {
     imageUrl?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    course?: CourseCreateNestedOneWithoutBadgeInput
+    exhibit?: ExhibitCreateNestedOneWithoutBadgeInput
   }
 
   export type BadgeUncheckedCreateWithoutUserBadgesInput = {
@@ -34641,7 +34641,7 @@ export namespace Prisma {
     imageUrl?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
-    course?: CourseUncheckedCreateNestedOneWithoutBadgeInput
+    exhibit?: ExhibitUncheckedCreateNestedOneWithoutBadgeInput
   }
 
   export type BadgeCreateOrConnectWithoutUserBadgesInput = {
@@ -34720,7 +34720,7 @@ export namespace Prisma {
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    course?: CourseUpdateOneWithoutBadgeNestedInput
+    exhibit?: ExhibitUpdateOneWithoutBadgeNestedInput
   }
 
   export type BadgeUncheckedUpdateWithoutUserBadgesInput = {
@@ -34730,11 +34730,11 @@ export namespace Prisma {
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    course?: CourseUncheckedUpdateOneWithoutBadgeNestedInput
+    exhibit?: ExhibitUncheckedUpdateOneWithoutBadgeNestedInput
   }
 
-  export type CourseCreateManySchoolInput = {
-    courseId?: bigint | number
+  export type ExhibitCreateManyExhibitionInput = {
+    exhibitId?: bigint | number
     badgeId?: bigint | number | null
     title: string
     description?: string | null
@@ -34743,9 +34743,9 @@ export namespace Prisma {
     updatedAt?: Date | string | null
   }
 
-  export type ImageCreateManySchoolInput = {
+  export type ImageCreateManyExhibitionInput = {
     imageId?: bigint | number
-    courseId?: bigint | number | null
+    exhibitId?: bigint | number | null
     title?: string | null
     description?: string | null
     fileUrl?: string | null
@@ -34754,36 +34754,36 @@ export namespace Prisma {
     updatedAt?: Date | string | null
   }
 
-  export type CourseUpdateWithoutSchoolInput = {
-    courseId?: BigIntFieldUpdateOperationsInput | bigint | number
+  export type ExhibitUpdateWithoutExhibitionInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: StatusUpdateOneWithoutCoursesNestedInput
-    badge?: BadgeUpdateOneWithoutCourseNestedInput
-    audio?: AudioUpdateManyWithoutCourseNestedInput
-    feedbacks?: FeedbackUpdateManyWithoutCourseNestedInput
-    images?: ImageUpdateManyWithoutCourseNestedInput
-    qrCodes?: QRCodeUpdateManyWithoutCourseNestedInput
+    status?: StatusUpdateOneWithoutExhibitsNestedInput
+    badge?: BadgeUpdateOneWithoutExhibitNestedInput
+    audio?: AudioUpdateManyWithoutExhibitNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutExhibitNestedInput
+    images?: ImageUpdateManyWithoutExhibitNestedInput
+    qrCodes?: QRCodeUpdateManyWithoutExhibitNestedInput
   }
 
-  export type CourseUncheckedUpdateWithoutSchoolInput = {
-    courseId?: BigIntFieldUpdateOperationsInput | bigint | number
+  export type ExhibitUncheckedUpdateWithoutExhibitionInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
     badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    audio?: AudioUncheckedUpdateManyWithoutCourseNestedInput
-    feedbacks?: FeedbackUncheckedUpdateManyWithoutCourseNestedInput
-    images?: ImageUncheckedUpdateManyWithoutCourseNestedInput
-    qrCodes?: QRCodeUncheckedUpdateManyWithoutCourseNestedInput
+    audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutExhibitNestedInput
+    images?: ImageUncheckedUpdateManyWithoutExhibitNestedInput
+    qrCodes?: QRCodeUncheckedUpdateManyWithoutExhibitNestedInput
   }
 
-  export type CourseUncheckedUpdateManyWithoutSchoolInput = {
-    courseId?: BigIntFieldUpdateOperationsInput | bigint | number
+  export type ExhibitUncheckedUpdateManyWithoutExhibitionInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
     badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -34792,7 +34792,7 @@ export namespace Prisma {
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type ImageUpdateWithoutSchoolInput = {
+  export type ImageUpdateWithoutExhibitionInput = {
     imageId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -34800,23 +34800,12 @@ export namespace Prisma {
     isPrimary?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    course?: CourseUpdateOneWithoutImagesNestedInput
+    exhibit?: ExhibitUpdateOneWithoutImagesNestedInput
   }
 
-  export type ImageUncheckedUpdateWithoutSchoolInput = {
+  export type ImageUncheckedUpdateWithoutExhibitionInput = {
     imageId?: BigIntFieldUpdateOperationsInput | bigint | number
-    courseId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    isPrimary?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
-  export type ImageUncheckedUpdateManyWithoutSchoolInput = {
-    imageId?: BigIntFieldUpdateOperationsInput | bigint | number
-    courseId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    exhibitId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -34825,7 +34814,18 @@ export namespace Prisma {
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type AudioCreateManyCourseInput = {
+  export type ImageUncheckedUpdateManyWithoutExhibitionInput = {
+    imageId?: BigIntFieldUpdateOperationsInput | bigint | number
+    exhibitId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type AudioCreateManyExhibitInput = {
     audioId?: number
     languageId?: bigint | number | null
     fileUrl?: string | null
@@ -34835,7 +34835,7 @@ export namespace Prisma {
     updatedAt?: Date | string | null
   }
 
-  export type FeedbackCreateManyCourseInput = {
+  export type FeedbackCreateManyExhibitInput = {
     feedbackId?: bigint | number
     userId?: bigint | number | null
     rating?: number | null
@@ -34844,9 +34844,9 @@ export namespace Prisma {
     updatedAt?: Date | string | null
   }
 
-  export type ImageCreateManyCourseInput = {
+  export type ImageCreateManyExhibitInput = {
     imageId?: bigint | number
-    schoolId?: bigint | number | null
+    exhibitionId?: bigint | number | null
     title?: string | null
     description?: string | null
     fileUrl?: string | null
@@ -34855,14 +34855,14 @@ export namespace Prisma {
     updatedAt?: Date | string | null
   }
 
-  export type QRCodeCreateManyCourseInput = {
+  export type QRCodeCreateManyExhibitInput = {
     qrId?: number
     qrUrl: string
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
   }
 
-  export type AudioUpdateWithoutCourseInput = {
+  export type AudioUpdateWithoutExhibitInput = {
     fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -34873,7 +34873,7 @@ export namespace Prisma {
     subtitles?: SubtitleUpdateManyWithoutAudioNestedInput
   }
 
-  export type AudioUncheckedUpdateWithoutCourseInput = {
+  export type AudioUncheckedUpdateWithoutExhibitInput = {
     audioId?: IntFieldUpdateOperationsInput | number
     languageId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -34885,7 +34885,7 @@ export namespace Prisma {
     subtitles?: SubtitleUncheckedUpdateManyWithoutAudioNestedInput
   }
 
-  export type AudioUncheckedUpdateManyWithoutCourseInput = {
+  export type AudioUncheckedUpdateManyWithoutExhibitInput = {
     audioId?: IntFieldUpdateOperationsInput | number
     languageId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -34895,7 +34895,7 @@ export namespace Prisma {
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type FeedbackUpdateWithoutCourseInput = {
+  export type FeedbackUpdateWithoutExhibitInput = {
     feedbackId?: BigIntFieldUpdateOperationsInput | bigint | number
     rating?: NullableIntFieldUpdateOperationsInput | number | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -34904,7 +34904,7 @@ export namespace Prisma {
     user?: UserUpdateOneWithoutFeedbacksNestedInput
   }
 
-  export type FeedbackUncheckedUpdateWithoutCourseInput = {
+  export type FeedbackUncheckedUpdateWithoutExhibitInput = {
     feedbackId?: BigIntFieldUpdateOperationsInput | bigint | number
     userId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     rating?: NullableIntFieldUpdateOperationsInput | number | null
@@ -34913,7 +34913,7 @@ export namespace Prisma {
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type FeedbackUncheckedUpdateManyWithoutCourseInput = {
+  export type FeedbackUncheckedUpdateManyWithoutExhibitInput = {
     feedbackId?: BigIntFieldUpdateOperationsInput | bigint | number
     userId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     rating?: NullableIntFieldUpdateOperationsInput | number | null
@@ -34922,7 +34922,7 @@ export namespace Prisma {
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type ImageUpdateWithoutCourseInput = {
+  export type ImageUpdateWithoutExhibitInput = {
     imageId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -34930,23 +34930,12 @@ export namespace Prisma {
     isPrimary?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    school?: SchoolUpdateOneWithoutImagesNestedInput
+    exhibition?: ExhibitionUpdateOneWithoutImagesNestedInput
   }
 
-  export type ImageUncheckedUpdateWithoutCourseInput = {
+  export type ImageUncheckedUpdateWithoutExhibitInput = {
     imageId?: BigIntFieldUpdateOperationsInput | bigint | number
-    schoolId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    isPrimary?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
-  export type ImageUncheckedUpdateManyWithoutCourseInput = {
-    imageId?: BigIntFieldUpdateOperationsInput | bigint | number
-    schoolId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    exhibitionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -34955,20 +34944,31 @@ export namespace Prisma {
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type QRCodeUpdateWithoutCourseInput = {
+  export type ImageUncheckedUpdateManyWithoutExhibitInput = {
+    imageId?: BigIntFieldUpdateOperationsInput | bigint | number
+    exhibitionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type QRCodeUpdateWithoutExhibitInput = {
     qrUrl?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type QRCodeUncheckedUpdateWithoutCourseInput = {
+  export type QRCodeUncheckedUpdateWithoutExhibitInput = {
     qrId?: IntFieldUpdateOperationsInput | number
     qrUrl?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type QRCodeUncheckedUpdateManyWithoutCourseInput = {
+  export type QRCodeUncheckedUpdateManyWithoutExhibitInput = {
     qrId?: IntFieldUpdateOperationsInput | number
     qrUrl?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -35052,7 +35052,7 @@ export namespace Prisma {
 
   export type AudioCreateManyLanguageInput = {
     audioId?: number
-    courseId?: bigint | number | null
+    exhibitId?: bigint | number | null
     fileUrl?: string | null
     title?: string | null
     description?: string | null
@@ -35075,14 +35075,14 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    course?: CourseUpdateOneWithoutAudioNestedInput
+    exhibit?: ExhibitUpdateOneWithoutAudioNestedInput
     playbackLogs?: AudioPlaybackLogUpdateManyWithoutAudioNestedInput
     subtitles?: SubtitleUpdateManyWithoutAudioNestedInput
   }
 
   export type AudioUncheckedUpdateWithoutLanguageInput = {
     audioId?: IntFieldUpdateOperationsInput | number
-    courseId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    exhibitId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -35094,7 +35094,7 @@ export namespace Prisma {
 
   export type AudioUncheckedUpdateManyWithoutLanguageInput = {
     audioId?: IntFieldUpdateOperationsInput | number
-    courseId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    exhibitId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -35201,17 +35201,17 @@ export namespace Prisma {
     updatedAt?: Date | string | null
   }
 
-  export type SchoolCreateManyStatusInput = {
-    schoolId?: bigint | number
+  export type ExhibitionCreateManyStatusInput = {
+    exhibitionId?: bigint | number
     title: string
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
-  export type CourseCreateManyStatusInput = {
-    courseId?: bigint | number
-    schoolId: bigint | number
+  export type ExhibitCreateManyStatusInput = {
+    exhibitId?: bigint | number
+    exhibitionId: bigint | number
     badgeId?: bigint | number | null
     title: string
     description?: string | null
@@ -35303,65 +35303,65 @@ export namespace Prisma {
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type SchoolUpdateWithoutStatusInput = {
-    schoolId?: BigIntFieldUpdateOperationsInput | bigint | number
+  export type ExhibitionUpdateWithoutStatusInput = {
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    courses?: CourseUpdateManyWithoutSchoolNestedInput
-    images?: ImageUpdateManyWithoutSchoolNestedInput
+    exhibits?: ExhibitUpdateManyWithoutExhibitionNestedInput
+    images?: ImageUpdateManyWithoutExhibitionNestedInput
   }
 
-  export type SchoolUncheckedUpdateWithoutStatusInput = {
-    schoolId?: BigIntFieldUpdateOperationsInput | bigint | number
+  export type ExhibitionUncheckedUpdateWithoutStatusInput = {
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    courses?: CourseUncheckedUpdateManyWithoutSchoolNestedInput
-    images?: ImageUncheckedUpdateManyWithoutSchoolNestedInput
+    exhibits?: ExhibitUncheckedUpdateManyWithoutExhibitionNestedInput
+    images?: ImageUncheckedUpdateManyWithoutExhibitionNestedInput
   }
 
-  export type SchoolUncheckedUpdateManyWithoutStatusInput = {
-    schoolId?: BigIntFieldUpdateOperationsInput | bigint | number
+  export type ExhibitionUncheckedUpdateManyWithoutStatusInput = {
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type CourseUpdateWithoutStatusInput = {
-    courseId?: BigIntFieldUpdateOperationsInput | bigint | number
+  export type ExhibitUpdateWithoutStatusInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    school?: SchoolUpdateOneRequiredWithoutCoursesNestedInput
-    badge?: BadgeUpdateOneWithoutCourseNestedInput
-    audio?: AudioUpdateManyWithoutCourseNestedInput
-    feedbacks?: FeedbackUpdateManyWithoutCourseNestedInput
-    images?: ImageUpdateManyWithoutCourseNestedInput
-    qrCodes?: QRCodeUpdateManyWithoutCourseNestedInput
+    exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
+    badge?: BadgeUpdateOneWithoutExhibitNestedInput
+    audio?: AudioUpdateManyWithoutExhibitNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutExhibitNestedInput
+    images?: ImageUpdateManyWithoutExhibitNestedInput
+    qrCodes?: QRCodeUpdateManyWithoutExhibitNestedInput
   }
 
-  export type CourseUncheckedUpdateWithoutStatusInput = {
-    courseId?: BigIntFieldUpdateOperationsInput | bigint | number
-    schoolId?: BigIntFieldUpdateOperationsInput | bigint | number
+  export type ExhibitUncheckedUpdateWithoutStatusInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    audio?: AudioUncheckedUpdateManyWithoutCourseNestedInput
-    feedbacks?: FeedbackUncheckedUpdateManyWithoutCourseNestedInput
-    images?: ImageUncheckedUpdateManyWithoutCourseNestedInput
-    qrCodes?: QRCodeUncheckedUpdateManyWithoutCourseNestedInput
+    audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutExhibitNestedInput
+    images?: ImageUncheckedUpdateManyWithoutExhibitNestedInput
+    qrCodes?: QRCodeUncheckedUpdateManyWithoutExhibitNestedInput
   }
 
-  export type CourseUncheckedUpdateManyWithoutStatusInput = {
-    courseId?: BigIntFieldUpdateOperationsInput | bigint | number
-    schoolId?: BigIntFieldUpdateOperationsInput | bigint | number
+  export type ExhibitUncheckedUpdateManyWithoutStatusInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -35371,7 +35371,7 @@ export namespace Prisma {
 
   export type FeedbackCreateManyUserInput = {
     feedbackId?: bigint | number
-    courseId?: bigint | number | null
+    exhibitId?: bigint | number | null
     rating?: number | null
     description?: string | null
     createdAt?: Date | string | null
@@ -35452,12 +35452,12 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    course?: CourseUpdateOneWithoutFeedbacksNestedInput
+    exhibit?: ExhibitUpdateOneWithoutFeedbacksNestedInput
   }
 
   export type FeedbackUncheckedUpdateWithoutUserInput = {
     feedbackId?: BigIntFieldUpdateOperationsInput | bigint | number
-    courseId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    exhibitId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     rating?: NullableIntFieldUpdateOperationsInput | number | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -35466,7 +35466,7 @@ export namespace Prisma {
 
   export type FeedbackUncheckedUpdateManyWithoutUserInput = {
     feedbackId?: BigIntFieldUpdateOperationsInput | bigint | number
-    courseId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    exhibitId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     rating?: NullableIntFieldUpdateOperationsInput | number | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -35702,13 +35702,13 @@ export namespace Prisma {
    * Aliases for legacy arg types
    */
     /**
-     * @deprecated Use SchoolCountOutputTypeDefaultArgs instead
+     * @deprecated Use ExhibitionCountOutputTypeDefaultArgs instead
      */
-    export type SchoolCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = SchoolCountOutputTypeDefaultArgs<ExtArgs>
+    export type ExhibitionCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ExhibitionCountOutputTypeDefaultArgs<ExtArgs>
     /**
-     * @deprecated Use CourseCountOutputTypeDefaultArgs instead
+     * @deprecated Use ExhibitCountOutputTypeDefaultArgs instead
      */
-    export type CourseCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = CourseCountOutputTypeDefaultArgs<ExtArgs>
+    export type ExhibitCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ExhibitCountOutputTypeDefaultArgs<ExtArgs>
     /**
      * @deprecated Use AudioCountOutputTypeDefaultArgs instead
      */
@@ -35738,13 +35738,13 @@ export namespace Prisma {
      */
     export type BadgeCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = BadgeCountOutputTypeDefaultArgs<ExtArgs>
     /**
-     * @deprecated Use SchoolDefaultArgs instead
+     * @deprecated Use ExhibitionDefaultArgs instead
      */
-    export type SchoolArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = SchoolDefaultArgs<ExtArgs>
+    export type ExhibitionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ExhibitionDefaultArgs<ExtArgs>
     /**
-     * @deprecated Use CourseDefaultArgs instead
+     * @deprecated Use ExhibitDefaultArgs instead
      */
-    export type CourseArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = CourseDefaultArgs<ExtArgs>
+    export type ExhibitArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ExhibitDefaultArgs<ExtArgs>
     /**
      * @deprecated Use AudioDefaultArgs instead
      */

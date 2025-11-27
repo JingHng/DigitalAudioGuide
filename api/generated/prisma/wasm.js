@@ -122,8 +122,8 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.SchoolScalarFieldEnum = {
-  schoolId: 'schoolId',
+exports.Prisma.ExhibitionScalarFieldEnum = {
+  exhibitionId: 'exhibitionId',
   title: 'title',
   description: 'description',
   statusId: 'statusId',
@@ -131,9 +131,9 @@ exports.Prisma.SchoolScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.CourseScalarFieldEnum = {
-  courseId: 'courseId',
-  schoolId: 'schoolId',
+exports.Prisma.ExhibitScalarFieldEnum = {
+  exhibitId: 'exhibitId',
+  exhibitionId: 'exhibitionId',
   badgeId: 'badgeId',
   title: 'title',
   description: 'description',
@@ -144,7 +144,7 @@ exports.Prisma.CourseScalarFieldEnum = {
 
 exports.Prisma.AudioScalarFieldEnum = {
   audioId: 'audioId',
-  courseId: 'courseId',
+  exhibitId: 'exhibitId',
   languageId: 'languageId',
   fileUrl: 'fileUrl',
   title: 'title',
@@ -167,7 +167,7 @@ exports.Prisma.AudioPlaybackLogScalarFieldEnum = {
 exports.Prisma.FeedbackScalarFieldEnum = {
   feedbackId: 'feedbackId',
   userId: 'userId',
-  courseId: 'courseId',
+  exhibitId: 'exhibitId',
   rating: 'rating',
   description: 'description',
   createdAt: 'createdAt',
@@ -176,8 +176,8 @@ exports.Prisma.FeedbackScalarFieldEnum = {
 
 exports.Prisma.ImageScalarFieldEnum = {
   imageId: 'imageId',
-  courseId: 'courseId',
-  schoolId: 'schoolId',
+  exhibitId: 'exhibitId',
+  exhibitionId: 'exhibitionId',
   title: 'title',
   description: 'description',
   fileUrl: 'fileUrl',
@@ -188,7 +188,7 @@ exports.Prisma.ImageScalarFieldEnum = {
 
 exports.Prisma.QRCodeScalarFieldEnum = {
   qrId: 'qrId',
-  courseId: 'courseId',
+  exhibitId: 'exhibitId',
   qrUrl: 'qrUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -334,8 +334,8 @@ exports.Prisma.JsonNullValueFilter = {
 
 
 exports.Prisma.ModelName = {
-  School: 'School',
-  Course: 'Course',
+  Exhibition: 'Exhibition',
+  Exhibit: 'Exhibit',
   Audio: 'Audio',
   AudioPlaybackLog: 'AudioPlaybackLog',
   Feedback: 'Feedback',
