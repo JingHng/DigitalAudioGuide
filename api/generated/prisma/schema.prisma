@@ -33,14 +33,15 @@ model Exhibition {
 
 // Exhibit Model 
 model Exhibit {
-  exhibitId    BigInt    @id @default(autoincrement()) @map("exhibit_id")
-  exhibitionId BigInt    @map("exhibition_id") // FK to Exhibition 
-  badgeId      BigInt?   @unique @map("badge_id")
-  title        String    @db.VarChar(255)
-  description  String?
-  statusId     Int?      @map("status_id")
-  createdAt    DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt    DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
+  exhibitId             BigInt    @id @default(autoincrement()) @map("exhibit_id")
+  exhibitionId          BigInt    @map("exhibition_id") // FK to Exhibition 
+  badgeId               BigInt?   @unique @map("badge_id")
+  title                 String    @db.VarChar(255)
+  description           String?
+  additionalDescription String?   @map("additional_description")
+  statusId              Int?      @map("status_id")
+  createdAt             DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt             DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
 
   exhibition Exhibition @relation(fields: [exhibitionId], references: [exhibitionId], onDelete: Cascade)
   status     Status?    @relation(fields: [statusId], references: [statusId])

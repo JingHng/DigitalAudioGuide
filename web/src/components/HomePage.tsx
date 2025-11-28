@@ -80,7 +80,8 @@ const Homepage: React.FC = () => {
     <div className="smart-exhibit-home">
       {/* Hero Section */}
       <section className="hero-banner">
-        <div className="hero-content">
+        <div className="container">
+          <div className="hero-content">
           <div className="hero-text">
             <h1 className="hero-title">
               <span className="smart-gradient">SmartExhibit</span>
@@ -132,6 +133,7 @@ const Homepage: React.FC = () => {
               </div>
             </div>
           </div>
+        </div>
         </div>
       </section>
 

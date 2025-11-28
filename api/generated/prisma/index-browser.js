@@ -137,6 +137,7 @@ exports.Prisma.ExhibitScalarFieldEnum = {
   badgeId: 'badgeId',
   title: 'title',
   description: 'description',
+  additionalDescription: 'additionalDescription',
   statusId: 'statusId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

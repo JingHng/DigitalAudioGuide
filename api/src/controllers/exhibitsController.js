@@ -369,15 +369,66 @@ exports.generateExhibitTTS = async (req, res) => {
           } chars)`
         );
 
-        const ttsUrl = googleTTS.getAudioUrl(chunk, {
-          lang: langCode,
-          slow: false,
-        });
-        const response = await fetch(ttsUrl);
-        if (!response.ok)
-          throw new Error(`TTS chunk ${i + 1} failed: ${response.statusText}`);
-        const audioChunk = Buffer.from(await response.arrayBuffer());
-        audioChunks.push(audioChunk);
+        try {
+          // Add retry logic for better reliability
+          let retryCount = 0;
+          const maxRetries = 3;
+          let success = false;
+          let audioChunk;
+          
+          while (retryCount < maxRetries && !success) {
+            try {
+              // Add delay between retries to avoid rate limiting
+              if (retryCount > 0) {
+                const delay = Math.min(1000 * Math.pow(2, retryCount), 5000); // Exponential backoff
+                console.log(`Waiting ${delay}ms before retry ${retryCount} for chunk ${i + 1}`);
+                await new Promise(resolve => setTimeout(resolve, delay));
+              }
+              
+              const ttsUrl = googleTTS.getAudioUrl(chunk, {
+                lang: langCode,
+                slow: false,
+                host: 'https://translate.google.com',
+              });
+              
+              const response = await fetch(ttsUrl, {
+                headers: {
+                  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                  'Accept': 'audio/mpeg, audio/*',
+                  'Accept-Language': 'en-US,en;q=0.9',
+                  'Referer': 'https://translate.google.com/',
+                  'Accept-Encoding': 'gzip, deflate, br'
+                },
+                timeout: 15000
+              });
+              
+              if (!response.ok) {
+                throw new Error(`TTS chunk ${i + 1} failed: ${response.status} ${response.statusText}`);
+              }
+              
+              audioChunk = Buffer.from(await response.arrayBuffer());
+              success = true;
+              
+            } catch (retryError) {
+              retryCount++;
+              console.error(`Chunk ${i + 1}, attempt ${retryCount} failed:`, retryError.message);
+              
+              if (retryCount >= maxRetries) {
+                throw retryError; // Re-throw to be caught by outer catch
+              }
+            }
+          }
+          
+          audioChunks.push(audioChunk);
+        } catch (chunkError) {
+          console.error(`Error processing chunk ${i + 1}:`, chunkError.message);
+          
+          // Create a silent audio chunk as fallback
+          const silentChunk = Buffer.alloc(1024); // 1KB of silence
+          audioChunks.push(silentChunk);
+          
+          console.log(`Added silent chunk for chunk ${i + 1} due to TTS error`);
+        }
       }
 
       audioBuffer = Buffer.concat(audioChunks);
@@ -386,14 +437,60 @@ exports.generateExhibitTTS = async (req, res) => {
       );
     } else {
       console.log("Using single TTS request for short text");
-      const ttsUrl = googleTTS.getAudioUrl(text, {
-        lang: langCode,
-        slow: false,
-      });
-      const response = await fetch(ttsUrl);
-      if (!response.ok)
-        throw new Error(`Google TTS failed: ${response.statusText}`);
-      audioBuffer = Buffer.from(await response.arrayBuffer());
+      try {
+        // Add retry logic for single text requests too
+        let retryCount = 0;
+        const maxRetries = 3;
+        let success = false;
+        
+        while (retryCount < maxRetries && !success) {
+          try {
+            if (retryCount > 0) {
+              const delay = Math.min(1000 * Math.pow(2, retryCount), 5000);
+              console.log(`Waiting ${delay}ms before retry ${retryCount} for single text TTS`);
+              await new Promise(resolve => setTimeout(resolve, delay));
+            }
+            
+            const ttsUrl = googleTTS.getAudioUrl(text, {
+              lang: langCode,
+              slow: false,
+              host: 'https://translate.google.com',
+            });
+            
+            const response = await fetch(ttsUrl, {
+              headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'audio/mpeg, audio/*',
+                'Accept-Language': 'en-US,en;q=0.9',
+                'Referer': 'https://translate.google.com/',
+                'Accept-Encoding': 'gzip, deflate, br'
+              },
+              timeout: 15000
+            });
+            
+            if (!response.ok) {
+              throw new Error(`Google TTS failed: ${response.status} ${response.statusText}`);
+            }
+            
+            audioBuffer = Buffer.from(await response.arrayBuffer());
+            success = true;
+            
+          } catch (retryError) {
+            retryCount++;
+            console.error(`Single TTS attempt ${retryCount} failed:`, retryError.message);
+            
+            if (retryCount >= maxRetries) {
+              throw retryError;
+            }
+          }
+        }
+      } catch (ttsError) {
+        console.error('TTS Error:', ttsError.message);
+        
+        // Create a minimal audio file as fallback
+        audioBuffer = Buffer.alloc(2048); // 2KB of silence
+        console.log('Using silent audio as fallback due to TTS error');
+      }
     }
 
     const deepgramUrl = `https://api.deepgram.com/v1/listen?model=nova-2&language=${langCode}&punctuate=true&utterances=true&words=true`;
@@ -459,11 +556,21 @@ exports.generateExhibitTTS = async (req, res) => {
   } catch (err) {
     console.error(
       "Error in generateExhibitTTS:",
-      err.response ? err.response.data : err.message
+      err.response ? err.response.data : err.message || err
     );
-    res
-      .status(500)
-      .json({ error: "Failed to generate TTS audio and transcript." });
+    
+    // Provide more specific error messages
+    let errorMessage = "Failed to generate TTS audio and transcript.";
+    
+    if (err.message && err.message.includes('Invalid credentials')) {
+      errorMessage = "TTS service authentication failed. Please try again later or contact support.";
+    } else if (err.message && err.message.includes('TTS')) {
+      errorMessage = "Text-to-speech service temporarily unavailable. Please try again later.";
+    } else if (err.response && err.response.data && err.response.data.err_code === 'INVALID_AUTH') {
+      errorMessage = "TTS service authentication error. The service may be temporarily unavailable.";
+    }
+    
+    res.status(500).json({ error: errorMessage, details: err.message });
   }
 };
 

@@ -4092,6 +4092,7 @@ export namespace Prisma {
     badgeId: bigint | null
     title: string | null
     description: string | null
+    additionalDescription: string | null
     statusId: number | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -4103,6 +4104,7 @@ export namespace Prisma {
     badgeId: bigint | null
     title: string | null
     description: string | null
+    additionalDescription: string | null
     statusId: number | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -4114,6 +4116,7 @@ export namespace Prisma {
     badgeId: number
     title: number
     description: number
+    additionalDescription: number
     statusId: number
     createdAt: number
     updatedAt: number
@@ -4141,6 +4144,7 @@ export namespace Prisma {
     badgeId?: true
     title?: true
     description?: true
+    additionalDescription?: true
     statusId?: true
     createdAt?: true
     updatedAt?: true
@@ -4152,6 +4156,7 @@ export namespace Prisma {
     badgeId?: true
     title?: true
     description?: true
+    additionalDescription?: true
     statusId?: true
     createdAt?: true
     updatedAt?: true
@@ -4163,6 +4168,7 @@ export namespace Prisma {
     badgeId?: true
     title?: true
     description?: true
+    additionalDescription?: true
     statusId?: true
     createdAt?: true
     updatedAt?: true
@@ -4261,6 +4267,7 @@ export namespace Prisma {
     badgeId: bigint | null
     title: string
     description: string | null
+    additionalDescription: string | null
     statusId: number | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -4291,6 +4298,7 @@ export namespace Prisma {
     badgeId?: boolean
     title?: boolean
     description?: boolean
+    additionalDescription?: boolean
     statusId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -4310,6 +4318,7 @@ export namespace Prisma {
     badgeId?: boolean
     title?: boolean
     description?: boolean
+    additionalDescription?: boolean
     statusId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -4324,6 +4333,7 @@ export namespace Prisma {
     badgeId?: boolean
     title?: boolean
     description?: boolean
+    additionalDescription?: boolean
     statusId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -4362,6 +4372,7 @@ export namespace Prisma {
       badgeId: bigint | null
       title: string
       description: string | null
+      additionalDescription: string | null
       statusId: number | null
       createdAt: Date | null
       updatedAt: Date | null
@@ -4770,6 +4781,7 @@ export namespace Prisma {
     readonly badgeId: FieldRef<"Exhibit", 'BigInt'>
     readonly title: FieldRef<"Exhibit", 'String'>
     readonly description: FieldRef<"Exhibit", 'String'>
+    readonly additionalDescription: FieldRef<"Exhibit", 'String'>
     readonly statusId: FieldRef<"Exhibit", 'Int'>
     readonly createdAt: FieldRef<"Exhibit", 'DateTime'>
     readonly updatedAt: FieldRef<"Exhibit", 'DateTime'>
@@ -24654,6 +24666,7 @@ export namespace Prisma {
     badgeId: 'badgeId',
     title: 'title',
     description: 'description',
+    additionalDescription: 'additionalDescription',
     statusId: 'statusId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -25093,6 +25106,7 @@ export namespace Prisma {
     badgeId?: BigIntNullableFilter<"Exhibit"> | bigint | number | null
     title?: StringFilter<"Exhibit"> | string
     description?: StringNullableFilter<"Exhibit"> | string | null
+    additionalDescription?: StringNullableFilter<"Exhibit"> | string | null
     statusId?: IntNullableFilter<"Exhibit"> | number | null
     createdAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
@@ -25111,6 +25125,7 @@ export namespace Prisma {
     badgeId?: SortOrderInput | SortOrder
     title?: SortOrder
     description?: SortOrderInput | SortOrder
+    additionalDescription?: SortOrderInput | SortOrder
     statusId?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrderInput | SortOrder
@@ -25132,6 +25147,7 @@ export namespace Prisma {
     exhibitionId?: BigIntFilter<"Exhibit"> | bigint | number
     title?: StringFilter<"Exhibit"> | string
     description?: StringNullableFilter<"Exhibit"> | string | null
+    additionalDescription?: StringNullableFilter<"Exhibit"> | string | null
     statusId?: IntNullableFilter<"Exhibit"> | number | null
     createdAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
@@ -25150,6 +25166,7 @@ export namespace Prisma {
     badgeId?: SortOrderInput | SortOrder
     title?: SortOrder
     description?: SortOrderInput | SortOrder
+    additionalDescription?: SortOrderInput | SortOrder
     statusId?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrderInput | SortOrder
@@ -25169,6 +25186,7 @@ export namespace Prisma {
     badgeId?: BigIntNullableWithAggregatesFilter<"Exhibit"> | bigint | number | null
     title?: StringWithAggregatesFilter<"Exhibit"> | string
     description?: StringNullableWithAggregatesFilter<"Exhibit"> | string | null
+    additionalDescription?: StringNullableWithAggregatesFilter<"Exhibit"> | string | null
     statusId?: IntNullableWithAggregatesFilter<"Exhibit"> | number | null
     createdAt?: DateTimeNullableWithAggregatesFilter<"Exhibit"> | Date | string | null
     updatedAt?: DateTimeNullableWithAggregatesFilter<"Exhibit"> | Date | string | null
@@ -26481,6 +26499,7 @@ export namespace Prisma {
     exhibitId?: bigint | number
     title: string
     description?: string | null
+    additionalDescription?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
@@ -26498,6 +26517,7 @@ export namespace Prisma {
     badgeId?: bigint | number | null
     title: string
     description?: string | null
+    additionalDescription?: string | null
     statusId?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
@@ -26511,6 +26531,7 @@ export namespace Prisma {
     exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
@@ -26528,6 +26549,7 @@ export namespace Prisma {
     badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -26543,6 +26565,7 @@ export namespace Prisma {
     badgeId?: bigint | number | null
     title: string
     description?: string | null
+    additionalDescription?: string | null
     statusId?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
@@ -26552,6 +26575,7 @@ export namespace Prisma {
     exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -26562,6 +26586,7 @@ export namespace Prisma {
     badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -28045,6 +28070,7 @@ export namespace Prisma {
     badgeId?: SortOrder
     title?: SortOrder
     description?: SortOrder
+    additionalDescription?: SortOrder
     statusId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -28063,6 +28089,7 @@ export namespace Prisma {
     badgeId?: SortOrder
     title?: SortOrder
     description?: SortOrder
+    additionalDescription?: SortOrder
     statusId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -28074,6 +28101,7 @@ export namespace Prisma {
     badgeId?: SortOrder
     title?: SortOrder
     description?: SortOrder
+    additionalDescription?: SortOrder
     statusId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -31161,6 +31189,7 @@ export namespace Prisma {
     exhibitId?: bigint | number
     title: string
     description?: string | null
+    additionalDescription?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     status?: StatusCreateNestedOneWithoutExhibitsInput
@@ -31176,6 +31205,7 @@ export namespace Prisma {
     badgeId?: bigint | number | null
     title: string
     description?: string | null
+    additionalDescription?: string | null
     statusId?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
@@ -31278,6 +31308,7 @@ export namespace Prisma {
     badgeId?: BigIntNullableFilter<"Exhibit"> | bigint | number | null
     title?: StringFilter<"Exhibit"> | string
     description?: StringNullableFilter<"Exhibit"> | string | null
+    additionalDescription?: StringNullableFilter<"Exhibit"> | string | null
     statusId?: IntNullableFilter<"Exhibit"> | number | null
     createdAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
@@ -31694,6 +31725,7 @@ export namespace Prisma {
     exhibitId?: bigint | number
     title: string
     description?: string | null
+    additionalDescription?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
@@ -31710,6 +31742,7 @@ export namespace Prisma {
     badgeId?: bigint | number | null
     title: string
     description?: string | null
+    additionalDescription?: string | null
     statusId?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
@@ -31822,6 +31855,7 @@ export namespace Prisma {
     exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
@@ -31838,6 +31872,7 @@ export namespace Prisma {
     badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32151,6 +32186,7 @@ export namespace Prisma {
     exhibitId?: bigint | number
     title: string
     description?: string | null
+    additionalDescription?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
@@ -32167,6 +32203,7 @@ export namespace Prisma {
     badgeId?: bigint | number | null
     title: string
     description?: string | null
+    additionalDescription?: string | null
     statusId?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
@@ -32248,6 +32285,7 @@ export namespace Prisma {
     exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
@@ -32264,6 +32302,7 @@ export namespace Prisma {
     badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32276,6 +32315,7 @@ export namespace Prisma {
     exhibitId?: bigint | number
     title: string
     description?: string | null
+    additionalDescription?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
@@ -32292,6 +32332,7 @@ export namespace Prisma {
     badgeId?: bigint | number | null
     title: string
     description?: string | null
+    additionalDescription?: string | null
     statusId?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
@@ -32345,6 +32386,7 @@ export namespace Prisma {
     exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
@@ -32361,6 +32403,7 @@ export namespace Prisma {
     badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32404,6 +32447,7 @@ export namespace Prisma {
     exhibitId?: bigint | number
     title: string
     description?: string | null
+    additionalDescription?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
@@ -32420,6 +32464,7 @@ export namespace Prisma {
     badgeId?: bigint | number | null
     title: string
     description?: string | null
+    additionalDescription?: string | null
     statusId?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
@@ -32448,6 +32493,7 @@ export namespace Prisma {
     exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
@@ -32464,6 +32510,7 @@ export namespace Prisma {
     badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -33046,6 +33093,7 @@ export namespace Prisma {
     exhibitId?: bigint | number
     title: string
     description?: string | null
+    additionalDescription?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
@@ -33062,6 +33110,7 @@ export namespace Prisma {
     badgeId?: bigint | number | null
     title: string
     description?: string | null
+    additionalDescription?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
@@ -34473,6 +34522,7 @@ export namespace Prisma {
     exhibitId?: bigint | number
     title: string
     description?: string | null
+    additionalDescription?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
@@ -34488,6 +34538,7 @@ export namespace Prisma {
     exhibitionId: bigint | number
     title: string
     description?: string | null
+    additionalDescription?: string | null
     statusId?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
@@ -34537,6 +34588,7 @@ export namespace Prisma {
     exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
@@ -34552,6 +34604,7 @@ export namespace Prisma {
     exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -34738,6 +34791,7 @@ export namespace Prisma {
     badgeId?: bigint | number | null
     title: string
     description?: string | null
+    additionalDescription?: string | null
     statusId?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
@@ -34758,6 +34812,7 @@ export namespace Prisma {
     exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StatusUpdateOneWithoutExhibitsNestedInput
@@ -34773,6 +34828,7 @@ export namespace Prisma {
     badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -34787,6 +34843,7 @@ export namespace Prisma {
     badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -35215,6 +35272,7 @@ export namespace Prisma {
     badgeId?: bigint | number | null
     title: string
     description?: string | null
+    additionalDescription?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
   }
@@ -35335,6 +35393,7 @@ export namespace Prisma {
     exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
@@ -35351,6 +35410,7 @@ export namespace Prisma {
     badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
@@ -35365,6 +35425,7 @@ export namespace Prisma {
     badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
