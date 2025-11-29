@@ -595,8 +595,13 @@ exports.getExhibitQRCode = async (req, res) => {
         .json({ message: "QR code not found for this exhibit" });
     }
 
-    // Generate the QR code image from the qrUrl using qr-image
-    const qrCodeImage = qr.imageSync(qrCode.qrUrl, { type: "png" });
+    // Generate the QR code image from the qrUrl using qr-image with high quality settings
+    const qrCodeImage = qr.imageSync(qrCode.qrUrl, { 
+      type: "png",
+      size: 10,        // Larger size for better quality
+      margin: 2,       // Adequate margin
+      ec_level: 'H'    // High error correction for better scanning reliability
+    });
     const qrCodeBase64 = `data:image/png;base64,${qrCodeImage.toString(
       "base64"
     )}`;

@@ -764,6 +764,9 @@ await client.query(`
       (5, 3, 5, 'Project INC', 'Project INC: Industry Now Curriculum Project INC (which stands for Industry Now Curriculum) is the Singapore Polytechnic School of Computing''s unique, industry-facing learning approach. It''s not just a final-year project; it''s an accelerated software house environment where students work as professional software developers on real, client-paid industry projects from leading companies.', 'Did You Know? In Project INC, Students get a chance to work with real life client projects! INC Students in 2025 got to work on client projects from SLA, CleoSpa and Singapore Poly Open House so far! What are You Waiting For? Join us Today!', 1)
       `);
 
+    // Clean up any existing QR codes first to prevent duplicates
+    await client.query(`DELETE FROM qr_code WHERE qr_id IN (1, 2, 3, 4, 5);`);
+    
     // Insert QR codes for exhibits (matching updated exhibit IDs)
     await client.query(`
       INSERT INTO qr_code (qr_id, exhibit_id, qr_url) VALUES
@@ -772,6 +775,9 @@ await client.query(`
       (3, 3, 'http://localhost:5173/exhibit/3'),
       (4, 4, 'http://localhost:5173/exhibit/4'),
       (5, 5, 'http://localhost:5173/exhibit/5')
+      ON CONFLICT (qr_id) DO UPDATE SET
+        exhibit_id = EXCLUDED.exhibit_id,
+        qr_url = EXCLUDED.qr_url;
 
     `);
 

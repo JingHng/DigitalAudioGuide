@@ -93,6 +93,10 @@
   color: #475569;
 }
 
+.description-block {
+      text-align: center;
+}
+
 .hero-description {
   font-size: 1.125rem;
   margin-bottom: 2.5rem;

@@ -26,7 +26,7 @@ import EarnBadgeModal from "./earnBadgeModal";
 
 // --- Constants & Types  ---
 const BACKEND_URL = import.meta.env.VITE_API_TARGET || "";
-const DEFAULT_IMAGE_URL = `${BACKEND_URL}/public/images/Exhibit.jpg`;
+const DEFAULT_IMAGE_URL = `${BACKEND_URL}/public/images/Map.jpg`;
 
 interface Word {
   word: string;
@@ -469,73 +469,73 @@ const ExhibitDetails: React.FC = () => {
             {/* Title at Top */}
             <h1 className="exhibit-main-title">{exhibit.title}</h1>
             
-            <div className="exhibit-hero-content">
-              <div className="exhibit-images">
-                {validImages.length > 0 ? (
-                  <Swiper
-                    modules={[Navigation, Pagination, EffectFade, Autoplay]}
-                    effect="fade"
-                    spaceBetween={0}
-                    slidesPerView={1}
-                    navigation={{
-                      prevEl: '.custom-prev',
-                      nextEl: '.custom-next'
-                    }}
-                    pagination={{ clickable: true }}
-                    autoplay={{ delay: 5000, disableOnInteraction: false }}
-                    loop={validImages.length > 1}
-                    className="exhibit-image-swiper"
-                  >
-                    {validImages.map((image: Image, index: number) => (
-                      <SwiperSlide key={image.imageId}>
-                        <div className="exhibit-image-container">
-                          <img
-                            src={getImageUrl(image.fileUrl || '')}
-                            alt={image.title || exhibit.title}
-                            className="exhibit-main-image"
-                            onClick={() => {
-                              setCurrentImageIndex(index);
-                              setShowImageGallery(true);
-                            }}
-                          />
-                          <div className="image-overlay">
-                            <div className="image-counter">
-                              {index + 1} / {validImages.length}
-                            </div>
+            {/* Centered Image Gallery */}
+            <div className="exhibit-images-centered">
+              {validImages.length > 0 ? (
+                <Swiper
+                  modules={[Navigation, Pagination, EffectFade, Autoplay]}
+                  effect="fade"
+                  spaceBetween={0}
+                  slidesPerView={1}
+                  navigation={{
+                    prevEl: '.custom-prev',
+                    nextEl: '.custom-next'
+                  }}
+                  pagination={{ clickable: true }}
+                  autoplay={{ delay: 5000, disableOnInteraction: false }}
+                  loop={validImages.length > 1}
+                  className="exhibit-image-swiper"
+                >
+                  {validImages.map((image: Image, index: number) => (
+                    <SwiperSlide key={image.imageId}>
+                      <div className="exhibit-image-container">
+                        <img
+                          src={getImageUrl(image.fileUrl || '')}
+                          alt={image.title || exhibit.title}
+                          className="exhibit-main-image"
+                          onClick={() => {
+                            setCurrentImageIndex(index);
+                            setShowImageGallery(true);
+                          }}
+                        />
+                        <div className="image-overlay">
+                          <div className="image-counter">
+                            {index + 1} / {validImages.length}
                           </div>
                         </div>
-                      </SwiperSlide>
-                    ))}
-                    {validImages.length > 1 && (
-                      <>
-                        <div className="custom-prev">
-                          <ChevronLeft size={24} />
-                        </div>
-                        <div className="custom-next">
-                          <ChevronRight size={24} />
-                        </div>
-                      </>
-                    )}
-                  </Swiper>
-                ) : (
-                  <div className="no-images">
-                    <div className="no-images-placeholder">
-                      <Eye size={48} />
-                      <p>No images available for this exhibit</p>
-                    </div>
+                      </div>
+                    </SwiperSlide>
+                  ))}
+                  {validImages.length > 1 && (
+                    <>
+                      <div className="custom-prev">
+                        <ChevronLeft size={24} />
+                      </div>
+                      <div className="custom-next">
+                        <ChevronRight size={24} />
+                      </div>
+                    </>
+                  )}
+                </Swiper>
+              ) : (
+                <div className="no-images">
+                  <div className="no-images-placeholder">
+                    <Eye size={48} />
+                    <p>No images available for this exhibit</p>
                   </div>
-                )}
-              </div>
-              
-              <div className="exhibit-info">
-                <div className="description-box">
-                  <p>{exhibit.description}</p>
                 </div>
-                <div className="exhibit-meta">
-                  <div className="meta-item">
-                    <Eye size={16} />
-                    <span>Interactive Experience</span>
-                  </div>
+              )}
+            </div>
+            
+            {/* Description Below Image */}
+            <div className="exhibit-info-centered">
+              <div className="description-box">
+                <p>{exhibit.description}</p>
+              </div>
+              <div className="exhibit-meta">
+                <div className="meta-item">
+                  <Eye size={16} />
+                  <span>Interactive Experience</span>
                 </div>
               </div>
             </div>
@@ -652,24 +652,63 @@ const ExhibitDetails: React.FC = () => {
           {/* Additional Info Section */}
           <section className="additional-info">
             <div className="additional-content">
-              {/* Additional Image Gallery Placeholder */}
+              {/* Additional Image Gallery */}
               <div className="admin-image-gallery">
                 <h3>Additional Images</h3>
-                <div className="admin-gallery-placeholder">
-                  <div className="placeholder-content">
-                    <div className="placeholder-icon">
-                      📸
+                <div className="additional-images-grid">
+                  <div className="placeholder-image">
+                    <img 
+                      src={`${BACKEND_URL}/public/images/placeholder-1.jpg`}
+                      alt="Behind the scenes"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = DEFAULT_IMAGE_URL;
+                      }}
+                    />
+                    <div className="image-overlay">
+                      <span>Learn</span>
                     </div>
-                    <h4>Admin Image Upload Area</h4>
-                    <p>Administrators can upload additional images here to enhance the exhibit experience. These could include:</p>
-                    <ul>
-                      <li>Behind-the-scenes photos</li>
-                      <li>Historical documents</li>
-                      <li>Detailed artifact views</li>
-                      <li>Interactive maps or diagrams</li>
-                    </ul>
-                    <div className="upload-placeholder-btn">
-                      + Add Images (Admin Only)
+                  </div>
+                  
+                  <div className="placeholder-image">
+                    <img 
+                      src={`${BACKEND_URL}/public/images/placeholder-2.jpg`}
+                      alt="Historical documents"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = DEFAULT_IMAGE_URL;
+                      }}
+                    />
+                    <div className="image-overlay">
+                      <span>More</span>
+                    </div>
+                  </div>
+                  
+                  <div className="placeholder-image">
+                    <img 
+                      src={`${BACKEND_URL}/public/images/placeholder-3.jpg`}
+                      alt="Artifact details"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = DEFAULT_IMAGE_URL;
+                      }}
+                    />
+                    <div className="image-overlay">
+                      <span>About</span>
+                    </div>
+                  </div>
+                  
+                  <div className="placeholder-image">
+                    <img 
+                      src={`${BACKEND_URL}/public/images/placeholder-4.jpg`}
+                      alt="Interactive features"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = DEFAULT_IMAGE_URL;
+                      }}
+                    />
+                    <div className="image-overlay">
+                      <span>Us</span>
                     </div>
                   </div>
                 </div>
@@ -678,7 +717,7 @@ const ExhibitDetails: React.FC = () => {
               <div className="additional-descriptions">
                 <div className="description-block">
                   <h3>Detailed Information</h3>
-                  <p>{exhibit.additionalDescription || "Additional information about this exhibit will be available soon. Our curators are working to provide more detailed insights into the historical significance, artifacts, and interactive features of this experience."}</p>
+                  <p className="centered-text">{exhibit.additionalDescription || "Additional information about this exhibit will be available soon. Our curators are working to provide more detailed insights into the historical significance, artifacts, and interactive features of this experience."}</p>
                 </div>
               </div>
               
