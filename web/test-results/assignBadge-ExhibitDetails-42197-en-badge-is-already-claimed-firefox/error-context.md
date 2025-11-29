@@ -1,0 +1,62 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - navigation [ref=e4]:
+      - link "Smart Exhibit" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e6]:
+          - generic [ref=e7]: Smart
+          - generic [ref=e8]: Exhibit
+      - generic [ref=e9]:
+        - link "Home" [ref=e10] [cursor=pointer]:
+          - /url: /
+        - link "Tours" [ref=e11] [cursor=pointer]:
+          - /url: /exhibitions
+        - link "Reviews" [ref=e12] [cursor=pointer]:
+          - /url: /reviews
+        - link "How It Works" [ref=e13] [cursor=pointer]:
+          - /url: /#how-it-works
+        - button "admin admin" [ref=e15]:
+          - img [ref=e16]
+          - generic [ref=e19]: admin
+          - generic [ref=e20]: admin
+        - button "Select language" [ref=e22] [cursor=pointer]:
+          - img [ref=e23]
+  - generic [ref=e28]:
+    - link "Back to Tours" [ref=e31] [cursor=pointer]:
+      - /url: /exhibitions
+      - img [ref=e32]
+      - generic [ref=e35]: Back to Tours
+    - generic [ref=e37]:
+      - generic [ref=e38]:
+        - heading "Test Exhibit" [level=1] [ref=e39]
+        - generic [ref=e42]:
+          - img [ref=e43]
+          - paragraph [ref=e46]: No images available for this exhibit
+        - generic [ref=e47]:
+          - paragraph [ref=e49]: This is a test exhibit for badge behavior.
+          - generic [ref=e51]:
+            - img [ref=e52]
+            - generic [ref=e55]: Interactive Experience
+      - generic [ref=e57]:
+        - generic [ref=e58]:
+          - heading "Additional Images" [level=3] [ref=e59]
+          - generic [ref=e60]:
+            - generic [ref=e61] [cursor=pointer]:
+              - img "Behind the scenes" [ref=e62]
+              - generic [ref=e63]: Learn
+            - generic [ref=e64] [cursor=pointer]:
+              - img "Historical documents" [ref=e65]
+              - generic [ref=e66]: More
+            - generic [ref=e67] [cursor=pointer]:
+              - img "Artifact details" [ref=e68]
+              - generic [ref=e69]: About
+            - generic [ref=e70] [cursor=pointer]:
+              - img "Interactive features" [ref=e71]
+              - generic [ref=e72]: Us
+        - generic [ref=e74]:
+          - heading "Detailed Information" [level=3] [ref=e75]
+          - paragraph [ref=e76]: Additional information about this exhibit will be available soon. Our curators are working to provide more detailed insights into the historical significance, artifacts, and interactive features of this experience.
+```

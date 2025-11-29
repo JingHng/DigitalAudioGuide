@@ -1,0 +1,193 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - complementary [ref=e4]:
+      - generic [ref=e6]:
+        - img [ref=e8]
+        - heading "Admin Dashboard" [level=2] [ref=e11]
+      - button "Collapse sidebar" [ref=e13] [cursor=pointer]:
+        - img [ref=e14]
+      - navigation [ref=e16]:
+        - list [ref=e17]:
+          - listitem [ref=e18]:
+            - link "Home" [ref=e20] [cursor=pointer]:
+              - /url: /admin/dashboard
+              - img [ref=e22]
+              - generic [ref=e25]: Home
+          - listitem [ref=e26]:
+            - link "Audio Analytics" [ref=e28] [cursor=pointer]:
+              - /url: /admin/audio-analytics
+              - img [ref=e30]
+              - generic [ref=e35]: Audio Analytics
+          - listitem [ref=e36]:
+            - link "Audit Logs" [ref=e38] [cursor=pointer]:
+              - /url: /admin/audit-logs
+              - img [ref=e40]
+              - generic [ref=e46]: Audit Logs
+          - listitem [ref=e47]: CRUD
+          - listitem [ref=e48]:
+            - generic [ref=e49]:
+              - link "Users" [ref=e50] [cursor=pointer]:
+                - /url: /admin/users
+                - img [ref=e52]
+                - generic [ref=e57]: Users
+              - button "Add Users" [ref=e58] [cursor=pointer]:
+                - img [ref=e59]
+          - listitem [ref=e62]:
+            - generic [ref=e63]:
+              - link "Roles" [ref=e64] [cursor=pointer]:
+                - /url: /admin/roles
+                - img [ref=e66]
+                - generic [ref=e68]: Roles
+              - button "Add Roles" [ref=e69] [cursor=pointer]:
+                - img [ref=e70]
+          - listitem [ref=e73]:
+            - generic [ref=e74]:
+              - link "Exhibits" [ref=e75] [cursor=pointer]:
+                - /url: /admin/exhibits
+                - img [ref=e77]
+                - generic [ref=e81]: Exhibits
+              - button "Add Exhibits" [ref=e82] [cursor=pointer]:
+                - img [ref=e83]
+          - listitem [ref=e86]:
+            - generic [ref=e87]:
+              - link "Audio" [ref=e88] [cursor=pointer]:
+                - /url: /admin/audio
+                - img [ref=e90]
+                - generic [ref=e94]: Audio
+              - button "Add Audio" [ref=e95] [cursor=pointer]:
+                - img [ref=e96]
+      - generic [ref=e99]:
+        - link "AD admin admin" [ref=e101] [cursor=pointer]:
+          - /url: /admin/settings
+          - generic [ref=e102]: AD
+          - generic [ref=e103]:
+            - generic [ref=e104]: admin
+            - generic [ref=e105]: admin
+          - img [ref=e106]
+        - list [ref=e109]:
+          - listitem [ref=e110]:
+            - link "Help & Information" [ref=e112] [cursor=pointer]:
+              - /url: /admin/help
+              - img [ref=e114]
+              - generic [ref=e118]: Help & Information
+          - listitem [ref=e119]:
+            - link "Log Out" [ref=e121] [cursor=pointer]:
+              - /url: /admin/dashboard
+              - img [ref=e123]
+              - generic [ref=e127]: Log Out
+    - generic [ref=e128]:
+      - generic [ref=e129]:
+        - navigation:
+          - list
+        - generic [ref=e130]:
+          - button "Select language" [ref=e132] [cursor=pointer]:
+            - img [ref=e133]
+          - button "Switch to dark mode" [ref=e137] [cursor=pointer]:
+            - img [ref=e138]
+          - button "AD admin" [ref=e141] [cursor=pointer]:
+            - generic "admin" [ref=e142]: AD
+            - generic [ref=e143]: admin
+            - img [ref=e144]
+      - main [ref=e146]:
+        - generic [ref=e147]:
+          - generic [ref=e148]:
+            - heading "Dashboard" [level=1] [ref=e149]
+            - button "Refresh data" [ref=e151] [cursor=pointer]:
+              - img [ref=e152]
+              - generic [ref=e157]: Refresh
+          - generic [ref=e158]:
+            - generic [ref=e159]:
+              - img [ref=e161]
+              - generic [ref=e166]:
+                - heading "Total Users" [level=3] [ref=e167]
+                - generic [ref=e168]:
+                  - generic [ref=e169]: "156"
+                  - generic [ref=e170]: Total registered users
+            - generic [ref=e171]:
+              - img [ref=e173]
+              - generic [ref=e178]:
+                - heading "Active Users" [level=3] [ref=e179]
+                - generic [ref=e180]:
+                  - generic [ref=e181]: "89"
+                  - generic [ref=e182]: 57% of total users
+            - generic [ref=e183]:
+              - img [ref=e185]
+              - generic [ref=e188]:
+                - heading "Total Exhibitions" [level=3] [ref=e189]
+                - generic [ref=e190]:
+                  - generic [ref=e191]: "0"
+                  - generic [ref=e192]: Available exhibits
+            - generic [ref=e193]:
+              - img [ref=e195]
+              - generic [ref=e197]:
+                - heading "Audio Plays" [level=3] [ref=e198]
+                - generic [ref=e199]:
+                  - generic [ref=e200]: "0"
+                  - generic [ref=e201]: 0m avg duration
+          - generic [ref=e202]:
+            - generic [ref=e203]:
+              - generic [ref=e204]:
+                - heading "User Registration Trend" [level=2] [ref=e205]
+                - generic [ref=e206]:
+                  - generic [ref=e207]:
+                    - button "Quick Periods" [ref=e208] [cursor=pointer]
+                    - button "Custom Range" [ref=e209] [cursor=pointer]
+                  - generic [ref=e210]:
+                    - generic [ref=e211]: "Time Period:"
+                    - combobox "Time Period:" [ref=e212] [cursor=pointer]:
+                      - option "Last 1 month"
+                      - option "Last 3 months"
+                      - option "Last 6 months" [selected]
+                      - option "Last 12 months"
+                      - option "Last 24 months"
+                      - option "Overall (All time)"
+                  - generic [ref=e213]:
+                    - generic [ref=e214]:
+                      - generic [ref=e215]: "Period:"
+                      - generic [ref=e216]: Last 6 months
+                    - generic [ref=e217]:
+                      - generic [ref=e218]: "Total:"
+                      - generic [ref=e219]: 156 users
+              - generic [ref=e221]:
+                - img [ref=e222]:
+                  - generic [ref=e239]:
+                    - generic [ref=e242]: Jan
+                    - generic [ref=e245]: Feb
+                    - generic [ref=e248]: Mar
+                    - generic [ref=e251]: Apr
+                    - generic [ref=e254]: May
+                    - generic [ref=e257]: Jun
+                  - generic [ref=e260]:
+                    - generic [ref=e263]: "0"
+                    - generic [ref=e266]: "15"
+                    - generic [ref=e269]: "30"
+                    - generic [ref=e272]: "45"
+                    - generic [ref=e275]: "60"
+                - list [ref=e279]:
+                  - listitem [ref=e280]:
+                    - img [ref=e281]
+                    - text: New Users
+            - generic [ref=e283]:
+              - generic [ref=e284]:
+                - generic [ref=e285]:
+                  - heading "Popular Exhibits by Audio Plays" [level=2] [ref=e286]
+                  - generic [ref=e287]: Audio Analytics
+                - generic [ref=e289]:
+                  - img [ref=e290]
+                  - paragraph [ref=e292]: No audio playback data available yet
+                  - paragraph [ref=e293]: Start playing audio guides to see exhibit popularity
+              - generic [ref=e294]:
+                - generic [ref=e295]:
+                  - heading "Recent Admin Actions" [level=2] [ref=e296]
+                  - generic [ref=e298]:
+                    - img [ref=e299]
+                    - generic [ref=e301]: Last 24 hours
+                - generic [ref=e303]:
+                  - img [ref=e304]
+                  - paragraph [ref=e306]: No recent admin activity
+                  - paragraph [ref=e307]: Actions will appear here as they occur
+  - generic [ref=e308]: "0"
+```

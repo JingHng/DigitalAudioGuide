@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { ArrowRight, Loader2 } from 'lucide-react';
+import { Link, useParams, useNavigate } from 'react-router-dom';
+import { ArrowRight, Loader2, Camera, Sparkles } from 'lucide-react';
 import apiClient from '../utils/apiClient';
 
 const BACKEND_URL = import.meta.env.VITE_API_TARGET || '';
@@ -39,6 +39,7 @@ const getImageUrl = (fileUrl: string | null): string => {
 
 const ExhibitionDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [exhibition, setExhibition] = useState<Exhibition | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -89,8 +90,22 @@ const ExhibitionDetailsPage: React.FC = () => {
   return (
     <div className="exhibits-page-container">
       <header className="exhibition-header">
-        <h1>{exhibition.title}</h1>
-        <p>{exhibition.description}</p>
+        <div className="exhibition-header-content">
+          <div className="exhibition-info">
+            <h1>{exhibition.title}</h1>
+            <p>{exhibition.description}</p>
+          </div>
+          <div className="exhibition-actions">
+            <button 
+              onClick={() => navigate(`/exhibitions/${id}/ar-photobooth`)}
+              className="ar-photobooth-btn"
+            >
+              <Camera size={20} />
+              <Sparkles size={16} className="sparkle-icon" />
+              <span>AR Photobooth</span>
+            </button>
+          </div>
+        </div>
       </header>
 
       <section className="exhibits-grid-section">

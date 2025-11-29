@@ -1,0 +1,70 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - navigation [ref=e4]:
+      - link "Smart Exhibit" [ref=e5]:
+        - /url: /
+        - generic [ref=e6]:
+          - generic [ref=e7]: Smart
+          - generic [ref=e8]: Exhibit
+      - generic [ref=e9]:
+        - link "Home" [ref=e10]:
+          - /url: /
+        - link "Tours" [ref=e11]:
+          - /url: /exhibitions
+        - link "Reviews" [ref=e12]:
+          - /url: /reviews
+        - link "How It Works" [ref=e13]:
+          - /url: /#how-it-works
+        - generic [ref=e14]:
+          - link "Login" [ref=e15]:
+            - /url: /login
+            - img [ref=e16]
+            - generic [ref=e19]: Login
+          - link "Register" [ref=e20]:
+            - /url: /register
+            - img [ref=e21]
+            - generic [ref=e24]: Register
+        - button "Select language" [ref=e26] [cursor=pointer]:
+          - img [ref=e27]
+  - generic [ref=e32]:
+    - generic [ref=e33]:
+      - heading "Scan QR Code" [level=1] [ref=e34]
+      - paragraph [ref=e35]: Discover Singapore's heritage through immersive exhibits
+    - generic [ref=e36]:
+      - generic [ref=e38]:
+        - img "Info icon" [ref=e39] [cursor=pointer]
+        - img "Camera based scan" [ref=e41]
+        - generic [ref=e43]:
+          - button "Request Camera Permissions" [ref=e47] [cursor=pointer]
+          - generic [ref=e48]: Scan an Image File
+      - generic [ref=e49]:
+        - heading "📋 How to Use" [level=3] [ref=e51]
+        - list [ref=e52]:
+          - listitem [ref=e53]:
+            - generic [ref=e54]: "1"
+            - generic [ref=e55]:
+              - heading "🎯 Position Camera" [level=4] [ref=e56]
+              - paragraph [ref=e57]: Point your device at the QR code with good lighting
+          - listitem [ref=e58]:
+            - generic [ref=e59]: "2"
+            - generic [ref=e60]:
+              - heading "✋ Hold Steady" [level=4] [ref=e61]
+              - paragraph [ref=e62]: Keep device stable until detection completes
+          - listitem [ref=e63]:
+            - generic [ref=e64]: "3"
+            - generic [ref=e65]:
+              - heading "📤 Upload Alternative" [level=4] [ref=e66]
+              - paragraph [ref=e67]: Use file upload if camera isn't working
+          - listitem [ref=e68]:
+            - generic [ref=e69]: "4"
+            - generic [ref=e70]:
+              - heading "🎨 Explore Content" [level=4] [ref=e71]
+              - paragraph [ref=e72]: Access rich exhibit information and guides
+    - generic [ref=e73]: Position the QR code within the frame to scan
+    - generic [ref=e74]:
+      - button "🏠 Home" [ref=e75] [cursor=pointer]
+      - button "🏛️ Exhibits" [ref=e76] [cursor=pointer]
+```

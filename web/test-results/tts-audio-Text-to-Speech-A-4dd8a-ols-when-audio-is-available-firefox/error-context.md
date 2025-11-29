@@ -1,0 +1,205 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - navigation [ref=e4]:
+      - link "Smart Exhibit" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e6]:
+          - generic [ref=e7]: Smart
+          - generic [ref=e8]: Exhibit
+      - generic [ref=e9]:
+        - link "Home" [ref=e10] [cursor=pointer]:
+          - /url: /
+        - link "Tours" [ref=e11] [cursor=pointer]:
+          - /url: /exhibitions
+        - link "Reviews" [ref=e12] [cursor=pointer]:
+          - /url: /reviews
+        - link "How It Works" [ref=e13] [cursor=pointer]:
+          - /url: /#how-it-works
+        - generic [ref=e14]:
+          - link "Login" [ref=e15] [cursor=pointer]:
+            - /url: /login
+            - img [ref=e16]
+            - generic [ref=e20]: Login
+          - link "Register" [ref=e21] [cursor=pointer]:
+            - /url: /register
+            - img [ref=e22]
+            - generic [ref=e27]: Register
+        - button "Select language" [ref=e29] [cursor=pointer]:
+          - img [ref=e30]
+  - generic [ref=e35]:
+    - link "Back to Tours" [ref=e38] [cursor=pointer]:
+      - /url: /exhibitions
+      - img [ref=e39]
+      - generic [ref=e42]: Back to Tours
+    - generic [ref=e44]:
+      - generic [ref=e45]:
+        - heading "Project INC" [level=1] [ref=e46]
+        - generic [ref=e51] [cursor=pointer]:
+          - img "Project INC Image" [ref=e52]
+          - generic [ref=e54]: 1 / 1
+        - generic [ref=e55]:
+          - paragraph [ref=e57]: "Project INC: Industry Now Curriculum Project INC (which stands for Industry Now Curriculum) is the Singapore Polytechnic School of Computing's unique, industry-facing learning approach. It's not just a final-year project; it's an accelerated software house environment where students work as professional software developers on real, client-paid industry projects from leading companies."
+          - generic [ref=e59]:
+            - img [ref=e60]
+            - generic [ref=e63]: Interactive Experience
+      - generic [ref=e64]:
+        - generic [ref=e65]:
+          - generic [ref=e66]:
+            - img [ref=e67]
+            - generic [ref=e69]: Audio Guide
+          - generic [ref=e70]:
+            - img [ref=e71]
+            - combobox [disabled] [ref=e78]:
+              - option "English" [selected]
+            - generic [ref=e79]: (Only language available)
+        - generic [ref=e80]:
+          - button [ref=e81] [cursor=pointer]:
+            - img [ref=e82]
+          - generic [ref=e84]:
+            - slider [ref=e85] [cursor=pointer]: "0"
+            - generic [ref=e86]:
+              - generic [ref=e87]: 0:00
+              - generic [ref=e88]: 0:54
+          - generic [ref=e89]:
+            - img [ref=e90]
+            - slider [ref=e94] [cursor=pointer]: "0.8"
+        - generic [ref=e96]:
+          - generic [ref=e97]: Welcome
+          - generic [ref=e98]: to
+          - generic [ref=e99]: Project
+          - generic [ref=e100]: INC.
+          - generic [ref=e101]: Industry
+          - generic [ref=e102]: Now
+          - generic [ref=e103]: Curriculum.
+          - generic [ref=e104]: You
+          - generic [ref=e105]: are
+          - generic [ref=e106]: now
+          - generic [ref=e107]: standing
+          - generic [ref=e108]: in
+          - generic [ref=e109]: the
+          - generic [ref=e110]: heartbeat
+          - generic [ref=e111]: of
+          - generic [ref=e112]: the
+          - generic [ref=e113]: School
+          - generic [ref=e114]: of
+          - generic [ref=e115]: Computing's
+          - generic [ref=e116]: practical
+          - generic [ref=e117]: training.
+          - generic [ref=e118]: This
+          - generic [ref=e119]: is
+          - generic [ref=e120]: not
+          - generic [ref=e121]: a
+          - generic [ref=e122]: typical
+          - generic [ref=e123]: classroom.
+          - generic [ref=e124]: It's
+          - generic [ref=e125]: a
+          - generic [ref=e126]: simulated
+          - generic [ref=e127]: software
+          - generic [ref=e128]: house,
+          - generic [ref=e129]: designed
+          - generic [ref=e130]: to
+          - generic [ref=e131]: turn
+          - generic [ref=e132]: you
+          - generic [ref=e133]: from
+          - generic [ref=e134]: a
+          - generic [ref=e135]: student
+          - generic [ref=e136]: into
+          - generic [ref=e137]: a
+          - generic [ref=e138]: professional
+          - generic [ref=e139]: software
+          - generic [ref=e140]: developer.
+          - generic [ref=e141]: Forget
+          - generic [ref=e142]: hypothetical
+          - generic [ref=e143]: assignments.
+          - generic [ref=e144]: Project
+          - generic [ref=e145]: INC
+          - generic [ref=e146]: is
+          - generic [ref=e147]: where
+          - generic [ref=e148]: you
+          - generic [ref=e149]: work
+          - generic [ref=e150]: "on"
+          - generic [ref=e151]: real,
+          - generic [ref=e152]: client-paid
+          - generic [ref=e153]: projects,
+          - generic [ref=e154]: solutions
+          - generic [ref=e155]: for
+          - generic [ref=e156]: actual
+          - generic [ref=e157]: industry
+          - generic [ref=e158]: partners,
+          - generic [ref=e159]: government
+          - generic [ref=e160]: agencies
+          - generic [ref=e161]: like
+          - generic [ref=e162]: GovTech,
+          - generic [ref=e163]: and
+          - generic [ref=e164]: major
+          - generic [ref=e165]: tech
+          - generic [ref=e166]: companies.
+          - generic [ref=e167]: Sound
+          - generic [ref=e168]: of
+          - generic [ref=e169]: light,
+          - generic [ref=e170]: fast
+          - generic [ref=e171]: keyboard
+          - generic [ref=e172]: typing.
+          - generic [ref=e173]: We
+          - generic [ref=e174]: don't
+          - generic [ref=e175]: just
+          - generic [ref=e176]: teach
+          - generic [ref=e177]: you
+          - generic [ref=e178]: skills.
+          - generic [ref=e179]: We
+          - generic [ref=e180]: give
+          - generic [ref=e181]: you
+          - generic [ref=e182]: a
+          - generic [ref=e183]: job.
+          - generic [ref=e184]: You
+          - generic [ref=e185]: will
+          - generic [ref=e186]: apply
+          - generic [ref=e187]: Agile
+          - generic [ref=e188]: methodologies,
+          - generic [ref=e189]: manage
+          - generic [ref=e190]: timelines,
+          - generic [ref=e191]: and
+          - generic [ref=e192]: engage
+          - generic [ref=e193]: directly
+          - generic [ref=e194]: with
+          - generic [ref=e195]: clients,
+          - generic [ref=e196]: just
+          - generic [ref=e197]: like
+          - generic [ref=e198]: you
+          - generic [ref=e199]: would
+          - generic [ref=e200]: in
+          - generic [ref=e201]: a
+          - generic [ref=e202]: real
+          - generic [ref=e203]: company.
+          - generic [ref=e204]: It's
+          - generic [ref=e205]: the
+          - generic [ref=e206]: ultimate
+          - generic [ref=e207]: proving
+          - generic [ref=e208]: ground
+          - generic [ref=e209]: for
+          - generic [ref=e210]: your
+          - generic [ref=e211]: tech
+          - generic [ref=e212]: career.
+      - generic [ref=e214]:
+        - generic [ref=e215]:
+          - heading "Additional Images" [level=3] [ref=e216]
+          - generic [ref=e217]:
+            - generic [ref=e218] [cursor=pointer]:
+              - img "Behind the scenes" [ref=e219]
+              - generic [ref=e220]: Learn
+            - generic [ref=e221] [cursor=pointer]:
+              - img "Historical documents" [ref=e222]
+              - generic [ref=e223]: More
+            - generic [ref=e224] [cursor=pointer]:
+              - img "Artifact details" [ref=e225]
+              - generic [ref=e226]: About
+            - generic [ref=e227] [cursor=pointer]:
+              - img "Interactive features" [ref=e228]
+              - generic [ref=e229]: Us
+        - generic [ref=e231]:
+          - heading "Detailed Information" [level=3] [ref=e232]
+          - paragraph [ref=e233]: Did You Know? In Project INC, Students get a chance to work with real life client projects! INC Students in 2025 got to work on client projects from SLA, CleoSpa and Singapore Poly Open House so far! What are You Waiting For? Join us Today!
+```

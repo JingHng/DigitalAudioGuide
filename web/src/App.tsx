@@ -21,6 +21,7 @@ import UserBadgePage from "./routes/userBadgePage.tsx";
 import AllExhibitions from "./components/ExhibitionsPage.tsx";
 import ExhibitionDetails from "./components/ExhibitionDetailsPage.tsx"; 
 import ExhibitDetails from "./components/ExhibitDetails.tsx";
+import ARPhotobooth from "./components/ARPhotobooth.tsx";
 
 // --- COMMENTED OUT: Other Public/Protected Components ---
 // import ReviewPage from "./components/reviewPage/ReviewPage";
@@ -77,6 +78,7 @@ function App() {
             {/* --- NEW/MODIFIED Public Exhibition Routes (Enabled) --- */}
             { <Route path="/exhibitions" element={<AllExhibitions />} /> }
             { <Route path="/exhibitions/:id" element={<ExhibitionDetails />} /> }
+            { <Route path="/exhibitions/:id/ar-photobooth" element={<ARPhotobooth />} /> }
             { <Route path="/exhibit/:id" element={<ExhibitDetails />} /> }
 
             {/* --- Other Public/Auth Routes --- */}
