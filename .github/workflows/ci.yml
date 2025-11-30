@@ -44,6 +44,7 @@ jobs:
           DATABASE_URL: ${{ env.DATABASE_URL }}
         run: |
           npx prisma generate
+          npx prisma migrate reset --force --skip-seed
           npx prisma migrate deploy
           node prisma/seed.js
           npm run build
