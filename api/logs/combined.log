@@ -383,3 +383,6 @@
 {"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2025-11-30 20:39:45"}
 {"level":"info","message":"Default inactivity threshold setting initialized","service":"user-inactivity-service","timestamp":"2025-11-30 20:39:48"}
 {"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2025-11-30 20:39:48"}
+{"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2025-11-30 20:58:31"}
+{"level":"info","message":"Default inactivity threshold setting initialized","service":"user-inactivity-service","timestamp":"2025-11-30 20:58:35"}
+{"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2025-11-30 20:58:35"}

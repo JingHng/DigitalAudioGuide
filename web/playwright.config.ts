@@ -7,13 +7,15 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './tests/e2e',
   /* Run tests in files in parallel */
-  fullyParallel: true,
+  fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only - increased for flaky tests */
-  retries: process.env.CI ? 3 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  retries: process.env.CI ? 2 : 0,
+  /* Reduce workers for CI stability */
+  workers: process.env.CI ? 1 : 2,
+  /* Timeout for each test */
+  timeout: process.env.CI ? 60000 : 30000,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -28,14 +30,11 @@ export default defineConfig({
     trace: 'on-first-retry',
     
     /* Increased timeout for CI environments */
-    actionTimeout: 30000,
-    navigationTimeout: 30000,
+    actionTimeout: process.env.CI ? 45000 : 30000,
+    navigationTimeout: process.env.CI ? 45000 : 30000,
     
     /* Ignore HTTPS errors for self-signed certificates */
     ignoreHTTPSErrors: true,
-    
-    /* Disable web security for CI testing */
-    bypassCSP: true,
     
     /* Video recording on failure */
     video: process.env.CI ? 'retain-on-failure' : 'off',
@@ -50,17 +49,12 @@ export default defineConfig({
       name: 'chromium',
       use: { 
         ...devices['Desktop Chrome'],
-        // CI-specific browser args for Chromium
+        // Minimal CI-specific args for Chromium
         launchOptions: process.env.CI ? {
           args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
-            '--disable-dev-shm-usage',
-            '--disable-web-security',
-            '--disable-features=VizDisplayCompositor',
-            '--use-fake-ui-for-media-stream',
-            '--use-fake-device-for-media-stream',
-            '--autoplay-policy=no-user-gesture-required'
+            '--disable-dev-shm-usage'
           ]
         } : undefined
       },
@@ -69,30 +63,14 @@ export default defineConfig({
     {
       name: 'firefox',
       use: { 
-        ...devices['Desktop Firefox'],
-        // CI-specific browser args for Firefox
-        launchOptions: process.env.CI ? {
-          firefoxUserPrefs: {
-            'media.navigator.permission.disabled': true,
-            'media.autoplay.default': 0,
-            'permissions.default.microphone': 1,
-            'permissions.default.camera': 1
-          }
-        } : undefined
+        ...devices['Desktop Firefox']
       },
     },
 
     {
       name: 'webkit',
       use: { 
-        ...devices['Desktop Safari'],
-        // CI-specific browser args for WebKit
-        launchOptions: process.env.CI ? {
-          args: [
-            '--disable-web-security',
-            '--allow-running-insecure-content'
-          ]
-        } : undefined
+        ...devices['Desktop Safari']
       },
     },
 
