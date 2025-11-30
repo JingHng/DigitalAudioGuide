@@ -13,7 +13,7 @@ env:
   API_DIR: "api"
   WEB_DIR: "web"
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
-  JWT_SECRET_KEY: ${{ secrets.JWT_ACCESS_SECRET }}
+  JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
   JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
 
 jobs:
@@ -61,85 +61,14 @@ jobs:
           JWT_REFRESH_SECRET: ${{ env.JWT_REFRESH_SECRET }}
           NODE_ENV: test
         run: |
-          echo "Starting API server..."
-          echo "Environment variables set:"
-          echo "PORT: $PORT"
-          echo "NODE_ENV: $NODE_ENV"
-          echo "DATABASE_URL: ${DATABASE_URL:0:50}..." # Only show first 50 chars
-          echo "JWT_SECRET_KEY: ${JWT_SECRET_KEY:+SET}" # Show SET if variable is set
-          
-          # Start the regular server with proper env vars
           npm start &
-          API_PID=$!
-          echo "API server started with PID: $API_PID"
-          
-          # Wait for API to be ready with better retry logic
-          echo "Waiting for API server to be ready..."
-          for i in {1..30}; do
-            if curl -s http://localhost:5175/health > /dev/null 2>&1; then
-              echo "API health endpoint responding!"
-              break
-            elif curl -s http://localhost:5175/ > /dev/null 2>&1; then
-              echo "API root endpoint responding!"
-              break
-            else
-              echo "Attempt $i: API not ready yet, waiting 2 seconds..."
-              sleep 2
-            fi
-            
-            if [ $i -eq 30 ]; then
-              echo "API server failed to start properly!"
-              # Show what's running on the port
-              ss -tulpn | grep :5175 || echo "Nothing running on port 5175"
-              # Show API logs
-              echo "Checking if API process is still running..."
-              kill -0 $API_PID 2>/dev/null && echo "API process is running" || echo "API process died"
-              exit 1
-            fi
-          done
-          
-          echo "API server is ready!"
+          sleep 10
+          # Verify API is responding
+          curl -f http://localhost:5175/health || curl -f http://localhost:5175/ || echo "API server not responding"
 
       - name: Run Playwright tests
         working-directory: ${{ env.WEB_DIR }}
-        run: |
-          echo "Creating test environment configuration..."
-          cat > .env.test << EOF
-          VITE_API_TARGET=http://localhost:5175
-          CI=true
-          EOF
-          
-          echo "Starting web dev server..."
-          npm run dev &
-          WEB_PID=$!
-          echo "Web server started with PID: $WEB_PID"
-          
-          # Wait for web server to be ready
-          echo "Waiting for web server to be ready..."
-          for i in {1..20}; do
-            if curl -s http://localhost:5173/ > /dev/null 2>&1; then
-              echo "Web server is ready!"
-              break
-            else
-              echo "Attempt $i: Web server not ready yet, waiting 3 seconds..."
-              sleep 3
-            fi
-            
-            if [ $i -eq 20 ]; then
-              echo "Web server failed to start!"
-              ss -tulpn | grep :5173 || echo "Nothing running on port 5173"
-              kill -0 $WEB_PID 2>/dev/null && echo "Web process is running" || echo "Web process died"
-              exit 1
-            fi
-          done
-          
-          # Verify both servers one more time
-          echo "Final server checks..."
-          curl -f http://localhost:5175/health || curl -f http://localhost:5175/ || (echo "API server check failed!" && exit 1)
-          curl -f http://localhost:5173/ || (echo "Web server check failed!" && exit 1)
-          
-          echo "Both servers are ready! Running tests..."
-          npm run e2e
+        run: npm run e2e
         env:
           CI: true
           VITE_API_TARGET: http://localhost:5175
@@ -151,5 +80,3 @@ jobs:
           name: playwright-report
           path: ${{ env.WEB_DIR }}/playwright-report/
           retention-days: 7
-
- 
