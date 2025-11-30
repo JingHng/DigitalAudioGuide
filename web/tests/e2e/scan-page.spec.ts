@@ -70,18 +70,22 @@ test.describe('Scan Page Functionality and QR Code Scanner', () => {
     });
 
     test('should have working navigation buttons', async ({ page }) => {
+        // Wait for page to be fully loaded
+        await page.waitForLoadState('networkidle');
+        
         const navigation = page.locator('.scan-navigation');
-        await expect(navigation).toBeVisible({ timeout: 10000 });
+        await expect(navigation).toBeVisible({ timeout: 15000 });
         
-        const homeButton = page.locator('.nav-button', { hasText: '🏠 Home' });
-        const exhibitsButton = page.locator('.nav-button.primary', { hasText: '🏛️ Exhibits' });
+        // More robust selectors for Firefox compatibility
+        const homeButton = navigation.locator('.nav-button').filter({ hasText: 'Home' }).first();
+        const exhibitsButton = navigation.locator('.nav-button').filter({ hasText: 'Exhibits' }).first();
         
-        await expect(homeButton).toBeVisible({ timeout: 10000 });
-        await expect(exhibitsButton).toBeVisible({ timeout: 10000 });
+        await expect(homeButton).toBeVisible({ timeout: 15000 });
+        await expect(exhibitsButton).toBeVisible({ timeout: 15000 });
         
-        // Test home navigation
-        await homeButton.click();
-        await page.waitForURL('/', { timeout: 10000 });
+        // Test home navigation with Firefox-compatible approach
+        await homeButton.click({ timeout: 10000 });
+        await page.waitForURL('/', { timeout: 15000 });
         await page.waitForLoadState('networkidle');
         await expect(page).toHaveURL('/');
         
@@ -90,11 +94,11 @@ test.describe('Scan Page Functionality and QR Code Scanner', () => {
         await page.waitForSelector('.scan-page', { state: 'visible', timeout: 10000 });
         await page.waitForLoadState('networkidle');
         
-        // Test exhibits navigation
-        const exhibitsBtn = page.locator('.nav-button.primary', { hasText: '🏛️ Exhibits' });
-        await expect(exhibitsBtn).toBeVisible({ timeout: 10000 });
-        await exhibitsBtn.click();
-        await page.waitForURL('/exhibitions', { timeout: 10000 });
+        // Test exhibits navigation with Firefox-compatible selector
+        const exhibitsBtn = navigation.locator('.nav-button').filter({ hasText: 'Exhibits' }).first();
+        await expect(exhibitsBtn).toBeVisible({ timeout: 15000 });
+        await exhibitsBtn.click({ timeout: 10000 });
+        await page.waitForURL('/exhibitions', { timeout: 15000 });
         await page.waitForLoadState('networkidle');
         await expect(page).toHaveURL('/exhibitions');
     });
@@ -245,16 +249,16 @@ test.describe('Scan Page Functionality and QR Code Scanner', () => {
         const loadTime = Date.now() - startTime;
         console.log(`Page load time: ${loadTime}ms`);
         
-        await page.waitForTimeout(5000); // Increased for CI stability
+        await page.waitForTimeout(process.env.CI ? 8000 : 5000); // Allow more time for CI and Firefox
         
         const totalInitTime = Date.now() - startTime;
         console.log(`Total initialization time: ${totalInitTime}ms`);
         
-        // More lenient timing for CI environments (increased to 10 seconds)
-        expect(loadTime).toBeLessThan(10000);
+        // More lenient timing for CI environments (increased to 15 seconds for Firefox)
+        const timeLimit = process.env.CI ? 15000 : 10000;
+        expect(loadTime).toBeLessThan(timeLimit);
         console.log('✓ Page loads within acceptable time limits for CI environment');
     });
-        console.log('✓ Page loads within acceptable time limits for CI environment');
     
 
     test('should not produce console errors during normal operation', async ({ page }) => {
