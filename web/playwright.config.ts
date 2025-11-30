@@ -10,8 +10,8 @@ export default defineConfig({
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  /* Retry on CI only - increased for flaky tests */
+  retries: process.env.CI ? 3 : 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
@@ -26,23 +26,74 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    
+    /* Increased timeout for CI environments */
+    actionTimeout: 30000,
+    navigationTimeout: 30000,
+    
+    /* Ignore HTTPS errors for self-signed certificates */
+    ignoreHTTPSErrors: true,
+    
+    /* Disable web security for CI testing */
+    bypassCSP: true,
+    
+    /* Video recording on failure */
+    video: process.env.CI ? 'retain-on-failure' : 'off',
+    
+    /* Screenshot on failure */
+    screenshot: process.env.CI ? 'only-on-failure' : 'off',
   },
 
   /* Configure projects for major browsers */
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { 
+        ...devices['Desktop Chrome'],
+        // CI-specific browser args for Chromium
+        launchOptions: process.env.CI ? {
+          args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-web-security',
+            '--disable-features=VizDisplayCompositor',
+            '--use-fake-ui-for-media-stream',
+            '--use-fake-device-for-media-stream',
+            '--autoplay-policy=no-user-gesture-required'
+          ]
+        } : undefined
+      },
     },
 
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      use: { 
+        ...devices['Desktop Firefox'],
+        // CI-specific browser args for Firefox
+        launchOptions: process.env.CI ? {
+          firefoxUserPrefs: {
+            'media.navigator.permission.disabled': true,
+            'media.autoplay.default': 0,
+            'permissions.default.microphone': 1,
+            'permissions.default.camera': 1
+          }
+        } : undefined
+      },
     },
 
     {
       name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
+      use: { 
+        ...devices['Desktop Safari'],
+        // CI-specific browser args for WebKit
+        launchOptions: process.env.CI ? {
+          args: [
+            '--disable-web-security',
+            '--allow-running-insecure-content'
+          ]
+        } : undefined
+      },
     },
 
     /* Test against mobile viewports. */

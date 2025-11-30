@@ -26,5 +26,20 @@
           - img [ref=e23]
   - main [ref=e28]:
     - heading "Your Badge Collection" [level=1] [ref=e29]
-    - paragraph [ref=e30]: No badges available yet.
+    - generic [ref=e30]:
+      - generic [ref=e31]:
+        - img "Enter The Sandbox" [ref=e32] [cursor=pointer]
+        - generic [ref=e33]: Locked
+      - generic [ref=e34]:
+        - img "Particles of Change" [ref=e35] [cursor=pointer]
+        - generic [ref=e36]: Locked
+      - generic [ref=e37]:
+        - img "Strength of Our Nation" [ref=e38] [cursor=pointer]
+        - generic [ref=e39]: Locked
+      - generic [ref=e40]:
+        - img "Staying Resilient Amid Tough Times" [ref=e41] [cursor=pointer]
+        - generic [ref=e42]: Locked
+      - generic [ref=e43]:
+        - img "Special Badge Number 5" [ref=e44] [cursor=pointer]
+        - generic [ref=e45]: Locked
 ```
