@@ -167,6 +167,7 @@ jobs:
             package*.json \
             prisma/ \
             public/ \
+            src/ \
             *.js \
             web.config \
             generated/ \
@@ -175,8 +176,8 @@ jobs:
           echo "✅ Deployment package created"
           cd ..
           ls -lh "${ARTIFACT_NAME}"
-          echo "📋 Verifying public in zip:"
-          unzip -l "${ARTIFACT_NAME}" | grep "public/" | head -10
+          echo "📋 Verifying contents:"
+          unzip -l "${ARTIFACT_NAME}" | grep -E "(public/|src/|app.js)" | head -15
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
