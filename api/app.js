@@ -31,8 +31,7 @@ app.use(express.json());
 
 app.use('/public', express.static(path.join(__dirname, 'src', 'public')));
 
-// Serve frontend static files from the public directory (where they're copied during deployment)
-const frontendBuildPath = path.join(__dirname, 'public');
+const frontendBuildPath = path.join(__dirname, '..', 'web', 'dist');
 app.use(express.static(frontendBuildPath));
 app.use('/api', mainRoutes); // All routes under /api
 app.use('/api/qr', qrCodeRoute);
@@ -44,11 +43,6 @@ app.use('/api/audio-logs', audioPlaybackRoutes);
 app.use('/api/audio', audioRoutes);
 app.use('/api/language', languageRoutes);
 app.use('/api/translate', translateRoutes);
-
-// Catch-all handler: send back React's index.html file for any non-API routes
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
 
 // Additional logging for debugging
 console.log('Middleware and routes setup complete.');
