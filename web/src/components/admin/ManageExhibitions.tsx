@@ -24,6 +24,25 @@ const buildImageUrl = (fileUrl: string | null): string => {
   return DEFAULT_IMAGE_URL;
 };
 
+// Helper function to construct the correct image URL
+const getImageUrl = (fileUrl: string | null): string => {
+  if (!fileUrl) return DEFAULT_IMAGE_URL;
+
+  const cleanedPath = fileUrl.replace(/\\/g, '/');
+  const imagePrefix = '/images/';
+  const pathIndex = cleanedPath.indexOf(imagePrefix);
+
+  if (pathIndex !== -1) {
+    const filename = cleanedPath.substring(pathIndex + imagePrefix.length);
+    // Images are served from /public/images/ on the backend
+    // The backend serves static files from /public (not under /api)
+    // So we need to use the full backend URL for images
+    const backendUrl = import.meta.env.VITE_API_TARGET || 'http://localhost:3000';
+    return `${backendUrl}/public/images/${filename}`;
+  }
+  return DEFAULT_IMAGE_URL;
+};
+
 // --- Type Definitions ---
 interface Status {
   statusId: number;

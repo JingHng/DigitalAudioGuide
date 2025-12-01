@@ -4,15 +4,12 @@ import {
   Users,
   Clock,
   TrendingUp,
-  Calendar,
-  Filter,
   Headphones,
-  Music,
-  BarChart3,
 } from "lucide-react";
 import AdminLayout from "./AdminLayout";
 import audioLogService from "../../services/audioLogService";
 import type { AudioLogAnalytics } from "../../services/audioLogService";
+import apiClient from "../../utils/apiClient";
 import "../../css/AdminTable.css";
 import "../../css/AdminComponents.css";
 import "../../css/AdminDashboard.css";
@@ -101,9 +98,8 @@ const AudioAnalyticsPage: React.FC = () => {
 
   const fetchExhibits = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/exhibits");
-      const data = await response.json();
-      setExhibits(data);
+      const response = await apiClient.get("/exhibits");
+      setExhibits(response.data);
     } catch (err) {
       console.error("Error fetching exhibits:", err);
       setExhibits([]);
@@ -124,10 +120,6 @@ const AudioAnalyticsPage: React.FC = () => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString();
   };
 
   const formatDateTime = (dateString: string) => {
