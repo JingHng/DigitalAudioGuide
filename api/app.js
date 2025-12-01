@@ -32,12 +32,14 @@ app.use(express.json());
 app.use('/public', express.static(path.join(__dirname, 'src', 'public')));
 
 // Frontend build path: use api/public on Azure, ../web/dist locally
-const isProduction = process.env.NODE_ENV === 'production' || process.env.WEBSITE_SITE_NAME;
+const isProduction = process.env.NODE_ENV === 'production' || !!process.env.WEBSITE_SITE_NAME;
 const frontendBuildPath = isProduction 
   ? path.join(__dirname, 'public')
   : path.join(__dirname, '..', 'web', 'dist');
 
-console.log('Environment:', isProduction ? 'Production (Azure)' : 'Development (Local)');
+console.log('🔍 NODE_ENV:', process.env.NODE_ENV);
+console.log('🔍 WEBSITE_SITE_NAME:', process.env.WEBSITE_SITE_NAME);
+console.log('🔍 isProduction:', isProduction);
 console.log('Frontend build path:', frontendBuildPath);
 
 app.use(express.static(frontendBuildPath));
@@ -58,9 +60,5 @@ app.use((req, res, next) => {
   const indexPath = path.join(frontendBuildPath, 'index.html');
   res.sendFile(indexPath);
 });
-
-// Additional logging for debugging
-console.log('Middleware and routes setup complete.');
-console.log('Frontend build path:', frontendBuildPath);
 
 module.exports = app;
