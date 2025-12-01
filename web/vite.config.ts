@@ -11,6 +11,16 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react()],
+    build: {
+      // Force new asset names to break cache
+      rollupOptions: {
+        output: {
+          assetFileNames: `assets/[name]-${Date.now()}.[ext]`,
+          chunkFileNames: `assets/[name]-${Date.now()}.js`,
+          entryFileNames: `assets/[name]-${Date.now()}.js`
+        }
+      }
+    },
     resolve: {
       extensions: ['.tsx', '.ts', '.jsx', '.js', '.json'],
     },
