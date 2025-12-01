@@ -31,13 +31,13 @@ app.use(express.json());
 
 app.use('/public', express.static(path.join(__dirname, 'src', 'public')));
 
-// Serve frontend static files - different paths for development vs production
-const isProduction = process.env.NODE_ENV === 'production' || process.env.WEBSITE_SITE_NAME; // Azure sets WEBSITE_SITE_NAME
+// Frontend build path: use api/public on Azure, ../web/dist locally
+const isProduction = process.env.NODE_ENV === 'production' || process.env.WEBSITE_SITE_NAME;
 const frontendBuildPath = isProduction 
-  ? path.join(__dirname, 'public')  // Azure: files copied to api/public during deployment
-  : path.join(__dirname, '..', 'web', 'dist'); // Local: files in web/dist
+  ? path.join(__dirname, 'public')
+  : path.join(__dirname, '..', 'web', 'dist');
 
-console.log(`Environment: ${isProduction ? 'production' : 'development'}`);
+console.log('Environment:', isProduction ? 'Production (Azure)' : 'Development (Local)');
 console.log('Frontend build path:', frontendBuildPath);
 
 app.use(express.static(frontendBuildPath));
@@ -52,12 +52,12 @@ app.use('/api/audio', audioRoutes);
 app.use('/api/language', languageRoutes);
 app.use('/api/translate', translateRoutes);
 
-// Catch-all handler for React Router (production only)
-if (isProduction) {
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(frontendBuildPath, 'index.html'));
-  });
-}
+// SPA catch-all: serve index.html for non-API routes (client-side routing)
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api')) return next();
+  const indexPath = path.join(frontendBuildPath, 'index.html');
+  res.sendFile(indexPath);
+});
 
 // Additional logging for debugging
 console.log('Middleware and routes setup complete.');

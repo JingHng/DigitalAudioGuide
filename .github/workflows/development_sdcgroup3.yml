@@ -131,38 +131,44 @@ jobs:
       # ---- Bundle web into api/public ----
       - name: Copy web build into api/public
         run: |
-          echo "🔍 DEBUG: Checking if web build exists"
-          ls -la "${WEB_DIR}/dist/" || echo "❌ WEB DIST NOT FOUND"
-          echo "🔍 DEBUG: Copying web build to api/public"
+          echo "📁 Copying frontend build to API public folder"
           rm -rf "${API_DIR}/public"
           mkdir -p "${API_DIR}/public"
           cp -R "${WEB_DIR}/dist/." "${API_DIR}/public/"
-          echo "🔍 DEBUG: Checking api/public after copy"
-          ls -la "${API_DIR}/public/" || echo "❌ API PUBLIC NOT FOUND"
-          echo "🔍 DEBUG: Checking for index.html specifically"
-          cat "${API_DIR}/public/index.html" | head -5 || echo "❌ INDEX.HTML NOT FOUND"
+          echo "✅ Frontend copied successfully"
+          ls -la "${API_DIR}/public/"
 
-      # ---- Create artifact containing only what's needed on the server ----
+      # ---- Prepare for production deployment ----
+      - name: Prepare production API
+        run: |
+          cd "${API_DIR}"
+          echo "🧹 Preparing production build"
+          # Remove dev dependencies (keep only production)
+          npm prune --production
+          # Remove unnecessary files for deployment
+          rm -rf tests/ *.log coverage/ || true
+          echo "✅ Production preparation complete"
+          echo "📊 Final API directory size:"
+          du -sh . || true
+
+      # ---- Create clean deployment artifact ----
       - name: Package deployment artifact
         run: |
-          # include compiled API, production node_modules, prisma files, package files and the static public folder
           cd "${API_DIR}"
           rm -f "../${ARTIFACT_NAME}"
-          echo "🔍 DEBUG: Files in API directory before zipping:"
-          ls -la
-          echo "🔍 DEBUG: Checking public folder exists:"
-          ls -la public/ || echo "❌ PUBLIC FOLDER NOT FOUND"
-          echo "🔍 DEBUG: Creating deployment artifact with contents:"
-          # Include all necessary files for deployment - dist folder if it exists, otherwise source files
-          zip -r "../${ARTIFACT_NAME}" node_modules package*.json prisma public *.js *.ts src generated || true
-          # Also try to include dist if it exists (compiled TypeScript)
-          if [ -d "dist" ]; then
-            echo "Including compiled dist folder"
-            zip -ur "../${ARTIFACT_NAME}" dist || true
-          fi
-          echo "🔍 DEBUG: Artifact created, checking size and contents:"
-          ls -la "../${ARTIFACT_NAME}"
-          unzip -l "../${ARTIFACT_NAME}" | grep -E "(public|index.html)" || echo "❌ NO PUBLIC FILES IN ZIP"
+          echo "📦 Creating deployment package"
+          # Package only production files: node_modules, source files, prisma, and frontend
+          zip -r "../${ARTIFACT_NAME}" \
+            node_modules/ \
+            package*.json \
+            prisma/ \
+            public/ \
+            *.js \
+            web.config \
+            generated/ \
+            || true
+          echo "✅ Deployment package created"
+          ls -lh "../${ARTIFACT_NAME}"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
