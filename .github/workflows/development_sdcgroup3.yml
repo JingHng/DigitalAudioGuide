@@ -131,9 +131,16 @@ jobs:
       # ---- Bundle web into api/public ----
       - name: Copy web build into api/public
         run: |
+          echo "🔍 DEBUG: Checking if web build exists"
+          ls -la "${WEB_DIR}/dist/" || echo "❌ WEB DIST NOT FOUND"
+          echo "🔍 DEBUG: Copying web build to api/public"
           rm -rf "${API_DIR}/public"
           mkdir -p "${API_DIR}/public"
           cp -R "${WEB_DIR}/dist/." "${API_DIR}/public/"
+          echo "🔍 DEBUG: Checking api/public after copy"
+          ls -la "${API_DIR}/public/" || echo "❌ API PUBLIC NOT FOUND"
+          echo "🔍 DEBUG: Checking for index.html specifically"
+          cat "${API_DIR}/public/index.html" | head -5 || echo "❌ INDEX.HTML NOT FOUND"
 
       # ---- Create artifact containing only what's needed on the server ----
       - name: Package deployment artifact
@@ -141,16 +148,20 @@ jobs:
           # include compiled API, production node_modules, prisma files, package files and the static public folder
           cd "${API_DIR}"
           rm -f "../${ARTIFACT_NAME}"
-          echo "Creating deployment artifact with contents:"
+          echo "🔍 DEBUG: Files in API directory before zipping:"
           ls -la
+          echo "🔍 DEBUG: Checking public folder exists:"
+          ls -la public/ || echo "❌ PUBLIC FOLDER NOT FOUND"
+          echo "🔍 DEBUG: Creating deployment artifact with contents:"
           zip -r "../${ARTIFACT_NAME}" dist node_modules package*.json prisma public || true
           # Fallback: if node_modules doesn't exist (rare), include dist and package files
           if [ ! -f "../${ARTIFACT_NAME}" ]; then
             echo "Fallback: creating minimal artifact"
             zip -r "../${ARTIFACT_NAME}" dist package*.json prisma public || true
           fi
-          echo "Artifact created, checking size:"
+          echo "🔍 DEBUG: Artifact created, checking size and contents:"
           ls -la "../${ARTIFACT_NAME}"
+          unzip -l "../${ARTIFACT_NAME}" | grep -E "(public|index.html)" || echo "❌ NO PUBLIC FILES IN ZIP"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
