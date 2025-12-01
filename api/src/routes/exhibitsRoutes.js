@@ -22,7 +22,10 @@ router.get('/:id', exhibitController.getExhibitById);
 router.post(
   '/', 
   jwtMiddleware.verifyToken, 
-  uploadImage.array('images', 10), 
+  uploadImage.fields([
+    { name: 'primaryImage', maxCount: 1 },
+    { name: 'additionalImages', maxCount: 4 }
+  ]), 
   exhibitController.createExhibit
 );
 // Update an exhibit's details (title, description)

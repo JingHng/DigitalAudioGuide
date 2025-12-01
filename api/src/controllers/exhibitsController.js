@@ -72,26 +72,51 @@ exports.getExhibitById = async (req, res) => {
 
 exports.createExhibit = async (req, res) => {
   try {
-    const { title, description, exhibitionId } = req.body;
+    const { title, description, additionalDescription, exhibitionId } = req.body;
     const files = req.files;
+    const primaryImage = files && files.primaryImage ? files.primaryImage[0] : null;
+    const additionalImages = files && files.additionalImages ? files.additionalImages : [];
     const adminUserId = req.user?.userId;
 
     if (!title || !exhibitionId) {
       return res.status(400).json({ error: "Exhibit title and an exhibition selection are required." });
     }
 
+    // Validate additional images count
+    if (additionalImages.length > 4) {
+      return res.status(400).json({ error: "Maximum of 4 additional images allowed." });
+    }
+
     const qrBaseUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/exhibit/`;
 
-    const imagesJson = files && files.length > 0
-      ? JSON.stringify(files.map((file, index) => ({
+    // Prepare images JSON for stored procedure
+    let imagesJson = null;
+    if (primaryImage || additionalImages.length > 0) {
+      const imagesList = [];
+      
+      // Add primary image first
+      if (primaryImage) {
+        imagesList.push({
+          file_url: `/images/${primaryImage.filename}`,
+          title: primaryImage.originalname,
+          is_primary: true,
+        });
+      }
+      
+      // Add additional images
+      additionalImages.forEach(file => {
+        imagesList.push({
           file_url: `/images/${file.filename}`,
           title: file.originalname,
-          is_primary: index === 0,
-        })))
-      : null;
+          is_primary: false,
+        });
+      });
+      
+      imagesJson = JSON.stringify(imagesList);
+    }
 
     // Use $queryRaw to call the procedure and get the INOUT parameter back
-    const result = await prisma.$queryRaw`CALL sp_create_exhibit(${title}, ${description}, ${BigInt(exhibitionId)}, ${imagesJson}::jsonb, ${qrBaseUrl}, NULL::bigint);`;
+    const result = await prisma.$queryRaw`CALL sp_create_exhibit(${title}, ${description || ''}, ${additionalDescription || ''}, ${BigInt(exhibitionId)}, ${imagesJson}::jsonb, ${qrBaseUrl}, NULL::bigint);`;
     
     // The INOUT parameter is returned in the result set
     const newExhibitId = result[0].p_new_exhibit_id;
@@ -102,7 +127,15 @@ exports.createExhibit = async (req, res) => {
     
     await logAuditAction(
       adminUserId, null, "exhibit", "create",
-      { exhibitId: newExhibitId.toString(), title, exhibitionId, images_uploaded: files ? files.length : 0 },
+      { 
+        exhibitId: newExhibitId.toString(), 
+        title, 
+        exhibitionId, 
+        images_uploaded: (primaryImage ? 1 : 0) + additionalImages.length,
+        primary_image: primaryImage ? "uploaded" : "none",
+        additional_images: additionalImages.length,
+        additional_description: additionalDescription ? "added" : "none"
+      },
       { ip_address: req.ip, user_agent: req.get("User-Agent") }
     );
 
@@ -118,7 +151,7 @@ exports.createExhibit = async (req, res) => {
 exports.updateExhibit = async (req, res) => {
   try {
     const exhibitId = BigInt(req.params.id);
-    const { title, description } = req.body;
+    const { title, description, additionalDescription } = req.body;
     const adminUserId = req.user?.userId;
 
     // STEP 1: Fetch the original record for the audit log. 
@@ -130,18 +163,16 @@ exports.updateExhibit = async (req, res) => {
       return res.status(404).json({ error: "Exhibit not found" });
     }
 
-    // STEP 2: Call the stored function to perform the update.
-    const result = await prisma.$queryRaw`
-      SELECT * FROM sf_update_exhibit(${exhibitId}, ${title}, ${description});
-    `;
-    
-    // If the function returned no rows, something went wrong (e.g., exhibit was deleted
-    // between the find and update calls).
-    if (result.length === 0) {
-        return res.status(404).json({ error: "Exhibit not found during update." });
-    }
-    
-    const updatedExhibitData = result[0];
+    // STEP 2: Update the exhibit using Prisma directly since we're adding additionalDescription
+    const updatedExhibit = await prisma.exhibit.update({
+      where: { exhibitId },
+      data: { 
+        title,
+        description,
+        additionalDescription: additionalDescription || null,
+        updatedAt: new Date()
+      }
+    });
 
     // STEP 3: Create the audit log.
     await logAuditAction(
@@ -152,8 +183,9 @@ exports.updateExhibit = async (req, res) => {
       {
         exhibitId: exhibitId.toString(),
         changes: {
-          title: { from: originalExhibit.title, to: updatedExhibitData.title },
-          description: { from: originalExhibit.description, to: updatedExhibitData.description },
+          title: { from: originalExhibit.title, to: updatedExhibit.title },
+          description: { from: originalExhibit.description, to: updatedExhibit.description },
+          additionalDescription: { from: originalExhibit.additionalDescription, to: updatedExhibit.additionalDescription },
         },
       },
       {
@@ -163,11 +195,12 @@ exports.updateExhibit = async (req, res) => {
     );
 
     res.status(200).json({
-        exhibitId: updatedExhibitData.exhibit_id,
-        title: updatedExhibitData.title,
-        description: updatedExhibitData.description,
-        createdAt: updatedExhibitData.created_at,
-        updatedAt: updatedExhibitData.updated_at
+        exhibitId: updatedExhibit.exhibitId,
+        title: updatedExhibit.title,
+        description: updatedExhibit.description,
+        additionalDescription: updatedExhibit.additionalDescription,
+        createdAt: updatedExhibit.createdAt,
+        updatedAt: updatedExhibit.updatedAt
     });
 
   } catch (err) {
@@ -210,22 +243,62 @@ exports.deleteExhibit = async (req, res) => {
 exports.uploadExhibitImage = async (req, res) => {
   try {
     const exhibitId = BigInt(req.params.id);
-    const adminUserId = req.user?.userId; // Assuming user info is in req.user
+    const adminUserId = req.user?.userId;
+    const { isPrimary } = req.body; // Get isPrimary flag from request body
 
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ error: "No image files uploaded." });
     }
+
+    // Check if this exhibit exists
+    const exhibit = await prisma.exhibit.findUnique({
+      where: { exhibitId },
+      include: { images: true }
+    });
+
+    if (!exhibit) {
+      return res.status(404).json({ error: "Exhibit not found." });
+    }
+
+    const isPrimaryUpload = isPrimary === 'true' || isPrimary === true;
+    
+    // If uploading primary image, check if one already exists
+    if (isPrimaryUpload) {
+      const existingPrimaryImage = exhibit.images.find(img => img.isPrimary);
+      if (existingPrimaryImage) {
+        // Remove the existing primary image
+        await prisma.image.delete({
+          where: { imageId: existingPrimaryImage.imageId }
+        });
+      }
+      
+      // Only allow one primary image at a time
+      if (req.files.length > 1) {
+        return res.status(400).json({ error: "Only one primary image can be uploaded at a time." });
+      }
+    } else {
+      // For additional images, check the 4-image limit
+      const existingAdditionalImages = exhibit.images.filter(img => !img.isPrimary);
+      if (existingAdditionalImages.length + req.files.length > 4) {
+        return res.status(400).json({ 
+          error: `Cannot upload ${req.files.length} additional images. Maximum of 4 additional images allowed. You currently have ${existingAdditionalImages.length} additional images.`
+        });
+      }
+    }
+
     const imageCreations = req.files.map((file) => {
       return prisma.image.create({
         data: {
           fileUrl: `/images/${file.filename}`,
           title: file.originalname,
+          isPrimary: isPrimaryUpload,
           exhibit: {
             connect: { exhibitId: exhibitId },
           },
         },
       });
     });
+    
     const newImages = await prisma.$transaction(imageCreations);
 
     // Log the audit action for image upload
@@ -237,10 +310,12 @@ exports.uploadExhibitImage = async (req, res) => {
       {
         exhibitId: exhibitId.toString(),
         imagesUploaded: newImages.length,
+        imageType: isPrimaryUpload ? "primary" : "additional",
         imageDetails: newImages.map((img) => ({
           imageId: img.imageId.toString(),
           fileUrl: img.fileUrl,
           title: img.title,
+          isPrimary: img.isPrimary,
         })),
       },
       {

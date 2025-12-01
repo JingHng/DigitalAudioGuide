@@ -11,7 +11,7 @@ interface Exhibit {
   exhibitId: string;
   title: string;
   description: string;
-  images: Array<{ fileUrl: string }>;
+  images: Array<{ fileUrl: string; isPrimary?: boolean; }>;
 }
 
 interface Exhibition {
@@ -31,7 +31,6 @@ const getImageUrl = (fileUrl: string | null): string => {
 
   if (pathIndex !== -1) {
     const filename = cleanedPath.substring(pathIndex + imagePrefix.length);
-    // Final verified working URL structure
     return `${BACKEND_URL}/public/images/${filename}`;
   }
   return DEFAULT_IMAGE_URL;
@@ -112,13 +111,22 @@ const ExhibitionDetailsPage: React.FC = () => {
         <div className="exhibits-grid">
           {exhibition.exhibits.length > 0 ? (
             exhibition.exhibits.map((exhibit) => {
+              // Prioritize primary image, fallback to first image
+              const primaryImage = exhibit.images.find(img => img.isPrimary);
+              const imageToDisplay = primaryImage || exhibit.images[0] || null;
+              
               return (
                 <Link to={`/exhibit/${exhibit.exhibitId}`} key={exhibit.exhibitId} className="exhibit-card-link">
                   <div className="exhibit-card">
                     <div className="exhibit-image-container">
                       <img 
-                        src={getImageUrl(exhibit.images?.[0]?.fileUrl)} 
-                        alt={exhibit.title} 
+                        src={getImageUrl(imageToDisplay?.fileUrl)} 
+                        alt={exhibit.title}
+                        onError={(e) => {
+                          console.error(`Failed to load image: ${getImageUrl(imageToDisplay?.fileUrl)}`);
+                          const target = e.target as HTMLImageElement;
+                          target.src = DEFAULT_IMAGE_URL;
+                        }}
                       />
                     </div>
                     <div className="exhibit-card-content">

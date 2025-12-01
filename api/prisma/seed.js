@@ -786,13 +786,15 @@ await client.query(`
       INSERT INTO images (image_id, exhibit_id, exhibition_id, title, description, file_url, is_primary) VALUES
       (1, NULL, 1, 'Cover for Through the Lens of Time', '', '/images/ThroughTheLensOfTime.jpg', true),
       (2, NULL, 2, 'Cover for The Beginning', '', '/images/TheBeginnings.jpg', true),
-      (3, 1, NULL, 'resistanceandresilience.jpg', '', '/images/1763374470674-330029833-resistanceandresilience.jpg', true),
-      (4, 2, NULL, 'headtohead.jpg', '', '/images/1763374565470-842439942-headtohead.jpg', true),
+      (3, 1, NULL, 'resistanceandresilience.jpg', '', '/images/Bunker.jpg', true),
+      (4, 2, NULL, 'headtohead.jpg', '', '/images/WallFaces.jpg', true),
       (5, 3, NULL, 'relentlesssabotage2.jpg', '', '/images/Bunker.jpg', true),
       (6, 4, NULL, 'divingintotheunknown.jpg', '', '/images/WallFaces.jpg', true),
       (7, NULL, 3, 'Project INC Image', '', '/images/INC.jpg', true),
-      (8, 5, NULL, 'Project INC Image', '', '/images/INC.jpg', true)
-
+      (8, 5, NULL, 'Project INC Image', '', '/images/SoCTour.jpg', true),
+      (9, 5, NULL, 'Project INC Image', '', '/images/SoC3.jpg', false),
+      (10, 5, NULL, 'Project INC Image', '', '/images/SoC2.jpg', false),
+      (11, 5, NULL, 'Project INC Image', '', '/images/SoC1.avif', false)
 
       `);
 

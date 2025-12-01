@@ -40,6 +40,7 @@ interface Image {
   imageId: string;
   fileUrl: string | null;
   title: string | null;
+  isPrimary?: boolean;
 }
 interface LanguageInfo {
   languageId: string;
@@ -96,7 +97,6 @@ const ExhibitDetails: React.FC = () => {
   const [showImageGallery, setShowImageGallery] = useState(false);
   
   // TTS states
-  const [currentSentence, setCurrentSentence] = useState('');
   const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0);
   const [sentences, setSentences] = useState<string[]>([]);
 
@@ -308,7 +308,6 @@ const ExhibitDetails: React.FC = () => {
   // Reset TTS state when audio changes
   useEffect(() => {
     setActiveWordIndex(-1);
-    setCurrentSentence('');
     setCurrentSentenceIndex(0);
     setCurrentTime(0);
   }, [currentAudio?.audioId]);
@@ -353,7 +352,6 @@ const ExhibitDetails: React.FC = () => {
         
         if (currentSentIdx < sentences.length && currentSentIdx !== currentSentenceIndex) {
           setCurrentSentenceIndex(currentSentIdx);
-          setCurrentSentence(sentences[currentSentIdx]);
         }
       }
     }
@@ -404,19 +402,6 @@ const ExhibitDetails: React.FC = () => {
     return DEFAULT_IMAGE_URL;
   };
 
-  const getAudioUrl = (fileUrl: string): string => {
-    if (!fileUrl) return '';
-    if (fileUrl.startsWith('http')) return fileUrl;
-    
-    // Ensure proper path formatting for audio files
-    let cleanPath = fileUrl.replace(/^\/+/, '');
-    if (cleanPath.startsWith('audios/')) {
-      cleanPath = `public/${cleanPath}`;
-    }
-    
-    return `${BACKEND_URL}/${cleanPath}`;
-  };
-
   // Early returns
   if (loading)
     return (
@@ -430,7 +415,11 @@ const ExhibitDetails: React.FC = () => {
 
   const availableAudio = exhibit.audio.filter((a) => a.fileUrl);
   const hasAudioContent = availableAudio.length > 0;
+  // Separate primary and additional images
   const validImages = exhibit.images.filter((img) => img.fileUrl);
+  const primaryImages = validImages.filter((img) => img.isPrimary);
+  const additionalImages = validImages.filter((img) => !img.isPrimary);
+  const displayImages = primaryImages.length > 0 ? primaryImages : validImages.slice(0, 1); // Fallback to first image if no primary
 
   return (
     <div className="smart-exhibit-home">
@@ -471,7 +460,7 @@ const ExhibitDetails: React.FC = () => {
             
             {/* Centered Image Gallery */}
             <div className="exhibit-images-centered">
-              {validImages.length > 0 ? (
+              {displayImages.length > 0 ? (
                 <Swiper
                   modules={[Navigation, Pagination, EffectFade, Autoplay]}
                   effect="fade"
@@ -483,10 +472,10 @@ const ExhibitDetails: React.FC = () => {
                   }}
                   pagination={{ clickable: true }}
                   autoplay={{ delay: 5000, disableOnInteraction: false }}
-                  loop={validImages.length > 1}
+                  loop={displayImages.length > 1}
                   className="exhibit-image-swiper"
                 >
-                  {validImages.map((image: Image, index: number) => (
+                  {displayImages.map((image: Image, index: number) => (
                     <SwiperSlide key={image.imageId}>
                       <div className="exhibit-image-container">
                         <img
@@ -500,13 +489,13 @@ const ExhibitDetails: React.FC = () => {
                         />
                         <div className="image-overlay">
                           <div className="image-counter">
-                            {index + 1} / {validImages.length}
+                            {index + 1} / {displayImages.length}
                           </div>
                         </div>
                       </div>
                     </SwiperSlide>
                   ))}
-                  {validImages.length > 1 && (
+                  {displayImages.length > 1 && (
                     <>
                       <div className="custom-prev">
                         <ChevronLeft size={24} />
@@ -655,63 +644,30 @@ const ExhibitDetails: React.FC = () => {
               {/* Additional Image Gallery */}
               <div className="admin-image-gallery">
                 <h3>Additional Images</h3>
-                <div className="additional-images-grid">
-                  <div className="placeholder-image">
-                    <img 
-                      src={`${BACKEND_URL}/public/images/placeholder-1.jpg`}
-                      alt="Behind the scenes"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = DEFAULT_IMAGE_URL;
-                      }}
-                    />
-                    <div className="image-overlay">
-                      <span>Learn</span>
-                    </div>
+                {additionalImages.length > 0 ? (
+                  <div className="additional-images-grid">
+                    {additionalImages.map((image, index) => (
+                      <div key={image.imageId} className="additional-image-item">
+                        <img 
+                          src={getImageUrl(image.fileUrl || '')}
+                          alt={image.title || `Additional image ${index + 1}`}
+                          onClick={() => {
+                            const allImagesIndex = validImages.findIndex(img => img.imageId === image.imageId);
+                            setCurrentImageIndex(allImagesIndex);
+                            setShowImageGallery(true);
+                          }}
+                        />
+                        <div className="image-overlay">
+                          <span>{image.title || `Image ${index + 1}`}</span>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  
-                  <div className="placeholder-image">
-                    <img 
-                      src={`${BACKEND_URL}/public/images/placeholder-2.jpg`}
-                      alt="Historical documents"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = DEFAULT_IMAGE_URL;
-                      }}
-                    />
-                    <div className="image-overlay">
-                      <span>More</span>
-                    </div>
+                ) : (
+                  <div className="no-additional-images">
+                    <p>No additional images available for this exhibit.</p>
                   </div>
-                  
-                  <div className="placeholder-image">
-                    <img 
-                      src={`${BACKEND_URL}/public/images/placeholder-3.jpg`}
-                      alt="Artifact details"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = DEFAULT_IMAGE_URL;
-                      }}
-                    />
-                    <div className="image-overlay">
-                      <span>About</span>
-                    </div>
-                  </div>
-                  
-                  <div className="placeholder-image">
-                    <img 
-                      src={`${BACKEND_URL}/public/images/placeholder-4.jpg`}
-                      alt="Interactive features"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = DEFAULT_IMAGE_URL;
-                      }}
-                    />
-                    <div className="image-overlay">
-                      <span>Us</span>
-                    </div>
-                  </div>
-                </div>
+                )}
               </div>
 
               <div className="additional-descriptions">
@@ -720,34 +676,6 @@ const ExhibitDetails: React.FC = () => {
                   <p className="centered-text">{exhibit.additionalDescription || "Additional information about this exhibit will be available soon. Our curators are working to provide more detailed insights into the historical significance, artifacts, and interactive features of this experience."}</p>
                 </div>
               </div>
-              
-              {validImages.length > 3 && (
-                <div className="gallery-preview">
-                  <h3>Gallery Preview</h3>
-                  <div className="preview-images">
-                    {validImages.slice(1, Math.min(5, validImages.length)).map((image, index) => (
-                      <div 
-                        key={image.imageId} 
-                        className="preview-image"
-                        onClick={() => {
-                          setCurrentImageIndex(index + 1);
-                          setShowImageGallery(true);
-                        }}
-                      >
-                        <img
-                          src={getImageUrl(image.fileUrl || '')}
-                          alt={image.title || `Gallery image ${index + 1}`}
-                        />
-                      </div>
-                    ))}
-                    {validImages.length > 5 && (
-                      <div className="more-images">
-                        <span>+{validImages.length - 4} more</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
             </div>
           </section>
         </div>
