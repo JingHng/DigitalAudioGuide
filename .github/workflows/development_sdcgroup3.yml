@@ -1,65 +1,220 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
+# .github/workflows/development_sdcgroup3.yml (Updated)
 
-name: Build and deploy Node.js app to Azure Web App - SDCGroup3
+name: Deploy monorepo (api + web) to Azure App Service
 
 on:
   push:
     branches:
-      - development
-  workflow_dispatch:
+      - development 
+      - features/updatedDevelopmentBranchWorkflowFIle # Added branch for testing
+    paths-ignore:
+      - "modules/**"
+      - "**/*.md"
+  workflow_dispatch: # Allows manual trigger
+
+env:
+  WEBAPP_NAME: "SDCGroup3"
+  NODE_VERSION: "20.x"
+  API_DIR: "api"
+  WEB_DIR: "web"
+  ARTIFACT_NAME: "deployment.zip"
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+  JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
+  CLIENT_ID: ${{ secrets.AZUREAPPSERVICE_CLIENTID_4330C975942B4DDCA15E0D4616BA43E8 }}
+  TENANT_ID: ${{ secrets.AZUREAPPSERVICE_TENANTID_96770E6A4A34489D8EEC451700443C4F }}
+  SUBSCRIPTION_ID: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_572DFA48CF314A3098295F4F77B7283C }}
 
 jobs:
-  build:
+  e2e:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read #This is required for actions/checkout
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Set up Node.js version
-        uses: actions/setup-node@v3
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: '22.x'
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
 
-      - name: npm install, build, and test
+      - name: Install API deps
+        working-directory: ${{ env.API_DIR }}
+        run: npm ci
+
+      - name: Install Web deps
+        working-directory: ${{ env.WEB_DIR }}
+        run: npm ci
+
+      - name: Build API (for E2E)
+        working-directory: ${{ env.API_DIR }}
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
         run: |
-          npm install
-          npm run build --if-present
-          npm run test --if-present
+          npx prisma generate
+          npx prisma migrate reset --force --skip-seed
+          npx prisma migrate deploy
+          node prisma/seed.js
+          npm run build
 
-      - name: Upload artifact for deployment job
+      - name: Install Playwright browsers
+        working-directory: ${{ env.WEB_DIR }}
+        run: npx playwright install --with-deps
+
+      - name: Start API server in background
+        working-directory: ${{ env.API_DIR }}
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+          PORT: 5175
+          JWT_SECRET_KEY: ${{ env.JWT_SECRET_KEY }}
+          JWT_REFRESH_SECRET: ${{ env.JWT_REFRESH_SECRET }}
+          NODE_ENV: test
+        run: |
+          npm start &
+          sleep 10
+          # Verify API is responding
+          curl -f http://localhost:5175/health || curl -f http://localhost:5175/ || echo "API server not responding"
+
+      - name: Run Playwright tests
+        working-directory: ${{ env.WEB_DIR }}
+        run: npm run e2e
+        env:
+          CI: true
+          VITE_API_TARGET: http://localhost:5175
+
+      - name: Upload Playwright report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: node-app
-          path: .
+          name: playwright-report
+          path: ${{ env.WEB_DIR }}/playwright-report/
+          retention-days: 7
+
+  build:
+    runs-on: ubuntu-latest
+    needs: e2e
+    permissions: { contents: read }
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      # ---- Frontend ----
+      - name: Install web deps
+        working-directory: ${{ env.WEB_DIR }}
+        run: npm ci
+
+      - name: Build web
+        working-directory: ${{ env.WEB_DIR }}
+        run: npm run build
+
+      # ---- Backend ----
+      - name: Install api deps (for build)
+        working-directory: ${{ env.API_DIR }}
+        run: npm ci
+
+      - name: Build api (TypeScript -> dist)
+        working-directory: ${{ env.API_DIR }}
+        run: npm run build
+
+      - name: Prune dev dependencies (keep only production)
+        working-directory: ${{ env.API_DIR }}
+        run: npm prune --production
+
+      # ---- Bundle web into api/public ----
+      - name: Copy web build into api/public
+        run: |
+          echo "📁 Copying frontend build to API public folder"
+          rm -rf "${API_DIR}/public"
+          mkdir -p "${API_DIR}/public"
+          cp -R "${WEB_DIR}/dist/." "${API_DIR}/public/"
+          echo "✅ Frontend copied successfully"
+          ls -la "${API_DIR}/public/"
+          echo "📄 Checking index.html exists:"
+          cat "${API_DIR}/public/index.html" | head -20
+
+      # ---- Prepare for production deployment ----
+      - name: Prepare production API
+        run: |
+          cd "${API_DIR}"
+          echo "🧹 Preparing production build"
+          # Remove dev dependencies (keep only production)
+          npm prune --production
+          # Remove unnecessary files for deployment
+          rm -rf tests/ *.log coverage/ || true
+          echo "✅ Production preparation complete"
+          echo "📊 Final API directory size:"
+          du -sh . || true
+
+      # ---- Create clean deployment artifact ----
+      - name: Package deployment artifact
+        run: |
+          cd "${API_DIR}"
+          rm -f "../${ARTIFACT_NAME}"
+          echo "📦 Creating deployment package"
+          echo "📋 Verifying public folder before packaging:"
+          ls -la public/ || echo "WARNING: public folder not found!"
+          # Package only production files: node_modules, source files, prisma, and frontend
+          zip -r "../${ARTIFACT_NAME}" \
+            node_modules/ \
+            package*.json \
+            prisma/ \
+            public/ \
+            *.js \
+            web.config \
+            generated/ \
+            .deployment \
+            || true
+          echo "✅ Deployment package created"
+          cd ..
+          ls -lh "${ARTIFACT_NAME}"
+          echo "📋 Verifying public in zip:"
+          unzip -l "${ARTIFACT_NAME}" | grep "public/" | head -10
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-package
+          path: ${{ env.ARTIFACT_NAME }}
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
+    if: github.ref == 'refs/heads/development' 
     permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
+      id-token: write
+      contents: read
 
     steps:
-      - name: Download artifact from build job
+      - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: node-app
-      
-      - name: Login to Azure
+          name: deployment-package
+          path: .
+
+      - name: List files (debug)
+        run: |
+          ls -la
+          unzip -l ${{ env.ARTIFACT_NAME }} || true
+
+      # ---- Login (OIDC) ----
+      - name: Azure login (OIDC)
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_06483D35BF3F4226A089BD0782FB089F }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_0F514C73E9524B839A7FB9E4CB930B22 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_F8AE7555A0D14EF6B5058E1406F473EF }}
+          client-id: ${{ env.CLIENT_ID }}
+          tenant-id: ${{ env.TENANT_ID }}
+          subscription-id: ${{ env.SUBSCRIPTION_ID }}
 
-      - name: 'Deploy to Azure Web App'
-        id: deploy-to-webapp
+      # ---- Deploy ----
+      - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'SDCGroup3'
-          slot-name: 'Production'
-          package: .
-          
+          app-name: ${{ env.WEBAPP_NAME }}
+          package: ${{ env.ARTIFACT_NAME }}
