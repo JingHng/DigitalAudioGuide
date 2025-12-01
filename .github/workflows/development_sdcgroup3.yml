@@ -137,6 +137,8 @@ jobs:
           cp -R "${WEB_DIR}/dist/." "${API_DIR}/public/"
           echo "✅ Frontend copied successfully"
           ls -la "${API_DIR}/public/"
+          echo "📄 Checking index.html exists:"
+          cat "${API_DIR}/public/index.html" | head -20
 
       # ---- Prepare for production deployment ----
       - name: Prepare production API
