@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { QrCode, Building2, Sparkles, ArrowRight, MapPin } from 'lucide-react';
-import '../styles/SmartExhibit.css';
+// import '../styles/SmartExhibit.css'; // Temporarily commented to fix deployment issue
 
 // --- Constants for API and Default Image ---
 const BACKEND_URL = import.meta.env.VITE_API_TARGET || '';
