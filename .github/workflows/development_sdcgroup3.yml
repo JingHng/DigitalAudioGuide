@@ -153,11 +153,12 @@ jobs:
           echo "🔍 DEBUG: Checking public folder exists:"
           ls -la public/ || echo "❌ PUBLIC FOLDER NOT FOUND"
           echo "🔍 DEBUG: Creating deployment artifact with contents:"
-          zip -r "../${ARTIFACT_NAME}" dist node_modules package*.json prisma public || true
-          # Fallback: if node_modules doesn't exist (rare), include dist and package files
-          if [ ! -f "../${ARTIFACT_NAME}" ]; then
-            echo "Fallback: creating minimal artifact"
-            zip -r "../${ARTIFACT_NAME}" dist package*.json prisma public || true
+          # Include all necessary files for deployment - dist folder if it exists, otherwise source files
+          zip -r "../${ARTIFACT_NAME}" node_modules package*.json prisma public *.js *.ts src generated || true
+          # Also try to include dist if it exists (compiled TypeScript)
+          if [ -d "dist" ]; then
+            echo "Including compiled dist folder"
+            zip -ur "../${ARTIFACT_NAME}" dist || true
           fi
           echo "🔍 DEBUG: Artifact created, checking size and contents:"
           ls -la "../${ARTIFACT_NAME}"
