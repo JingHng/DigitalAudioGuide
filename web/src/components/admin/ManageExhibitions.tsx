@@ -10,7 +10,7 @@ const BACKEND_URL = import.meta.env.VITE_API_TARGET || '';
 const DEFAULT_IMAGE_URL = `${BACKEND_URL}/public/images/Exhibit.jpg`;
 
 // Helper function to construct the correct image URL
-const getImageUrl = (fileUrl: string | null): string => {
+const buildImageUrl = (fileUrl: string | null): string => {
   if (!fileUrl) return DEFAULT_IMAGE_URL;
 
   const cleanedPath = fileUrl.replace(/\\/g, '/');
@@ -294,7 +294,7 @@ const ManageExhibitions: React.FC = () => {
                   // Prioritize primary image, fallback to first image, then default
                   const primaryImage = exhibit.images.find(img => img.isPrimary);
                   const imageToDisplay = primaryImage || exhibit.images[0] || null;
-                  const imageUrl = getImageUrl(imageToDisplay?.fileUrl || null);
+                  const imageUrl = buildImageUrl(imageToDisplay?.fileUrl || null);
                   
                   return (
                     <div key={exhibit.exhibitId} className="exhibit-card-manage">
