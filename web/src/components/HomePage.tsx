@@ -85,6 +85,7 @@ const Homepage: React.FC = () => {
           <div className="hero-text">
             <h1 className="hero-title">
               <span className="smart-gradient">SmartExhibit</span>
+              <small style={{fontSize: '0.3em', opacity: 0.7}}> Build: Dec1-2025</small>
             </h1>
             <p className="hero-subtitle">
               Host your very own virtual tours today
