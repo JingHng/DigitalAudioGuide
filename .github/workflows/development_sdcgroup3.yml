@@ -159,6 +159,8 @@ jobs:
           cd "${API_DIR}"
           rm -f "../${ARTIFACT_NAME}"
           echo "📦 Creating deployment package"
+          echo "📋 Verifying public folder before packaging:"
+          ls -la public/ || echo "WARNING: public folder not found!"
           # Package only production files: node_modules, source files, prisma, and frontend
           zip -r "../${ARTIFACT_NAME}" \
             node_modules/ \
@@ -168,9 +170,13 @@ jobs:
             *.js \
             web.config \
             generated/ \
+            .deployment \
             || true
           echo "✅ Deployment package created"
-          ls -lh "../${ARTIFACT_NAME}"
+          cd ..
+          ls -lh "${ARTIFACT_NAME}"
+          echo "📋 Verifying public in zip:"
+          unzip -l "${ARTIFACT_NAME}" | grep "public/" | head -10
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
