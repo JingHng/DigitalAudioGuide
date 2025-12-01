@@ -511,6 +511,156 @@ async function seed() {
       $$ LANGUAGE plpgsql;
     `);
 
+    // Add stored procedures for exhibit and exhibition management
+    console.log("🔧 Creating stored procedures...");
+
+    // Stored procedure to create exhibit with images
+    await client.query(`
+      CREATE OR REPLACE PROCEDURE sp_create_exhibit(
+        IN p_title TEXT,
+        IN p_description TEXT,
+        IN p_exhibition_id BIGINT,
+        IN p_additional_description TEXT DEFAULT '',
+        IN p_images JSONB DEFAULT NULL,
+        IN p_qr_base_url TEXT DEFAULT '',
+        INOUT p_new_exhibit_id BIGINT DEFAULT NULL
+      ) 
+      LANGUAGE plpgsql AS $$
+      DECLARE
+        v_exhibit_id BIGINT;
+        v_badge_id BIGINT;
+        v_qr_url TEXT;
+        image_item JSONB;
+      BEGIN
+        -- Insert the exhibit and get the ID
+        INSERT INTO exhibit (exhibition_id, title, description, additional_description, status_id)
+        VALUES (p_exhibition_id, p_title, p_description, p_additional_description, 1)
+        RETURNING exhibit_id INTO v_exhibit_id;
+        
+        -- Set the output parameter
+        p_new_exhibit_id := v_exhibit_id;
+        
+        -- Create QR code if base URL provided
+        IF p_qr_base_url IS NOT NULL AND p_qr_base_url != '' THEN
+          v_qr_url := p_qr_base_url || v_exhibit_id;
+          INSERT INTO qr_code (exhibit_id, qr_url) VALUES (v_exhibit_id, v_qr_url);
+        END IF;
+        
+        -- Insert images if provided
+        IF p_images IS NOT NULL THEN
+          FOR image_item IN SELECT * FROM jsonb_array_elements(p_images) 
+          LOOP
+            INSERT INTO images (exhibit_id, file_url, title, is_primary)
+            VALUES (
+              v_exhibit_id, 
+              image_item->>'file_url', 
+              image_item->>'title',
+              (image_item->>'is_primary')::boolean
+            );
+          END LOOP;
+        END IF;
+        
+        COMMIT;
+      END;
+      $$;
+    `);
+
+    // Stored procedure to deactivate exhibit
+    await client.query(`
+      CREATE OR REPLACE PROCEDURE sp_deactivate_exhibit(
+        IN p_exhibit_id BIGINT
+      )
+      LANGUAGE plpgsql AS $$
+      BEGIN
+        UPDATE exhibit 
+        SET status_id = 2, updated_at = CURRENT_TIMESTAMP 
+        WHERE exhibit_id = p_exhibit_id;
+        
+        COMMIT;
+      END;
+      $$;
+    `);
+
+    // Stored procedure to reactivate exhibit
+    await client.query(`
+      CREATE OR REPLACE PROCEDURE sp_reactivate_exhibit(
+        IN p_exhibit_id BIGINT
+      )
+      LANGUAGE plpgsql AS $$
+      BEGIN
+        UPDATE exhibit 
+        SET status_id = 1, updated_at = CURRENT_TIMESTAMP 
+        WHERE exhibit_id = p_exhibit_id;
+        
+        COMMIT;
+      END;
+      $$;
+    `);
+
+    // Stored procedure to create exhibition
+    await client.query(`
+      CREATE OR REPLACE PROCEDURE sp_create_exhibition(
+        IN p_title TEXT,
+        IN p_description TEXT,
+        IN p_image_url TEXT DEFAULT NULL,
+        INOUT p_new_exhibition_id BIGINT DEFAULT NULL
+      )
+      LANGUAGE plpgsql AS $$
+      DECLARE
+        v_exhibition_id BIGINT;
+      BEGIN
+        INSERT INTO exhibitions (title, description, status_id)
+        VALUES (p_title, p_description, 1)
+        RETURNING exhibition_id INTO v_exhibition_id;
+        
+        -- Set the output parameter
+        p_new_exhibition_id := v_exhibition_id;
+        
+        -- Insert exhibition image if provided
+        IF p_image_url IS NOT NULL AND p_image_url != '' THEN
+          INSERT INTO images (exhibition_id, file_url, title, is_primary)
+          VALUES (v_exhibition_id, p_image_url, p_title, true);
+        END IF;
+        
+        COMMIT;
+      END;
+      $$;
+    `);
+
+    // Stored procedure to deactivate exhibition
+    await client.query(`
+      CREATE OR REPLACE PROCEDURE sp_deactivate_exhibition(
+        IN p_exhibition_id BIGINT
+      )
+      LANGUAGE plpgsql AS $$
+      BEGIN
+        UPDATE exhibitions 
+        SET status_id = 2, updated_at = CURRENT_TIMESTAMP 
+        WHERE exhibition_id = p_exhibition_id;
+        
+        COMMIT;
+      END;
+      $$;
+    `);
+
+    // Stored procedure to reactivate exhibition
+    await client.query(`
+      CREATE OR REPLACE PROCEDURE sp_reactivate_exhibition(
+        IN p_exhibition_id BIGINT
+      )
+      LANGUAGE plpgsql AS $$
+      BEGIN
+        UPDATE exhibitions 
+        SET status_id = 1, updated_at = CURRENT_TIMESTAMP 
+        WHERE exhibition_id = p_exhibition_id;
+        
+        COMMIT;
+      END;
+      $$;
+    `);
+
+    console.log("✅ Stored procedures created successfully!");
+
     console.log("🏗 Database schema created successfully!");
 
     // --- SEEDING DATA ---

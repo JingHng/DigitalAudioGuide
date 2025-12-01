@@ -19,7 +19,7 @@ env:
   WEB_DIR: "web"
   ARTIFACT_NAME: "deployment.zip"
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
-  JWT_ACCESS_SECRET: ${{ secrets.JWT_ACCESS_SECRET }}
+  JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
   JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
   CLIENT_ID: ${{ secrets.AZUREAPPSERVICE_CLIENTID_4330C975942B4DDCA15E0D4616BA43E8 }}
   TENANT_ID: ${{ secrets.AZUREAPPSERVICE_TENANTID_96770E6A4A34489D8EEC451700443C4F }}
@@ -28,8 +28,6 @@ env:
 jobs:
   e2e:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
 
     steps:
       - name: Checkout
@@ -55,6 +53,7 @@ jobs:
           DATABASE_URL: ${{ env.DATABASE_URL }}
         run: |
           npx prisma generate
+          npx prisma migrate reset --force --skip-seed
           npx prisma migrate deploy
           node prisma/seed.js
           npm run build
@@ -68,7 +67,7 @@ jobs:
         env:
           DATABASE_URL: ${{ env.DATABASE_URL }}
           PORT: 5175
-          JWT_ACCESS_SECRET: ${{ env.JWT_ACCESS_SECRET }}
+          JWT_SECRET_KEY: ${{ env.JWT_SECRET_KEY }}
           JWT_REFRESH_SECRET: ${{ env.JWT_REFRESH_SECRET }}
           NODE_ENV: test
         run: |

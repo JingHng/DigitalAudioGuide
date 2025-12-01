@@ -116,7 +116,7 @@ exports.createExhibit = async (req, res) => {
     }
 
     // Use $queryRaw to call the procedure and get the INOUT parameter back
-    const result = await prisma.$queryRaw`CALL sp_create_exhibit(${title}, ${description || ''}, ${additionalDescription || ''}, ${BigInt(exhibitionId)}, ${imagesJson}::jsonb, ${qrBaseUrl}, NULL::bigint);`;
+    const result = await prisma.$queryRaw`CALL sp_create_exhibit(${title}, ${description || ''}, ${BigInt(exhibitionId)}, ${additionalDescription || ''}, ${imagesJson}::jsonb, ${qrBaseUrl}, NULL::bigint);`;
     
     // The INOUT parameter is returned in the result set
     const newExhibitId = result[0].p_new_exhibit_id;
