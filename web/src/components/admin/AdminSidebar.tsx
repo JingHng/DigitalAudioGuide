@@ -9,7 +9,6 @@ import {
   Image, 
   Music,
   Plus,
-  HelpCircle,
   LogOut,
   ChevronLeft,
   ChevronRight,
@@ -130,12 +129,6 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
   ];
 
   const bottomMenuItems: MenuItem[] = [
-    {
-      id: 'help',
-      label: 'Help & Information',
-      icon: <HelpCircle size={20} />,
-      path: '/admin/help'
-    },
     {
       id: 'logout',
       label: 'Log Out',

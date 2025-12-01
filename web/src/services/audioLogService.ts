@@ -1,6 +1,4 @@
-import axios from 'axios';
-
-const API_BASE_URL = 'http://localhost:3000/api/audio-logs';
+import apiClient from '../utils/apiClient';
 
 export interface AudioPlaybackLog {
   audioLogsId?: number;
@@ -48,7 +46,7 @@ class AudioLogService {
   // Create a new playback log entry when audio starts
   async startPlayback(userId: string, audioId: string): Promise<{ logId: number }> {
     try {
-      const response = await axios.post(API_BASE_URL, {
+      const response = await apiClient.post('/audio-logs', {
         userId,
         audioId,
         audioStart: new Date().toISOString()
@@ -66,7 +64,7 @@ class AudioLogService {
       // Only log if duration is meaningful (at least 1 second)
       const meaningfulDuration = Math.max(0, Math.round(durationListened));
       
-      await axios.put(`${API_BASE_URL}/${logId}`, {
+      await apiClient.put(`/audio-logs/${logId}`, {
         audioEnd: new Date().toISOString(),
         durationListened: meaningfulDuration
       });
@@ -81,21 +79,40 @@ class AudioLogService {
     try {
       const meaningfulDuration = Math.max(0, Math.round(durationListened));
       
-      // Use sendBeacon for immediate cleanup if available
-      if (navigator.sendBeacon) {
+      // Use synchronous XMLHttpRequest for page unload (more reliable than sendBeacon for PUT)
+      if (typeof XMLHttpRequest !== 'undefined') {
+        const baseURL = apiClient.defaults.baseURL || '/api';
+        const fullURL = `${baseURL}/audio-logs/${logId}`;
+        const xhr = new XMLHttpRequest();
+        xhr.open('PUT', fullURL, false); // Synchronous request for page unload
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        
+        // Add auth token if available
+        const token = localStorage.getItem('token');
+        if (token) {
+          xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+        }
+        
         const data = JSON.stringify({
           audioEnd: new Date().toISOString(),
           durationListened: meaningfulDuration,
           forceEnd: true
         });
         
-        const success = navigator.sendBeacon(`${API_BASE_URL}/${logId}`, data);
-        if (success) return;
+        try {
+          xhr.send(data);
+          if (xhr.status >= 200 && xhr.status < 300) {
+            return; // Success
+          }
+        } catch (e) {
+          // Ignore errors in synchronous XHR during page unload
+        }
       }
       
-      // Fallback to regular axios call
+      // Fallback to regular axios call (may not complete during page unload)
       await this.endPlayback(logId, durationListened);
     } catch (error) {
+      // Silently fail during page unload
       console.error('Error force ending playback log:', error);
     }
   }
@@ -113,7 +130,7 @@ class AudioLogService {
     sortOrder?: 'asc' | 'desc';
   } = {}) {
     try {
-      const response = await axios.get(API_BASE_URL, { params });
+      const response = await apiClient.get('/audio-logs', { params });
       return response.data;
     } catch (error) {
       console.error('Error fetching playback logs:', error);
@@ -129,7 +146,7 @@ class AudioLogService {
       if (audioId) params.audioId = audioId;
       if (exhibitId) params.exhibitId = exhibitId;
 
-      const response = await axios.get(`${API_BASE_URL}/analytics`, { params });
+      const response = await apiClient.get('/audio-logs/analytics', { params });
       return response.data;
     } catch (error) {
       console.error('Error fetching analytics:', error);
@@ -140,7 +157,7 @@ class AudioLogService {
   // Get playback logs for a specific user
   async getUserPlaybackLogs(userId: string, page: number = 1, limit: number = 10) {
     try {
-      const response = await axios.get(`${API_BASE_URL}/user/${userId}`, {
+      const response = await apiClient.get(`/audio-logs/user/${userId}`, {
         params: { page, limit }
       });
       return response.data;

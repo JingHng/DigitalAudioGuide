@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Users, Plus, Edit, Trash2, Search, Eye, RotateCcw } from "lucide-react";
+import { Users, Plus, Edit, Trash2, Search, Eye, EyeOff, RotateCcw } from "lucide-react";
 import apiClient from "../../utils/apiClient";
-import axios from "axios";
 import AdminLayout from "./AdminLayout";
 import "../../css/AdminTable.css";
 import "../../css/AdminComponents.css";
@@ -69,6 +68,10 @@ const UsersPage: React.FC = () => {
 
   // Available roles
   const [roles, setRoles] = useState<Role[]>([]);
+  
+  // Password visibility states
+  const [showCreatePassword, setShowCreatePassword] = useState(false);
+  const [showEditPassword, setShowEditPassword] = useState(false);
 
   const breadcrumbs = [{ label: "Admin", path: "/admin/dashboard" }, { label: "Users" }];
 
@@ -141,22 +144,16 @@ const UsersPage: React.FC = () => {
   const handleCreateUser = async (e: React.FormEvent) => {
   e.preventDefault();
   try {
-    const token = localStorage.getItem('token'); 
-
-    await axios.post('http://localhost:3000/api/users', formData, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
+    await apiClient.post('/users', formData);
 
     setShowCreateModal(false);
     setFormData({ username: '', email: '', password: '', statusId: 1, roleIds: [] });
     fetchUsers();
-  } catch (err) {
+  } catch (err: any) {
     console.error('Error creating user:', err);
-    if (axios.isAxiosError(err) && err.response?.status === 409) {
+    if (err.response?.status === 409) {
       alert(err.response.data.error);
-    } else if (axios.isAxiosError(err) && err.response?.status === 401) {
+    } else if (err.response?.status === 401) {
       alert('Unauthorized: You must be logged in as admin.');
     } else {
       alert('Failed to create user. Please check the console for details.');
@@ -170,25 +167,16 @@ const UsersPage: React.FC = () => {
   if (!selectedUser) return;
 
   try {
-    const token = localStorage.getItem('token');
-
-    await axios.put(
-      `http://localhost:3000/api/users/${selectedUser.userId}`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-    );
+    await apiClient.put(`/users/${selectedUser.userId}`, formData);
 
     setShowEditModal(false);
     setSelectedUser(null);
     setFormData({ username: '', email: '', password: '', statusId: 1, roleIds: [] });
     fetchUsers();
-  } catch (err) {
+  } catch (err: any) {
     console.error('Error updating user:', err);
-    alert('Failed to update user. Please check the console for details.');
+    const errorMessage = err.response?.data?.error || 'Failed to update user. Please check the console for details.';
+    alert(errorMessage);
   }
 };
 
@@ -534,15 +522,38 @@ const handleReactivateUser = async (userId: string, username: string) => {
                 </div>
                 <div className="admin-form-group">
                   <label className="admin-form-label required">Password</label>
-                  <input
-                    type="password"
-                    className="admin-form-input"
-                    value={formData.password}
-                    onChange={(e) =>
-                      setFormData({ ...formData, password: e.target.value })
-                    }
-                    required
-                  />
+                  <div style={{ position: 'relative' }}>
+                    <input
+                      type={showCreatePassword ? "text" : "password"}
+                      className="admin-form-input"
+                      value={formData.password}
+                      onChange={(e) =>
+                        setFormData({ ...formData, password: e.target.value })
+                      }
+                      required
+                      style={{ paddingRight: '40px' }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowCreatePassword(!showCreatePassword)}
+                      style={{
+                        position: 'absolute',
+                        right: '10px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        padding: '5px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        color: '#666'
+                      }}
+                      aria-label={showCreatePassword ? "Hide password" : "Show password"}
+                    >
+                      {showCreatePassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
                 </div>
                 <div className="admin-form-group">
                   <label className="admin-form-label required">Role</label>
@@ -631,15 +642,38 @@ const handleReactivateUser = async (userId: string, username: string) => {
                   <label className="admin-form-label">
                     Password (leave blank to keep current)
                   </label>
-                  <input
-                    type="password"
-                    className="admin-form-input"
-                    value={formData.password}
-                    onChange={(e) =>
-                      setFormData({ ...formData, password: e.target.value })
-                    }
-                    placeholder="Leave blank to keep current password"
-                  />
+                  <div style={{ position: 'relative' }}>
+                    <input
+                      type={showEditPassword ? "text" : "password"}
+                      className="admin-form-input"
+                      value={formData.password}
+                      onChange={(e) =>
+                        setFormData({ ...formData, password: e.target.value })
+                      }
+                      placeholder="Leave blank to keep current password"
+                      style={{ paddingRight: '40px' }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowEditPassword(!showEditPassword)}
+                      style={{
+                        position: 'absolute',
+                        right: '10px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        padding: '5px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        color: '#666'
+                      }}
+                      aria-label={showEditPassword ? "Hide password" : "Show password"}
+                    >
+                      {showEditPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
                 </div>
                 <div className="admin-form-group">
                   <label className="admin-form-label required">Role</label>

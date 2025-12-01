@@ -186,26 +186,38 @@ const ExhibitDetails: React.FC = () => {
     }
   }, [activeWordIndex]); // CHANGE: Remove audio logging cleanup
 
-  // Cleanup on unmount (audio logging removed for guest access)
+  // Cleanup audio logging when component unmounts or audio changes
   useEffect(() => {
-    return () => {
-      // Audio logging removed for guest access
-      // if (currentPlaybackLogId && user && audioRef.current) {
-      //   const durationListened = Math.round(audioRef.current.currentTime - playbackStartTime);
-      //   audioLogService.endPlayback(currentPlaybackLogId, durationListened)
-      //     .catch((error: any) => console.error('Failed to cleanup audio log:', error));
-      // }
+    // Handle page unload/navigation away
+    const handleBeforeUnload = () => {
+      if (currentPlaybackLogId && user && audioRef.current) {
+        const durationListened = Math.round(audioRef.current.currentTime - playbackStartTime);
+        // Use sendBeacon for page unload to ensure it completes
+        audioLogService.forceEndPlayback(currentPlaybackLogId, durationListened);
+      }
     };
-  }, [currentPlaybackLogId, user, playbackStartTime]); // CHANGE: Remove audio logging state reset
 
-  // Reset logging state when audio changes (logging removed for guest access)
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      if (currentPlaybackLogId && user && audioRef.current) {
+        // End the current playback log if component unmounts
+        const durationListened = Math.round(audioRef.current.currentTime - playbackStartTime);
+        audioLogService.endPlayback(currentPlaybackLogId, durationListened)
+          .catch((error: any) => console.error('Failed to cleanup audio log:', error));
+      }
+    };
+  }, [currentPlaybackLogId, user, playbackStartTime]);
+
+  // Reset logging state when audio track changes
   useEffect(() => {
-    // Audio logging reset removed for guest access
-    // if (currentPlaybackLogId && user && audioRef.current) {
-    //   const durationListened = Math.round(audioRef.current.currentTime - playbackStartTime);
-    //   audioLogService.endPlayback(currentPlaybackLogId, durationListened)
-    //     .catch((error: any) => console.error('Failed to end previous audio log:', error));
-    // }
+    if (currentPlaybackLogId && user && audioRef.current) {
+      // End previous audio log if switching tracks
+      const durationListened = Math.round(audioRef.current.currentTime - playbackStartTime);
+      audioLogService.endPlayback(currentPlaybackLogId, durationListened)
+        .catch((error: any) => console.error('Failed to end previous audio log:', error));
+    }
     setCurrentPlaybackLogId(null);
     setPlaybackStartTime(0);
   }, [currentAudio?.audioId]);

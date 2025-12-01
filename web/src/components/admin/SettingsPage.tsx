@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Save, Lock, User, Check, AlertCircle, Eye, EyeOff, Server } from 'lucide-react';
+import { Save, Lock, User, Check, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import AdminLayout from './AdminLayout';
 import Avatar from '../common/Avatar';
 import apiClient from '../../utils/apiClient';
 import { languages, getAdminPreferredLanguage, setAdminPreferredLanguage, applyLanguagePreference } from '../../utils/languageUtils';
-import { getSystemSettings, updateSystemSettings } from '../../services/systemSettingsService';
 import '../../css/AdminComponents.css';
 import '../../css/AdminForms.css';
 import '../../css/AdminSettings.css';
@@ -28,9 +27,6 @@ interface ProfileSettings {
   createdAt?: string;
 }
 
-interface SystemSettings {
-  inactivityThresholdDays: number;
-}
 
 const SettingsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState('profile');
@@ -42,9 +38,6 @@ const SettingsPage: React.FC = () => {
     confirm: false
   });
 
-  const [systemSettings, setSystemSettings] = useState<SystemSettings>({
-    inactivityThresholdDays: 7
-  });
 
 
 
@@ -118,32 +111,13 @@ const SettingsPage: React.FC = () => {
 
     loadSettings();
     fetchUserProfile();
-    fetchSystemSettings();
   }, []);
-
-  // Fetch system settings from backend
-  const fetchSystemSettings = async () => {
-    try {
-      const response = await getSystemSettings();
-      setSystemSettings(response.data);
-      console.log('Loaded system settings:', response.data);
-    } catch (error) {
-      console.error('Error fetching system settings:', error);
-      setErrors(prev => ({ ...prev, system: 'Failed to load system settings' }));
-    }
-  };
 
   const breadcrumbs = [
     { label: 'Admin', path: '/admin/dashboard' },
     { label: 'Settings' }
   ];
   
-  const handleInactivityThresholdChange = (value: number) => {
-    setSystemSettings(prev => ({
-      ...prev,
-      inactivityThresholdDays: value
-    }));
-  };
 
   // Validation functions
   const validateEmail = (email: string): boolean => {
@@ -253,40 +227,6 @@ const SettingsPage: React.FC = () => {
 
 
 
-  const handleSaveSystem = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaveStatus('saving');
-    setErrors({});
-
-    // Validate inactivity threshold
-    const threshold = systemSettings.inactivityThresholdDays;
-    if (isNaN(threshold) || threshold < 1 || threshold > 365) {
-      setErrors({ inactivityThreshold: 'Threshold must be between 1 and 365 days' });
-      setSaveStatus('error');
-      return;
-    }
-
-    try {
-      // Save system settings via API
-      const response = await updateSystemSettings({
-        inactivityThresholdDays: threshold
-      });
-
-      console.log('System settings saved:', response.data);
-      setSystemSettings(response.data);
-      setSaveStatus('success');
-
-      // Reset to idle after showing success message
-      setTimeout(() => {
-        setSaveStatus('idle');
-      }, 3000);
-    } catch (error) {
-      console.error('Error saving system settings:', error);
-      setErrors({ system: 'Failed to save system settings' });
-      setSaveStatus('error');
-      setTimeout(() => setSaveStatus('idle'), 3000);
-    }
-  };
 
   const handleSaveSecurity = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -492,15 +432,6 @@ const SettingsPage: React.FC = () => {
                   >
                     <Lock size={18} />
                     <span>Security</span>
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className={activeTab === 'system' ? 'active' : ''}
-                    onClick={() => setActiveTab('system')}
-                  >
-                    <Server size={18} />
-                    <span>System</span>
                   </button>
                 </li>
               </ul>
@@ -753,65 +684,6 @@ const SettingsPage: React.FC = () => {
                 </div>
               )}
               
-              {activeTab === 'system' && (
-                <div className="admin-settings-section">
-                  <h2 className="admin-settings-title">System Settings</h2>
-                  <p className="admin-settings-description">
-                    Configure system-wide settings for all users.
-                  </p>
-                  
-                  <form onSubmit={handleSaveSystem} className="admin-form">
-                    {errors.system && (
-                      <div className="admin-form-error admin-form-error-general">
-                        <AlertCircle size={16} />
-                        <span>{errors.system}</span>
-                      </div>
-                    )}
-                    
-                    <div className="admin-form-group">
-                      <label className="admin-form-label">User Inactivity Threshold</label>
-                      <div className="admin-form-row" style={{ display: 'flex', alignItems: 'center' }}>
-                        <input 
-                          type="number" 
-                          className={`admin-form-input ${errors.inactivityThreshold ? 'error' : ''}`}
-                          min="1"
-                          max="365"
-                          value={systemSettings.inactivityThresholdDays}
-                          onChange={(e) => handleInactivityThresholdChange(parseInt(e.target.value) || 1)}
-                          style={{ width: '80px', marginRight: '10px' }}
-                        />
-                        <span style={{ marginRight: '15px' }}>days</span>
-                      </div>
-                      {errors.inactivityThreshold && (
-                        <span className="admin-form-error">{errors.inactivityThreshold}</span>
-                      )}
-                      <div className="admin-form-slider-container">
-                        <input 
-                          type="range" 
-                          min="1" 
-                          max="365" 
-                          value={systemSettings.inactivityThresholdDays} 
-                          onChange={(e) => handleInactivityThresholdChange(parseInt(e.target.value))}
-                          className="admin-form-input"
-                          style={{ width: '100%' }}
-                        />
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '5px' }}>
-                          <span className="admin-form-help">1 day</span>
-                          <span className="admin-form-help">365 days</span>
-                        </div>
-                      </div>
-                      <span className="admin-form-help">
-                        Users who haven't logged in for this number of days will be automatically marked as inactive.
-                        <br />A daily job runs at 02:00 UTC to check for inactive users.
-                      </span>
-                    </div>
-                    
-                    <div className="admin-form-actions">
-                      {renderSaveButton('Save System Settings')}
-                    </div>
-                  </form>
-                </div>
-              )}
             </div>
           </div>
         </main>
