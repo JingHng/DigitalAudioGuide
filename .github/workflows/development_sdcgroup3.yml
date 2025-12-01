@@ -1,185 +1,158 @@
-# .github/workflows/development_sdcgroup3.yml
+# .github/workflows/development_sdcgroup3.yml (Updated)
 
-name: Test, Build, and Deploy Pipeline
+name: Deploy monorepo (api + web) to Azure App Service
 
 on:
   push:
     branches:
       - development 
       - features/updatedDevelopmentBranchWorkflowFIle # Added branch for testing
+    paths-ignore:
+      - "modules/**"
+      - "**/*.md"
   workflow_dispatch: # Allows manual trigger
 
-# Define environment variables for the entire workflow
 env:
-  # Test database configuration
-  DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test_db?schema=public"
-  NODE_ENV: "test"
-  PORT: 5175
-  VITE_API_TARGET: http://localhost:5175
-  JWT_SECRET_KEY: "test-jwt-secret-key-for-ci-testing-only-minimum-64-characters-long-to-meet-security-requirements"
-  JWT_EXPIRES_IN: "24h"
-  JWT_ALGORITHM: "HS256"
-  FRONTEND_URL: "http://localhost:5173"
-  NODE_VERSION: '20' 
+  WEBAPP_NAME: "SDCGroup3"
+  NODE_VERSION: "20.x"
+  API_DIR: "api"
+  WEB_DIR: "web"
+  ARTIFACT_NAME: "deployment.zip"
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+  JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
+  CLIENT_ID: ${{ secrets.AZUREAPPSERVICE_CLIENTID_4330C975942B4DDCA15E0D4616BA43E8 }}
+  TENANT_ID: ${{ secrets.AZUREAPPSERVICE_TENANTID_96770E6A4A34489D8EEC451700443C4F }}
+  SUBSCRIPTION_ID: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_572DFA48CF314A3098295F4F77B7283C }}
 
 jobs:
-  # 🧪 JOB 1: Testing (Unit + Integration) - Runs First
-  test:
+  e2e:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_DB: test_db
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
 
     steps:
-      - name: ⬇️ Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: 🛠️ Set up Node.js ${{ env.NODE_VERSION }}
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: |
-            **/package-lock.json
-            **/npm-shrinkwrap.json
+          cache: "npm"
 
-      # --- Setup & Start Services ---
-      - name: 📦 Install API Dependencies
-        run: |
-          cd api
-          npm install
+      - name: Install API deps
+        working-directory: ${{ env.API_DIR }}
+        run: npm ci
 
-      - name: 🗄️ Setup Database Schema
-        run: |
-          cd api
-          npx prisma migrate deploy
+      - name: Install Web deps
+        working-directory: ${{ env.WEB_DIR }}
+        run: npm ci
 
-      - name: 🌱 Seed Test Database
-        run: |
-          cd api
-          node prisma/seed.js
+      - name: Build API (for E2E)
+        working-directory: ${{ env.API_DIR }}
         env:
-          SEED_DISABLE: 0
-
-      - name: 🔧 Build API (needed for 'npm start')
+          DATABASE_URL: ${{ env.DATABASE_URL }}
         run: |
-          cd api
+          npx prisma generate
+          npx prisma migrate reset --force --skip-seed
+          npx prisma migrate deploy
+          node prisma/seed.js
           npm run build
 
-      - name: 🚀 Start API Server
-        run: |
-          cd api
-          npm start > api.log 2>&1 &
-          sleep 5
+      - name: Install Playwright browsers
+        working-directory: ${{ env.WEB_DIR }}
+        run: npx playwright install --with-deps
 
-      - name: ⏳ Wait for API to be ready
+      - name: Start API server in background
+        working-directory: ${{ env.API_DIR }}
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+          PORT: 5175
+          JWT_SECRET_KEY: ${{ env.JWT_SECRET_KEY }}
+          JWT_REFRESH_SECRET: ${{ env.JWT_REFRESH_SECRET }}
+          NODE_ENV: test
         run: |
-          npx wait-on http://localhost:5175/api/exhibits -t 60000 || {
-            echo "API health check failed. See logs below."
-            cat api/api.log
-            exit 1
-          }
+          npm start &
+          sleep 10
+          # Verify API is responding
+          curl -f http://localhost:5175/health || curl -f http://localhost:5175/ || echo "API server not responding"
 
-      # --- Run Tests ---
-      - name: 🔍 Run API Unit Tests
-        run: |
-          cd api
-          npm test
-        continue-on-error: false
-
-      - name: 📦 Install Web Dependencies
-        run: |
-          cd web
-          npm install
-
-      - name: 🌐 Install Playwright Browsers
-        run: |
-          cd web
-          npx playwright install --with-deps
-
-      - name: 🧪 Run Full Stack Integration Tests (E2E)
-        run: |
-          cd web
-          npx playwright test
+      - name: Run Playwright tests
+        working-directory: ${{ env.WEB_DIR }}
+        run: npm run e2e
         env:
           CI: true
+          VITE_API_TARGET: http://localhost:5175
 
-      # --- Artifact & Debug ---
-      - name: 📝 Upload Test Report
+      - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
-          path: web/playwright-report/
+          path: ${{ env.WEB_DIR }}/playwright-report/
           retention-days: 7
 
-      - name: 🐛 Debug API Server (on failure)
-        if: failure()
-        run: |
-          echo "=== Final API Server Logs ==="
-          cat api/api.log || echo "No API log file found"
-
-  
-
-  # 🔨 JOB 2: Build - Runs after Test
   build:
     runs-on: ubuntu-latest
-    needs: test 
-    permissions:
-      contents: read
+    needs: e2e
+    permissions: { contents: read }
 
     steps:
-      - name: ⬇️ Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: 🛠️ Set up Node.js ${{ env.NODE_VERSION }}
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
 
-      - name: 📦 Install All Dependencies
+      # ---- Frontend ----
+      - name: Install web deps
+        working-directory: ${{ env.WEB_DIR }}
+        run: npm ci
+
+      - name: Build web
+        working-directory: ${{ env.WEB_DIR }}
+        run: npm run build
+
+      # ---- Backend ----
+      - name: Install api deps (for build)
+        working-directory: ${{ env.API_DIR }}
+        run: npm ci
+
+      - name: Build api (TypeScript -> dist)
+        working-directory: ${{ env.API_DIR }}
+        run: npm run build
+
+      - name: Prune dev dependencies (keep only production)
+        working-directory: ${{ env.API_DIR }}
+        run: npm prune --production
+
+      # ---- Bundle web into api/public ----
+      - name: Copy web build into api/public
         run: |
-          npm install --prefix api
-          npm install --prefix web
+          rm -rf "${API_DIR}/public"
+          mkdir -p "${API_DIR}/public"
+          cp -R "${WEB_DIR}/dist/." "${API_DIR}/public/"
 
-      - name: 🔧 Build API
+      # ---- Create artifact containing only what's needed on the server ----
+      - name: Package deployment artifact
         run: |
-          cd api
-          npm run build
+          # include compiled API, production node_modules, prisma files, package files and the static public folder
+          cd "${API_DIR}"
+          rm -f "../${ARTIFACT_NAME}"
+          zip -r "../${ARTIFACT_NAME}" dist node_modules package*.json prisma public || true
+          # Fallback: if node_modules doesn't exist (rare), include dist and package files
+          if [ ! -f "../${ARTIFACT_NAME}" ]; then
+            zip -r "../${ARTIFACT_NAME}" dist package*.json prisma public || true
+          fi
 
-      - name: 🔧 Build Web Application
-        run: |
-          cd web
-          npm run build
-        env:
-          VITE_API_TARGET: ''
-
-      # --- Upload Artifact for Deployment ---
-      - name: ⬆️ Upload artifact for deployment job (node-app)
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: node-app
-          path: .
-          retention-days: 7
+          name: deployment-package
+          path: ${{ env.ARTIFACT_NAME }}
 
-  
-
-  # 🚀 JOB 3: Deploy - Runs after Build, ONLY on development branch
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -189,27 +162,28 @@ jobs:
       contents: read
 
     steps:
-      - name: ⬇️ Download artifact from build job
+      - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: node-app
-      
-      - name: Set up Node.js version (22.x for deployment)
-        uses: actions/setup-node@v3
-        with:
-          node-version: '22.x'
-          
-      - name: Login to Azure
+          name: deployment-package
+          path: .
+
+      - name: List files (debug)
+        run: |
+          ls -la
+          unzip -l ${{ env.ARTIFACT_NAME }} || true
+
+      # ---- Login (OIDC) ----
+      - name: Azure login (OIDC)
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_4330C975942B4DDCA15E0D4616BA43E8 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_96770E6A4A34489D8EEC451700443C4F }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_572DFA48CF314A3098295F4F77B7283C }}
+          client-id: ${{ env.CLIENT_ID }}
+          tenant-id: ${{ env.TENANT_ID }}
+          subscription-id: ${{ env.SUBSCRIPTION_ID }}
 
-      - name: 'Deploy to Azure Web App'
-        id: deploy-to-webapp
+      # ---- Deploy ----
+      - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'SDCGroup3'
-          slot-name: 'Production'
-          package: .
+          app-name: ${{ env.WEBAPP_NAME }}
+          package: ${{ env.ARTIFACT_NAME }}

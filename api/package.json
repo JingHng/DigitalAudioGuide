@@ -16,12 +16,13 @@
     "lint": "eslint ."
   },
   "prisma": {
-    "seed": "ts-node -r dotenv/config prisma/seed.js"
+    "seed": "node prisma/seed.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/text-to-speech": "^6.4.0",
     "@prisma/client": "^5.22.0",
     "axios": "^1.7.9",
     "bcrypt": "^6.0.0",

@@ -122,6 +122,27 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.ExhibitionScalarFieldEnum = {
+  exhibitionId: 'exhibitionId',
+  title: 'title',
+  description: 'description',
+  statusId: 'statusId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ExhibitScalarFieldEnum = {
+  exhibitId: 'exhibitId',
+  exhibitionId: 'exhibitionId',
+  badgeId: 'badgeId',
+  title: 'title',
+  description: 'description',
+  additionalDescription: 'additionalDescription',
+  statusId: 'statusId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.AudioScalarFieldEnum = {
   audioId: 'audioId',
   exhibitId: 'exhibitId',
@@ -140,26 +161,6 @@ exports.Prisma.AudioPlaybackLogScalarFieldEnum = {
   audioStart: 'audioStart',
   audioEnd: 'audioEnd',
   durationListened: 'durationListened',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.ExhibitionScalarFieldEnum = {
-  exhibitionId: 'exhibitionId',
-  title: 'title',
-  description: 'description',
-  statusId: 'statusId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.ExhibitScalarFieldEnum = {
-  exhibitId: 'exhibitId',
-  exhibitionId: 'exhibitionId',
-  badgeId: 'badgeId',
-  title: 'title',
-  description: 'description',
-  statusId: 'statusId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -186,6 +187,14 @@ exports.Prisma.ImageScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.QRCodeScalarFieldEnum = {
+  qrId: 'qrId',
+  exhibitId: 'exhibitId',
+  qrUrl: 'qrUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.LanguageScalarFieldEnum = {
   languageId: 'languageId',
   statusId: 'statusId',
@@ -200,14 +209,6 @@ exports.Prisma.PermissionScalarFieldEnum = {
   permissionId: 'permissionId',
   permissionName: 'permissionName',
   description: 'description',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.QRCodeScalarFieldEnum = {
-  qrId: 'qrId',
-  exhibitId: 'exhibitId',
-  qrUrl: 'qrUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -334,15 +335,15 @@ exports.Prisma.JsonNullValueFilter = {
 
 
 exports.Prisma.ModelName = {
-  Audio: 'Audio',
-  AudioPlaybackLog: 'AudioPlaybackLog',
   Exhibition: 'Exhibition',
   Exhibit: 'Exhibit',
+  Audio: 'Audio',
+  AudioPlaybackLog: 'AudioPlaybackLog',
   Feedback: 'Feedback',
   Image: 'Image',
+  QRCode: 'QRCode',
   Language: 'Language',
   Permission: 'Permission',
-  QRCode: 'QRCode',
   Role: 'Role',
   RolePermission: 'RolePermission',
   Session: 'Session',

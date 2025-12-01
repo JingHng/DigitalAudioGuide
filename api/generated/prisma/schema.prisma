@@ -1,3 +1,5 @@
+// 📁 prisma/schema.prisma
+
 generator client {
   provider      = "prisma-client-js"
   output        = "../generated/prisma"
@@ -9,9 +11,61 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ========================================================
+// CORE MODELS (Exhibition/Exhibit structure)
+// ========================================================
+
+// Exhibition model
+model Exhibition {
+  exhibitionId BigInt   @id @default(autoincrement()) @map("exhibition_id")
+  title        String   @unique @db.VarChar(255)
+  description  String?
+  statusId     Int?     @map("status_id")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  status   Status?   @relation(fields: [statusId], references: [statusId])
+  exhibits Exhibit[] // 1:M with Exhibit
+  images   Image[]
+
+  @@map("exhibitions")
+}
+
+// Exhibit Model 
+model Exhibit {
+  exhibitId             BigInt    @id @default(autoincrement()) @map("exhibit_id")
+  exhibitionId          BigInt    @map("exhibition_id") // FK to Exhibition 
+  badgeId               BigInt?   @unique @map("badge_id")
+  title                 String    @db.VarChar(255)
+  description           String?
+  additionalDescription String?   @map("additional_description")
+  statusId              Int?      @map("status_id")
+  createdAt             DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt             DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  exhibition Exhibition @relation(fields: [exhibitionId], references: [exhibitionId], onDelete: Cascade)
+  status     Status?    @relation(fields: [statusId], references: [statusId])
+  badge      Badge?     @relation("ExhibitToBadge", fields: [badgeId], references: [badgeId])
+
+  audio     Audio[]
+  feedbacks Feedback[]
+  images    Image[]
+  qrCodes   QRCode[]
+
+  @@index([title], map: "idx_exhibit_title")
+  @@index([createdAt], map: "idx_exhibit_created_at")
+  @@index([exhibitionId])
+  @@index([statusId])
+  @@map("exhibit")
+}
+
+// ========================================================
+// RELATED MODELS (FIELD & INDEX MAPPING UPDATES)
+// ========================================================
+
 model Audio {
   audioId     Int       @id @default(autoincrement()) @map("audio_id")
-  exhibitId   BigInt?   @map("exhibit_id")
+  exhibitId   BigInt?   @map("exhibit_id") // FK to Exhibit
   languageId  BigInt?   @map("language_id")
   fileUrl     String?   @map("file_url") @db.VarChar(512)
   title       String?
@@ -52,51 +106,10 @@ model AudioPlaybackLog {
   @@map("audio_playback_logs")
 }
 
-model Exhibition {
-  exhibitionId BigInt   @id @default(autoincrement()) @map("exhibition_id")
-  title        String   @unique
-  description  String?
-  statusId     Int?     @map("status_id")
-  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
-
-  status   Status?   @relation(fields: [statusId], references: [statusId])
-  exhibits Exhibit[] // 1:M with Exhibit
-  images   Image[] // 1:M with Image (optional)
-
-  @@map("exhibitions")
-}
-
-model Exhibit {
-  exhibitId    BigInt    @id @default(autoincrement()) @map("exhibit_id")
-  exhibitionId BigInt    @map("exhibition_id")
-  badgeId      BigInt?   @unique @map("badge_id") // newly updated Field
-  title        String
-  description  String?
-  statusId     Int?      @map("status_id")
-  createdAt    DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt    DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
-
-  exhibition Exhibition @relation(fields: [exhibitionId], references: [exhibitionId], onDelete: Cascade)
-  status     Status?    @relation(fields: [statusId], references: [statusId])
-  badge      Badge?     @relation("ExhibitToBadge", fields: [badgeId], references: [badgeId]) //Newly added field
-
-  audio     Audio[]
-  feedbacks Feedback[]
-  images    Image[]
-  qrCodes   QRCode[]
-
-  @@index([title], map: "idx_exhibit_title")
-  @@index([createdAt], map: "idx_exhibit_created_at")
-  @@index([exhibitionId])
-  @@index([statusId])
-  @@map("exhibit")
-}
-
 model Feedback {
   feedbackId  BigInt    @id @default(autoincrement()) @map("feedback_id")
   userId      BigInt?   @map("user_id")
-  exhibitId   BigInt?   @map("exhibit_id")
+  exhibitId   BigInt?   @map("exhibit_id") // FK to Exhibit
   rating      Int?
   description String?
   createdAt   DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
@@ -115,11 +128,11 @@ model Feedback {
 
 model Image {
   imageId      BigInt    @id @default(autoincrement()) @map("image_id")
-  exhibitId    BigInt?   @map("exhibit_id")
-  exhibitionId BigInt?   @map("exhibition_id")
+  exhibitId    BigInt?   @map("exhibit_id") // FK to Exhibit
+  exhibitionId BigInt?   @map("exhibition_id") // FK to Exhibition
   title        String?
   description  String?
-  fileUrl      String?   @map("file_url")
+  fileUrl      String?   @map("file_url") @db.VarChar(512)
   isPrimary    Boolean   @default(false) @map("is_primary")
   createdAt    DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt    DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
@@ -127,10 +140,30 @@ model Image {
   exhibit    Exhibit?    @relation(fields: [exhibitId], references: [exhibitId], onDelete: Cascade)
   exhibition Exhibition? @relation(fields: [exhibitionId], references: [exhibitionId], onDelete: Cascade)
 
-  @@index([exhibitId])
-  @@index([exhibitionId])
+  @@index([exhibitId], map: "idx_images_exhibit_id")
+  @@index([exhibitionId], map: "idx_images_exhibition_id")
+  @@index([isPrimary], map: "idx_images_is_primary")
+  @@index([title], map: "idx_images_title")
   @@map("images")
 }
+
+model QRCode {
+  qrId      Int       @id @default(autoincrement()) @map("qr_id")
+  exhibitId BigInt    @map("exhibit_id") // FK to Exhibit
+  qrUrl     String    @map("qr_url") @db.VarChar(255)
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  exhibit Exhibit @relation(fields: [exhibitId], references: [exhibitId], onDelete: Cascade)
+
+  @@index([exhibitId], map: "idx_qr_code_exhibit_id")
+  @@index([qrUrl], map: "idx_qr_code_url")
+  @@map("qr_code")
+}
+
+// ========================================================
+// SUPPORTING MODELS
+// ========================================================
 
 model Language {
   languageId BigInt    @id @default(autoincrement()) @map("language_id")
@@ -145,17 +178,15 @@ model Language {
   audio     Audio[]
   subtitles Subtitle[]
 
-  @@unique([isDefault], name: "unique_default_language", map: "idx_language_is_default_unique")
   @@index([statusId], map: "idx_language_status")
   @@index([code], map: "idx_language_code")
-  @@index([isDefault], map: "idx_language_is_default")
   @@index([title], map: "idx_language_title")
   @@map("language")
 }
 
 model Permission {
   permissionId   Int       @id @default(autoincrement()) @map("permission_id")
-  permissionName String    @unique @map("permission_name") @db.VarChar(100) //UNIQUE AND NOT NULL BY DEFAULT
+  permissionName String    @unique @map("permission_name") @db.VarChar(100)
   description    String?
   createdAt      DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt      DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
@@ -164,20 +195,6 @@ model Permission {
 
   @@index([permissionName], map: "idx_permissions_name")
   @@map("permissions")
-}
-
-model QRCode {
-  qrId      Int       @id @default(autoincrement()) @map("qr_id")
-  exhibitId BigInt    @map("exhibit_id")
-  qrUrl     String    @map("qr_url")
-  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
-
-  exhibit Exhibit @relation(fields: [exhibitId], references: [exhibitId], onDelete: Cascade)
-
-  @@index([exhibitId], map: "idx_qr_code_exhibit_id")
-  @@index([qrUrl], map: "idx_qr_code_url")
-  @@map("qr_code")
 }
 
 model Role {
@@ -273,7 +290,7 @@ model User {
   targetAudits            AuditLog[]               @relation("TargetUserAudits")
   passwordResetTokens     PasswordResetToken[]
   emailVerificationTokens EmailVerificationToken[]
-  userBadges              UserBadge[] //Newly Added Field
+  userBadges              UserBadge[]
 
   @@index([statusId], map: "idx_user_status")
   @@index([username], map: "idx_user_username")
@@ -319,7 +336,6 @@ model AuditLog {
   @@map("audit_logs")
 }
 
-// Password reset token model
 model PasswordResetToken {
   passwordResetId BigInt   @id @default(autoincrement()) @map("password_reset_id")
   userId          BigInt   @map("user_id")
@@ -332,7 +348,6 @@ model PasswordResetToken {
   @@map("password_reset_token")
 }
 
-// Email verification token model
 model EmailVerificationToken {
   emailVerificationId BigInt   @id @default(autoincrement()) @map("email_verification_id")
   userId              BigInt   @map("user_id")
@@ -344,8 +359,6 @@ model EmailVerificationToken {
 
   @@map("email_verification_token")
 }
-
-// Updated Tables starting from this point
 
 model Badge {
   badgeId     BigInt    @id @default(autoincrement()) @map("badge_id")

@@ -1,68 +1,56 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { QrCode, Headphones, Compass, ArrowRight } from 'lucide-react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
-import apiClient from '../utils/apiClient';
-
-// --- Swiper CSS Imports ---
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-
-import '../css/HomePage.css'; 
+import { QrCode, Building2, Sparkles, ArrowRight, MapPin } from 'lucide-react';
+import '../styles/SmartExhibit.css';
 
 // --- Constants for API and Default Image ---
 const BACKEND_URL = import.meta.env.VITE_API_TARGET || '';
-const DEFAULT_IMAGE_URL = `${BACKEND_URL}/public/images/SingaporeDiscoveryCentre.jpg`; 
+const DEFAULT_IMAGE_URL = `${BACKEND_URL}/public/images/SmartExhibit.avif`; 
 
 // --- Type Definitions for API Data ---
-interface Image {
+interface TourImage {
   imageId: string;
-  fileUrl: string | null; // e.g., '/images/adaptable.jpg'
+  fileUrl: string | null;
+  isPrimary?: boolean;
 }
-interface Exhibit {
-  exhibitId: string;
+
+interface Tour {
+  exhibitionId: string;
   title: string;
   description: string;
-  images: Image[];
+  images: TourImage[];
+  _count: {
+    exhibits: number;
+  };
 }
 
 const Homepage: React.FC = () => {
   const navigate = useNavigate();
-  const [featuredExhibits, setFeaturedExhibits] = useState<Exhibit[]>([]);
+  const [tours, setTours] = useState<Tour[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    (async () => {
+    const fetchTours = async () => {
       try {
-
-        // Use apiClient which handles authentication headers
-        const response = await apiClient.get('/exhibits');
-        // Limit to 6 exhibits for the carousel
-        const fetchedExhibits = response.data.slice(0, 6); 
-        setFeaturedExhibits(fetchedExhibits);
-      } catch (err: any) {
-        // Only log error if it's not a 401 (which might be expected for public endpoints)
-        if (err.response?.status !== 401) {
-          console.error('Error fetching exhibits:', err);
+        // Fetch tours from the API
+        const response = await fetch('/api/exhibitions');
+        if (response.ok) {
+          const data = await response.json();
+          setTours(data);
+        } else {
+          console.error('Failed to fetch tours');
+          setTours([]);
         }
-        // Set empty array on error to prevent UI issues
-        setFeaturedExhibits([]);
+      } catch (err: any) {
+        console.error('Error fetching tours:', err);
+        setTours([]);
       } finally {
         setLoading(false);
       }
-    })();
-  }, []);
+    };
 
-  // --- Loading State Check ---
-  if (loading) {
-    return (
-      <div className="loading-state">
-        <p>Loading the future of discovery...</p>
-      </div>
-    );
-  }
+    fetchTours();
+  }, []);
 
   // Helper function to construct the correct image URL
   const getImageUrl = (fileUrl: string | null): string => {
@@ -74,156 +62,196 @@ const Homepage: React.FC = () => {
 
     if (pathIndex !== -1) {
       const filename = cleanedPath.substring(pathIndex + imagePrefix.length);
-      // Final verified working URL structure
       return `${BACKEND_URL}/public/images/${filename}`;
     }
     return DEFAULT_IMAGE_URL;
   };
 
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading SmartExhibit...</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="homepage-container">
-      <main>
-        {/* ----------------------------------------------------- */}
-        {/* --- 1. IMPACT HERO  --- */}
-        <section className="hero-section split-hero">
-          <div className="hero-text-content">
-            <h1 className="minimal-h1">Unlock the Next Chapter of History.</h1>
-            <p className="minimal-p">
-              Experience the Singapore Story through interactive exhibits and personalized digital content. Your journey of discovery starts now.
+    <div className="smart-exhibit-home">
+      {/* Hero Section */}
+      <section className="hero-banner">
+        <div className="container">
+          <div className="hero-content">
+          <div className="hero-text">
+            <h1 className="hero-title">
+              <span className="smart-gradient">SmartExhibit</span>
+            </h1>
+            <p className="hero-subtitle">
+              Host your very own virtual tours today
             </p>
-            <button className="hero-cta-button" onClick={() => navigate('/scan')}>
-              <QrCode size={24} />
-              <span>Scan to Start</span>
-            </button>
-            
-            {/* --- Integrated Feature Blocks  --- */}
-            <div className="feature-blocks-grid">
-              <div className="feature-block">
-                <div className="icon-wrapper"><QrCode size={28} /></div>
-                <span>**Instant Scan**</span>
-              </div>
-              <div className="feature-block">
-                <div className="icon-wrapper"><Headphones size={28} /></div>
-                <span>**Audio Guide**</span>
-              </div>
-              <div className="feature-block">
-                <div className="icon-wrapper"><Compass size={28} /></div>
-                <span>**Map & Explore**</span>
+            <p className="hero-description">
+              Discover, explore, and interact with cutting-edge virtual tours powered by smart technology. 
+              Transform your museum experience with our innovative digital platform.
+            </p>
+            <div className="hero-actions">
+              <button 
+                className="primary-btn"
+                onClick={() => navigate('/scan')}
+              >
+                <QrCode size={20} />
+                Start Exploring
+              </button>
+              <button 
+                className="secondary-btn"
+                onClick={() => navigate('/exhibitions')}
+              >
+                View All Tours
+                <ArrowRight size={20} />
+              </button>
+            </div>
+          </div>
+          <div className="hero-visual">
+            <div className="hero-image-container">
+              <img 
+                src={DEFAULT_IMAGE_URL} 
+                alt="Smart Exhibition Experience" 
+                className="hero-image"
+              />
+              <div className="floating-elements">
+                <div className="float-card card-1">
+                  <QrCode size={24} />
+                  <span>Interactive Scanning</span>
+                </div>
+                <div className="float-card card-2">
+                  <MapPin size={24} />
+                  <span>Smart Navigation</span>
+                </div>
+                <div className="float-card card-3">
+                  <Sparkles size={24} />
+                  <span>AI-Powered Insights</span>
+                </div>
               </div>
             </div>
           </div>
-          
-          {/* --- Image Half of the Split Hero --- */}
-          <div className="hero-image-half">
-            <img 
-              src={DEFAULT_IMAGE_URL} 
-              alt="Modern museum display" 
-              className="hero-display-image" 
-            />
-          </div>
-        </section>
+        </div>
+        </div>
+      </section>
 
-        {/* ----------------------------------------------------- */}
-        {/* --- 2. Featured Exhibits --- */}
-        <section id="exhibits" className="exhibits-section">
-          <div className="section-header-centered">
-            <h2>Explore Our Featured Collections</h2>
+      {/* Tours Section */}
+      <section className="tours-showcase">
+        <div className="container">
+          <div className="section-header">
+            <h2>Discover Our Virtual Tours</h2>
+            <p>Explore our curated collection of interactive virtual tours</p>
           </div>
 
-          <div className="exhibits-content">
-            <a href="/exhibitions" className="view-all-link mobile-only">
-                <span>View All Exhibits</span>
-                <ArrowRight size={18} />
-            </a>
-            
-            {!Array.isArray(featuredExhibits) || featuredExhibits.length === 0 ? (
-              <div className="no-exhibits-message">
-                <p>No featured exhibits are currently available.</p>
-              </div>
-            ) : (
-              <Swiper
-                modules={[Navigation, Pagination, Autoplay]}
-                spaceBetween={25}
-                loop={featuredExhibits.length > 3}
-                navigation={true}
-                pagination={{ clickable: true }}
-                autoplay={{ delay: 4000, disableOnInteraction: false }}
-                breakpoints={{
-                  640: { slidesPerView: 1.1 },
-                  768: { slidesPerView: 2.2 },
-                  1024: { slidesPerView: 3.3 },
-                }}
-                className="exhibit-swiper"
+          {tours.length === 0 ? (
+            <div className="no-tours">
+              <Building2 size={64} />
+              <h3>No tours available</h3>
+              <p>Check back soon for new exciting virtual tours!</p>
+              <button 
+                className="primary-btn"
+                onClick={() => navigate('/admin')}
               >
-                {featuredExhibits.map((exhibit) => (
-                  <SwiperSlide 
-                    key={exhibit.exhibitId} 
-                    onClick={() => navigate(`/exhibit/${exhibit.exhibitId}`)}
-                  >
-                    <div className="exhibit-card">
-                      <div className="image-container">
-                        <img 
-                          src={getImageUrl(exhibit.images?.[0]?.fileUrl)} 
-                          alt={exhibit.title} 
-                        />
-                      </div>
-                      <div className="card-content">
-                        <h3>{exhibit.title}</h3>
-                        <p>{exhibit.description}</p>
+                Create Tour
+              </button>
+            </div>
+          ) : (
+            <div className="tours-grid">
+              {tours.map((tour) => (
+                <div 
+                  key={tour.exhibitionId} 
+                  className="tour-card"
+                  onClick={() => navigate(`/exhibitions/${tour.exhibitionId}`)}
+                >
+                  <div className="card-image">
+                    <img 
+                      src={getImageUrl(tour.images?.[0]?.fileUrl)} 
+                      alt={tour.title}
+                    />
+                    <div className="card-overlay">
+                      <div className="exhibit-count">
+                        <Building2 size={16} />
+                        <span>{tour._count.exhibits} exhibits</span>
                       </div>
                     </div>
-                  </SwiperSlide>
-                ))}
-              </Swiper>
-            )}
+                  </div>
+                  <div className="card-content">
+                    <h3 className="card-title">{tour.title}</h3>
+                    <p className="card-description">{tour.description}</p>
+                    <div className="card-footer">
+                      <span className="explore-text">Explore Tour</span>
+                      <ArrowRight size={16} />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
 
-            <div className="view-all-button-wrapper">
-                 <a href="/exhibitions" className="view-all-link desktop-only">
-                    <span>View All Collections</span>
-                    <ArrowRight size={18} />
-                </a>
+          {tours.length > 0 && (
+            <div className="view-all-section">
+              <button 
+                className="view-all-btn"
+                onClick={() => navigate('/exhibitions')}
+              >
+                View All Tours
+                <ArrowRight size={20} />
+              </button>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="features-section">
+        <div className="container">
+          <h2>Why Choose SmartExhibit?</h2>
+          <div className="features-grid">
+            <div className="feature-item">
+              <div className="feature-icon">
+                <QrCode size={32} />
+              </div>
+              <h3>Instant Access</h3>
+              <p>Scan QR codes to instantly access rich multimedia content and detailed information about any exhibit.</p>
+            </div>
+            <div className="feature-item">
+              <div className="feature-icon">
+                <MapPin size={32} />
+              </div>
+              <h3>Smart Navigation</h3>
+              <p>Find your way around with intelligent wayfinding and personalized exhibition recommendations.</p>
+            </div>
+            <div className="feature-item">
+              <div className="feature-icon">
+                <Sparkles size={32} />
+              </div>
+              <h3>AI-Powered Insights</h3>
+              <p>Get personalized insights and deeper understanding with our AI-powered content recommendations.</p>
             </div>
           </div>
-        </section>
-        
-        {/* ----------------------------------------------------- */}
-        {/* --- 3. Simple Call to Action  --- */}
-        <section className="cta-section">
-            <div className="cta-content">
-                <h3>Ready to Start Your Discovery?</h3>
-                <p>Unlock deeper insights and personalized guidance as you explore the Centre.</p>
-                <button className="cta-button" onClick={() => navigate('/scan')}>
-                    <QrCode size={20} />
-                    Begin Scanning Now
-                </button>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="cta-section">
+        <div className="container">
+          <div className="cta-content">
+            <h2>Ready to Start Your Smart Journey?</h2>
+            <p>Join thousands of visitors who have transformed their museum experience with SmartExhibit</p>
+            <div className="cta-actions">
+              <button 
+                className="primary-btn large"
+                onClick={() => navigate('/scan')}
+              >
+                <QrCode size={24} />
+                Begin Your Experience
+              </button>
             </div>
-        </section>
-
-      </main>
-
-      {/* ----------------------------------------------------- */}
-      {/* --- Footer  --- */}
-      <footer className="footer">
-        <div className="footer-content">
-          <div className="footer-brand">
-            <h3>SDC Digital Guide</h3>
-            <p>A seamless guide to the Singapore Discovery Centre.</p>
-          </div>
-          <div className="footer-links">
-            <h4>Navigation</h4>
-            <a href="/exhibitions">Exhibits</a>
-            <a href="/map">Virtual Map</a>
-          </div>
-          <div className="footer-contact">
-            <h4>Legal & Info</h4>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms of Use</a>
           </div>
         </div>
-        <div className="footer-bottom">
-          <p>&copy; {new Date().getFullYear()} Singapore Discovery Centre. All rights reserved.</p>
-        </div>
-      </footer>
+      </section>
     </div>
   );
 };

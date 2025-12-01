@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { ArrowRight, Loader2 } from 'lucide-react';
+import { Link, useParams, useNavigate } from 'react-router-dom';
+import { ArrowRight, Loader2, Camera, Sparkles } from 'lucide-react';
 import apiClient from '../utils/apiClient';
 
 const BACKEND_URL = import.meta.env.VITE_API_TARGET || '';
@@ -11,7 +11,7 @@ interface Exhibit {
   exhibitId: string;
   title: string;
   description: string;
-  images: Array<{ fileUrl: string }>;
+  images: Array<{ fileUrl: string; isPrimary?: boolean; }>;
 }
 
 interface Exhibition {
@@ -31,7 +31,6 @@ const getImageUrl = (fileUrl: string | null): string => {
 
   if (pathIndex !== -1) {
     const filename = cleanedPath.substring(pathIndex + imagePrefix.length);
-    // Final verified working URL structure
     return `${BACKEND_URL}/public/images/${filename}`;
   }
   return DEFAULT_IMAGE_URL;
@@ -39,6 +38,7 @@ const getImageUrl = (fileUrl: string | null): string => {
 
 const ExhibitionDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [exhibition, setExhibition] = useState<Exhibition | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -89,21 +89,44 @@ const ExhibitionDetailsPage: React.FC = () => {
   return (
     <div className="exhibits-page-container">
       <header className="exhibition-header">
-        <h1>{exhibition.title}</h1>
-        <p>{exhibition.description}</p>
+        <div className="exhibition-header-content">
+          <div className="exhibition-info">
+            <h1>{exhibition.title}</h1>
+            <p>{exhibition.description}</p>
+          </div>
+          <div className="exhibition-actions">
+            <button 
+              onClick={() => navigate(`/exhibitions/${id}/ar-photobooth`)}
+              className="ar-photobooth-btn"
+            >
+              <Camera size={20} />
+              <Sparkles size={16} className="sparkle-icon" />
+              <span>AR Photobooth</span>
+            </button>
+          </div>
+        </div>
       </header>
 
       <section className="exhibits-grid-section">
         <div className="exhibits-grid">
           {exhibition.exhibits.length > 0 ? (
             exhibition.exhibits.map((exhibit) => {
+              // Prioritize primary image, fallback to first image
+              const primaryImage = exhibit.images.find(img => img.isPrimary);
+              const imageToDisplay = primaryImage || exhibit.images[0] || null;
+              
               return (
                 <Link to={`/exhibit/${exhibit.exhibitId}`} key={exhibit.exhibitId} className="exhibit-card-link">
                   <div className="exhibit-card">
                     <div className="exhibit-image-container">
                       <img 
-                        src={getImageUrl(exhibit.images?.[0]?.fileUrl)} 
-                        alt={exhibit.title} 
+                        src={getImageUrl(imageToDisplay?.fileUrl)} 
+                        alt={exhibit.title}
+                        onError={(e) => {
+                          console.error(`Failed to load image: ${getImageUrl(imageToDisplay?.fileUrl)}`);
+                          const target = e.target as HTMLImageElement;
+                          target.src = DEFAULT_IMAGE_URL;
+                        }}
                       />
                     </div>
                     <div className="exhibit-card-content">

@@ -14,16 +14,6 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
 
 
 /**
- * Model Audio
- * 
- */
-export type Audio = $Result.DefaultSelection<Prisma.$AudioPayload>
-/**
- * Model AudioPlaybackLog
- * 
- */
-export type AudioPlaybackLog = $Result.DefaultSelection<Prisma.$AudioPlaybackLogPayload>
-/**
  * Model Exhibition
  * 
  */
@@ -33,6 +23,16 @@ export type Exhibition = $Result.DefaultSelection<Prisma.$ExhibitionPayload>
  * 
  */
 export type Exhibit = $Result.DefaultSelection<Prisma.$ExhibitPayload>
+/**
+ * Model Audio
+ * 
+ */
+export type Audio = $Result.DefaultSelection<Prisma.$AudioPayload>
+/**
+ * Model AudioPlaybackLog
+ * 
+ */
+export type AudioPlaybackLog = $Result.DefaultSelection<Prisma.$AudioPlaybackLogPayload>
 /**
  * Model Feedback
  * 
@@ -44,6 +44,11 @@ export type Feedback = $Result.DefaultSelection<Prisma.$FeedbackPayload>
  */
 export type Image = $Result.DefaultSelection<Prisma.$ImagePayload>
 /**
+ * Model QRCode
+ * 
+ */
+export type QRCode = $Result.DefaultSelection<Prisma.$QRCodePayload>
+/**
  * Model Language
  * 
  */
@@ -53,11 +58,6 @@ export type Language = $Result.DefaultSelection<Prisma.$LanguagePayload>
  * 
  */
 export type Permission = $Result.DefaultSelection<Prisma.$PermissionPayload>
-/**
- * Model QRCode
- * 
- */
-export type QRCode = $Result.DefaultSelection<Prisma.$QRCodePayload>
 /**
  * Model Role
  * 
@@ -126,8 +126,8 @@ export type UserBadge = $Result.DefaultSelection<Prisma.$UserBadgePayload>
  * @example
  * ```
  * const prisma = new PrismaClient()
- * // Fetch zero or more Audio
- * const audio = await prisma.audio.findMany()
+ * // Fetch zero or more Exhibitions
+ * const exhibitions = await prisma.exhibition.findMany()
  * ```
  *
  * 
@@ -147,8 +147,8 @@ export class PrismaClient<
    * @example
    * ```
    * const prisma = new PrismaClient()
-   * // Fetch zero or more Audio
-   * const audio = await prisma.audio.findMany()
+   * // Fetch zero or more Exhibitions
+   * const exhibitions = await prisma.exhibition.findMany()
    * ```
    *
    * 
@@ -243,26 +243,6 @@ export class PrismaClient<
   $extends: $Extensions.ExtendsHook<"extends", Prisma.TypeMapCb, ExtArgs>
 
       /**
-   * `prisma.audio`: Exposes CRUD operations for the **Audio** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more Audio
-    * const audio = await prisma.audio.findMany()
-    * ```
-    */
-  get audio(): Prisma.AudioDelegate<ExtArgs>;
-
-  /**
-   * `prisma.audioPlaybackLog`: Exposes CRUD operations for the **AudioPlaybackLog** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more AudioPlaybackLogs
-    * const audioPlaybackLogs = await prisma.audioPlaybackLog.findMany()
-    * ```
-    */
-  get audioPlaybackLog(): Prisma.AudioPlaybackLogDelegate<ExtArgs>;
-
-  /**
    * `prisma.exhibition`: Exposes CRUD operations for the **Exhibition** model.
     * Example usage:
     * ```ts
@@ -281,6 +261,26 @@ export class PrismaClient<
     * ```
     */
   get exhibit(): Prisma.ExhibitDelegate<ExtArgs>;
+
+  /**
+   * `prisma.audio`: Exposes CRUD operations for the **Audio** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Audio
+    * const audio = await prisma.audio.findMany()
+    * ```
+    */
+  get audio(): Prisma.AudioDelegate<ExtArgs>;
+
+  /**
+   * `prisma.audioPlaybackLog`: Exposes CRUD operations for the **AudioPlaybackLog** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AudioPlaybackLogs
+    * const audioPlaybackLogs = await prisma.audioPlaybackLog.findMany()
+    * ```
+    */
+  get audioPlaybackLog(): Prisma.AudioPlaybackLogDelegate<ExtArgs>;
 
   /**
    * `prisma.feedback`: Exposes CRUD operations for the **Feedback** model.
@@ -303,6 +303,16 @@ export class PrismaClient<
   get image(): Prisma.ImageDelegate<ExtArgs>;
 
   /**
+   * `prisma.qRCode`: Exposes CRUD operations for the **QRCode** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more QRCodes
+    * const qRCodes = await prisma.qRCode.findMany()
+    * ```
+    */
+  get qRCode(): Prisma.QRCodeDelegate<ExtArgs>;
+
+  /**
    * `prisma.language`: Exposes CRUD operations for the **Language** model.
     * Example usage:
     * ```ts
@@ -321,16 +331,6 @@ export class PrismaClient<
     * ```
     */
   get permission(): Prisma.PermissionDelegate<ExtArgs>;
-
-  /**
-   * `prisma.qRCode`: Exposes CRUD operations for the **QRCode** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more QRCodes
-    * const qRCodes = await prisma.qRCode.findMany()
-    * ```
-    */
-  get qRCode(): Prisma.QRCodeDelegate<ExtArgs>;
 
   /**
    * `prisma.role`: Exposes CRUD operations for the **Role** model.
@@ -892,15 +892,15 @@ export namespace Prisma {
 
 
   export const ModelName: {
-    Audio: 'Audio',
-    AudioPlaybackLog: 'AudioPlaybackLog',
     Exhibition: 'Exhibition',
     Exhibit: 'Exhibit',
+    Audio: 'Audio',
+    AudioPlaybackLog: 'AudioPlaybackLog',
     Feedback: 'Feedback',
     Image: 'Image',
+    QRCode: 'QRCode',
     Language: 'Language',
     Permission: 'Permission',
-    QRCode: 'QRCode',
     Role: 'Role',
     RolePermission: 'RolePermission',
     Session: 'Session',
@@ -928,150 +928,10 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "audio" | "audioPlaybackLog" | "exhibition" | "exhibit" | "feedback" | "image" | "language" | "permission" | "qRCode" | "role" | "rolePermission" | "session" | "status" | "subtitle" | "user" | "userRole" | "auditLog" | "passwordResetToken" | "emailVerificationToken" | "badge" | "userBadge"
+      modelProps: "exhibition" | "exhibit" | "audio" | "audioPlaybackLog" | "feedback" | "image" | "qRCode" | "language" | "permission" | "role" | "rolePermission" | "session" | "status" | "subtitle" | "user" | "userRole" | "auditLog" | "passwordResetToken" | "emailVerificationToken" | "badge" | "userBadge"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
-      Audio: {
-        payload: Prisma.$AudioPayload<ExtArgs>
-        fields: Prisma.AudioFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.AudioFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AudioPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.AudioFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AudioPayload>
-          }
-          findFirst: {
-            args: Prisma.AudioFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AudioPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.AudioFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AudioPayload>
-          }
-          findMany: {
-            args: Prisma.AudioFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AudioPayload>[]
-          }
-          create: {
-            args: Prisma.AudioCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AudioPayload>
-          }
-          createMany: {
-            args: Prisma.AudioCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.AudioCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AudioPayload>[]
-          }
-          delete: {
-            args: Prisma.AudioDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AudioPayload>
-          }
-          update: {
-            args: Prisma.AudioUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AudioPayload>
-          }
-          deleteMany: {
-            args: Prisma.AudioDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.AudioUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          upsert: {
-            args: Prisma.AudioUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AudioPayload>
-          }
-          aggregate: {
-            args: Prisma.AudioAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateAudio>
-          }
-          groupBy: {
-            args: Prisma.AudioGroupByArgs<ExtArgs>
-            result: $Utils.Optional<AudioGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.AudioCountArgs<ExtArgs>
-            result: $Utils.Optional<AudioCountAggregateOutputType> | number
-          }
-        }
-      }
-      AudioPlaybackLog: {
-        payload: Prisma.$AudioPlaybackLogPayload<ExtArgs>
-        fields: Prisma.AudioPlaybackLogFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.AudioPlaybackLogFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AudioPlaybackLogPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.AudioPlaybackLogFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AudioPlaybackLogPayload>
-          }
-          findFirst: {
-            args: Prisma.AudioPlaybackLogFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AudioPlaybackLogPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.AudioPlaybackLogFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AudioPlaybackLogPayload>
-          }
-          findMany: {
-            args: Prisma.AudioPlaybackLogFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AudioPlaybackLogPayload>[]
-          }
-          create: {
-            args: Prisma.AudioPlaybackLogCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AudioPlaybackLogPayload>
-          }
-          createMany: {
-            args: Prisma.AudioPlaybackLogCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.AudioPlaybackLogCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AudioPlaybackLogPayload>[]
-          }
-          delete: {
-            args: Prisma.AudioPlaybackLogDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AudioPlaybackLogPayload>
-          }
-          update: {
-            args: Prisma.AudioPlaybackLogUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AudioPlaybackLogPayload>
-          }
-          deleteMany: {
-            args: Prisma.AudioPlaybackLogDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.AudioPlaybackLogUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          upsert: {
-            args: Prisma.AudioPlaybackLogUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AudioPlaybackLogPayload>
-          }
-          aggregate: {
-            args: Prisma.AudioPlaybackLogAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateAudioPlaybackLog>
-          }
-          groupBy: {
-            args: Prisma.AudioPlaybackLogGroupByArgs<ExtArgs>
-            result: $Utils.Optional<AudioPlaybackLogGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.AudioPlaybackLogCountArgs<ExtArgs>
-            result: $Utils.Optional<AudioPlaybackLogCountAggregateOutputType> | number
-          }
-        }
-      }
       Exhibition: {
         payload: Prisma.$ExhibitionPayload<ExtArgs>
         fields: Prisma.ExhibitionFieldRefs
@@ -1209,6 +1069,146 @@ export namespace Prisma {
           count: {
             args: Prisma.ExhibitCountArgs<ExtArgs>
             result: $Utils.Optional<ExhibitCountAggregateOutputType> | number
+          }
+        }
+      }
+      Audio: {
+        payload: Prisma.$AudioPayload<ExtArgs>
+        fields: Prisma.AudioFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AudioFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AudioPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AudioFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AudioPayload>
+          }
+          findFirst: {
+            args: Prisma.AudioFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AudioPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AudioFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AudioPayload>
+          }
+          findMany: {
+            args: Prisma.AudioFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AudioPayload>[]
+          }
+          create: {
+            args: Prisma.AudioCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AudioPayload>
+          }
+          createMany: {
+            args: Prisma.AudioCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AudioCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AudioPayload>[]
+          }
+          delete: {
+            args: Prisma.AudioDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AudioPayload>
+          }
+          update: {
+            args: Prisma.AudioUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AudioPayload>
+          }
+          deleteMany: {
+            args: Prisma.AudioDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AudioUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.AudioUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AudioPayload>
+          }
+          aggregate: {
+            args: Prisma.AudioAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAudio>
+          }
+          groupBy: {
+            args: Prisma.AudioGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AudioGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AudioCountArgs<ExtArgs>
+            result: $Utils.Optional<AudioCountAggregateOutputType> | number
+          }
+        }
+      }
+      AudioPlaybackLog: {
+        payload: Prisma.$AudioPlaybackLogPayload<ExtArgs>
+        fields: Prisma.AudioPlaybackLogFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AudioPlaybackLogFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AudioPlaybackLogPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AudioPlaybackLogFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AudioPlaybackLogPayload>
+          }
+          findFirst: {
+            args: Prisma.AudioPlaybackLogFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AudioPlaybackLogPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AudioPlaybackLogFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AudioPlaybackLogPayload>
+          }
+          findMany: {
+            args: Prisma.AudioPlaybackLogFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AudioPlaybackLogPayload>[]
+          }
+          create: {
+            args: Prisma.AudioPlaybackLogCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AudioPlaybackLogPayload>
+          }
+          createMany: {
+            args: Prisma.AudioPlaybackLogCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AudioPlaybackLogCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AudioPlaybackLogPayload>[]
+          }
+          delete: {
+            args: Prisma.AudioPlaybackLogDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AudioPlaybackLogPayload>
+          }
+          update: {
+            args: Prisma.AudioPlaybackLogUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AudioPlaybackLogPayload>
+          }
+          deleteMany: {
+            args: Prisma.AudioPlaybackLogDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AudioPlaybackLogUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.AudioPlaybackLogUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AudioPlaybackLogPayload>
+          }
+          aggregate: {
+            args: Prisma.AudioPlaybackLogAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAudioPlaybackLog>
+          }
+          groupBy: {
+            args: Prisma.AudioPlaybackLogGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AudioPlaybackLogGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AudioPlaybackLogCountArgs<ExtArgs>
+            result: $Utils.Optional<AudioPlaybackLogCountAggregateOutputType> | number
           }
         }
       }
@@ -1352,6 +1352,76 @@ export namespace Prisma {
           }
         }
       }
+      QRCode: {
+        payload: Prisma.$QRCodePayload<ExtArgs>
+        fields: Prisma.QRCodeFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.QRCodeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRCodePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.QRCodeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRCodePayload>
+          }
+          findFirst: {
+            args: Prisma.QRCodeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRCodePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.QRCodeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRCodePayload>
+          }
+          findMany: {
+            args: Prisma.QRCodeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRCodePayload>[]
+          }
+          create: {
+            args: Prisma.QRCodeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRCodePayload>
+          }
+          createMany: {
+            args: Prisma.QRCodeCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.QRCodeCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRCodePayload>[]
+          }
+          delete: {
+            args: Prisma.QRCodeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRCodePayload>
+          }
+          update: {
+            args: Prisma.QRCodeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRCodePayload>
+          }
+          deleteMany: {
+            args: Prisma.QRCodeDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.QRCodeUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.QRCodeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRCodePayload>
+          }
+          aggregate: {
+            args: Prisma.QRCodeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateQRCode>
+          }
+          groupBy: {
+            args: Prisma.QRCodeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<QRCodeGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.QRCodeCountArgs<ExtArgs>
+            result: $Utils.Optional<QRCodeCountAggregateOutputType> | number
+          }
+        }
+      }
       Language: {
         payload: Prisma.$LanguagePayload<ExtArgs>
         fields: Prisma.LanguageFieldRefs
@@ -1489,76 +1559,6 @@ export namespace Prisma {
           count: {
             args: Prisma.PermissionCountArgs<ExtArgs>
             result: $Utils.Optional<PermissionCountAggregateOutputType> | number
-          }
-        }
-      }
-      QRCode: {
-        payload: Prisma.$QRCodePayload<ExtArgs>
-        fields: Prisma.QRCodeFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.QRCodeFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QRCodePayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.QRCodeFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QRCodePayload>
-          }
-          findFirst: {
-            args: Prisma.QRCodeFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QRCodePayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.QRCodeFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QRCodePayload>
-          }
-          findMany: {
-            args: Prisma.QRCodeFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QRCodePayload>[]
-          }
-          create: {
-            args: Prisma.QRCodeCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QRCodePayload>
-          }
-          createMany: {
-            args: Prisma.QRCodeCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.QRCodeCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QRCodePayload>[]
-          }
-          delete: {
-            args: Prisma.QRCodeDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QRCodePayload>
-          }
-          update: {
-            args: Prisma.QRCodeUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QRCodePayload>
-          }
-          deleteMany: {
-            args: Prisma.QRCodeDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.QRCodeUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          upsert: {
-            args: Prisma.QRCodeUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QRCodePayload>
-          }
-          aggregate: {
-            args: Prisma.QRCodeAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateQRCode>
-          }
-          groupBy: {
-            args: Prisma.QRCodeGroupByArgs<ExtArgs>
-            result: $Utils.Optional<QRCodeGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.QRCodeCountArgs<ExtArgs>
-            result: $Utils.Optional<QRCodeCountAggregateOutputType> | number
           }
         }
       }
@@ -2559,46 +2559,6 @@ export namespace Prisma {
 
 
   /**
-   * Count Type AudioCountOutputType
-   */
-
-  export type AudioCountOutputType = {
-    playbackLogs: number
-    subtitles: number
-  }
-
-  export type AudioCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    playbackLogs?: boolean | AudioCountOutputTypeCountPlaybackLogsArgs
-    subtitles?: boolean | AudioCountOutputTypeCountSubtitlesArgs
-  }
-
-  // Custom InputTypes
-  /**
-   * AudioCountOutputType without action
-   */
-  export type AudioCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the AudioCountOutputType
-     */
-    select?: AudioCountOutputTypeSelect<ExtArgs> | null
-  }
-
-  /**
-   * AudioCountOutputType without action
-   */
-  export type AudioCountOutputTypeCountPlaybackLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: AudioPlaybackLogWhereInput
-  }
-
-  /**
-   * AudioCountOutputType without action
-   */
-  export type AudioCountOutputTypeCountSubtitlesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: SubtitleWhereInput
-  }
-
-
-  /**
    * Count Type ExhibitionCountOutputType
    */
 
@@ -2693,6 +2653,46 @@ export namespace Prisma {
    */
   export type ExhibitCountOutputTypeCountQrCodesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: QRCodeWhereInput
+  }
+
+
+  /**
+   * Count Type AudioCountOutputType
+   */
+
+  export type AudioCountOutputType = {
+    playbackLogs: number
+    subtitles: number
+  }
+
+  export type AudioCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    playbackLogs?: boolean | AudioCountOutputTypeCountPlaybackLogsArgs
+    subtitles?: boolean | AudioCountOutputTypeCountSubtitlesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * AudioCountOutputType without action
+   */
+  export type AudioCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AudioCountOutputType
+     */
+    select?: AudioCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * AudioCountOutputType without action
+   */
+  export type AudioCountOutputTypeCountPlaybackLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AudioPlaybackLogWhereInput
+  }
+
+  /**
+   * AudioCountOutputType without action
+   */
+  export type AudioCountOutputTypeCountSubtitlesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SubtitleWhereInput
   }
 
 
@@ -3011,6 +3011,2221 @@ export namespace Prisma {
   /**
    * Models
    */
+
+  /**
+   * Model Exhibition
+   */
+
+  export type AggregateExhibition = {
+    _count: ExhibitionCountAggregateOutputType | null
+    _avg: ExhibitionAvgAggregateOutputType | null
+    _sum: ExhibitionSumAggregateOutputType | null
+    _min: ExhibitionMinAggregateOutputType | null
+    _max: ExhibitionMaxAggregateOutputType | null
+  }
+
+  export type ExhibitionAvgAggregateOutputType = {
+    exhibitionId: number | null
+    statusId: number | null
+  }
+
+  export type ExhibitionSumAggregateOutputType = {
+    exhibitionId: bigint | null
+    statusId: number | null
+  }
+
+  export type ExhibitionMinAggregateOutputType = {
+    exhibitionId: bigint | null
+    title: string | null
+    description: string | null
+    statusId: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ExhibitionMaxAggregateOutputType = {
+    exhibitionId: bigint | null
+    title: string | null
+    description: string | null
+    statusId: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ExhibitionCountAggregateOutputType = {
+    exhibitionId: number
+    title: number
+    description: number
+    statusId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ExhibitionAvgAggregateInputType = {
+    exhibitionId?: true
+    statusId?: true
+  }
+
+  export type ExhibitionSumAggregateInputType = {
+    exhibitionId?: true
+    statusId?: true
+  }
+
+  export type ExhibitionMinAggregateInputType = {
+    exhibitionId?: true
+    title?: true
+    description?: true
+    statusId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ExhibitionMaxAggregateInputType = {
+    exhibitionId?: true
+    title?: true
+    description?: true
+    statusId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ExhibitionCountAggregateInputType = {
+    exhibitionId?: true
+    title?: true
+    description?: true
+    statusId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ExhibitionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Exhibition to aggregate.
+     */
+    where?: ExhibitionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Exhibitions to fetch.
+     */
+    orderBy?: ExhibitionOrderByWithRelationInput | ExhibitionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ExhibitionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Exhibitions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Exhibitions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Exhibitions
+    **/
+    _count?: true | ExhibitionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ExhibitionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ExhibitionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ExhibitionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ExhibitionMaxAggregateInputType
+  }
+
+  export type GetExhibitionAggregateType<T extends ExhibitionAggregateArgs> = {
+        [P in keyof T & keyof AggregateExhibition]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateExhibition[P]>
+      : GetScalarType<T[P], AggregateExhibition[P]>
+  }
+
+
+
+
+  export type ExhibitionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExhibitionWhereInput
+    orderBy?: ExhibitionOrderByWithAggregationInput | ExhibitionOrderByWithAggregationInput[]
+    by: ExhibitionScalarFieldEnum[] | ExhibitionScalarFieldEnum
+    having?: ExhibitionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ExhibitionCountAggregateInputType | true
+    _avg?: ExhibitionAvgAggregateInputType
+    _sum?: ExhibitionSumAggregateInputType
+    _min?: ExhibitionMinAggregateInputType
+    _max?: ExhibitionMaxAggregateInputType
+  }
+
+  export type ExhibitionGroupByOutputType = {
+    exhibitionId: bigint
+    title: string
+    description: string | null
+    statusId: number | null
+    createdAt: Date
+    updatedAt: Date
+    _count: ExhibitionCountAggregateOutputType | null
+    _avg: ExhibitionAvgAggregateOutputType | null
+    _sum: ExhibitionSumAggregateOutputType | null
+    _min: ExhibitionMinAggregateOutputType | null
+    _max: ExhibitionMaxAggregateOutputType | null
+  }
+
+  type GetExhibitionGroupByPayload<T extends ExhibitionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ExhibitionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ExhibitionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ExhibitionGroupByOutputType[P]>
+            : GetScalarType<T[P], ExhibitionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ExhibitionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    exhibitionId?: boolean
+    title?: boolean
+    description?: boolean
+    statusId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    status?: boolean | Exhibition$statusArgs<ExtArgs>
+    exhibits?: boolean | Exhibition$exhibitsArgs<ExtArgs>
+    images?: boolean | Exhibition$imagesArgs<ExtArgs>
+    _count?: boolean | ExhibitionCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["exhibition"]>
+
+  export type ExhibitionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    exhibitionId?: boolean
+    title?: boolean
+    description?: boolean
+    statusId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    status?: boolean | Exhibition$statusArgs<ExtArgs>
+  }, ExtArgs["result"]["exhibition"]>
+
+  export type ExhibitionSelectScalar = {
+    exhibitionId?: boolean
+    title?: boolean
+    description?: boolean
+    statusId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ExhibitionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    status?: boolean | Exhibition$statusArgs<ExtArgs>
+    exhibits?: boolean | Exhibition$exhibitsArgs<ExtArgs>
+    images?: boolean | Exhibition$imagesArgs<ExtArgs>
+    _count?: boolean | ExhibitionCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ExhibitionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    status?: boolean | Exhibition$statusArgs<ExtArgs>
+  }
+
+  export type $ExhibitionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Exhibition"
+    objects: {
+      status: Prisma.$StatusPayload<ExtArgs> | null
+      exhibits: Prisma.$ExhibitPayload<ExtArgs>[]
+      images: Prisma.$ImagePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      exhibitionId: bigint
+      title: string
+      description: string | null
+      statusId: number | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["exhibition"]>
+    composites: {}
+  }
+
+  type ExhibitionGetPayload<S extends boolean | null | undefined | ExhibitionDefaultArgs> = $Result.GetResult<Prisma.$ExhibitionPayload, S>
+
+  type ExhibitionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<ExhibitionFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: ExhibitionCountAggregateInputType | true
+    }
+
+  export interface ExhibitionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Exhibition'], meta: { name: 'Exhibition' } }
+    /**
+     * Find zero or one Exhibition that matches the filter.
+     * @param {ExhibitionFindUniqueArgs} args - Arguments to find a Exhibition
+     * @example
+     * // Get one Exhibition
+     * const exhibition = await prisma.exhibition.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ExhibitionFindUniqueArgs>(args: SelectSubset<T, ExhibitionFindUniqueArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one Exhibition that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {ExhibitionFindUniqueOrThrowArgs} args - Arguments to find a Exhibition
+     * @example
+     * // Get one Exhibition
+     * const exhibition = await prisma.exhibition.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ExhibitionFindUniqueOrThrowArgs>(args: SelectSubset<T, ExhibitionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first Exhibition that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExhibitionFindFirstArgs} args - Arguments to find a Exhibition
+     * @example
+     * // Get one Exhibition
+     * const exhibition = await prisma.exhibition.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ExhibitionFindFirstArgs>(args?: SelectSubset<T, ExhibitionFindFirstArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first Exhibition that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExhibitionFindFirstOrThrowArgs} args - Arguments to find a Exhibition
+     * @example
+     * // Get one Exhibition
+     * const exhibition = await prisma.exhibition.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ExhibitionFindFirstOrThrowArgs>(args?: SelectSubset<T, ExhibitionFindFirstOrThrowArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more Exhibitions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExhibitionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Exhibitions
+     * const exhibitions = await prisma.exhibition.findMany()
+     * 
+     * // Get first 10 Exhibitions
+     * const exhibitions = await prisma.exhibition.findMany({ take: 10 })
+     * 
+     * // Only select the `exhibitionId`
+     * const exhibitionWithExhibitionIdOnly = await prisma.exhibition.findMany({ select: { exhibitionId: true } })
+     * 
+     */
+    findMany<T extends ExhibitionFindManyArgs>(args?: SelectSubset<T, ExhibitionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a Exhibition.
+     * @param {ExhibitionCreateArgs} args - Arguments to create a Exhibition.
+     * @example
+     * // Create one Exhibition
+     * const Exhibition = await prisma.exhibition.create({
+     *   data: {
+     *     // ... data to create a Exhibition
+     *   }
+     * })
+     * 
+     */
+    create<T extends ExhibitionCreateArgs>(args: SelectSubset<T, ExhibitionCreateArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many Exhibitions.
+     * @param {ExhibitionCreateManyArgs} args - Arguments to create many Exhibitions.
+     * @example
+     * // Create many Exhibitions
+     * const exhibition = await prisma.exhibition.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ExhibitionCreateManyArgs>(args?: SelectSubset<T, ExhibitionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Exhibitions and returns the data saved in the database.
+     * @param {ExhibitionCreateManyAndReturnArgs} args - Arguments to create many Exhibitions.
+     * @example
+     * // Create many Exhibitions
+     * const exhibition = await prisma.exhibition.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Exhibitions and only return the `exhibitionId`
+     * const exhibitionWithExhibitionIdOnly = await prisma.exhibition.createManyAndReturn({ 
+     *   select: { exhibitionId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ExhibitionCreateManyAndReturnArgs>(args?: SelectSubset<T, ExhibitionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a Exhibition.
+     * @param {ExhibitionDeleteArgs} args - Arguments to delete one Exhibition.
+     * @example
+     * // Delete one Exhibition
+     * const Exhibition = await prisma.exhibition.delete({
+     *   where: {
+     *     // ... filter to delete one Exhibition
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ExhibitionDeleteArgs>(args: SelectSubset<T, ExhibitionDeleteArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one Exhibition.
+     * @param {ExhibitionUpdateArgs} args - Arguments to update one Exhibition.
+     * @example
+     * // Update one Exhibition
+     * const exhibition = await prisma.exhibition.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ExhibitionUpdateArgs>(args: SelectSubset<T, ExhibitionUpdateArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more Exhibitions.
+     * @param {ExhibitionDeleteManyArgs} args - Arguments to filter Exhibitions to delete.
+     * @example
+     * // Delete a few Exhibitions
+     * const { count } = await prisma.exhibition.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ExhibitionDeleteManyArgs>(args?: SelectSubset<T, ExhibitionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Exhibitions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExhibitionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Exhibitions
+     * const exhibition = await prisma.exhibition.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ExhibitionUpdateManyArgs>(args: SelectSubset<T, ExhibitionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Exhibition.
+     * @param {ExhibitionUpsertArgs} args - Arguments to update or create a Exhibition.
+     * @example
+     * // Update or create a Exhibition
+     * const exhibition = await prisma.exhibition.upsert({
+     *   create: {
+     *     // ... data to create a Exhibition
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Exhibition we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ExhibitionUpsertArgs>(args: SelectSubset<T, ExhibitionUpsertArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of Exhibitions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExhibitionCountArgs} args - Arguments to filter Exhibitions to count.
+     * @example
+     * // Count the number of Exhibitions
+     * const count = await prisma.exhibition.count({
+     *   where: {
+     *     // ... the filter for the Exhibitions we want to count
+     *   }
+     * })
+    **/
+    count<T extends ExhibitionCountArgs>(
+      args?: Subset<T, ExhibitionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ExhibitionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Exhibition.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExhibitionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ExhibitionAggregateArgs>(args: Subset<T, ExhibitionAggregateArgs>): Prisma.PrismaPromise<GetExhibitionAggregateType<T>>
+
+    /**
+     * Group by Exhibition.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExhibitionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ExhibitionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ExhibitionGroupByArgs['orderBy'] }
+        : { orderBy?: ExhibitionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ExhibitionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetExhibitionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Exhibition model
+   */
+  readonly fields: ExhibitionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Exhibition.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ExhibitionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    status<T extends Exhibition$statusArgs<ExtArgs> = {}>(args?: Subset<T, Exhibition$statusArgs<ExtArgs>>): Prisma__StatusClient<$Result.GetResult<Prisma.$StatusPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    exhibits<T extends Exhibition$exhibitsArgs<ExtArgs> = {}>(args?: Subset<T, Exhibition$exhibitsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findMany"> | Null>
+    images<T extends Exhibition$imagesArgs<ExtArgs> = {}>(args?: Subset<T, Exhibition$imagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImagePayload<ExtArgs>, T, "findMany"> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Exhibition model
+   */ 
+  interface ExhibitionFieldRefs {
+    readonly exhibitionId: FieldRef<"Exhibition", 'BigInt'>
+    readonly title: FieldRef<"Exhibition", 'String'>
+    readonly description: FieldRef<"Exhibition", 'String'>
+    readonly statusId: FieldRef<"Exhibition", 'Int'>
+    readonly createdAt: FieldRef<"Exhibition", 'DateTime'>
+    readonly updatedAt: FieldRef<"Exhibition", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Exhibition findUnique
+   */
+  export type ExhibitionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Exhibition
+     */
+    select?: ExhibitionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExhibitionInclude<ExtArgs> | null
+    /**
+     * Filter, which Exhibition to fetch.
+     */
+    where: ExhibitionWhereUniqueInput
+  }
+
+  /**
+   * Exhibition findUniqueOrThrow
+   */
+  export type ExhibitionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Exhibition
+     */
+    select?: ExhibitionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExhibitionInclude<ExtArgs> | null
+    /**
+     * Filter, which Exhibition to fetch.
+     */
+    where: ExhibitionWhereUniqueInput
+  }
+
+  /**
+   * Exhibition findFirst
+   */
+  export type ExhibitionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Exhibition
+     */
+    select?: ExhibitionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExhibitionInclude<ExtArgs> | null
+    /**
+     * Filter, which Exhibition to fetch.
+     */
+    where?: ExhibitionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Exhibitions to fetch.
+     */
+    orderBy?: ExhibitionOrderByWithRelationInput | ExhibitionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Exhibitions.
+     */
+    cursor?: ExhibitionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Exhibitions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Exhibitions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Exhibitions.
+     */
+    distinct?: ExhibitionScalarFieldEnum | ExhibitionScalarFieldEnum[]
+  }
+
+  /**
+   * Exhibition findFirstOrThrow
+   */
+  export type ExhibitionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Exhibition
+     */
+    select?: ExhibitionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExhibitionInclude<ExtArgs> | null
+    /**
+     * Filter, which Exhibition to fetch.
+     */
+    where?: ExhibitionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Exhibitions to fetch.
+     */
+    orderBy?: ExhibitionOrderByWithRelationInput | ExhibitionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Exhibitions.
+     */
+    cursor?: ExhibitionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Exhibitions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Exhibitions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Exhibitions.
+     */
+    distinct?: ExhibitionScalarFieldEnum | ExhibitionScalarFieldEnum[]
+  }
+
+  /**
+   * Exhibition findMany
+   */
+  export type ExhibitionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Exhibition
+     */
+    select?: ExhibitionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExhibitionInclude<ExtArgs> | null
+    /**
+     * Filter, which Exhibitions to fetch.
+     */
+    where?: ExhibitionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Exhibitions to fetch.
+     */
+    orderBy?: ExhibitionOrderByWithRelationInput | ExhibitionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Exhibitions.
+     */
+    cursor?: ExhibitionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Exhibitions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Exhibitions.
+     */
+    skip?: number
+    distinct?: ExhibitionScalarFieldEnum | ExhibitionScalarFieldEnum[]
+  }
+
+  /**
+   * Exhibition create
+   */
+  export type ExhibitionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Exhibition
+     */
+    select?: ExhibitionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExhibitionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Exhibition.
+     */
+    data: XOR<ExhibitionCreateInput, ExhibitionUncheckedCreateInput>
+  }
+
+  /**
+   * Exhibition createMany
+   */
+  export type ExhibitionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Exhibitions.
+     */
+    data: ExhibitionCreateManyInput | ExhibitionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Exhibition createManyAndReturn
+   */
+  export type ExhibitionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Exhibition
+     */
+    select?: ExhibitionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many Exhibitions.
+     */
+    data: ExhibitionCreateManyInput | ExhibitionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExhibitionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Exhibition update
+   */
+  export type ExhibitionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Exhibition
+     */
+    select?: ExhibitionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExhibitionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Exhibition.
+     */
+    data: XOR<ExhibitionUpdateInput, ExhibitionUncheckedUpdateInput>
+    /**
+     * Choose, which Exhibition to update.
+     */
+    where: ExhibitionWhereUniqueInput
+  }
+
+  /**
+   * Exhibition updateMany
+   */
+  export type ExhibitionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Exhibitions.
+     */
+    data: XOR<ExhibitionUpdateManyMutationInput, ExhibitionUncheckedUpdateManyInput>
+    /**
+     * Filter which Exhibitions to update
+     */
+    where?: ExhibitionWhereInput
+  }
+
+  /**
+   * Exhibition upsert
+   */
+  export type ExhibitionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Exhibition
+     */
+    select?: ExhibitionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExhibitionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Exhibition to update in case it exists.
+     */
+    where: ExhibitionWhereUniqueInput
+    /**
+     * In case the Exhibition found by the `where` argument doesn't exist, create a new Exhibition with this data.
+     */
+    create: XOR<ExhibitionCreateInput, ExhibitionUncheckedCreateInput>
+    /**
+     * In case the Exhibition was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ExhibitionUpdateInput, ExhibitionUncheckedUpdateInput>
+  }
+
+  /**
+   * Exhibition delete
+   */
+  export type ExhibitionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Exhibition
+     */
+    select?: ExhibitionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExhibitionInclude<ExtArgs> | null
+    /**
+     * Filter which Exhibition to delete.
+     */
+    where: ExhibitionWhereUniqueInput
+  }
+
+  /**
+   * Exhibition deleteMany
+   */
+  export type ExhibitionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Exhibitions to delete
+     */
+    where?: ExhibitionWhereInput
+  }
+
+  /**
+   * Exhibition.status
+   */
+  export type Exhibition$statusArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Status
+     */
+    select?: StatusSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusInclude<ExtArgs> | null
+    where?: StatusWhereInput
+  }
+
+  /**
+   * Exhibition.exhibits
+   */
+  export type Exhibition$exhibitsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Exhibit
+     */
+    select?: ExhibitSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExhibitInclude<ExtArgs> | null
+    where?: ExhibitWhereInput
+    orderBy?: ExhibitOrderByWithRelationInput | ExhibitOrderByWithRelationInput[]
+    cursor?: ExhibitWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ExhibitScalarFieldEnum | ExhibitScalarFieldEnum[]
+  }
+
+  /**
+   * Exhibition.images
+   */
+  export type Exhibition$imagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Image
+     */
+    select?: ImageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImageInclude<ExtArgs> | null
+    where?: ImageWhereInput
+    orderBy?: ImageOrderByWithRelationInput | ImageOrderByWithRelationInput[]
+    cursor?: ImageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ImageScalarFieldEnum | ImageScalarFieldEnum[]
+  }
+
+  /**
+   * Exhibition without action
+   */
+  export type ExhibitionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Exhibition
+     */
+    select?: ExhibitionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExhibitionInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Exhibit
+   */
+
+  export type AggregateExhibit = {
+    _count: ExhibitCountAggregateOutputType | null
+    _avg: ExhibitAvgAggregateOutputType | null
+    _sum: ExhibitSumAggregateOutputType | null
+    _min: ExhibitMinAggregateOutputType | null
+    _max: ExhibitMaxAggregateOutputType | null
+  }
+
+  export type ExhibitAvgAggregateOutputType = {
+    exhibitId: number | null
+    exhibitionId: number | null
+    badgeId: number | null
+    statusId: number | null
+  }
+
+  export type ExhibitSumAggregateOutputType = {
+    exhibitId: bigint | null
+    exhibitionId: bigint | null
+    badgeId: bigint | null
+    statusId: number | null
+  }
+
+  export type ExhibitMinAggregateOutputType = {
+    exhibitId: bigint | null
+    exhibitionId: bigint | null
+    badgeId: bigint | null
+    title: string | null
+    description: string | null
+    additionalDescription: string | null
+    statusId: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ExhibitMaxAggregateOutputType = {
+    exhibitId: bigint | null
+    exhibitionId: bigint | null
+    badgeId: bigint | null
+    title: string | null
+    description: string | null
+    additionalDescription: string | null
+    statusId: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ExhibitCountAggregateOutputType = {
+    exhibitId: number
+    exhibitionId: number
+    badgeId: number
+    title: number
+    description: number
+    additionalDescription: number
+    statusId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ExhibitAvgAggregateInputType = {
+    exhibitId?: true
+    exhibitionId?: true
+    badgeId?: true
+    statusId?: true
+  }
+
+  export type ExhibitSumAggregateInputType = {
+    exhibitId?: true
+    exhibitionId?: true
+    badgeId?: true
+    statusId?: true
+  }
+
+  export type ExhibitMinAggregateInputType = {
+    exhibitId?: true
+    exhibitionId?: true
+    badgeId?: true
+    title?: true
+    description?: true
+    additionalDescription?: true
+    statusId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ExhibitMaxAggregateInputType = {
+    exhibitId?: true
+    exhibitionId?: true
+    badgeId?: true
+    title?: true
+    description?: true
+    additionalDescription?: true
+    statusId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ExhibitCountAggregateInputType = {
+    exhibitId?: true
+    exhibitionId?: true
+    badgeId?: true
+    title?: true
+    description?: true
+    additionalDescription?: true
+    statusId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ExhibitAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Exhibit to aggregate.
+     */
+    where?: ExhibitWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Exhibits to fetch.
+     */
+    orderBy?: ExhibitOrderByWithRelationInput | ExhibitOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ExhibitWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Exhibits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Exhibits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Exhibits
+    **/
+    _count?: true | ExhibitCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ExhibitAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ExhibitSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ExhibitMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ExhibitMaxAggregateInputType
+  }
+
+  export type GetExhibitAggregateType<T extends ExhibitAggregateArgs> = {
+        [P in keyof T & keyof AggregateExhibit]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateExhibit[P]>
+      : GetScalarType<T[P], AggregateExhibit[P]>
+  }
+
+
+
+
+  export type ExhibitGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExhibitWhereInput
+    orderBy?: ExhibitOrderByWithAggregationInput | ExhibitOrderByWithAggregationInput[]
+    by: ExhibitScalarFieldEnum[] | ExhibitScalarFieldEnum
+    having?: ExhibitScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ExhibitCountAggregateInputType | true
+    _avg?: ExhibitAvgAggregateInputType
+    _sum?: ExhibitSumAggregateInputType
+    _min?: ExhibitMinAggregateInputType
+    _max?: ExhibitMaxAggregateInputType
+  }
+
+  export type ExhibitGroupByOutputType = {
+    exhibitId: bigint
+    exhibitionId: bigint
+    badgeId: bigint | null
+    title: string
+    description: string | null
+    additionalDescription: string | null
+    statusId: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    _count: ExhibitCountAggregateOutputType | null
+    _avg: ExhibitAvgAggregateOutputType | null
+    _sum: ExhibitSumAggregateOutputType | null
+    _min: ExhibitMinAggregateOutputType | null
+    _max: ExhibitMaxAggregateOutputType | null
+  }
+
+  type GetExhibitGroupByPayload<T extends ExhibitGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ExhibitGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ExhibitGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ExhibitGroupByOutputType[P]>
+            : GetScalarType<T[P], ExhibitGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ExhibitSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    exhibitId?: boolean
+    exhibitionId?: boolean
+    badgeId?: boolean
+    title?: boolean
+    description?: boolean
+    additionalDescription?: boolean
+    statusId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    exhibition?: boolean | ExhibitionDefaultArgs<ExtArgs>
+    status?: boolean | Exhibit$statusArgs<ExtArgs>
+    badge?: boolean | Exhibit$badgeArgs<ExtArgs>
+    audio?: boolean | Exhibit$audioArgs<ExtArgs>
+    feedbacks?: boolean | Exhibit$feedbacksArgs<ExtArgs>
+    images?: boolean | Exhibit$imagesArgs<ExtArgs>
+    qrCodes?: boolean | Exhibit$qrCodesArgs<ExtArgs>
+    _count?: boolean | ExhibitCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["exhibit"]>
+
+  export type ExhibitSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    exhibitId?: boolean
+    exhibitionId?: boolean
+    badgeId?: boolean
+    title?: boolean
+    description?: boolean
+    additionalDescription?: boolean
+    statusId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    exhibition?: boolean | ExhibitionDefaultArgs<ExtArgs>
+    status?: boolean | Exhibit$statusArgs<ExtArgs>
+    badge?: boolean | Exhibit$badgeArgs<ExtArgs>
+  }, ExtArgs["result"]["exhibit"]>
+
+  export type ExhibitSelectScalar = {
+    exhibitId?: boolean
+    exhibitionId?: boolean
+    badgeId?: boolean
+    title?: boolean
+    description?: boolean
+    additionalDescription?: boolean
+    statusId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ExhibitInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    exhibition?: boolean | ExhibitionDefaultArgs<ExtArgs>
+    status?: boolean | Exhibit$statusArgs<ExtArgs>
+    badge?: boolean | Exhibit$badgeArgs<ExtArgs>
+    audio?: boolean | Exhibit$audioArgs<ExtArgs>
+    feedbacks?: boolean | Exhibit$feedbacksArgs<ExtArgs>
+    images?: boolean | Exhibit$imagesArgs<ExtArgs>
+    qrCodes?: boolean | Exhibit$qrCodesArgs<ExtArgs>
+    _count?: boolean | ExhibitCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ExhibitIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    exhibition?: boolean | ExhibitionDefaultArgs<ExtArgs>
+    status?: boolean | Exhibit$statusArgs<ExtArgs>
+    badge?: boolean | Exhibit$badgeArgs<ExtArgs>
+  }
+
+  export type $ExhibitPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Exhibit"
+    objects: {
+      exhibition: Prisma.$ExhibitionPayload<ExtArgs>
+      status: Prisma.$StatusPayload<ExtArgs> | null
+      badge: Prisma.$BadgePayload<ExtArgs> | null
+      audio: Prisma.$AudioPayload<ExtArgs>[]
+      feedbacks: Prisma.$FeedbackPayload<ExtArgs>[]
+      images: Prisma.$ImagePayload<ExtArgs>[]
+      qrCodes: Prisma.$QRCodePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      exhibitId: bigint
+      exhibitionId: bigint
+      badgeId: bigint | null
+      title: string
+      description: string | null
+      additionalDescription: string | null
+      statusId: number | null
+      createdAt: Date | null
+      updatedAt: Date | null
+    }, ExtArgs["result"]["exhibit"]>
+    composites: {}
+  }
+
+  type ExhibitGetPayload<S extends boolean | null | undefined | ExhibitDefaultArgs> = $Result.GetResult<Prisma.$ExhibitPayload, S>
+
+  type ExhibitCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<ExhibitFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: ExhibitCountAggregateInputType | true
+    }
+
+  export interface ExhibitDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Exhibit'], meta: { name: 'Exhibit' } }
+    /**
+     * Find zero or one Exhibit that matches the filter.
+     * @param {ExhibitFindUniqueArgs} args - Arguments to find a Exhibit
+     * @example
+     * // Get one Exhibit
+     * const exhibit = await prisma.exhibit.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ExhibitFindUniqueArgs>(args: SelectSubset<T, ExhibitFindUniqueArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one Exhibit that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {ExhibitFindUniqueOrThrowArgs} args - Arguments to find a Exhibit
+     * @example
+     * // Get one Exhibit
+     * const exhibit = await prisma.exhibit.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ExhibitFindUniqueOrThrowArgs>(args: SelectSubset<T, ExhibitFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first Exhibit that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExhibitFindFirstArgs} args - Arguments to find a Exhibit
+     * @example
+     * // Get one Exhibit
+     * const exhibit = await prisma.exhibit.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ExhibitFindFirstArgs>(args?: SelectSubset<T, ExhibitFindFirstArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first Exhibit that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExhibitFindFirstOrThrowArgs} args - Arguments to find a Exhibit
+     * @example
+     * // Get one Exhibit
+     * const exhibit = await prisma.exhibit.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ExhibitFindFirstOrThrowArgs>(args?: SelectSubset<T, ExhibitFindFirstOrThrowArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more Exhibits that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExhibitFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Exhibits
+     * const exhibits = await prisma.exhibit.findMany()
+     * 
+     * // Get first 10 Exhibits
+     * const exhibits = await prisma.exhibit.findMany({ take: 10 })
+     * 
+     * // Only select the `exhibitId`
+     * const exhibitWithExhibitIdOnly = await prisma.exhibit.findMany({ select: { exhibitId: true } })
+     * 
+     */
+    findMany<T extends ExhibitFindManyArgs>(args?: SelectSubset<T, ExhibitFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a Exhibit.
+     * @param {ExhibitCreateArgs} args - Arguments to create a Exhibit.
+     * @example
+     * // Create one Exhibit
+     * const Exhibit = await prisma.exhibit.create({
+     *   data: {
+     *     // ... data to create a Exhibit
+     *   }
+     * })
+     * 
+     */
+    create<T extends ExhibitCreateArgs>(args: SelectSubset<T, ExhibitCreateArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many Exhibits.
+     * @param {ExhibitCreateManyArgs} args - Arguments to create many Exhibits.
+     * @example
+     * // Create many Exhibits
+     * const exhibit = await prisma.exhibit.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ExhibitCreateManyArgs>(args?: SelectSubset<T, ExhibitCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Exhibits and returns the data saved in the database.
+     * @param {ExhibitCreateManyAndReturnArgs} args - Arguments to create many Exhibits.
+     * @example
+     * // Create many Exhibits
+     * const exhibit = await prisma.exhibit.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Exhibits and only return the `exhibitId`
+     * const exhibitWithExhibitIdOnly = await prisma.exhibit.createManyAndReturn({ 
+     *   select: { exhibitId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ExhibitCreateManyAndReturnArgs>(args?: SelectSubset<T, ExhibitCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a Exhibit.
+     * @param {ExhibitDeleteArgs} args - Arguments to delete one Exhibit.
+     * @example
+     * // Delete one Exhibit
+     * const Exhibit = await prisma.exhibit.delete({
+     *   where: {
+     *     // ... filter to delete one Exhibit
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ExhibitDeleteArgs>(args: SelectSubset<T, ExhibitDeleteArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one Exhibit.
+     * @param {ExhibitUpdateArgs} args - Arguments to update one Exhibit.
+     * @example
+     * // Update one Exhibit
+     * const exhibit = await prisma.exhibit.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ExhibitUpdateArgs>(args: SelectSubset<T, ExhibitUpdateArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more Exhibits.
+     * @param {ExhibitDeleteManyArgs} args - Arguments to filter Exhibits to delete.
+     * @example
+     * // Delete a few Exhibits
+     * const { count } = await prisma.exhibit.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ExhibitDeleteManyArgs>(args?: SelectSubset<T, ExhibitDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Exhibits.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExhibitUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Exhibits
+     * const exhibit = await prisma.exhibit.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ExhibitUpdateManyArgs>(args: SelectSubset<T, ExhibitUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Exhibit.
+     * @param {ExhibitUpsertArgs} args - Arguments to update or create a Exhibit.
+     * @example
+     * // Update or create a Exhibit
+     * const exhibit = await prisma.exhibit.upsert({
+     *   create: {
+     *     // ... data to create a Exhibit
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Exhibit we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ExhibitUpsertArgs>(args: SelectSubset<T, ExhibitUpsertArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of Exhibits.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExhibitCountArgs} args - Arguments to filter Exhibits to count.
+     * @example
+     * // Count the number of Exhibits
+     * const count = await prisma.exhibit.count({
+     *   where: {
+     *     // ... the filter for the Exhibits we want to count
+     *   }
+     * })
+    **/
+    count<T extends ExhibitCountArgs>(
+      args?: Subset<T, ExhibitCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ExhibitCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Exhibit.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExhibitAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ExhibitAggregateArgs>(args: Subset<T, ExhibitAggregateArgs>): Prisma.PrismaPromise<GetExhibitAggregateType<T>>
+
+    /**
+     * Group by Exhibit.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExhibitGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ExhibitGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ExhibitGroupByArgs['orderBy'] }
+        : { orderBy?: ExhibitGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ExhibitGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetExhibitGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Exhibit model
+   */
+  readonly fields: ExhibitFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Exhibit.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ExhibitClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    exhibition<T extends ExhibitionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ExhibitionDefaultArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    status<T extends Exhibit$statusArgs<ExtArgs> = {}>(args?: Subset<T, Exhibit$statusArgs<ExtArgs>>): Prisma__StatusClient<$Result.GetResult<Prisma.$StatusPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    badge<T extends Exhibit$badgeArgs<ExtArgs> = {}>(args?: Subset<T, Exhibit$badgeArgs<ExtArgs>>): Prisma__BadgeClient<$Result.GetResult<Prisma.$BadgePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    audio<T extends Exhibit$audioArgs<ExtArgs> = {}>(args?: Subset<T, Exhibit$audioArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AudioPayload<ExtArgs>, T, "findMany"> | Null>
+    feedbacks<T extends Exhibit$feedbacksArgs<ExtArgs> = {}>(args?: Subset<T, Exhibit$feedbacksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FeedbackPayload<ExtArgs>, T, "findMany"> | Null>
+    images<T extends Exhibit$imagesArgs<ExtArgs> = {}>(args?: Subset<T, Exhibit$imagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImagePayload<ExtArgs>, T, "findMany"> | Null>
+    qrCodes<T extends Exhibit$qrCodesArgs<ExtArgs> = {}>(args?: Subset<T, Exhibit$qrCodesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QRCodePayload<ExtArgs>, T, "findMany"> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Exhibit model
+   */ 
+  interface ExhibitFieldRefs {
+    readonly exhibitId: FieldRef<"Exhibit", 'BigInt'>
+    readonly exhibitionId: FieldRef<"Exhibit", 'BigInt'>
+    readonly badgeId: FieldRef<"Exhibit", 'BigInt'>
+    readonly title: FieldRef<"Exhibit", 'String'>
+    readonly description: FieldRef<"Exhibit", 'String'>
+    readonly additionalDescription: FieldRef<"Exhibit", 'String'>
+    readonly statusId: FieldRef<"Exhibit", 'Int'>
+    readonly createdAt: FieldRef<"Exhibit", 'DateTime'>
+    readonly updatedAt: FieldRef<"Exhibit", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Exhibit findUnique
+   */
+  export type ExhibitFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Exhibit
+     */
+    select?: ExhibitSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExhibitInclude<ExtArgs> | null
+    /**
+     * Filter, which Exhibit to fetch.
+     */
+    where: ExhibitWhereUniqueInput
+  }
+
+  /**
+   * Exhibit findUniqueOrThrow
+   */
+  export type ExhibitFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Exhibit
+     */
+    select?: ExhibitSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExhibitInclude<ExtArgs> | null
+    /**
+     * Filter, which Exhibit to fetch.
+     */
+    where: ExhibitWhereUniqueInput
+  }
+
+  /**
+   * Exhibit findFirst
+   */
+  export type ExhibitFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Exhibit
+     */
+    select?: ExhibitSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExhibitInclude<ExtArgs> | null
+    /**
+     * Filter, which Exhibit to fetch.
+     */
+    where?: ExhibitWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Exhibits to fetch.
+     */
+    orderBy?: ExhibitOrderByWithRelationInput | ExhibitOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Exhibits.
+     */
+    cursor?: ExhibitWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Exhibits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Exhibits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Exhibits.
+     */
+    distinct?: ExhibitScalarFieldEnum | ExhibitScalarFieldEnum[]
+  }
+
+  /**
+   * Exhibit findFirstOrThrow
+   */
+  export type ExhibitFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Exhibit
+     */
+    select?: ExhibitSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExhibitInclude<ExtArgs> | null
+    /**
+     * Filter, which Exhibit to fetch.
+     */
+    where?: ExhibitWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Exhibits to fetch.
+     */
+    orderBy?: ExhibitOrderByWithRelationInput | ExhibitOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Exhibits.
+     */
+    cursor?: ExhibitWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Exhibits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Exhibits.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Exhibits.
+     */
+    distinct?: ExhibitScalarFieldEnum | ExhibitScalarFieldEnum[]
+  }
+
+  /**
+   * Exhibit findMany
+   */
+  export type ExhibitFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Exhibit
+     */
+    select?: ExhibitSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExhibitInclude<ExtArgs> | null
+    /**
+     * Filter, which Exhibits to fetch.
+     */
+    where?: ExhibitWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Exhibits to fetch.
+     */
+    orderBy?: ExhibitOrderByWithRelationInput | ExhibitOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Exhibits.
+     */
+    cursor?: ExhibitWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Exhibits from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Exhibits.
+     */
+    skip?: number
+    distinct?: ExhibitScalarFieldEnum | ExhibitScalarFieldEnum[]
+  }
+
+  /**
+   * Exhibit create
+   */
+  export type ExhibitCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Exhibit
+     */
+    select?: ExhibitSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExhibitInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Exhibit.
+     */
+    data: XOR<ExhibitCreateInput, ExhibitUncheckedCreateInput>
+  }
+
+  /**
+   * Exhibit createMany
+   */
+  export type ExhibitCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Exhibits.
+     */
+    data: ExhibitCreateManyInput | ExhibitCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Exhibit createManyAndReturn
+   */
+  export type ExhibitCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Exhibit
+     */
+    select?: ExhibitSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many Exhibits.
+     */
+    data: ExhibitCreateManyInput | ExhibitCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExhibitIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Exhibit update
+   */
+  export type ExhibitUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Exhibit
+     */
+    select?: ExhibitSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExhibitInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Exhibit.
+     */
+    data: XOR<ExhibitUpdateInput, ExhibitUncheckedUpdateInput>
+    /**
+     * Choose, which Exhibit to update.
+     */
+    where: ExhibitWhereUniqueInput
+  }
+
+  /**
+   * Exhibit updateMany
+   */
+  export type ExhibitUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Exhibits.
+     */
+    data: XOR<ExhibitUpdateManyMutationInput, ExhibitUncheckedUpdateManyInput>
+    /**
+     * Filter which Exhibits to update
+     */
+    where?: ExhibitWhereInput
+  }
+
+  /**
+   * Exhibit upsert
+   */
+  export type ExhibitUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Exhibit
+     */
+    select?: ExhibitSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExhibitInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Exhibit to update in case it exists.
+     */
+    where: ExhibitWhereUniqueInput
+    /**
+     * In case the Exhibit found by the `where` argument doesn't exist, create a new Exhibit with this data.
+     */
+    create: XOR<ExhibitCreateInput, ExhibitUncheckedCreateInput>
+    /**
+     * In case the Exhibit was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ExhibitUpdateInput, ExhibitUncheckedUpdateInput>
+  }
+
+  /**
+   * Exhibit delete
+   */
+  export type ExhibitDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Exhibit
+     */
+    select?: ExhibitSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExhibitInclude<ExtArgs> | null
+    /**
+     * Filter which Exhibit to delete.
+     */
+    where: ExhibitWhereUniqueInput
+  }
+
+  /**
+   * Exhibit deleteMany
+   */
+  export type ExhibitDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Exhibits to delete
+     */
+    where?: ExhibitWhereInput
+  }
+
+  /**
+   * Exhibit.status
+   */
+  export type Exhibit$statusArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Status
+     */
+    select?: StatusSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StatusInclude<ExtArgs> | null
+    where?: StatusWhereInput
+  }
+
+  /**
+   * Exhibit.badge
+   */
+  export type Exhibit$badgeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Badge
+     */
+    select?: BadgeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BadgeInclude<ExtArgs> | null
+    where?: BadgeWhereInput
+  }
+
+  /**
+   * Exhibit.audio
+   */
+  export type Exhibit$audioArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Audio
+     */
+    select?: AudioSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AudioInclude<ExtArgs> | null
+    where?: AudioWhereInput
+    orderBy?: AudioOrderByWithRelationInput | AudioOrderByWithRelationInput[]
+    cursor?: AudioWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AudioScalarFieldEnum | AudioScalarFieldEnum[]
+  }
+
+  /**
+   * Exhibit.feedbacks
+   */
+  export type Exhibit$feedbacksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Feedback
+     */
+    select?: FeedbackSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeedbackInclude<ExtArgs> | null
+    where?: FeedbackWhereInput
+    orderBy?: FeedbackOrderByWithRelationInput | FeedbackOrderByWithRelationInput[]
+    cursor?: FeedbackWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FeedbackScalarFieldEnum | FeedbackScalarFieldEnum[]
+  }
+
+  /**
+   * Exhibit.images
+   */
+  export type Exhibit$imagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Image
+     */
+    select?: ImageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImageInclude<ExtArgs> | null
+    where?: ImageWhereInput
+    orderBy?: ImageOrderByWithRelationInput | ImageOrderByWithRelationInput[]
+    cursor?: ImageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ImageScalarFieldEnum | ImageScalarFieldEnum[]
+  }
+
+  /**
+   * Exhibit.qrCodes
+   */
+  export type Exhibit$qrCodesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRCode
+     */
+    select?: QRCodeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QRCodeInclude<ExtArgs> | null
+    where?: QRCodeWhereInput
+    orderBy?: QRCodeOrderByWithRelationInput | QRCodeOrderByWithRelationInput[]
+    cursor?: QRCodeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: QRCodeScalarFieldEnum | QRCodeScalarFieldEnum[]
+  }
+
+  /**
+   * Exhibit without action
+   */
+  export type ExhibitDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Exhibit
+     */
+    select?: ExhibitSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExhibitInclude<ExtArgs> | null
+  }
+
 
   /**
    * Model Audio
@@ -5161,2209 +7376,6 @@ export namespace Prisma {
 
 
   /**
-   * Model Exhibition
-   */
-
-  export type AggregateExhibition = {
-    _count: ExhibitionCountAggregateOutputType | null
-    _avg: ExhibitionAvgAggregateOutputType | null
-    _sum: ExhibitionSumAggregateOutputType | null
-    _min: ExhibitionMinAggregateOutputType | null
-    _max: ExhibitionMaxAggregateOutputType | null
-  }
-
-  export type ExhibitionAvgAggregateOutputType = {
-    exhibitionId: number | null
-    statusId: number | null
-  }
-
-  export type ExhibitionSumAggregateOutputType = {
-    exhibitionId: bigint | null
-    statusId: number | null
-  }
-
-  export type ExhibitionMinAggregateOutputType = {
-    exhibitionId: bigint | null
-    title: string | null
-    description: string | null
-    statusId: number | null
-    createdAt: Date | null
-    updatedAt: Date | null
-  }
-
-  export type ExhibitionMaxAggregateOutputType = {
-    exhibitionId: bigint | null
-    title: string | null
-    description: string | null
-    statusId: number | null
-    createdAt: Date | null
-    updatedAt: Date | null
-  }
-
-  export type ExhibitionCountAggregateOutputType = {
-    exhibitionId: number
-    title: number
-    description: number
-    statusId: number
-    createdAt: number
-    updatedAt: number
-    _all: number
-  }
-
-
-  export type ExhibitionAvgAggregateInputType = {
-    exhibitionId?: true
-    statusId?: true
-  }
-
-  export type ExhibitionSumAggregateInputType = {
-    exhibitionId?: true
-    statusId?: true
-  }
-
-  export type ExhibitionMinAggregateInputType = {
-    exhibitionId?: true
-    title?: true
-    description?: true
-    statusId?: true
-    createdAt?: true
-    updatedAt?: true
-  }
-
-  export type ExhibitionMaxAggregateInputType = {
-    exhibitionId?: true
-    title?: true
-    description?: true
-    statusId?: true
-    createdAt?: true
-    updatedAt?: true
-  }
-
-  export type ExhibitionCountAggregateInputType = {
-    exhibitionId?: true
-    title?: true
-    description?: true
-    statusId?: true
-    createdAt?: true
-    updatedAt?: true
-    _all?: true
-  }
-
-  export type ExhibitionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Exhibition to aggregate.
-     */
-    where?: ExhibitionWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Exhibitions to fetch.
-     */
-    orderBy?: ExhibitionOrderByWithRelationInput | ExhibitionOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: ExhibitionWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Exhibitions from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Exhibitions.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Exhibitions
-    **/
-    _count?: true | ExhibitionCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to average
-    **/
-    _avg?: ExhibitionAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: ExhibitionSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: ExhibitionMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: ExhibitionMaxAggregateInputType
-  }
-
-  export type GetExhibitionAggregateType<T extends ExhibitionAggregateArgs> = {
-        [P in keyof T & keyof AggregateExhibition]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateExhibition[P]>
-      : GetScalarType<T[P], AggregateExhibition[P]>
-  }
-
-
-
-
-  export type ExhibitionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ExhibitionWhereInput
-    orderBy?: ExhibitionOrderByWithAggregationInput | ExhibitionOrderByWithAggregationInput[]
-    by: ExhibitionScalarFieldEnum[] | ExhibitionScalarFieldEnum
-    having?: ExhibitionScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: ExhibitionCountAggregateInputType | true
-    _avg?: ExhibitionAvgAggregateInputType
-    _sum?: ExhibitionSumAggregateInputType
-    _min?: ExhibitionMinAggregateInputType
-    _max?: ExhibitionMaxAggregateInputType
-  }
-
-  export type ExhibitionGroupByOutputType = {
-    exhibitionId: bigint
-    title: string
-    description: string | null
-    statusId: number | null
-    createdAt: Date
-    updatedAt: Date
-    _count: ExhibitionCountAggregateOutputType | null
-    _avg: ExhibitionAvgAggregateOutputType | null
-    _sum: ExhibitionSumAggregateOutputType | null
-    _min: ExhibitionMinAggregateOutputType | null
-    _max: ExhibitionMaxAggregateOutputType | null
-  }
-
-  type GetExhibitionGroupByPayload<T extends ExhibitionGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<ExhibitionGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof ExhibitionGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], ExhibitionGroupByOutputType[P]>
-            : GetScalarType<T[P], ExhibitionGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type ExhibitionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    exhibitionId?: boolean
-    title?: boolean
-    description?: boolean
-    statusId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    status?: boolean | Exhibition$statusArgs<ExtArgs>
-    exhibits?: boolean | Exhibition$exhibitsArgs<ExtArgs>
-    images?: boolean | Exhibition$imagesArgs<ExtArgs>
-    _count?: boolean | ExhibitionCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["exhibition"]>
-
-  export type ExhibitionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    exhibitionId?: boolean
-    title?: boolean
-    description?: boolean
-    statusId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    status?: boolean | Exhibition$statusArgs<ExtArgs>
-  }, ExtArgs["result"]["exhibition"]>
-
-  export type ExhibitionSelectScalar = {
-    exhibitionId?: boolean
-    title?: boolean
-    description?: boolean
-    statusId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-  }
-
-  export type ExhibitionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    status?: boolean | Exhibition$statusArgs<ExtArgs>
-    exhibits?: boolean | Exhibition$exhibitsArgs<ExtArgs>
-    images?: boolean | Exhibition$imagesArgs<ExtArgs>
-    _count?: boolean | ExhibitionCountOutputTypeDefaultArgs<ExtArgs>
-  }
-  export type ExhibitionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    status?: boolean | Exhibition$statusArgs<ExtArgs>
-  }
-
-  export type $ExhibitionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Exhibition"
-    objects: {
-      status: Prisma.$StatusPayload<ExtArgs> | null
-      exhibits: Prisma.$ExhibitPayload<ExtArgs>[]
-      images: Prisma.$ImagePayload<ExtArgs>[]
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      exhibitionId: bigint
-      title: string
-      description: string | null
-      statusId: number | null
-      createdAt: Date
-      updatedAt: Date
-    }, ExtArgs["result"]["exhibition"]>
-    composites: {}
-  }
-
-  type ExhibitionGetPayload<S extends boolean | null | undefined | ExhibitionDefaultArgs> = $Result.GetResult<Prisma.$ExhibitionPayload, S>
-
-  type ExhibitionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
-    Omit<ExhibitionFindManyArgs, 'select' | 'include' | 'distinct'> & {
-      select?: ExhibitionCountAggregateInputType | true
-    }
-
-  export interface ExhibitionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Exhibition'], meta: { name: 'Exhibition' } }
-    /**
-     * Find zero or one Exhibition that matches the filter.
-     * @param {ExhibitionFindUniqueArgs} args - Arguments to find a Exhibition
-     * @example
-     * // Get one Exhibition
-     * const exhibition = await prisma.exhibition.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends ExhibitionFindUniqueArgs>(args: SelectSubset<T, ExhibitionFindUniqueArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
-
-    /**
-     * Find one Exhibition that matches the filter or throw an error with `error.code='P2025'` 
-     * if no matches were found.
-     * @param {ExhibitionFindUniqueOrThrowArgs} args - Arguments to find a Exhibition
-     * @example
-     * // Get one Exhibition
-     * const exhibition = await prisma.exhibition.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends ExhibitionFindUniqueOrThrowArgs>(args: SelectSubset<T, ExhibitionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
-
-    /**
-     * Find the first Exhibition that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ExhibitionFindFirstArgs} args - Arguments to find a Exhibition
-     * @example
-     * // Get one Exhibition
-     * const exhibition = await prisma.exhibition.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends ExhibitionFindFirstArgs>(args?: SelectSubset<T, ExhibitionFindFirstArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
-
-    /**
-     * Find the first Exhibition that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ExhibitionFindFirstOrThrowArgs} args - Arguments to find a Exhibition
-     * @example
-     * // Get one Exhibition
-     * const exhibition = await prisma.exhibition.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends ExhibitionFindFirstOrThrowArgs>(args?: SelectSubset<T, ExhibitionFindFirstOrThrowArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
-
-    /**
-     * Find zero or more Exhibitions that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ExhibitionFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Exhibitions
-     * const exhibitions = await prisma.exhibition.findMany()
-     * 
-     * // Get first 10 Exhibitions
-     * const exhibitions = await prisma.exhibition.findMany({ take: 10 })
-     * 
-     * // Only select the `exhibitionId`
-     * const exhibitionWithExhibitionIdOnly = await prisma.exhibition.findMany({ select: { exhibitionId: true } })
-     * 
-     */
-    findMany<T extends ExhibitionFindManyArgs>(args?: SelectSubset<T, ExhibitionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "findMany">>
-
-    /**
-     * Create a Exhibition.
-     * @param {ExhibitionCreateArgs} args - Arguments to create a Exhibition.
-     * @example
-     * // Create one Exhibition
-     * const Exhibition = await prisma.exhibition.create({
-     *   data: {
-     *     // ... data to create a Exhibition
-     *   }
-     * })
-     * 
-     */
-    create<T extends ExhibitionCreateArgs>(args: SelectSubset<T, ExhibitionCreateArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "create">, never, ExtArgs>
-
-    /**
-     * Create many Exhibitions.
-     * @param {ExhibitionCreateManyArgs} args - Arguments to create many Exhibitions.
-     * @example
-     * // Create many Exhibitions
-     * const exhibition = await prisma.exhibition.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends ExhibitionCreateManyArgs>(args?: SelectSubset<T, ExhibitionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many Exhibitions and returns the data saved in the database.
-     * @param {ExhibitionCreateManyAndReturnArgs} args - Arguments to create many Exhibitions.
-     * @example
-     * // Create many Exhibitions
-     * const exhibition = await prisma.exhibition.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many Exhibitions and only return the `exhibitionId`
-     * const exhibitionWithExhibitionIdOnly = await prisma.exhibition.createManyAndReturn({ 
-     *   select: { exhibitionId: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends ExhibitionCreateManyAndReturnArgs>(args?: SelectSubset<T, ExhibitionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "createManyAndReturn">>
-
-    /**
-     * Delete a Exhibition.
-     * @param {ExhibitionDeleteArgs} args - Arguments to delete one Exhibition.
-     * @example
-     * // Delete one Exhibition
-     * const Exhibition = await prisma.exhibition.delete({
-     *   where: {
-     *     // ... filter to delete one Exhibition
-     *   }
-     * })
-     * 
-     */
-    delete<T extends ExhibitionDeleteArgs>(args: SelectSubset<T, ExhibitionDeleteArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "delete">, never, ExtArgs>
-
-    /**
-     * Update one Exhibition.
-     * @param {ExhibitionUpdateArgs} args - Arguments to update one Exhibition.
-     * @example
-     * // Update one Exhibition
-     * const exhibition = await prisma.exhibition.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends ExhibitionUpdateArgs>(args: SelectSubset<T, ExhibitionUpdateArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "update">, never, ExtArgs>
-
-    /**
-     * Delete zero or more Exhibitions.
-     * @param {ExhibitionDeleteManyArgs} args - Arguments to filter Exhibitions to delete.
-     * @example
-     * // Delete a few Exhibitions
-     * const { count } = await prisma.exhibition.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends ExhibitionDeleteManyArgs>(args?: SelectSubset<T, ExhibitionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Exhibitions.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ExhibitionUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Exhibitions
-     * const exhibition = await prisma.exhibition.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends ExhibitionUpdateManyArgs>(args: SelectSubset<T, ExhibitionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create or update one Exhibition.
-     * @param {ExhibitionUpsertArgs} args - Arguments to update or create a Exhibition.
-     * @example
-     * // Update or create a Exhibition
-     * const exhibition = await prisma.exhibition.upsert({
-     *   create: {
-     *     // ... data to create a Exhibition
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Exhibition we want to update
-     *   }
-     * })
-     */
-    upsert<T extends ExhibitionUpsertArgs>(args: SelectSubset<T, ExhibitionUpsertArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
-
-
-    /**
-     * Count the number of Exhibitions.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ExhibitionCountArgs} args - Arguments to filter Exhibitions to count.
-     * @example
-     * // Count the number of Exhibitions
-     * const count = await prisma.exhibition.count({
-     *   where: {
-     *     // ... the filter for the Exhibitions we want to count
-     *   }
-     * })
-    **/
-    count<T extends ExhibitionCountArgs>(
-      args?: Subset<T, ExhibitionCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], ExhibitionCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Exhibition.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ExhibitionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends ExhibitionAggregateArgs>(args: Subset<T, ExhibitionAggregateArgs>): Prisma.PrismaPromise<GetExhibitionAggregateType<T>>
-
-    /**
-     * Group by Exhibition.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ExhibitionGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends ExhibitionGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: ExhibitionGroupByArgs['orderBy'] }
-        : { orderBy?: ExhibitionGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, ExhibitionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetExhibitionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the Exhibition model
-   */
-  readonly fields: ExhibitionFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Exhibition.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__ExhibitionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    status<T extends Exhibition$statusArgs<ExtArgs> = {}>(args?: Subset<T, Exhibition$statusArgs<ExtArgs>>): Prisma__StatusClient<$Result.GetResult<Prisma.$StatusPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
-    exhibits<T extends Exhibition$exhibitsArgs<ExtArgs> = {}>(args?: Subset<T, Exhibition$exhibitsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findMany"> | Null>
-    images<T extends Exhibition$imagesArgs<ExtArgs> = {}>(args?: Subset<T, Exhibition$imagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImagePayload<ExtArgs>, T, "findMany"> | Null>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the Exhibition model
-   */ 
-  interface ExhibitionFieldRefs {
-    readonly exhibitionId: FieldRef<"Exhibition", 'BigInt'>
-    readonly title: FieldRef<"Exhibition", 'String'>
-    readonly description: FieldRef<"Exhibition", 'String'>
-    readonly statusId: FieldRef<"Exhibition", 'Int'>
-    readonly createdAt: FieldRef<"Exhibition", 'DateTime'>
-    readonly updatedAt: FieldRef<"Exhibition", 'DateTime'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * Exhibition findUnique
-   */
-  export type ExhibitionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Exhibition
-     */
-    select?: ExhibitionSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ExhibitionInclude<ExtArgs> | null
-    /**
-     * Filter, which Exhibition to fetch.
-     */
-    where: ExhibitionWhereUniqueInput
-  }
-
-  /**
-   * Exhibition findUniqueOrThrow
-   */
-  export type ExhibitionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Exhibition
-     */
-    select?: ExhibitionSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ExhibitionInclude<ExtArgs> | null
-    /**
-     * Filter, which Exhibition to fetch.
-     */
-    where: ExhibitionWhereUniqueInput
-  }
-
-  /**
-   * Exhibition findFirst
-   */
-  export type ExhibitionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Exhibition
-     */
-    select?: ExhibitionSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ExhibitionInclude<ExtArgs> | null
-    /**
-     * Filter, which Exhibition to fetch.
-     */
-    where?: ExhibitionWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Exhibitions to fetch.
-     */
-    orderBy?: ExhibitionOrderByWithRelationInput | ExhibitionOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Exhibitions.
-     */
-    cursor?: ExhibitionWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Exhibitions from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Exhibitions.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Exhibitions.
-     */
-    distinct?: ExhibitionScalarFieldEnum | ExhibitionScalarFieldEnum[]
-  }
-
-  /**
-   * Exhibition findFirstOrThrow
-   */
-  export type ExhibitionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Exhibition
-     */
-    select?: ExhibitionSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ExhibitionInclude<ExtArgs> | null
-    /**
-     * Filter, which Exhibition to fetch.
-     */
-    where?: ExhibitionWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Exhibitions to fetch.
-     */
-    orderBy?: ExhibitionOrderByWithRelationInput | ExhibitionOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Exhibitions.
-     */
-    cursor?: ExhibitionWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Exhibitions from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Exhibitions.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Exhibitions.
-     */
-    distinct?: ExhibitionScalarFieldEnum | ExhibitionScalarFieldEnum[]
-  }
-
-  /**
-   * Exhibition findMany
-   */
-  export type ExhibitionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Exhibition
-     */
-    select?: ExhibitionSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ExhibitionInclude<ExtArgs> | null
-    /**
-     * Filter, which Exhibitions to fetch.
-     */
-    where?: ExhibitionWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Exhibitions to fetch.
-     */
-    orderBy?: ExhibitionOrderByWithRelationInput | ExhibitionOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Exhibitions.
-     */
-    cursor?: ExhibitionWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Exhibitions from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Exhibitions.
-     */
-    skip?: number
-    distinct?: ExhibitionScalarFieldEnum | ExhibitionScalarFieldEnum[]
-  }
-
-  /**
-   * Exhibition create
-   */
-  export type ExhibitionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Exhibition
-     */
-    select?: ExhibitionSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ExhibitionInclude<ExtArgs> | null
-    /**
-     * The data needed to create a Exhibition.
-     */
-    data: XOR<ExhibitionCreateInput, ExhibitionUncheckedCreateInput>
-  }
-
-  /**
-   * Exhibition createMany
-   */
-  export type ExhibitionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many Exhibitions.
-     */
-    data: ExhibitionCreateManyInput | ExhibitionCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Exhibition createManyAndReturn
-   */
-  export type ExhibitionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Exhibition
-     */
-    select?: ExhibitionSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * The data used to create many Exhibitions.
-     */
-    data: ExhibitionCreateManyInput | ExhibitionCreateManyInput[]
-    skipDuplicates?: boolean
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ExhibitionIncludeCreateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * Exhibition update
-   */
-  export type ExhibitionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Exhibition
-     */
-    select?: ExhibitionSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ExhibitionInclude<ExtArgs> | null
-    /**
-     * The data needed to update a Exhibition.
-     */
-    data: XOR<ExhibitionUpdateInput, ExhibitionUncheckedUpdateInput>
-    /**
-     * Choose, which Exhibition to update.
-     */
-    where: ExhibitionWhereUniqueInput
-  }
-
-  /**
-   * Exhibition updateMany
-   */
-  export type ExhibitionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update Exhibitions.
-     */
-    data: XOR<ExhibitionUpdateManyMutationInput, ExhibitionUncheckedUpdateManyInput>
-    /**
-     * Filter which Exhibitions to update
-     */
-    where?: ExhibitionWhereInput
-  }
-
-  /**
-   * Exhibition upsert
-   */
-  export type ExhibitionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Exhibition
-     */
-    select?: ExhibitionSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ExhibitionInclude<ExtArgs> | null
-    /**
-     * The filter to search for the Exhibition to update in case it exists.
-     */
-    where: ExhibitionWhereUniqueInput
-    /**
-     * In case the Exhibition found by the `where` argument doesn't exist, create a new Exhibition with this data.
-     */
-    create: XOR<ExhibitionCreateInput, ExhibitionUncheckedCreateInput>
-    /**
-     * In case the Exhibition was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<ExhibitionUpdateInput, ExhibitionUncheckedUpdateInput>
-  }
-
-  /**
-   * Exhibition delete
-   */
-  export type ExhibitionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Exhibition
-     */
-    select?: ExhibitionSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ExhibitionInclude<ExtArgs> | null
-    /**
-     * Filter which Exhibition to delete.
-     */
-    where: ExhibitionWhereUniqueInput
-  }
-
-  /**
-   * Exhibition deleteMany
-   */
-  export type ExhibitionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Exhibitions to delete
-     */
-    where?: ExhibitionWhereInput
-  }
-
-  /**
-   * Exhibition.status
-   */
-  export type Exhibition$statusArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Status
-     */
-    select?: StatusSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: StatusInclude<ExtArgs> | null
-    where?: StatusWhereInput
-  }
-
-  /**
-   * Exhibition.exhibits
-   */
-  export type Exhibition$exhibitsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Exhibit
-     */
-    select?: ExhibitSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ExhibitInclude<ExtArgs> | null
-    where?: ExhibitWhereInput
-    orderBy?: ExhibitOrderByWithRelationInput | ExhibitOrderByWithRelationInput[]
-    cursor?: ExhibitWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ExhibitScalarFieldEnum | ExhibitScalarFieldEnum[]
-  }
-
-  /**
-   * Exhibition.images
-   */
-  export type Exhibition$imagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Image
-     */
-    select?: ImageSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ImageInclude<ExtArgs> | null
-    where?: ImageWhereInput
-    orderBy?: ImageOrderByWithRelationInput | ImageOrderByWithRelationInput[]
-    cursor?: ImageWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ImageScalarFieldEnum | ImageScalarFieldEnum[]
-  }
-
-  /**
-   * Exhibition without action
-   */
-  export type ExhibitionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Exhibition
-     */
-    select?: ExhibitionSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ExhibitionInclude<ExtArgs> | null
-  }
-
-
-  /**
-   * Model Exhibit
-   */
-
-  export type AggregateExhibit = {
-    _count: ExhibitCountAggregateOutputType | null
-    _avg: ExhibitAvgAggregateOutputType | null
-    _sum: ExhibitSumAggregateOutputType | null
-    _min: ExhibitMinAggregateOutputType | null
-    _max: ExhibitMaxAggregateOutputType | null
-  }
-
-  export type ExhibitAvgAggregateOutputType = {
-    exhibitId: number | null
-    exhibitionId: number | null
-    badgeId: number | null
-    statusId: number | null
-  }
-
-  export type ExhibitSumAggregateOutputType = {
-    exhibitId: bigint | null
-    exhibitionId: bigint | null
-    badgeId: bigint | null
-    statusId: number | null
-  }
-
-  export type ExhibitMinAggregateOutputType = {
-    exhibitId: bigint | null
-    exhibitionId: bigint | null
-    badgeId: bigint | null
-    title: string | null
-    description: string | null
-    statusId: number | null
-    createdAt: Date | null
-    updatedAt: Date | null
-  }
-
-  export type ExhibitMaxAggregateOutputType = {
-    exhibitId: bigint | null
-    exhibitionId: bigint | null
-    badgeId: bigint | null
-    title: string | null
-    description: string | null
-    statusId: number | null
-    createdAt: Date | null
-    updatedAt: Date | null
-  }
-
-  export type ExhibitCountAggregateOutputType = {
-    exhibitId: number
-    exhibitionId: number
-    badgeId: number
-    title: number
-    description: number
-    statusId: number
-    createdAt: number
-    updatedAt: number
-    _all: number
-  }
-
-
-  export type ExhibitAvgAggregateInputType = {
-    exhibitId?: true
-    exhibitionId?: true
-    badgeId?: true
-    statusId?: true
-  }
-
-  export type ExhibitSumAggregateInputType = {
-    exhibitId?: true
-    exhibitionId?: true
-    badgeId?: true
-    statusId?: true
-  }
-
-  export type ExhibitMinAggregateInputType = {
-    exhibitId?: true
-    exhibitionId?: true
-    badgeId?: true
-    title?: true
-    description?: true
-    statusId?: true
-    createdAt?: true
-    updatedAt?: true
-  }
-
-  export type ExhibitMaxAggregateInputType = {
-    exhibitId?: true
-    exhibitionId?: true
-    badgeId?: true
-    title?: true
-    description?: true
-    statusId?: true
-    createdAt?: true
-    updatedAt?: true
-  }
-
-  export type ExhibitCountAggregateInputType = {
-    exhibitId?: true
-    exhibitionId?: true
-    badgeId?: true
-    title?: true
-    description?: true
-    statusId?: true
-    createdAt?: true
-    updatedAt?: true
-    _all?: true
-  }
-
-  export type ExhibitAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Exhibit to aggregate.
-     */
-    where?: ExhibitWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Exhibits to fetch.
-     */
-    orderBy?: ExhibitOrderByWithRelationInput | ExhibitOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: ExhibitWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Exhibits from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Exhibits.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Exhibits
-    **/
-    _count?: true | ExhibitCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to average
-    **/
-    _avg?: ExhibitAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: ExhibitSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: ExhibitMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: ExhibitMaxAggregateInputType
-  }
-
-  export type GetExhibitAggregateType<T extends ExhibitAggregateArgs> = {
-        [P in keyof T & keyof AggregateExhibit]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateExhibit[P]>
-      : GetScalarType<T[P], AggregateExhibit[P]>
-  }
-
-
-
-
-  export type ExhibitGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ExhibitWhereInput
-    orderBy?: ExhibitOrderByWithAggregationInput | ExhibitOrderByWithAggregationInput[]
-    by: ExhibitScalarFieldEnum[] | ExhibitScalarFieldEnum
-    having?: ExhibitScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: ExhibitCountAggregateInputType | true
-    _avg?: ExhibitAvgAggregateInputType
-    _sum?: ExhibitSumAggregateInputType
-    _min?: ExhibitMinAggregateInputType
-    _max?: ExhibitMaxAggregateInputType
-  }
-
-  export type ExhibitGroupByOutputType = {
-    exhibitId: bigint
-    exhibitionId: bigint
-    badgeId: bigint | null
-    title: string
-    description: string | null
-    statusId: number | null
-    createdAt: Date | null
-    updatedAt: Date | null
-    _count: ExhibitCountAggregateOutputType | null
-    _avg: ExhibitAvgAggregateOutputType | null
-    _sum: ExhibitSumAggregateOutputType | null
-    _min: ExhibitMinAggregateOutputType | null
-    _max: ExhibitMaxAggregateOutputType | null
-  }
-
-  type GetExhibitGroupByPayload<T extends ExhibitGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<ExhibitGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof ExhibitGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], ExhibitGroupByOutputType[P]>
-            : GetScalarType<T[P], ExhibitGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type ExhibitSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    exhibitId?: boolean
-    exhibitionId?: boolean
-    badgeId?: boolean
-    title?: boolean
-    description?: boolean
-    statusId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    exhibition?: boolean | ExhibitionDefaultArgs<ExtArgs>
-    status?: boolean | Exhibit$statusArgs<ExtArgs>
-    badge?: boolean | Exhibit$badgeArgs<ExtArgs>
-    audio?: boolean | Exhibit$audioArgs<ExtArgs>
-    feedbacks?: boolean | Exhibit$feedbacksArgs<ExtArgs>
-    images?: boolean | Exhibit$imagesArgs<ExtArgs>
-    qrCodes?: boolean | Exhibit$qrCodesArgs<ExtArgs>
-    _count?: boolean | ExhibitCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["exhibit"]>
-
-  export type ExhibitSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    exhibitId?: boolean
-    exhibitionId?: boolean
-    badgeId?: boolean
-    title?: boolean
-    description?: boolean
-    statusId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    exhibition?: boolean | ExhibitionDefaultArgs<ExtArgs>
-    status?: boolean | Exhibit$statusArgs<ExtArgs>
-    badge?: boolean | Exhibit$badgeArgs<ExtArgs>
-  }, ExtArgs["result"]["exhibit"]>
-
-  export type ExhibitSelectScalar = {
-    exhibitId?: boolean
-    exhibitionId?: boolean
-    badgeId?: boolean
-    title?: boolean
-    description?: boolean
-    statusId?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-  }
-
-  export type ExhibitInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    exhibition?: boolean | ExhibitionDefaultArgs<ExtArgs>
-    status?: boolean | Exhibit$statusArgs<ExtArgs>
-    badge?: boolean | Exhibit$badgeArgs<ExtArgs>
-    audio?: boolean | Exhibit$audioArgs<ExtArgs>
-    feedbacks?: boolean | Exhibit$feedbacksArgs<ExtArgs>
-    images?: boolean | Exhibit$imagesArgs<ExtArgs>
-    qrCodes?: boolean | Exhibit$qrCodesArgs<ExtArgs>
-    _count?: boolean | ExhibitCountOutputTypeDefaultArgs<ExtArgs>
-  }
-  export type ExhibitIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    exhibition?: boolean | ExhibitionDefaultArgs<ExtArgs>
-    status?: boolean | Exhibit$statusArgs<ExtArgs>
-    badge?: boolean | Exhibit$badgeArgs<ExtArgs>
-  }
-
-  export type $ExhibitPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Exhibit"
-    objects: {
-      exhibition: Prisma.$ExhibitionPayload<ExtArgs>
-      status: Prisma.$StatusPayload<ExtArgs> | null
-      badge: Prisma.$BadgePayload<ExtArgs> | null
-      audio: Prisma.$AudioPayload<ExtArgs>[]
-      feedbacks: Prisma.$FeedbackPayload<ExtArgs>[]
-      images: Prisma.$ImagePayload<ExtArgs>[]
-      qrCodes: Prisma.$QRCodePayload<ExtArgs>[]
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      exhibitId: bigint
-      exhibitionId: bigint
-      badgeId: bigint | null
-      title: string
-      description: string | null
-      statusId: number | null
-      createdAt: Date | null
-      updatedAt: Date | null
-    }, ExtArgs["result"]["exhibit"]>
-    composites: {}
-  }
-
-  type ExhibitGetPayload<S extends boolean | null | undefined | ExhibitDefaultArgs> = $Result.GetResult<Prisma.$ExhibitPayload, S>
-
-  type ExhibitCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
-    Omit<ExhibitFindManyArgs, 'select' | 'include' | 'distinct'> & {
-      select?: ExhibitCountAggregateInputType | true
-    }
-
-  export interface ExhibitDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Exhibit'], meta: { name: 'Exhibit' } }
-    /**
-     * Find zero or one Exhibit that matches the filter.
-     * @param {ExhibitFindUniqueArgs} args - Arguments to find a Exhibit
-     * @example
-     * // Get one Exhibit
-     * const exhibit = await prisma.exhibit.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends ExhibitFindUniqueArgs>(args: SelectSubset<T, ExhibitFindUniqueArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
-
-    /**
-     * Find one Exhibit that matches the filter or throw an error with `error.code='P2025'` 
-     * if no matches were found.
-     * @param {ExhibitFindUniqueOrThrowArgs} args - Arguments to find a Exhibit
-     * @example
-     * // Get one Exhibit
-     * const exhibit = await prisma.exhibit.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends ExhibitFindUniqueOrThrowArgs>(args: SelectSubset<T, ExhibitFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
-
-    /**
-     * Find the first Exhibit that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ExhibitFindFirstArgs} args - Arguments to find a Exhibit
-     * @example
-     * // Get one Exhibit
-     * const exhibit = await prisma.exhibit.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends ExhibitFindFirstArgs>(args?: SelectSubset<T, ExhibitFindFirstArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
-
-    /**
-     * Find the first Exhibit that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ExhibitFindFirstOrThrowArgs} args - Arguments to find a Exhibit
-     * @example
-     * // Get one Exhibit
-     * const exhibit = await prisma.exhibit.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends ExhibitFindFirstOrThrowArgs>(args?: SelectSubset<T, ExhibitFindFirstOrThrowArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
-
-    /**
-     * Find zero or more Exhibits that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ExhibitFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Exhibits
-     * const exhibits = await prisma.exhibit.findMany()
-     * 
-     * // Get first 10 Exhibits
-     * const exhibits = await prisma.exhibit.findMany({ take: 10 })
-     * 
-     * // Only select the `exhibitId`
-     * const exhibitWithExhibitIdOnly = await prisma.exhibit.findMany({ select: { exhibitId: true } })
-     * 
-     */
-    findMany<T extends ExhibitFindManyArgs>(args?: SelectSubset<T, ExhibitFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findMany">>
-
-    /**
-     * Create a Exhibit.
-     * @param {ExhibitCreateArgs} args - Arguments to create a Exhibit.
-     * @example
-     * // Create one Exhibit
-     * const Exhibit = await prisma.exhibit.create({
-     *   data: {
-     *     // ... data to create a Exhibit
-     *   }
-     * })
-     * 
-     */
-    create<T extends ExhibitCreateArgs>(args: SelectSubset<T, ExhibitCreateArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "create">, never, ExtArgs>
-
-    /**
-     * Create many Exhibits.
-     * @param {ExhibitCreateManyArgs} args - Arguments to create many Exhibits.
-     * @example
-     * // Create many Exhibits
-     * const exhibit = await prisma.exhibit.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends ExhibitCreateManyArgs>(args?: SelectSubset<T, ExhibitCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many Exhibits and returns the data saved in the database.
-     * @param {ExhibitCreateManyAndReturnArgs} args - Arguments to create many Exhibits.
-     * @example
-     * // Create many Exhibits
-     * const exhibit = await prisma.exhibit.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many Exhibits and only return the `exhibitId`
-     * const exhibitWithExhibitIdOnly = await prisma.exhibit.createManyAndReturn({ 
-     *   select: { exhibitId: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends ExhibitCreateManyAndReturnArgs>(args?: SelectSubset<T, ExhibitCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "createManyAndReturn">>
-
-    /**
-     * Delete a Exhibit.
-     * @param {ExhibitDeleteArgs} args - Arguments to delete one Exhibit.
-     * @example
-     * // Delete one Exhibit
-     * const Exhibit = await prisma.exhibit.delete({
-     *   where: {
-     *     // ... filter to delete one Exhibit
-     *   }
-     * })
-     * 
-     */
-    delete<T extends ExhibitDeleteArgs>(args: SelectSubset<T, ExhibitDeleteArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "delete">, never, ExtArgs>
-
-    /**
-     * Update one Exhibit.
-     * @param {ExhibitUpdateArgs} args - Arguments to update one Exhibit.
-     * @example
-     * // Update one Exhibit
-     * const exhibit = await prisma.exhibit.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends ExhibitUpdateArgs>(args: SelectSubset<T, ExhibitUpdateArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "update">, never, ExtArgs>
-
-    /**
-     * Delete zero or more Exhibits.
-     * @param {ExhibitDeleteManyArgs} args - Arguments to filter Exhibits to delete.
-     * @example
-     * // Delete a few Exhibits
-     * const { count } = await prisma.exhibit.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends ExhibitDeleteManyArgs>(args?: SelectSubset<T, ExhibitDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Exhibits.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ExhibitUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Exhibits
-     * const exhibit = await prisma.exhibit.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends ExhibitUpdateManyArgs>(args: SelectSubset<T, ExhibitUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create or update one Exhibit.
-     * @param {ExhibitUpsertArgs} args - Arguments to update or create a Exhibit.
-     * @example
-     * // Update or create a Exhibit
-     * const exhibit = await prisma.exhibit.upsert({
-     *   create: {
-     *     // ... data to create a Exhibit
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Exhibit we want to update
-     *   }
-     * })
-     */
-    upsert<T extends ExhibitUpsertArgs>(args: SelectSubset<T, ExhibitUpsertArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
-
-
-    /**
-     * Count the number of Exhibits.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ExhibitCountArgs} args - Arguments to filter Exhibits to count.
-     * @example
-     * // Count the number of Exhibits
-     * const count = await prisma.exhibit.count({
-     *   where: {
-     *     // ... the filter for the Exhibits we want to count
-     *   }
-     * })
-    **/
-    count<T extends ExhibitCountArgs>(
-      args?: Subset<T, ExhibitCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], ExhibitCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Exhibit.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ExhibitAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends ExhibitAggregateArgs>(args: Subset<T, ExhibitAggregateArgs>): Prisma.PrismaPromise<GetExhibitAggregateType<T>>
-
-    /**
-     * Group by Exhibit.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ExhibitGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends ExhibitGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: ExhibitGroupByArgs['orderBy'] }
-        : { orderBy?: ExhibitGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, ExhibitGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetExhibitGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the Exhibit model
-   */
-  readonly fields: ExhibitFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Exhibit.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__ExhibitClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    exhibition<T extends ExhibitionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ExhibitionDefaultArgs<ExtArgs>>): Prisma__ExhibitionClient<$Result.GetResult<Prisma.$ExhibitionPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
-    status<T extends Exhibit$statusArgs<ExtArgs> = {}>(args?: Subset<T, Exhibit$statusArgs<ExtArgs>>): Prisma__StatusClient<$Result.GetResult<Prisma.$StatusPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
-    badge<T extends Exhibit$badgeArgs<ExtArgs> = {}>(args?: Subset<T, Exhibit$badgeArgs<ExtArgs>>): Prisma__BadgeClient<$Result.GetResult<Prisma.$BadgePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
-    audio<T extends Exhibit$audioArgs<ExtArgs> = {}>(args?: Subset<T, Exhibit$audioArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AudioPayload<ExtArgs>, T, "findMany"> | Null>
-    feedbacks<T extends Exhibit$feedbacksArgs<ExtArgs> = {}>(args?: Subset<T, Exhibit$feedbacksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FeedbackPayload<ExtArgs>, T, "findMany"> | Null>
-    images<T extends Exhibit$imagesArgs<ExtArgs> = {}>(args?: Subset<T, Exhibit$imagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImagePayload<ExtArgs>, T, "findMany"> | Null>
-    qrCodes<T extends Exhibit$qrCodesArgs<ExtArgs> = {}>(args?: Subset<T, Exhibit$qrCodesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QRCodePayload<ExtArgs>, T, "findMany"> | Null>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the Exhibit model
-   */ 
-  interface ExhibitFieldRefs {
-    readonly exhibitId: FieldRef<"Exhibit", 'BigInt'>
-    readonly exhibitionId: FieldRef<"Exhibit", 'BigInt'>
-    readonly badgeId: FieldRef<"Exhibit", 'BigInt'>
-    readonly title: FieldRef<"Exhibit", 'String'>
-    readonly description: FieldRef<"Exhibit", 'String'>
-    readonly statusId: FieldRef<"Exhibit", 'Int'>
-    readonly createdAt: FieldRef<"Exhibit", 'DateTime'>
-    readonly updatedAt: FieldRef<"Exhibit", 'DateTime'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * Exhibit findUnique
-   */
-  export type ExhibitFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Exhibit
-     */
-    select?: ExhibitSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ExhibitInclude<ExtArgs> | null
-    /**
-     * Filter, which Exhibit to fetch.
-     */
-    where: ExhibitWhereUniqueInput
-  }
-
-  /**
-   * Exhibit findUniqueOrThrow
-   */
-  export type ExhibitFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Exhibit
-     */
-    select?: ExhibitSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ExhibitInclude<ExtArgs> | null
-    /**
-     * Filter, which Exhibit to fetch.
-     */
-    where: ExhibitWhereUniqueInput
-  }
-
-  /**
-   * Exhibit findFirst
-   */
-  export type ExhibitFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Exhibit
-     */
-    select?: ExhibitSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ExhibitInclude<ExtArgs> | null
-    /**
-     * Filter, which Exhibit to fetch.
-     */
-    where?: ExhibitWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Exhibits to fetch.
-     */
-    orderBy?: ExhibitOrderByWithRelationInput | ExhibitOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Exhibits.
-     */
-    cursor?: ExhibitWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Exhibits from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Exhibits.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Exhibits.
-     */
-    distinct?: ExhibitScalarFieldEnum | ExhibitScalarFieldEnum[]
-  }
-
-  /**
-   * Exhibit findFirstOrThrow
-   */
-  export type ExhibitFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Exhibit
-     */
-    select?: ExhibitSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ExhibitInclude<ExtArgs> | null
-    /**
-     * Filter, which Exhibit to fetch.
-     */
-    where?: ExhibitWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Exhibits to fetch.
-     */
-    orderBy?: ExhibitOrderByWithRelationInput | ExhibitOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Exhibits.
-     */
-    cursor?: ExhibitWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Exhibits from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Exhibits.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Exhibits.
-     */
-    distinct?: ExhibitScalarFieldEnum | ExhibitScalarFieldEnum[]
-  }
-
-  /**
-   * Exhibit findMany
-   */
-  export type ExhibitFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Exhibit
-     */
-    select?: ExhibitSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ExhibitInclude<ExtArgs> | null
-    /**
-     * Filter, which Exhibits to fetch.
-     */
-    where?: ExhibitWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Exhibits to fetch.
-     */
-    orderBy?: ExhibitOrderByWithRelationInput | ExhibitOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Exhibits.
-     */
-    cursor?: ExhibitWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Exhibits from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Exhibits.
-     */
-    skip?: number
-    distinct?: ExhibitScalarFieldEnum | ExhibitScalarFieldEnum[]
-  }
-
-  /**
-   * Exhibit create
-   */
-  export type ExhibitCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Exhibit
-     */
-    select?: ExhibitSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ExhibitInclude<ExtArgs> | null
-    /**
-     * The data needed to create a Exhibit.
-     */
-    data: XOR<ExhibitCreateInput, ExhibitUncheckedCreateInput>
-  }
-
-  /**
-   * Exhibit createMany
-   */
-  export type ExhibitCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many Exhibits.
-     */
-    data: ExhibitCreateManyInput | ExhibitCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Exhibit createManyAndReturn
-   */
-  export type ExhibitCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Exhibit
-     */
-    select?: ExhibitSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * The data used to create many Exhibits.
-     */
-    data: ExhibitCreateManyInput | ExhibitCreateManyInput[]
-    skipDuplicates?: boolean
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ExhibitIncludeCreateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * Exhibit update
-   */
-  export type ExhibitUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Exhibit
-     */
-    select?: ExhibitSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ExhibitInclude<ExtArgs> | null
-    /**
-     * The data needed to update a Exhibit.
-     */
-    data: XOR<ExhibitUpdateInput, ExhibitUncheckedUpdateInput>
-    /**
-     * Choose, which Exhibit to update.
-     */
-    where: ExhibitWhereUniqueInput
-  }
-
-  /**
-   * Exhibit updateMany
-   */
-  export type ExhibitUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update Exhibits.
-     */
-    data: XOR<ExhibitUpdateManyMutationInput, ExhibitUncheckedUpdateManyInput>
-    /**
-     * Filter which Exhibits to update
-     */
-    where?: ExhibitWhereInput
-  }
-
-  /**
-   * Exhibit upsert
-   */
-  export type ExhibitUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Exhibit
-     */
-    select?: ExhibitSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ExhibitInclude<ExtArgs> | null
-    /**
-     * The filter to search for the Exhibit to update in case it exists.
-     */
-    where: ExhibitWhereUniqueInput
-    /**
-     * In case the Exhibit found by the `where` argument doesn't exist, create a new Exhibit with this data.
-     */
-    create: XOR<ExhibitCreateInput, ExhibitUncheckedCreateInput>
-    /**
-     * In case the Exhibit was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<ExhibitUpdateInput, ExhibitUncheckedUpdateInput>
-  }
-
-  /**
-   * Exhibit delete
-   */
-  export type ExhibitDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Exhibit
-     */
-    select?: ExhibitSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ExhibitInclude<ExtArgs> | null
-    /**
-     * Filter which Exhibit to delete.
-     */
-    where: ExhibitWhereUniqueInput
-  }
-
-  /**
-   * Exhibit deleteMany
-   */
-  export type ExhibitDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Exhibits to delete
-     */
-    where?: ExhibitWhereInput
-  }
-
-  /**
-   * Exhibit.status
-   */
-  export type Exhibit$statusArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Status
-     */
-    select?: StatusSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: StatusInclude<ExtArgs> | null
-    where?: StatusWhereInput
-  }
-
-  /**
-   * Exhibit.badge
-   */
-  export type Exhibit$badgeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Badge
-     */
-    select?: BadgeSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BadgeInclude<ExtArgs> | null
-    where?: BadgeWhereInput
-  }
-
-  /**
-   * Exhibit.audio
-   */
-  export type Exhibit$audioArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Audio
-     */
-    select?: AudioSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AudioInclude<ExtArgs> | null
-    where?: AudioWhereInput
-    orderBy?: AudioOrderByWithRelationInput | AudioOrderByWithRelationInput[]
-    cursor?: AudioWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: AudioScalarFieldEnum | AudioScalarFieldEnum[]
-  }
-
-  /**
-   * Exhibit.feedbacks
-   */
-  export type Exhibit$feedbacksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Feedback
-     */
-    select?: FeedbackSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: FeedbackInclude<ExtArgs> | null
-    where?: FeedbackWhereInput
-    orderBy?: FeedbackOrderByWithRelationInput | FeedbackOrderByWithRelationInput[]
-    cursor?: FeedbackWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: FeedbackScalarFieldEnum | FeedbackScalarFieldEnum[]
-  }
-
-  /**
-   * Exhibit.images
-   */
-  export type Exhibit$imagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Image
-     */
-    select?: ImageSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ImageInclude<ExtArgs> | null
-    where?: ImageWhereInput
-    orderBy?: ImageOrderByWithRelationInput | ImageOrderByWithRelationInput[]
-    cursor?: ImageWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ImageScalarFieldEnum | ImageScalarFieldEnum[]
-  }
-
-  /**
-   * Exhibit.qrCodes
-   */
-  export type Exhibit$qrCodesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the QRCode
-     */
-    select?: QRCodeSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: QRCodeInclude<ExtArgs> | null
-    where?: QRCodeWhereInput
-    orderBy?: QRCodeOrderByWithRelationInput | QRCodeOrderByWithRelationInput[]
-    cursor?: QRCodeWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: QRCodeScalarFieldEnum | QRCodeScalarFieldEnum[]
-  }
-
-  /**
-   * Exhibit without action
-   */
-  export type ExhibitDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Exhibit
-     */
-    select?: ExhibitSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ExhibitInclude<ExtArgs> | null
-  }
-
-
-  /**
    * Model Feedback
    */
 
@@ -9462,6 +9474,977 @@ export namespace Prisma {
 
 
   /**
+   * Model QRCode
+   */
+
+  export type AggregateQRCode = {
+    _count: QRCodeCountAggregateOutputType | null
+    _avg: QRCodeAvgAggregateOutputType | null
+    _sum: QRCodeSumAggregateOutputType | null
+    _min: QRCodeMinAggregateOutputType | null
+    _max: QRCodeMaxAggregateOutputType | null
+  }
+
+  export type QRCodeAvgAggregateOutputType = {
+    qrId: number | null
+    exhibitId: number | null
+  }
+
+  export type QRCodeSumAggregateOutputType = {
+    qrId: number | null
+    exhibitId: bigint | null
+  }
+
+  export type QRCodeMinAggregateOutputType = {
+    qrId: number | null
+    exhibitId: bigint | null
+    qrUrl: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type QRCodeMaxAggregateOutputType = {
+    qrId: number | null
+    exhibitId: bigint | null
+    qrUrl: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type QRCodeCountAggregateOutputType = {
+    qrId: number
+    exhibitId: number
+    qrUrl: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type QRCodeAvgAggregateInputType = {
+    qrId?: true
+    exhibitId?: true
+  }
+
+  export type QRCodeSumAggregateInputType = {
+    qrId?: true
+    exhibitId?: true
+  }
+
+  export type QRCodeMinAggregateInputType = {
+    qrId?: true
+    exhibitId?: true
+    qrUrl?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type QRCodeMaxAggregateInputType = {
+    qrId?: true
+    exhibitId?: true
+    qrUrl?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type QRCodeCountAggregateInputType = {
+    qrId?: true
+    exhibitId?: true
+    qrUrl?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type QRCodeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which QRCode to aggregate.
+     */
+    where?: QRCodeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of QRCodes to fetch.
+     */
+    orderBy?: QRCodeOrderByWithRelationInput | QRCodeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: QRCodeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` QRCodes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` QRCodes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned QRCodes
+    **/
+    _count?: true | QRCodeCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: QRCodeAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: QRCodeSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: QRCodeMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: QRCodeMaxAggregateInputType
+  }
+
+  export type GetQRCodeAggregateType<T extends QRCodeAggregateArgs> = {
+        [P in keyof T & keyof AggregateQRCode]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateQRCode[P]>
+      : GetScalarType<T[P], AggregateQRCode[P]>
+  }
+
+
+
+
+  export type QRCodeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: QRCodeWhereInput
+    orderBy?: QRCodeOrderByWithAggregationInput | QRCodeOrderByWithAggregationInput[]
+    by: QRCodeScalarFieldEnum[] | QRCodeScalarFieldEnum
+    having?: QRCodeScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: QRCodeCountAggregateInputType | true
+    _avg?: QRCodeAvgAggregateInputType
+    _sum?: QRCodeSumAggregateInputType
+    _min?: QRCodeMinAggregateInputType
+    _max?: QRCodeMaxAggregateInputType
+  }
+
+  export type QRCodeGroupByOutputType = {
+    qrId: number
+    exhibitId: bigint
+    qrUrl: string
+    createdAt: Date | null
+    updatedAt: Date | null
+    _count: QRCodeCountAggregateOutputType | null
+    _avg: QRCodeAvgAggregateOutputType | null
+    _sum: QRCodeSumAggregateOutputType | null
+    _min: QRCodeMinAggregateOutputType | null
+    _max: QRCodeMaxAggregateOutputType | null
+  }
+
+  type GetQRCodeGroupByPayload<T extends QRCodeGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<QRCodeGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof QRCodeGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], QRCodeGroupByOutputType[P]>
+            : GetScalarType<T[P], QRCodeGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type QRCodeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    qrId?: boolean
+    exhibitId?: boolean
+    qrUrl?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    exhibit?: boolean | ExhibitDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["qRCode"]>
+
+  export type QRCodeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    qrId?: boolean
+    exhibitId?: boolean
+    qrUrl?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    exhibit?: boolean | ExhibitDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["qRCode"]>
+
+  export type QRCodeSelectScalar = {
+    qrId?: boolean
+    exhibitId?: boolean
+    qrUrl?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type QRCodeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    exhibit?: boolean | ExhibitDefaultArgs<ExtArgs>
+  }
+  export type QRCodeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    exhibit?: boolean | ExhibitDefaultArgs<ExtArgs>
+  }
+
+  export type $QRCodePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "QRCode"
+    objects: {
+      exhibit: Prisma.$ExhibitPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      qrId: number
+      exhibitId: bigint
+      qrUrl: string
+      createdAt: Date | null
+      updatedAt: Date | null
+    }, ExtArgs["result"]["qRCode"]>
+    composites: {}
+  }
+
+  type QRCodeGetPayload<S extends boolean | null | undefined | QRCodeDefaultArgs> = $Result.GetResult<Prisma.$QRCodePayload, S>
+
+  type QRCodeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<QRCodeFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: QRCodeCountAggregateInputType | true
+    }
+
+  export interface QRCodeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['QRCode'], meta: { name: 'QRCode' } }
+    /**
+     * Find zero or one QRCode that matches the filter.
+     * @param {QRCodeFindUniqueArgs} args - Arguments to find a QRCode
+     * @example
+     * // Get one QRCode
+     * const qRCode = await prisma.qRCode.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends QRCodeFindUniqueArgs>(args: SelectSubset<T, QRCodeFindUniqueArgs<ExtArgs>>): Prisma__QRCodeClient<$Result.GetResult<Prisma.$QRCodePayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one QRCode that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {QRCodeFindUniqueOrThrowArgs} args - Arguments to find a QRCode
+     * @example
+     * // Get one QRCode
+     * const qRCode = await prisma.qRCode.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends QRCodeFindUniqueOrThrowArgs>(args: SelectSubset<T, QRCodeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__QRCodeClient<$Result.GetResult<Prisma.$QRCodePayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first QRCode that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QRCodeFindFirstArgs} args - Arguments to find a QRCode
+     * @example
+     * // Get one QRCode
+     * const qRCode = await prisma.qRCode.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends QRCodeFindFirstArgs>(args?: SelectSubset<T, QRCodeFindFirstArgs<ExtArgs>>): Prisma__QRCodeClient<$Result.GetResult<Prisma.$QRCodePayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first QRCode that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QRCodeFindFirstOrThrowArgs} args - Arguments to find a QRCode
+     * @example
+     * // Get one QRCode
+     * const qRCode = await prisma.qRCode.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends QRCodeFindFirstOrThrowArgs>(args?: SelectSubset<T, QRCodeFindFirstOrThrowArgs<ExtArgs>>): Prisma__QRCodeClient<$Result.GetResult<Prisma.$QRCodePayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more QRCodes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QRCodeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all QRCodes
+     * const qRCodes = await prisma.qRCode.findMany()
+     * 
+     * // Get first 10 QRCodes
+     * const qRCodes = await prisma.qRCode.findMany({ take: 10 })
+     * 
+     * // Only select the `qrId`
+     * const qRCodeWithQrIdOnly = await prisma.qRCode.findMany({ select: { qrId: true } })
+     * 
+     */
+    findMany<T extends QRCodeFindManyArgs>(args?: SelectSubset<T, QRCodeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QRCodePayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a QRCode.
+     * @param {QRCodeCreateArgs} args - Arguments to create a QRCode.
+     * @example
+     * // Create one QRCode
+     * const QRCode = await prisma.qRCode.create({
+     *   data: {
+     *     // ... data to create a QRCode
+     *   }
+     * })
+     * 
+     */
+    create<T extends QRCodeCreateArgs>(args: SelectSubset<T, QRCodeCreateArgs<ExtArgs>>): Prisma__QRCodeClient<$Result.GetResult<Prisma.$QRCodePayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many QRCodes.
+     * @param {QRCodeCreateManyArgs} args - Arguments to create many QRCodes.
+     * @example
+     * // Create many QRCodes
+     * const qRCode = await prisma.qRCode.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends QRCodeCreateManyArgs>(args?: SelectSubset<T, QRCodeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many QRCodes and returns the data saved in the database.
+     * @param {QRCodeCreateManyAndReturnArgs} args - Arguments to create many QRCodes.
+     * @example
+     * // Create many QRCodes
+     * const qRCode = await prisma.qRCode.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many QRCodes and only return the `qrId`
+     * const qRCodeWithQrIdOnly = await prisma.qRCode.createManyAndReturn({ 
+     *   select: { qrId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends QRCodeCreateManyAndReturnArgs>(args?: SelectSubset<T, QRCodeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QRCodePayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a QRCode.
+     * @param {QRCodeDeleteArgs} args - Arguments to delete one QRCode.
+     * @example
+     * // Delete one QRCode
+     * const QRCode = await prisma.qRCode.delete({
+     *   where: {
+     *     // ... filter to delete one QRCode
+     *   }
+     * })
+     * 
+     */
+    delete<T extends QRCodeDeleteArgs>(args: SelectSubset<T, QRCodeDeleteArgs<ExtArgs>>): Prisma__QRCodeClient<$Result.GetResult<Prisma.$QRCodePayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one QRCode.
+     * @param {QRCodeUpdateArgs} args - Arguments to update one QRCode.
+     * @example
+     * // Update one QRCode
+     * const qRCode = await prisma.qRCode.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends QRCodeUpdateArgs>(args: SelectSubset<T, QRCodeUpdateArgs<ExtArgs>>): Prisma__QRCodeClient<$Result.GetResult<Prisma.$QRCodePayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more QRCodes.
+     * @param {QRCodeDeleteManyArgs} args - Arguments to filter QRCodes to delete.
+     * @example
+     * // Delete a few QRCodes
+     * const { count } = await prisma.qRCode.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends QRCodeDeleteManyArgs>(args?: SelectSubset<T, QRCodeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more QRCodes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QRCodeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many QRCodes
+     * const qRCode = await prisma.qRCode.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends QRCodeUpdateManyArgs>(args: SelectSubset<T, QRCodeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one QRCode.
+     * @param {QRCodeUpsertArgs} args - Arguments to update or create a QRCode.
+     * @example
+     * // Update or create a QRCode
+     * const qRCode = await prisma.qRCode.upsert({
+     *   create: {
+     *     // ... data to create a QRCode
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the QRCode we want to update
+     *   }
+     * })
+     */
+    upsert<T extends QRCodeUpsertArgs>(args: SelectSubset<T, QRCodeUpsertArgs<ExtArgs>>): Prisma__QRCodeClient<$Result.GetResult<Prisma.$QRCodePayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of QRCodes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QRCodeCountArgs} args - Arguments to filter QRCodes to count.
+     * @example
+     * // Count the number of QRCodes
+     * const count = await prisma.qRCode.count({
+     *   where: {
+     *     // ... the filter for the QRCodes we want to count
+     *   }
+     * })
+    **/
+    count<T extends QRCodeCountArgs>(
+      args?: Subset<T, QRCodeCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], QRCodeCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a QRCode.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QRCodeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends QRCodeAggregateArgs>(args: Subset<T, QRCodeAggregateArgs>): Prisma.PrismaPromise<GetQRCodeAggregateType<T>>
+
+    /**
+     * Group by QRCode.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QRCodeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends QRCodeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: QRCodeGroupByArgs['orderBy'] }
+        : { orderBy?: QRCodeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, QRCodeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetQRCodeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the QRCode model
+   */
+  readonly fields: QRCodeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for QRCode.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__QRCodeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    exhibit<T extends ExhibitDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ExhibitDefaultArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the QRCode model
+   */ 
+  interface QRCodeFieldRefs {
+    readonly qrId: FieldRef<"QRCode", 'Int'>
+    readonly exhibitId: FieldRef<"QRCode", 'BigInt'>
+    readonly qrUrl: FieldRef<"QRCode", 'String'>
+    readonly createdAt: FieldRef<"QRCode", 'DateTime'>
+    readonly updatedAt: FieldRef<"QRCode", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * QRCode findUnique
+   */
+  export type QRCodeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRCode
+     */
+    select?: QRCodeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QRCodeInclude<ExtArgs> | null
+    /**
+     * Filter, which QRCode to fetch.
+     */
+    where: QRCodeWhereUniqueInput
+  }
+
+  /**
+   * QRCode findUniqueOrThrow
+   */
+  export type QRCodeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRCode
+     */
+    select?: QRCodeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QRCodeInclude<ExtArgs> | null
+    /**
+     * Filter, which QRCode to fetch.
+     */
+    where: QRCodeWhereUniqueInput
+  }
+
+  /**
+   * QRCode findFirst
+   */
+  export type QRCodeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRCode
+     */
+    select?: QRCodeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QRCodeInclude<ExtArgs> | null
+    /**
+     * Filter, which QRCode to fetch.
+     */
+    where?: QRCodeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of QRCodes to fetch.
+     */
+    orderBy?: QRCodeOrderByWithRelationInput | QRCodeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for QRCodes.
+     */
+    cursor?: QRCodeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` QRCodes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` QRCodes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of QRCodes.
+     */
+    distinct?: QRCodeScalarFieldEnum | QRCodeScalarFieldEnum[]
+  }
+
+  /**
+   * QRCode findFirstOrThrow
+   */
+  export type QRCodeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRCode
+     */
+    select?: QRCodeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QRCodeInclude<ExtArgs> | null
+    /**
+     * Filter, which QRCode to fetch.
+     */
+    where?: QRCodeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of QRCodes to fetch.
+     */
+    orderBy?: QRCodeOrderByWithRelationInput | QRCodeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for QRCodes.
+     */
+    cursor?: QRCodeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` QRCodes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` QRCodes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of QRCodes.
+     */
+    distinct?: QRCodeScalarFieldEnum | QRCodeScalarFieldEnum[]
+  }
+
+  /**
+   * QRCode findMany
+   */
+  export type QRCodeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRCode
+     */
+    select?: QRCodeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QRCodeInclude<ExtArgs> | null
+    /**
+     * Filter, which QRCodes to fetch.
+     */
+    where?: QRCodeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of QRCodes to fetch.
+     */
+    orderBy?: QRCodeOrderByWithRelationInput | QRCodeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing QRCodes.
+     */
+    cursor?: QRCodeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` QRCodes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` QRCodes.
+     */
+    skip?: number
+    distinct?: QRCodeScalarFieldEnum | QRCodeScalarFieldEnum[]
+  }
+
+  /**
+   * QRCode create
+   */
+  export type QRCodeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRCode
+     */
+    select?: QRCodeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QRCodeInclude<ExtArgs> | null
+    /**
+     * The data needed to create a QRCode.
+     */
+    data: XOR<QRCodeCreateInput, QRCodeUncheckedCreateInput>
+  }
+
+  /**
+   * QRCode createMany
+   */
+  export type QRCodeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many QRCodes.
+     */
+    data: QRCodeCreateManyInput | QRCodeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * QRCode createManyAndReturn
+   */
+  export type QRCodeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRCode
+     */
+    select?: QRCodeSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many QRCodes.
+     */
+    data: QRCodeCreateManyInput | QRCodeCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QRCodeIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * QRCode update
+   */
+  export type QRCodeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRCode
+     */
+    select?: QRCodeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QRCodeInclude<ExtArgs> | null
+    /**
+     * The data needed to update a QRCode.
+     */
+    data: XOR<QRCodeUpdateInput, QRCodeUncheckedUpdateInput>
+    /**
+     * Choose, which QRCode to update.
+     */
+    where: QRCodeWhereUniqueInput
+  }
+
+  /**
+   * QRCode updateMany
+   */
+  export type QRCodeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update QRCodes.
+     */
+    data: XOR<QRCodeUpdateManyMutationInput, QRCodeUncheckedUpdateManyInput>
+    /**
+     * Filter which QRCodes to update
+     */
+    where?: QRCodeWhereInput
+  }
+
+  /**
+   * QRCode upsert
+   */
+  export type QRCodeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRCode
+     */
+    select?: QRCodeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QRCodeInclude<ExtArgs> | null
+    /**
+     * The filter to search for the QRCode to update in case it exists.
+     */
+    where: QRCodeWhereUniqueInput
+    /**
+     * In case the QRCode found by the `where` argument doesn't exist, create a new QRCode with this data.
+     */
+    create: XOR<QRCodeCreateInput, QRCodeUncheckedCreateInput>
+    /**
+     * In case the QRCode was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<QRCodeUpdateInput, QRCodeUncheckedUpdateInput>
+  }
+
+  /**
+   * QRCode delete
+   */
+  export type QRCodeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRCode
+     */
+    select?: QRCodeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QRCodeInclude<ExtArgs> | null
+    /**
+     * Filter which QRCode to delete.
+     */
+    where: QRCodeWhereUniqueInput
+  }
+
+  /**
+   * QRCode deleteMany
+   */
+  export type QRCodeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which QRCodes to delete
+     */
+    where?: QRCodeWhereInput
+  }
+
+  /**
+   * QRCode without action
+   */
+  export type QRCodeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRCode
+     */
+    select?: QRCodeSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QRCodeInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Language
    */
 
@@ -11500,977 +12483,6 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: PermissionInclude<ExtArgs> | null
-  }
-
-
-  /**
-   * Model QRCode
-   */
-
-  export type AggregateQRCode = {
-    _count: QRCodeCountAggregateOutputType | null
-    _avg: QRCodeAvgAggregateOutputType | null
-    _sum: QRCodeSumAggregateOutputType | null
-    _min: QRCodeMinAggregateOutputType | null
-    _max: QRCodeMaxAggregateOutputType | null
-  }
-
-  export type QRCodeAvgAggregateOutputType = {
-    qrId: number | null
-    exhibitId: number | null
-  }
-
-  export type QRCodeSumAggregateOutputType = {
-    qrId: number | null
-    exhibitId: bigint | null
-  }
-
-  export type QRCodeMinAggregateOutputType = {
-    qrId: number | null
-    exhibitId: bigint | null
-    qrUrl: string | null
-    createdAt: Date | null
-    updatedAt: Date | null
-  }
-
-  export type QRCodeMaxAggregateOutputType = {
-    qrId: number | null
-    exhibitId: bigint | null
-    qrUrl: string | null
-    createdAt: Date | null
-    updatedAt: Date | null
-  }
-
-  export type QRCodeCountAggregateOutputType = {
-    qrId: number
-    exhibitId: number
-    qrUrl: number
-    createdAt: number
-    updatedAt: number
-    _all: number
-  }
-
-
-  export type QRCodeAvgAggregateInputType = {
-    qrId?: true
-    exhibitId?: true
-  }
-
-  export type QRCodeSumAggregateInputType = {
-    qrId?: true
-    exhibitId?: true
-  }
-
-  export type QRCodeMinAggregateInputType = {
-    qrId?: true
-    exhibitId?: true
-    qrUrl?: true
-    createdAt?: true
-    updatedAt?: true
-  }
-
-  export type QRCodeMaxAggregateInputType = {
-    qrId?: true
-    exhibitId?: true
-    qrUrl?: true
-    createdAt?: true
-    updatedAt?: true
-  }
-
-  export type QRCodeCountAggregateInputType = {
-    qrId?: true
-    exhibitId?: true
-    qrUrl?: true
-    createdAt?: true
-    updatedAt?: true
-    _all?: true
-  }
-
-  export type QRCodeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which QRCode to aggregate.
-     */
-    where?: QRCodeWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of QRCodes to fetch.
-     */
-    orderBy?: QRCodeOrderByWithRelationInput | QRCodeOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: QRCodeWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` QRCodes from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` QRCodes.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned QRCodes
-    **/
-    _count?: true | QRCodeCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to average
-    **/
-    _avg?: QRCodeAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: QRCodeSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: QRCodeMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: QRCodeMaxAggregateInputType
-  }
-
-  export type GetQRCodeAggregateType<T extends QRCodeAggregateArgs> = {
-        [P in keyof T & keyof AggregateQRCode]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateQRCode[P]>
-      : GetScalarType<T[P], AggregateQRCode[P]>
-  }
-
-
-
-
-  export type QRCodeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: QRCodeWhereInput
-    orderBy?: QRCodeOrderByWithAggregationInput | QRCodeOrderByWithAggregationInput[]
-    by: QRCodeScalarFieldEnum[] | QRCodeScalarFieldEnum
-    having?: QRCodeScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: QRCodeCountAggregateInputType | true
-    _avg?: QRCodeAvgAggregateInputType
-    _sum?: QRCodeSumAggregateInputType
-    _min?: QRCodeMinAggregateInputType
-    _max?: QRCodeMaxAggregateInputType
-  }
-
-  export type QRCodeGroupByOutputType = {
-    qrId: number
-    exhibitId: bigint
-    qrUrl: string
-    createdAt: Date | null
-    updatedAt: Date | null
-    _count: QRCodeCountAggregateOutputType | null
-    _avg: QRCodeAvgAggregateOutputType | null
-    _sum: QRCodeSumAggregateOutputType | null
-    _min: QRCodeMinAggregateOutputType | null
-    _max: QRCodeMaxAggregateOutputType | null
-  }
-
-  type GetQRCodeGroupByPayload<T extends QRCodeGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<QRCodeGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof QRCodeGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], QRCodeGroupByOutputType[P]>
-            : GetScalarType<T[P], QRCodeGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type QRCodeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    qrId?: boolean
-    exhibitId?: boolean
-    qrUrl?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    exhibit?: boolean | ExhibitDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["qRCode"]>
-
-  export type QRCodeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    qrId?: boolean
-    exhibitId?: boolean
-    qrUrl?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    exhibit?: boolean | ExhibitDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["qRCode"]>
-
-  export type QRCodeSelectScalar = {
-    qrId?: boolean
-    exhibitId?: boolean
-    qrUrl?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-  }
-
-  export type QRCodeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    exhibit?: boolean | ExhibitDefaultArgs<ExtArgs>
-  }
-  export type QRCodeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    exhibit?: boolean | ExhibitDefaultArgs<ExtArgs>
-  }
-
-  export type $QRCodePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "QRCode"
-    objects: {
-      exhibit: Prisma.$ExhibitPayload<ExtArgs>
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      qrId: number
-      exhibitId: bigint
-      qrUrl: string
-      createdAt: Date | null
-      updatedAt: Date | null
-    }, ExtArgs["result"]["qRCode"]>
-    composites: {}
-  }
-
-  type QRCodeGetPayload<S extends boolean | null | undefined | QRCodeDefaultArgs> = $Result.GetResult<Prisma.$QRCodePayload, S>
-
-  type QRCodeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
-    Omit<QRCodeFindManyArgs, 'select' | 'include' | 'distinct'> & {
-      select?: QRCodeCountAggregateInputType | true
-    }
-
-  export interface QRCodeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['QRCode'], meta: { name: 'QRCode' } }
-    /**
-     * Find zero or one QRCode that matches the filter.
-     * @param {QRCodeFindUniqueArgs} args - Arguments to find a QRCode
-     * @example
-     * // Get one QRCode
-     * const qRCode = await prisma.qRCode.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends QRCodeFindUniqueArgs>(args: SelectSubset<T, QRCodeFindUniqueArgs<ExtArgs>>): Prisma__QRCodeClient<$Result.GetResult<Prisma.$QRCodePayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
-
-    /**
-     * Find one QRCode that matches the filter or throw an error with `error.code='P2025'` 
-     * if no matches were found.
-     * @param {QRCodeFindUniqueOrThrowArgs} args - Arguments to find a QRCode
-     * @example
-     * // Get one QRCode
-     * const qRCode = await prisma.qRCode.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends QRCodeFindUniqueOrThrowArgs>(args: SelectSubset<T, QRCodeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__QRCodeClient<$Result.GetResult<Prisma.$QRCodePayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
-
-    /**
-     * Find the first QRCode that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {QRCodeFindFirstArgs} args - Arguments to find a QRCode
-     * @example
-     * // Get one QRCode
-     * const qRCode = await prisma.qRCode.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends QRCodeFindFirstArgs>(args?: SelectSubset<T, QRCodeFindFirstArgs<ExtArgs>>): Prisma__QRCodeClient<$Result.GetResult<Prisma.$QRCodePayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
-
-    /**
-     * Find the first QRCode that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {QRCodeFindFirstOrThrowArgs} args - Arguments to find a QRCode
-     * @example
-     * // Get one QRCode
-     * const qRCode = await prisma.qRCode.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends QRCodeFindFirstOrThrowArgs>(args?: SelectSubset<T, QRCodeFindFirstOrThrowArgs<ExtArgs>>): Prisma__QRCodeClient<$Result.GetResult<Prisma.$QRCodePayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
-
-    /**
-     * Find zero or more QRCodes that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {QRCodeFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all QRCodes
-     * const qRCodes = await prisma.qRCode.findMany()
-     * 
-     * // Get first 10 QRCodes
-     * const qRCodes = await prisma.qRCode.findMany({ take: 10 })
-     * 
-     * // Only select the `qrId`
-     * const qRCodeWithQrIdOnly = await prisma.qRCode.findMany({ select: { qrId: true } })
-     * 
-     */
-    findMany<T extends QRCodeFindManyArgs>(args?: SelectSubset<T, QRCodeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QRCodePayload<ExtArgs>, T, "findMany">>
-
-    /**
-     * Create a QRCode.
-     * @param {QRCodeCreateArgs} args - Arguments to create a QRCode.
-     * @example
-     * // Create one QRCode
-     * const QRCode = await prisma.qRCode.create({
-     *   data: {
-     *     // ... data to create a QRCode
-     *   }
-     * })
-     * 
-     */
-    create<T extends QRCodeCreateArgs>(args: SelectSubset<T, QRCodeCreateArgs<ExtArgs>>): Prisma__QRCodeClient<$Result.GetResult<Prisma.$QRCodePayload<ExtArgs>, T, "create">, never, ExtArgs>
-
-    /**
-     * Create many QRCodes.
-     * @param {QRCodeCreateManyArgs} args - Arguments to create many QRCodes.
-     * @example
-     * // Create many QRCodes
-     * const qRCode = await prisma.qRCode.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends QRCodeCreateManyArgs>(args?: SelectSubset<T, QRCodeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many QRCodes and returns the data saved in the database.
-     * @param {QRCodeCreateManyAndReturnArgs} args - Arguments to create many QRCodes.
-     * @example
-     * // Create many QRCodes
-     * const qRCode = await prisma.qRCode.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many QRCodes and only return the `qrId`
-     * const qRCodeWithQrIdOnly = await prisma.qRCode.createManyAndReturn({ 
-     *   select: { qrId: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends QRCodeCreateManyAndReturnArgs>(args?: SelectSubset<T, QRCodeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QRCodePayload<ExtArgs>, T, "createManyAndReturn">>
-
-    /**
-     * Delete a QRCode.
-     * @param {QRCodeDeleteArgs} args - Arguments to delete one QRCode.
-     * @example
-     * // Delete one QRCode
-     * const QRCode = await prisma.qRCode.delete({
-     *   where: {
-     *     // ... filter to delete one QRCode
-     *   }
-     * })
-     * 
-     */
-    delete<T extends QRCodeDeleteArgs>(args: SelectSubset<T, QRCodeDeleteArgs<ExtArgs>>): Prisma__QRCodeClient<$Result.GetResult<Prisma.$QRCodePayload<ExtArgs>, T, "delete">, never, ExtArgs>
-
-    /**
-     * Update one QRCode.
-     * @param {QRCodeUpdateArgs} args - Arguments to update one QRCode.
-     * @example
-     * // Update one QRCode
-     * const qRCode = await prisma.qRCode.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends QRCodeUpdateArgs>(args: SelectSubset<T, QRCodeUpdateArgs<ExtArgs>>): Prisma__QRCodeClient<$Result.GetResult<Prisma.$QRCodePayload<ExtArgs>, T, "update">, never, ExtArgs>
-
-    /**
-     * Delete zero or more QRCodes.
-     * @param {QRCodeDeleteManyArgs} args - Arguments to filter QRCodes to delete.
-     * @example
-     * // Delete a few QRCodes
-     * const { count } = await prisma.qRCode.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends QRCodeDeleteManyArgs>(args?: SelectSubset<T, QRCodeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more QRCodes.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {QRCodeUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many QRCodes
-     * const qRCode = await prisma.qRCode.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends QRCodeUpdateManyArgs>(args: SelectSubset<T, QRCodeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create or update one QRCode.
-     * @param {QRCodeUpsertArgs} args - Arguments to update or create a QRCode.
-     * @example
-     * // Update or create a QRCode
-     * const qRCode = await prisma.qRCode.upsert({
-     *   create: {
-     *     // ... data to create a QRCode
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the QRCode we want to update
-     *   }
-     * })
-     */
-    upsert<T extends QRCodeUpsertArgs>(args: SelectSubset<T, QRCodeUpsertArgs<ExtArgs>>): Prisma__QRCodeClient<$Result.GetResult<Prisma.$QRCodePayload<ExtArgs>, T, "upsert">, never, ExtArgs>
-
-
-    /**
-     * Count the number of QRCodes.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {QRCodeCountArgs} args - Arguments to filter QRCodes to count.
-     * @example
-     * // Count the number of QRCodes
-     * const count = await prisma.qRCode.count({
-     *   where: {
-     *     // ... the filter for the QRCodes we want to count
-     *   }
-     * })
-    **/
-    count<T extends QRCodeCountArgs>(
-      args?: Subset<T, QRCodeCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], QRCodeCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a QRCode.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {QRCodeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends QRCodeAggregateArgs>(args: Subset<T, QRCodeAggregateArgs>): Prisma.PrismaPromise<GetQRCodeAggregateType<T>>
-
-    /**
-     * Group by QRCode.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {QRCodeGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends QRCodeGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: QRCodeGroupByArgs['orderBy'] }
-        : { orderBy?: QRCodeGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, QRCodeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetQRCodeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the QRCode model
-   */
-  readonly fields: QRCodeFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for QRCode.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__QRCodeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    exhibit<T extends ExhibitDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ExhibitDefaultArgs<ExtArgs>>): Prisma__ExhibitClient<$Result.GetResult<Prisma.$ExhibitPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the QRCode model
-   */ 
-  interface QRCodeFieldRefs {
-    readonly qrId: FieldRef<"QRCode", 'Int'>
-    readonly exhibitId: FieldRef<"QRCode", 'BigInt'>
-    readonly qrUrl: FieldRef<"QRCode", 'String'>
-    readonly createdAt: FieldRef<"QRCode", 'DateTime'>
-    readonly updatedAt: FieldRef<"QRCode", 'DateTime'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * QRCode findUnique
-   */
-  export type QRCodeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the QRCode
-     */
-    select?: QRCodeSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: QRCodeInclude<ExtArgs> | null
-    /**
-     * Filter, which QRCode to fetch.
-     */
-    where: QRCodeWhereUniqueInput
-  }
-
-  /**
-   * QRCode findUniqueOrThrow
-   */
-  export type QRCodeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the QRCode
-     */
-    select?: QRCodeSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: QRCodeInclude<ExtArgs> | null
-    /**
-     * Filter, which QRCode to fetch.
-     */
-    where: QRCodeWhereUniqueInput
-  }
-
-  /**
-   * QRCode findFirst
-   */
-  export type QRCodeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the QRCode
-     */
-    select?: QRCodeSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: QRCodeInclude<ExtArgs> | null
-    /**
-     * Filter, which QRCode to fetch.
-     */
-    where?: QRCodeWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of QRCodes to fetch.
-     */
-    orderBy?: QRCodeOrderByWithRelationInput | QRCodeOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for QRCodes.
-     */
-    cursor?: QRCodeWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` QRCodes from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` QRCodes.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of QRCodes.
-     */
-    distinct?: QRCodeScalarFieldEnum | QRCodeScalarFieldEnum[]
-  }
-
-  /**
-   * QRCode findFirstOrThrow
-   */
-  export type QRCodeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the QRCode
-     */
-    select?: QRCodeSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: QRCodeInclude<ExtArgs> | null
-    /**
-     * Filter, which QRCode to fetch.
-     */
-    where?: QRCodeWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of QRCodes to fetch.
-     */
-    orderBy?: QRCodeOrderByWithRelationInput | QRCodeOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for QRCodes.
-     */
-    cursor?: QRCodeWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` QRCodes from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` QRCodes.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of QRCodes.
-     */
-    distinct?: QRCodeScalarFieldEnum | QRCodeScalarFieldEnum[]
-  }
-
-  /**
-   * QRCode findMany
-   */
-  export type QRCodeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the QRCode
-     */
-    select?: QRCodeSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: QRCodeInclude<ExtArgs> | null
-    /**
-     * Filter, which QRCodes to fetch.
-     */
-    where?: QRCodeWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of QRCodes to fetch.
-     */
-    orderBy?: QRCodeOrderByWithRelationInput | QRCodeOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing QRCodes.
-     */
-    cursor?: QRCodeWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` QRCodes from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` QRCodes.
-     */
-    skip?: number
-    distinct?: QRCodeScalarFieldEnum | QRCodeScalarFieldEnum[]
-  }
-
-  /**
-   * QRCode create
-   */
-  export type QRCodeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the QRCode
-     */
-    select?: QRCodeSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: QRCodeInclude<ExtArgs> | null
-    /**
-     * The data needed to create a QRCode.
-     */
-    data: XOR<QRCodeCreateInput, QRCodeUncheckedCreateInput>
-  }
-
-  /**
-   * QRCode createMany
-   */
-  export type QRCodeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many QRCodes.
-     */
-    data: QRCodeCreateManyInput | QRCodeCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * QRCode createManyAndReturn
-   */
-  export type QRCodeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the QRCode
-     */
-    select?: QRCodeSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * The data used to create many QRCodes.
-     */
-    data: QRCodeCreateManyInput | QRCodeCreateManyInput[]
-    skipDuplicates?: boolean
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: QRCodeIncludeCreateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * QRCode update
-   */
-  export type QRCodeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the QRCode
-     */
-    select?: QRCodeSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: QRCodeInclude<ExtArgs> | null
-    /**
-     * The data needed to update a QRCode.
-     */
-    data: XOR<QRCodeUpdateInput, QRCodeUncheckedUpdateInput>
-    /**
-     * Choose, which QRCode to update.
-     */
-    where: QRCodeWhereUniqueInput
-  }
-
-  /**
-   * QRCode updateMany
-   */
-  export type QRCodeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update QRCodes.
-     */
-    data: XOR<QRCodeUpdateManyMutationInput, QRCodeUncheckedUpdateManyInput>
-    /**
-     * Filter which QRCodes to update
-     */
-    where?: QRCodeWhereInput
-  }
-
-  /**
-   * QRCode upsert
-   */
-  export type QRCodeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the QRCode
-     */
-    select?: QRCodeSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: QRCodeInclude<ExtArgs> | null
-    /**
-     * The filter to search for the QRCode to update in case it exists.
-     */
-    where: QRCodeWhereUniqueInput
-    /**
-     * In case the QRCode found by the `where` argument doesn't exist, create a new QRCode with this data.
-     */
-    create: XOR<QRCodeCreateInput, QRCodeUncheckedCreateInput>
-    /**
-     * In case the QRCode was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<QRCodeUpdateInput, QRCodeUncheckedUpdateInput>
-  }
-
-  /**
-   * QRCode delete
-   */
-  export type QRCodeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the QRCode
-     */
-    select?: QRCodeSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: QRCodeInclude<ExtArgs> | null
-    /**
-     * Filter which QRCode to delete.
-     */
-    where: QRCodeWhereUniqueInput
-  }
-
-  /**
-   * QRCode deleteMany
-   */
-  export type QRCodeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which QRCodes to delete
-     */
-    where?: QRCodeWhereInput
-  }
-
-  /**
-   * QRCode without action
-   */
-  export type QRCodeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the QRCode
-     */
-    select?: QRCodeSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: QRCodeInclude<ExtArgs> | null
   }
 
 
@@ -24636,6 +24648,33 @@ export namespace Prisma {
   export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+  export const ExhibitionScalarFieldEnum: {
+    exhibitionId: 'exhibitionId',
+    title: 'title',
+    description: 'description',
+    statusId: 'statusId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ExhibitionScalarFieldEnum = (typeof ExhibitionScalarFieldEnum)[keyof typeof ExhibitionScalarFieldEnum]
+
+
+  export const ExhibitScalarFieldEnum: {
+    exhibitId: 'exhibitId',
+    exhibitionId: 'exhibitionId',
+    badgeId: 'badgeId',
+    title: 'title',
+    description: 'description',
+    additionalDescription: 'additionalDescription',
+    statusId: 'statusId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ExhibitScalarFieldEnum = (typeof ExhibitScalarFieldEnum)[keyof typeof ExhibitScalarFieldEnum]
+
+
   export const AudioScalarFieldEnum: {
     audioId: 'audioId',
     exhibitId: 'exhibitId',
@@ -24662,32 +24701,6 @@ export namespace Prisma {
   };
 
   export type AudioPlaybackLogScalarFieldEnum = (typeof AudioPlaybackLogScalarFieldEnum)[keyof typeof AudioPlaybackLogScalarFieldEnum]
-
-
-  export const ExhibitionScalarFieldEnum: {
-    exhibitionId: 'exhibitionId',
-    title: 'title',
-    description: 'description',
-    statusId: 'statusId',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
-  };
-
-  export type ExhibitionScalarFieldEnum = (typeof ExhibitionScalarFieldEnum)[keyof typeof ExhibitionScalarFieldEnum]
-
-
-  export const ExhibitScalarFieldEnum: {
-    exhibitId: 'exhibitId',
-    exhibitionId: 'exhibitionId',
-    badgeId: 'badgeId',
-    title: 'title',
-    description: 'description',
-    statusId: 'statusId',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
-  };
-
-  export type ExhibitScalarFieldEnum = (typeof ExhibitScalarFieldEnum)[keyof typeof ExhibitScalarFieldEnum]
 
 
   export const FeedbackScalarFieldEnum: {
@@ -24718,6 +24731,17 @@ export namespace Prisma {
   export type ImageScalarFieldEnum = (typeof ImageScalarFieldEnum)[keyof typeof ImageScalarFieldEnum]
 
 
+  export const QRCodeScalarFieldEnum: {
+    qrId: 'qrId',
+    exhibitId: 'exhibitId',
+    qrUrl: 'qrUrl',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type QRCodeScalarFieldEnum = (typeof QRCodeScalarFieldEnum)[keyof typeof QRCodeScalarFieldEnum]
+
+
   export const LanguageScalarFieldEnum: {
     languageId: 'languageId',
     statusId: 'statusId',
@@ -24740,17 +24764,6 @@ export namespace Prisma {
   };
 
   export type PermissionScalarFieldEnum = (typeof PermissionScalarFieldEnum)[keyof typeof PermissionScalarFieldEnum]
-
-
-  export const QRCodeScalarFieldEnum: {
-    qrId: 'qrId',
-    exhibitId: 'exhibitId',
-    qrUrl: 'qrUrl',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
-  };
-
-  export type QRCodeScalarFieldEnum = (typeof QRCodeScalarFieldEnum)[keyof typeof QRCodeScalarFieldEnum]
 
 
   export const RoleScalarFieldEnum: {
@@ -24930,20 +24943,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Int'
-   */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int[]'
-   */
-  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
-    
-
-
-  /**
    * Reference to a field of type 'BigInt'
    */
   export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt'>
@@ -24968,6 +24967,20 @@ export namespace Prisma {
    * Reference to a field of type 'String[]'
    */
   export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int'
+   */
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int[]'
+   */
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 
@@ -25015,6 +25028,169 @@ export namespace Prisma {
    * Deep Input Types
    */
 
+
+  export type ExhibitionWhereInput = {
+    AND?: ExhibitionWhereInput | ExhibitionWhereInput[]
+    OR?: ExhibitionWhereInput[]
+    NOT?: ExhibitionWhereInput | ExhibitionWhereInput[]
+    exhibitionId?: BigIntFilter<"Exhibition"> | bigint | number
+    title?: StringFilter<"Exhibition"> | string
+    description?: StringNullableFilter<"Exhibition"> | string | null
+    statusId?: IntNullableFilter<"Exhibition"> | number | null
+    createdAt?: DateTimeFilter<"Exhibition"> | Date | string
+    updatedAt?: DateTimeFilter<"Exhibition"> | Date | string
+    status?: XOR<StatusNullableRelationFilter, StatusWhereInput> | null
+    exhibits?: ExhibitListRelationFilter
+    images?: ImageListRelationFilter
+  }
+
+  export type ExhibitionOrderByWithRelationInput = {
+    exhibitionId?: SortOrder
+    title?: SortOrder
+    description?: SortOrderInput | SortOrder
+    statusId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    status?: StatusOrderByWithRelationInput
+    exhibits?: ExhibitOrderByRelationAggregateInput
+    images?: ImageOrderByRelationAggregateInput
+  }
+
+  export type ExhibitionWhereUniqueInput = Prisma.AtLeast<{
+    exhibitionId?: bigint | number
+    title?: string
+    AND?: ExhibitionWhereInput | ExhibitionWhereInput[]
+    OR?: ExhibitionWhereInput[]
+    NOT?: ExhibitionWhereInput | ExhibitionWhereInput[]
+    description?: StringNullableFilter<"Exhibition"> | string | null
+    statusId?: IntNullableFilter<"Exhibition"> | number | null
+    createdAt?: DateTimeFilter<"Exhibition"> | Date | string
+    updatedAt?: DateTimeFilter<"Exhibition"> | Date | string
+    status?: XOR<StatusNullableRelationFilter, StatusWhereInput> | null
+    exhibits?: ExhibitListRelationFilter
+    images?: ImageListRelationFilter
+  }, "exhibitionId" | "title">
+
+  export type ExhibitionOrderByWithAggregationInput = {
+    exhibitionId?: SortOrder
+    title?: SortOrder
+    description?: SortOrderInput | SortOrder
+    statusId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ExhibitionCountOrderByAggregateInput
+    _avg?: ExhibitionAvgOrderByAggregateInput
+    _max?: ExhibitionMaxOrderByAggregateInput
+    _min?: ExhibitionMinOrderByAggregateInput
+    _sum?: ExhibitionSumOrderByAggregateInput
+  }
+
+  export type ExhibitionScalarWhereWithAggregatesInput = {
+    AND?: ExhibitionScalarWhereWithAggregatesInput | ExhibitionScalarWhereWithAggregatesInput[]
+    OR?: ExhibitionScalarWhereWithAggregatesInput[]
+    NOT?: ExhibitionScalarWhereWithAggregatesInput | ExhibitionScalarWhereWithAggregatesInput[]
+    exhibitionId?: BigIntWithAggregatesFilter<"Exhibition"> | bigint | number
+    title?: StringWithAggregatesFilter<"Exhibition"> | string
+    description?: StringNullableWithAggregatesFilter<"Exhibition"> | string | null
+    statusId?: IntNullableWithAggregatesFilter<"Exhibition"> | number | null
+    createdAt?: DateTimeWithAggregatesFilter<"Exhibition"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Exhibition"> | Date | string
+  }
+
+  export type ExhibitWhereInput = {
+    AND?: ExhibitWhereInput | ExhibitWhereInput[]
+    OR?: ExhibitWhereInput[]
+    NOT?: ExhibitWhereInput | ExhibitWhereInput[]
+    exhibitId?: BigIntFilter<"Exhibit"> | bigint | number
+    exhibitionId?: BigIntFilter<"Exhibit"> | bigint | number
+    badgeId?: BigIntNullableFilter<"Exhibit"> | bigint | number | null
+    title?: StringFilter<"Exhibit"> | string
+    description?: StringNullableFilter<"Exhibit"> | string | null
+    additionalDescription?: StringNullableFilter<"Exhibit"> | string | null
+    statusId?: IntNullableFilter<"Exhibit"> | number | null
+    createdAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
+    exhibition?: XOR<ExhibitionRelationFilter, ExhibitionWhereInput>
+    status?: XOR<StatusNullableRelationFilter, StatusWhereInput> | null
+    badge?: XOR<BadgeNullableRelationFilter, BadgeWhereInput> | null
+    audio?: AudioListRelationFilter
+    feedbacks?: FeedbackListRelationFilter
+    images?: ImageListRelationFilter
+    qrCodes?: QRCodeListRelationFilter
+  }
+
+  export type ExhibitOrderByWithRelationInput = {
+    exhibitId?: SortOrder
+    exhibitionId?: SortOrder
+    badgeId?: SortOrderInput | SortOrder
+    title?: SortOrder
+    description?: SortOrderInput | SortOrder
+    additionalDescription?: SortOrderInput | SortOrder
+    statusId?: SortOrderInput | SortOrder
+    createdAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrderInput | SortOrder
+    exhibition?: ExhibitionOrderByWithRelationInput
+    status?: StatusOrderByWithRelationInput
+    badge?: BadgeOrderByWithRelationInput
+    audio?: AudioOrderByRelationAggregateInput
+    feedbacks?: FeedbackOrderByRelationAggregateInput
+    images?: ImageOrderByRelationAggregateInput
+    qrCodes?: QRCodeOrderByRelationAggregateInput
+  }
+
+  export type ExhibitWhereUniqueInput = Prisma.AtLeast<{
+    exhibitId?: bigint | number
+    badgeId?: bigint | number
+    AND?: ExhibitWhereInput | ExhibitWhereInput[]
+    OR?: ExhibitWhereInput[]
+    NOT?: ExhibitWhereInput | ExhibitWhereInput[]
+    exhibitionId?: BigIntFilter<"Exhibit"> | bigint | number
+    title?: StringFilter<"Exhibit"> | string
+    description?: StringNullableFilter<"Exhibit"> | string | null
+    additionalDescription?: StringNullableFilter<"Exhibit"> | string | null
+    statusId?: IntNullableFilter<"Exhibit"> | number | null
+    createdAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
+    exhibition?: XOR<ExhibitionRelationFilter, ExhibitionWhereInput>
+    status?: XOR<StatusNullableRelationFilter, StatusWhereInput> | null
+    badge?: XOR<BadgeNullableRelationFilter, BadgeWhereInput> | null
+    audio?: AudioListRelationFilter
+    feedbacks?: FeedbackListRelationFilter
+    images?: ImageListRelationFilter
+    qrCodes?: QRCodeListRelationFilter
+  }, "exhibitId" | "badgeId">
+
+  export type ExhibitOrderByWithAggregationInput = {
+    exhibitId?: SortOrder
+    exhibitionId?: SortOrder
+    badgeId?: SortOrderInput | SortOrder
+    title?: SortOrder
+    description?: SortOrderInput | SortOrder
+    additionalDescription?: SortOrderInput | SortOrder
+    statusId?: SortOrderInput | SortOrder
+    createdAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrderInput | SortOrder
+    _count?: ExhibitCountOrderByAggregateInput
+    _avg?: ExhibitAvgOrderByAggregateInput
+    _max?: ExhibitMaxOrderByAggregateInput
+    _min?: ExhibitMinOrderByAggregateInput
+    _sum?: ExhibitSumOrderByAggregateInput
+  }
+
+  export type ExhibitScalarWhereWithAggregatesInput = {
+    AND?: ExhibitScalarWhereWithAggregatesInput | ExhibitScalarWhereWithAggregatesInput[]
+    OR?: ExhibitScalarWhereWithAggregatesInput[]
+    NOT?: ExhibitScalarWhereWithAggregatesInput | ExhibitScalarWhereWithAggregatesInput[]
+    exhibitId?: BigIntWithAggregatesFilter<"Exhibit"> | bigint | number
+    exhibitionId?: BigIntWithAggregatesFilter<"Exhibit"> | bigint | number
+    badgeId?: BigIntNullableWithAggregatesFilter<"Exhibit"> | bigint | number | null
+    title?: StringWithAggregatesFilter<"Exhibit"> | string
+    description?: StringNullableWithAggregatesFilter<"Exhibit"> | string | null
+    additionalDescription?: StringNullableWithAggregatesFilter<"Exhibit"> | string | null
+    statusId?: IntNullableWithAggregatesFilter<"Exhibit"> | number | null
+    createdAt?: DateTimeNullableWithAggregatesFilter<"Exhibit"> | Date | string | null
+    updatedAt?: DateTimeNullableWithAggregatesFilter<"Exhibit"> | Date | string | null
+  }
 
   export type AudioWhereInput = {
     AND?: AudioWhereInput | AudioWhereInput[]
@@ -25172,164 +25348,6 @@ export namespace Prisma {
     updatedAt?: DateTimeNullableWithAggregatesFilter<"AudioPlaybackLog"> | Date | string | null
   }
 
-  export type ExhibitionWhereInput = {
-    AND?: ExhibitionWhereInput | ExhibitionWhereInput[]
-    OR?: ExhibitionWhereInput[]
-    NOT?: ExhibitionWhereInput | ExhibitionWhereInput[]
-    exhibitionId?: BigIntFilter<"Exhibition"> | bigint | number
-    title?: StringFilter<"Exhibition"> | string
-    description?: StringNullableFilter<"Exhibition"> | string | null
-    statusId?: IntNullableFilter<"Exhibition"> | number | null
-    createdAt?: DateTimeFilter<"Exhibition"> | Date | string
-    updatedAt?: DateTimeFilter<"Exhibition"> | Date | string
-    status?: XOR<StatusNullableRelationFilter, StatusWhereInput> | null
-    exhibits?: ExhibitListRelationFilter
-    images?: ImageListRelationFilter
-  }
-
-  export type ExhibitionOrderByWithRelationInput = {
-    exhibitionId?: SortOrder
-    title?: SortOrder
-    description?: SortOrderInput | SortOrder
-    statusId?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    status?: StatusOrderByWithRelationInput
-    exhibits?: ExhibitOrderByRelationAggregateInput
-    images?: ImageOrderByRelationAggregateInput
-  }
-
-  export type ExhibitionWhereUniqueInput = Prisma.AtLeast<{
-    exhibitionId?: bigint | number
-    title?: string
-    AND?: ExhibitionWhereInput | ExhibitionWhereInput[]
-    OR?: ExhibitionWhereInput[]
-    NOT?: ExhibitionWhereInput | ExhibitionWhereInput[]
-    description?: StringNullableFilter<"Exhibition"> | string | null
-    statusId?: IntNullableFilter<"Exhibition"> | number | null
-    createdAt?: DateTimeFilter<"Exhibition"> | Date | string
-    updatedAt?: DateTimeFilter<"Exhibition"> | Date | string
-    status?: XOR<StatusNullableRelationFilter, StatusWhereInput> | null
-    exhibits?: ExhibitListRelationFilter
-    images?: ImageListRelationFilter
-  }, "exhibitionId" | "title">
-
-  export type ExhibitionOrderByWithAggregationInput = {
-    exhibitionId?: SortOrder
-    title?: SortOrder
-    description?: SortOrderInput | SortOrder
-    statusId?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    _count?: ExhibitionCountOrderByAggregateInput
-    _avg?: ExhibitionAvgOrderByAggregateInput
-    _max?: ExhibitionMaxOrderByAggregateInput
-    _min?: ExhibitionMinOrderByAggregateInput
-    _sum?: ExhibitionSumOrderByAggregateInput
-  }
-
-  export type ExhibitionScalarWhereWithAggregatesInput = {
-    AND?: ExhibitionScalarWhereWithAggregatesInput | ExhibitionScalarWhereWithAggregatesInput[]
-    OR?: ExhibitionScalarWhereWithAggregatesInput[]
-    NOT?: ExhibitionScalarWhereWithAggregatesInput | ExhibitionScalarWhereWithAggregatesInput[]
-    exhibitionId?: BigIntWithAggregatesFilter<"Exhibition"> | bigint | number
-    title?: StringWithAggregatesFilter<"Exhibition"> | string
-    description?: StringNullableWithAggregatesFilter<"Exhibition"> | string | null
-    statusId?: IntNullableWithAggregatesFilter<"Exhibition"> | number | null
-    createdAt?: DateTimeWithAggregatesFilter<"Exhibition"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"Exhibition"> | Date | string
-  }
-
-  export type ExhibitWhereInput = {
-    AND?: ExhibitWhereInput | ExhibitWhereInput[]
-    OR?: ExhibitWhereInput[]
-    NOT?: ExhibitWhereInput | ExhibitWhereInput[]
-    exhibitId?: BigIntFilter<"Exhibit"> | bigint | number
-    exhibitionId?: BigIntFilter<"Exhibit"> | bigint | number
-    badgeId?: BigIntNullableFilter<"Exhibit"> | bigint | number | null
-    title?: StringFilter<"Exhibit"> | string
-    description?: StringNullableFilter<"Exhibit"> | string | null
-    statusId?: IntNullableFilter<"Exhibit"> | number | null
-    createdAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
-    updatedAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
-    exhibition?: XOR<ExhibitionRelationFilter, ExhibitionWhereInput>
-    status?: XOR<StatusNullableRelationFilter, StatusWhereInput> | null
-    badge?: XOR<BadgeNullableRelationFilter, BadgeWhereInput> | null
-    audio?: AudioListRelationFilter
-    feedbacks?: FeedbackListRelationFilter
-    images?: ImageListRelationFilter
-    qrCodes?: QRCodeListRelationFilter
-  }
-
-  export type ExhibitOrderByWithRelationInput = {
-    exhibitId?: SortOrder
-    exhibitionId?: SortOrder
-    badgeId?: SortOrderInput | SortOrder
-    title?: SortOrder
-    description?: SortOrderInput | SortOrder
-    statusId?: SortOrderInput | SortOrder
-    createdAt?: SortOrderInput | SortOrder
-    updatedAt?: SortOrderInput | SortOrder
-    exhibition?: ExhibitionOrderByWithRelationInput
-    status?: StatusOrderByWithRelationInput
-    badge?: BadgeOrderByWithRelationInput
-    audio?: AudioOrderByRelationAggregateInput
-    feedbacks?: FeedbackOrderByRelationAggregateInput
-    images?: ImageOrderByRelationAggregateInput
-    qrCodes?: QRCodeOrderByRelationAggregateInput
-  }
-
-  export type ExhibitWhereUniqueInput = Prisma.AtLeast<{
-    exhibitId?: bigint | number
-    badgeId?: bigint | number
-    AND?: ExhibitWhereInput | ExhibitWhereInput[]
-    OR?: ExhibitWhereInput[]
-    NOT?: ExhibitWhereInput | ExhibitWhereInput[]
-    exhibitionId?: BigIntFilter<"Exhibit"> | bigint | number
-    title?: StringFilter<"Exhibit"> | string
-    description?: StringNullableFilter<"Exhibit"> | string | null
-    statusId?: IntNullableFilter<"Exhibit"> | number | null
-    createdAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
-    updatedAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
-    exhibition?: XOR<ExhibitionRelationFilter, ExhibitionWhereInput>
-    status?: XOR<StatusNullableRelationFilter, StatusWhereInput> | null
-    badge?: XOR<BadgeNullableRelationFilter, BadgeWhereInput> | null
-    audio?: AudioListRelationFilter
-    feedbacks?: FeedbackListRelationFilter
-    images?: ImageListRelationFilter
-    qrCodes?: QRCodeListRelationFilter
-  }, "exhibitId" | "badgeId">
-
-  export type ExhibitOrderByWithAggregationInput = {
-    exhibitId?: SortOrder
-    exhibitionId?: SortOrder
-    badgeId?: SortOrderInput | SortOrder
-    title?: SortOrder
-    description?: SortOrderInput | SortOrder
-    statusId?: SortOrderInput | SortOrder
-    createdAt?: SortOrderInput | SortOrder
-    updatedAt?: SortOrderInput | SortOrder
-    _count?: ExhibitCountOrderByAggregateInput
-    _avg?: ExhibitAvgOrderByAggregateInput
-    _max?: ExhibitMaxOrderByAggregateInput
-    _min?: ExhibitMinOrderByAggregateInput
-    _sum?: ExhibitSumOrderByAggregateInput
-  }
-
-  export type ExhibitScalarWhereWithAggregatesInput = {
-    AND?: ExhibitScalarWhereWithAggregatesInput | ExhibitScalarWhereWithAggregatesInput[]
-    OR?: ExhibitScalarWhereWithAggregatesInput[]
-    NOT?: ExhibitScalarWhereWithAggregatesInput | ExhibitScalarWhereWithAggregatesInput[]
-    exhibitId?: BigIntWithAggregatesFilter<"Exhibit"> | bigint | number
-    exhibitionId?: BigIntWithAggregatesFilter<"Exhibit"> | bigint | number
-    badgeId?: BigIntNullableWithAggregatesFilter<"Exhibit"> | bigint | number | null
-    title?: StringWithAggregatesFilter<"Exhibit"> | string
-    description?: StringNullableWithAggregatesFilter<"Exhibit"> | string | null
-    statusId?: IntNullableWithAggregatesFilter<"Exhibit"> | number | null
-    createdAt?: DateTimeNullableWithAggregatesFilter<"Exhibit"> | Date | string | null
-    updatedAt?: DateTimeNullableWithAggregatesFilter<"Exhibit"> | Date | string | null
-  }
-
   export type FeedbackWhereInput = {
     AND?: FeedbackWhereInput | FeedbackWhereInput[]
     OR?: FeedbackWhereInput[]
@@ -25480,6 +25498,63 @@ export namespace Prisma {
     updatedAt?: DateTimeNullableWithAggregatesFilter<"Image"> | Date | string | null
   }
 
+  export type QRCodeWhereInput = {
+    AND?: QRCodeWhereInput | QRCodeWhereInput[]
+    OR?: QRCodeWhereInput[]
+    NOT?: QRCodeWhereInput | QRCodeWhereInput[]
+    qrId?: IntFilter<"QRCode"> | number
+    exhibitId?: BigIntFilter<"QRCode"> | bigint | number
+    qrUrl?: StringFilter<"QRCode"> | string
+    createdAt?: DateTimeNullableFilter<"QRCode"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"QRCode"> | Date | string | null
+    exhibit?: XOR<ExhibitRelationFilter, ExhibitWhereInput>
+  }
+
+  export type QRCodeOrderByWithRelationInput = {
+    qrId?: SortOrder
+    exhibitId?: SortOrder
+    qrUrl?: SortOrder
+    createdAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrderInput | SortOrder
+    exhibit?: ExhibitOrderByWithRelationInput
+  }
+
+  export type QRCodeWhereUniqueInput = Prisma.AtLeast<{
+    qrId?: number
+    AND?: QRCodeWhereInput | QRCodeWhereInput[]
+    OR?: QRCodeWhereInput[]
+    NOT?: QRCodeWhereInput | QRCodeWhereInput[]
+    exhibitId?: BigIntFilter<"QRCode"> | bigint | number
+    qrUrl?: StringFilter<"QRCode"> | string
+    createdAt?: DateTimeNullableFilter<"QRCode"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"QRCode"> | Date | string | null
+    exhibit?: XOR<ExhibitRelationFilter, ExhibitWhereInput>
+  }, "qrId">
+
+  export type QRCodeOrderByWithAggregationInput = {
+    qrId?: SortOrder
+    exhibitId?: SortOrder
+    qrUrl?: SortOrder
+    createdAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrderInput | SortOrder
+    _count?: QRCodeCountOrderByAggregateInput
+    _avg?: QRCodeAvgOrderByAggregateInput
+    _max?: QRCodeMaxOrderByAggregateInput
+    _min?: QRCodeMinOrderByAggregateInput
+    _sum?: QRCodeSumOrderByAggregateInput
+  }
+
+  export type QRCodeScalarWhereWithAggregatesInput = {
+    AND?: QRCodeScalarWhereWithAggregatesInput | QRCodeScalarWhereWithAggregatesInput[]
+    OR?: QRCodeScalarWhereWithAggregatesInput[]
+    NOT?: QRCodeScalarWhereWithAggregatesInput | QRCodeScalarWhereWithAggregatesInput[]
+    qrId?: IntWithAggregatesFilter<"QRCode"> | number
+    exhibitId?: BigIntWithAggregatesFilter<"QRCode"> | bigint | number
+    qrUrl?: StringWithAggregatesFilter<"QRCode"> | string
+    createdAt?: DateTimeNullableWithAggregatesFilter<"QRCode"> | Date | string | null
+    updatedAt?: DateTimeNullableWithAggregatesFilter<"QRCode"> | Date | string | null
+  }
+
   export type LanguageWhereInput = {
     AND?: LanguageWhereInput | LanguageWhereInput[]
     OR?: LanguageWhereInput[]
@@ -25512,18 +25587,18 @@ export namespace Prisma {
   export type LanguageWhereUniqueInput = Prisma.AtLeast<{
     languageId?: bigint | number
     code?: string
-    isDefault?: boolean
     AND?: LanguageWhereInput | LanguageWhereInput[]
     OR?: LanguageWhereInput[]
     NOT?: LanguageWhereInput | LanguageWhereInput[]
     statusId?: IntNullableFilter<"Language"> | number | null
     title?: StringFilter<"Language"> | string
+    isDefault?: BoolNullableFilter<"Language"> | boolean | null
     createdAt?: DateTimeNullableFilter<"Language"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Language"> | Date | string | null
     status?: XOR<StatusNullableRelationFilter, StatusWhereInput> | null
     audio?: AudioListRelationFilter
     subtitles?: SubtitleListRelationFilter
-  }, "languageId" | "code" | "unique_default_language">
+  }, "languageId" | "code">
 
   export type LanguageOrderByWithAggregationInput = {
     languageId?: SortOrder
@@ -25608,63 +25683,6 @@ export namespace Prisma {
     description?: StringNullableWithAggregatesFilter<"Permission"> | string | null
     createdAt?: DateTimeNullableWithAggregatesFilter<"Permission"> | Date | string | null
     updatedAt?: DateTimeNullableWithAggregatesFilter<"Permission"> | Date | string | null
-  }
-
-  export type QRCodeWhereInput = {
-    AND?: QRCodeWhereInput | QRCodeWhereInput[]
-    OR?: QRCodeWhereInput[]
-    NOT?: QRCodeWhereInput | QRCodeWhereInput[]
-    qrId?: IntFilter<"QRCode"> | number
-    exhibitId?: BigIntFilter<"QRCode"> | bigint | number
-    qrUrl?: StringFilter<"QRCode"> | string
-    createdAt?: DateTimeNullableFilter<"QRCode"> | Date | string | null
-    updatedAt?: DateTimeNullableFilter<"QRCode"> | Date | string | null
-    exhibit?: XOR<ExhibitRelationFilter, ExhibitWhereInput>
-  }
-
-  export type QRCodeOrderByWithRelationInput = {
-    qrId?: SortOrder
-    exhibitId?: SortOrder
-    qrUrl?: SortOrder
-    createdAt?: SortOrderInput | SortOrder
-    updatedAt?: SortOrderInput | SortOrder
-    exhibit?: ExhibitOrderByWithRelationInput
-  }
-
-  export type QRCodeWhereUniqueInput = Prisma.AtLeast<{
-    qrId?: number
-    AND?: QRCodeWhereInput | QRCodeWhereInput[]
-    OR?: QRCodeWhereInput[]
-    NOT?: QRCodeWhereInput | QRCodeWhereInput[]
-    exhibitId?: BigIntFilter<"QRCode"> | bigint | number
-    qrUrl?: StringFilter<"QRCode"> | string
-    createdAt?: DateTimeNullableFilter<"QRCode"> | Date | string | null
-    updatedAt?: DateTimeNullableFilter<"QRCode"> | Date | string | null
-    exhibit?: XOR<ExhibitRelationFilter, ExhibitWhereInput>
-  }, "qrId">
-
-  export type QRCodeOrderByWithAggregationInput = {
-    qrId?: SortOrder
-    exhibitId?: SortOrder
-    qrUrl?: SortOrder
-    createdAt?: SortOrderInput | SortOrder
-    updatedAt?: SortOrderInput | SortOrder
-    _count?: QRCodeCountOrderByAggregateInput
-    _avg?: QRCodeAvgOrderByAggregateInput
-    _max?: QRCodeMaxOrderByAggregateInput
-    _min?: QRCodeMinOrderByAggregateInput
-    _sum?: QRCodeSumOrderByAggregateInput
-  }
-
-  export type QRCodeScalarWhereWithAggregatesInput = {
-    AND?: QRCodeScalarWhereWithAggregatesInput | QRCodeScalarWhereWithAggregatesInput[]
-    OR?: QRCodeScalarWhereWithAggregatesInput[]
-    NOT?: QRCodeScalarWhereWithAggregatesInput | QRCodeScalarWhereWithAggregatesInput[]
-    qrId?: IntWithAggregatesFilter<"QRCode"> | number
-    exhibitId?: BigIntWithAggregatesFilter<"QRCode"> | bigint | number
-    qrUrl?: StringWithAggregatesFilter<"QRCode"> | string
-    createdAt?: DateTimeNullableWithAggregatesFilter<"QRCode"> | Date | string | null
-    updatedAt?: DateTimeNullableWithAggregatesFilter<"QRCode"> | Date | string | null
   }
 
   export type RoleWhereInput = {
@@ -26407,6 +26425,173 @@ export namespace Prisma {
     createdAt?: DateTimeNullableWithAggregatesFilter<"UserBadge"> | Date | string | null
   }
 
+  export type ExhibitionCreateInput = {
+    exhibitionId?: bigint | number
+    title: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    status?: StatusCreateNestedOneWithoutExhibitionsInput
+    exhibits?: ExhibitCreateNestedManyWithoutExhibitionInput
+    images?: ImageCreateNestedManyWithoutExhibitionInput
+  }
+
+  export type ExhibitionUncheckedCreateInput = {
+    exhibitionId?: bigint | number
+    title: string
+    description?: string | null
+    statusId?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    exhibits?: ExhibitUncheckedCreateNestedManyWithoutExhibitionInput
+    images?: ImageUncheckedCreateNestedManyWithoutExhibitionInput
+  }
+
+  export type ExhibitionUpdateInput = {
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StatusUpdateOneWithoutExhibitionsNestedInput
+    exhibits?: ExhibitUpdateManyWithoutExhibitionNestedInput
+    images?: ImageUpdateManyWithoutExhibitionNestedInput
+  }
+
+  export type ExhibitionUncheckedUpdateInput = {
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    statusId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exhibits?: ExhibitUncheckedUpdateManyWithoutExhibitionNestedInput
+    images?: ImageUncheckedUpdateManyWithoutExhibitionNestedInput
+  }
+
+  export type ExhibitionCreateManyInput = {
+    exhibitionId?: bigint | number
+    title: string
+    description?: string | null
+    statusId?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ExhibitionUpdateManyMutationInput = {
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExhibitionUncheckedUpdateManyInput = {
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    statusId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExhibitCreateInput = {
+    exhibitId?: bigint | number
+    title: string
+    description?: string | null
+    additionalDescription?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
+    status?: StatusCreateNestedOneWithoutExhibitsInput
+    badge?: BadgeCreateNestedOneWithoutExhibitInput
+    audio?: AudioCreateNestedManyWithoutExhibitInput
+    feedbacks?: FeedbackCreateNestedManyWithoutExhibitInput
+    images?: ImageCreateNestedManyWithoutExhibitInput
+    qrCodes?: QRCodeCreateNestedManyWithoutExhibitInput
+  }
+
+  export type ExhibitUncheckedCreateInput = {
+    exhibitId?: bigint | number
+    exhibitionId: bigint | number
+    badgeId?: bigint | number | null
+    title: string
+    description?: string | null
+    additionalDescription?: string | null
+    statusId?: number | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutExhibitInput
+    images?: ImageUncheckedCreateNestedManyWithoutExhibitInput
+    qrCodes?: QRCodeUncheckedCreateNestedManyWithoutExhibitInput
+  }
+
+  export type ExhibitUpdateInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
+    status?: StatusUpdateOneWithoutExhibitsNestedInput
+    badge?: BadgeUpdateOneWithoutExhibitNestedInput
+    audio?: AudioUpdateManyWithoutExhibitNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutExhibitNestedInput
+    images?: ImageUpdateManyWithoutExhibitNestedInput
+    qrCodes?: QRCodeUpdateManyWithoutExhibitNestedInput
+  }
+
+  export type ExhibitUncheckedUpdateInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    statusId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutExhibitNestedInput
+    images?: ImageUncheckedUpdateManyWithoutExhibitNestedInput
+    qrCodes?: QRCodeUncheckedUpdateManyWithoutExhibitNestedInput
+  }
+
+  export type ExhibitCreateManyInput = {
+    exhibitId?: bigint | number
+    exhibitionId: bigint | number
+    badgeId?: bigint | number | null
+    title: string
+    description?: string | null
+    additionalDescription?: string | null
+    statusId?: number | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+  }
+
+  export type ExhibitUpdateManyMutationInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ExhibitUncheckedUpdateManyInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    statusId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type AudioCreateInput = {
     fileUrl?: string | null
     title?: string | null
@@ -26555,166 +26740,6 @@ export namespace Prisma {
     audioStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audioEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     durationListened?: NullableIntFieldUpdateOperationsInput | number | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
-  export type ExhibitionCreateInput = {
-    exhibitionId?: bigint | number
-    title: string
-    description?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    status?: StatusCreateNestedOneWithoutExhibitionsInput
-    exhibits?: ExhibitCreateNestedManyWithoutExhibitionInput
-    images?: ImageCreateNestedManyWithoutExhibitionInput
-  }
-
-  export type ExhibitionUncheckedCreateInput = {
-    exhibitionId?: bigint | number
-    title: string
-    description?: string | null
-    statusId?: number | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    exhibits?: ExhibitUncheckedCreateNestedManyWithoutExhibitionInput
-    images?: ImageUncheckedCreateNestedManyWithoutExhibitionInput
-  }
-
-  export type ExhibitionUpdateInput = {
-    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    status?: StatusUpdateOneWithoutExhibitionsNestedInput
-    exhibits?: ExhibitUpdateManyWithoutExhibitionNestedInput
-    images?: ImageUpdateManyWithoutExhibitionNestedInput
-  }
-
-  export type ExhibitionUncheckedUpdateInput = {
-    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    statusId?: NullableIntFieldUpdateOperationsInput | number | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    exhibits?: ExhibitUncheckedUpdateManyWithoutExhibitionNestedInput
-    images?: ImageUncheckedUpdateManyWithoutExhibitionNestedInput
-  }
-
-  export type ExhibitionCreateManyInput = {
-    exhibitionId?: bigint | number
-    title: string
-    description?: string | null
-    statusId?: number | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type ExhibitionUpdateManyMutationInput = {
-    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type ExhibitionUncheckedUpdateManyInput = {
-    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    statusId?: NullableIntFieldUpdateOperationsInput | number | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type ExhibitCreateInput = {
-    exhibitId?: bigint | number
-    title: string
-    description?: string | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
-    status?: StatusCreateNestedOneWithoutExhibitsInput
-    badge?: BadgeCreateNestedOneWithoutExhibitInput
-    audio?: AudioCreateNestedManyWithoutExhibitInput
-    feedbacks?: FeedbackCreateNestedManyWithoutExhibitInput
-    images?: ImageCreateNestedManyWithoutExhibitInput
-    qrCodes?: QRCodeCreateNestedManyWithoutExhibitInput
-  }
-
-  export type ExhibitUncheckedCreateInput = {
-    exhibitId?: bigint | number
-    exhibitionId: bigint | number
-    badgeId?: bigint | number | null
-    title: string
-    description?: string | null
-    statusId?: number | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
-    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutExhibitInput
-    images?: ImageUncheckedCreateNestedManyWithoutExhibitInput
-    qrCodes?: QRCodeUncheckedCreateNestedManyWithoutExhibitInput
-  }
-
-  export type ExhibitUpdateInput = {
-    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
-    status?: StatusUpdateOneWithoutExhibitsNestedInput
-    badge?: BadgeUpdateOneWithoutExhibitNestedInput
-    audio?: AudioUpdateManyWithoutExhibitNestedInput
-    feedbacks?: FeedbackUpdateManyWithoutExhibitNestedInput
-    images?: ImageUpdateManyWithoutExhibitNestedInput
-    qrCodes?: QRCodeUpdateManyWithoutExhibitNestedInput
-  }
-
-  export type ExhibitUncheckedUpdateInput = {
-    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
-    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
-    badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    statusId?: NullableIntFieldUpdateOperationsInput | number | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
-    feedbacks?: FeedbackUncheckedUpdateManyWithoutExhibitNestedInput
-    images?: ImageUncheckedUpdateManyWithoutExhibitNestedInput
-    qrCodes?: QRCodeUncheckedUpdateManyWithoutExhibitNestedInput
-  }
-
-  export type ExhibitCreateManyInput = {
-    exhibitId?: bigint | number
-    exhibitionId: bigint | number
-    badgeId?: bigint | number | null
-    title: string
-    description?: string | null
-    statusId?: number | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-  }
-
-  export type ExhibitUpdateManyMutationInput = {
-    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
-  export type ExhibitUncheckedUpdateManyInput = {
-    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
-    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
-    badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -26869,6 +26894,58 @@ export namespace Prisma {
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type QRCodeCreateInput = {
+    qrUrl: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    exhibit: ExhibitCreateNestedOneWithoutQrCodesInput
+  }
+
+  export type QRCodeUncheckedCreateInput = {
+    qrId?: number
+    exhibitId: bigint | number
+    qrUrl: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+  }
+
+  export type QRCodeUpdateInput = {
+    qrUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exhibit?: ExhibitUpdateOneRequiredWithoutQrCodesNestedInput
+  }
+
+  export type QRCodeUncheckedUpdateInput = {
+    qrId?: IntFieldUpdateOperationsInput | number
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
+    qrUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type QRCodeCreateManyInput = {
+    qrId?: number
+    exhibitId: bigint | number
+    qrUrl: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+  }
+
+  export type QRCodeUpdateManyMutationInput = {
+    qrUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type QRCodeUncheckedUpdateManyInput = {
+    qrId?: IntFieldUpdateOperationsInput | number
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
+    qrUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type LanguageCreateInput = {
     languageId?: bigint | number
     title: string
@@ -26999,58 +27076,6 @@ export namespace Prisma {
     permissionId?: IntFieldUpdateOperationsInput | number
     permissionName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
-  export type QRCodeCreateInput = {
-    qrUrl: string
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    exhibit: ExhibitCreateNestedOneWithoutQrCodesInput
-  }
-
-  export type QRCodeUncheckedCreateInput = {
-    qrId?: number
-    exhibitId: bigint | number
-    qrUrl: string
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-  }
-
-  export type QRCodeUpdateInput = {
-    qrUrl?: StringFieldUpdateOperationsInput | string
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    exhibit?: ExhibitUpdateOneRequiredWithoutQrCodesNestedInput
-  }
-
-  export type QRCodeUncheckedUpdateInput = {
-    qrId?: IntFieldUpdateOperationsInput | number
-    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
-    qrUrl?: StringFieldUpdateOperationsInput | string
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
-  export type QRCodeCreateManyInput = {
-    qrId?: number
-    exhibitId: bigint | number
-    qrUrl: string
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-  }
-
-  export type QRCodeUpdateManyMutationInput = {
-    qrUrl?: StringFieldUpdateOperationsInput | string
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
-  export type QRCodeUncheckedUpdateManyInput = {
-    qrId?: IntFieldUpdateOperationsInput | number
-    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
-    qrUrl?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -27765,282 +27790,6 @@ export namespace Prisma {
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
-  }
-
-  export type BigIntNullableFilter<$PrismaModel = never> = {
-    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
-    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
-    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
-    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    not?: NestedBigIntNullableFilter<$PrismaModel> | bigint | number | null
-  }
-
-  export type StringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type ExhibitNullableRelationFilter = {
-    is?: ExhibitWhereInput | null
-    isNot?: ExhibitWhereInput | null
-  }
-
-  export type LanguageNullableRelationFilter = {
-    is?: LanguageWhereInput | null
-    isNot?: LanguageWhereInput | null
-  }
-
-  export type AudioPlaybackLogListRelationFilter = {
-    every?: AudioPlaybackLogWhereInput
-    some?: AudioPlaybackLogWhereInput
-    none?: AudioPlaybackLogWhereInput
-  }
-
-  export type SubtitleListRelationFilter = {
-    every?: SubtitleWhereInput
-    some?: SubtitleWhereInput
-    none?: SubtitleWhereInput
-  }
-
-  export type SortOrderInput = {
-    sort: SortOrder
-    nulls?: NullsOrder
-  }
-
-  export type AudioPlaybackLogOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type SubtitleOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type AudioCountOrderByAggregateInput = {
-    audioId?: SortOrder
-    exhibitId?: SortOrder
-    languageId?: SortOrder
-    fileUrl?: SortOrder
-    title?: SortOrder
-    description?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type AudioAvgOrderByAggregateInput = {
-    audioId?: SortOrder
-    exhibitId?: SortOrder
-    languageId?: SortOrder
-  }
-
-  export type AudioMaxOrderByAggregateInput = {
-    audioId?: SortOrder
-    exhibitId?: SortOrder
-    languageId?: SortOrder
-    fileUrl?: SortOrder
-    title?: SortOrder
-    description?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type AudioMinOrderByAggregateInput = {
-    audioId?: SortOrder
-    exhibitId?: SortOrder
-    languageId?: SortOrder
-    fileUrl?: SortOrder
-    title?: SortOrder
-    description?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type AudioSumOrderByAggregateInput = {
-    audioId?: SortOrder
-    exhibitId?: SortOrder
-    languageId?: SortOrder
-  }
-
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type BigIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
-    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
-    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
-    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    not?: NestedBigIntNullableWithAggregatesFilter<$PrismaModel> | bigint | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedBigIntNullableFilter<$PrismaModel>
-    _min?: NestedBigIntNullableFilter<$PrismaModel>
-    _max?: NestedBigIntNullableFilter<$PrismaModel>
-  }
-
-  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
-  }
-
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type UserNullableRelationFilter = {
-    is?: UserWhereInput | null
-    isNot?: UserWhereInput | null
-  }
-
-  export type AudioNullableRelationFilter = {
-    is?: AudioWhereInput | null
-    isNot?: AudioWhereInput | null
-  }
-
-  export type AudioPlaybackLogCountOrderByAggregateInput = {
-    audioLogsId?: SortOrder
-    userId?: SortOrder
-    audioId?: SortOrder
-    audioStart?: SortOrder
-    audioEnd?: SortOrder
-    durationListened?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type AudioPlaybackLogAvgOrderByAggregateInput = {
-    audioLogsId?: SortOrder
-    userId?: SortOrder
-    audioId?: SortOrder
-    durationListened?: SortOrder
-  }
-
-  export type AudioPlaybackLogMaxOrderByAggregateInput = {
-    audioLogsId?: SortOrder
-    userId?: SortOrder
-    audioId?: SortOrder
-    audioStart?: SortOrder
-    audioEnd?: SortOrder
-    durationListened?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type AudioPlaybackLogMinOrderByAggregateInput = {
-    audioLogsId?: SortOrder
-    userId?: SortOrder
-    audioId?: SortOrder
-    audioStart?: SortOrder
-    audioEnd?: SortOrder
-    durationListened?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type AudioPlaybackLogSumOrderByAggregateInput = {
-    audioLogsId?: SortOrder
-    userId?: SortOrder
-    audioId?: SortOrder
-    durationListened?: SortOrder
-  }
-
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
-  }
-
   export type BigIntFilter<$PrismaModel = never> = {
     equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
     in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
@@ -28065,6 +27814,32 @@ export namespace Prisma {
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     mode?: QueryMode
     not?: NestedStringFilter<$PrismaModel> | string
+  }
+
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type DateTimeFilter<$PrismaModel = never> = {
@@ -28093,6 +27868,11 @@ export namespace Prisma {
     every?: ImageWhereInput
     some?: ImageWhereInput
     none?: ImageWhereInput
+  }
+
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
   }
 
   export type ExhibitOrderByRelationAggregateInput = {
@@ -28174,6 +27954,40 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -28186,6 +28000,28 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type BigIntNullableFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntNullableFilter<$PrismaModel> | bigint | number | null
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type ExhibitionRelationFilter = {
@@ -28234,6 +28070,7 @@ export namespace Prisma {
     badgeId?: SortOrder
     title?: SortOrder
     description?: SortOrder
+    additionalDescription?: SortOrder
     statusId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -28252,6 +28089,7 @@ export namespace Prisma {
     badgeId?: SortOrder
     title?: SortOrder
     description?: SortOrder
+    additionalDescription?: SortOrder
     statusId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -28263,6 +28101,7 @@ export namespace Prisma {
     badgeId?: SortOrder
     title?: SortOrder
     description?: SortOrder
+    additionalDescription?: SortOrder
     statusId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -28273,6 +28112,195 @@ export namespace Prisma {
     exhibitionId?: SortOrder
     badgeId?: SortOrder
     statusId?: SortOrder
+  }
+
+  export type BigIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntNullableWithAggregatesFilter<$PrismaModel> | bigint | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedBigIntNullableFilter<$PrismaModel>
+    _min?: NestedBigIntNullableFilter<$PrismaModel>
+    _max?: NestedBigIntNullableFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type ExhibitNullableRelationFilter = {
+    is?: ExhibitWhereInput | null
+    isNot?: ExhibitWhereInput | null
+  }
+
+  export type LanguageNullableRelationFilter = {
+    is?: LanguageWhereInput | null
+    isNot?: LanguageWhereInput | null
+  }
+
+  export type AudioPlaybackLogListRelationFilter = {
+    every?: AudioPlaybackLogWhereInput
+    some?: AudioPlaybackLogWhereInput
+    none?: AudioPlaybackLogWhereInput
+  }
+
+  export type SubtitleListRelationFilter = {
+    every?: SubtitleWhereInput
+    some?: SubtitleWhereInput
+    none?: SubtitleWhereInput
+  }
+
+  export type AudioPlaybackLogOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SubtitleOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AudioCountOrderByAggregateInput = {
+    audioId?: SortOrder
+    exhibitId?: SortOrder
+    languageId?: SortOrder
+    fileUrl?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AudioAvgOrderByAggregateInput = {
+    audioId?: SortOrder
+    exhibitId?: SortOrder
+    languageId?: SortOrder
+  }
+
+  export type AudioMaxOrderByAggregateInput = {
+    audioId?: SortOrder
+    exhibitId?: SortOrder
+    languageId?: SortOrder
+    fileUrl?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AudioMinOrderByAggregateInput = {
+    audioId?: SortOrder
+    exhibitId?: SortOrder
+    languageId?: SortOrder
+    fileUrl?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AudioSumOrderByAggregateInput = {
+    audioId?: SortOrder
+    exhibitId?: SortOrder
+    languageId?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type UserNullableRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
+  }
+
+  export type AudioNullableRelationFilter = {
+    is?: AudioWhereInput | null
+    isNot?: AudioWhereInput | null
+  }
+
+  export type AudioPlaybackLogCountOrderByAggregateInput = {
+    audioLogsId?: SortOrder
+    userId?: SortOrder
+    audioId?: SortOrder
+    audioStart?: SortOrder
+    audioEnd?: SortOrder
+    durationListened?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AudioPlaybackLogAvgOrderByAggregateInput = {
+    audioLogsId?: SortOrder
+    userId?: SortOrder
+    audioId?: SortOrder
+    durationListened?: SortOrder
+  }
+
+  export type AudioPlaybackLogMaxOrderByAggregateInput = {
+    audioLogsId?: SortOrder
+    userId?: SortOrder
+    audioId?: SortOrder
+    audioStart?: SortOrder
+    audioEnd?: SortOrder
+    durationListened?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AudioPlaybackLogMinOrderByAggregateInput = {
+    audioLogsId?: SortOrder
+    userId?: SortOrder
+    audioId?: SortOrder
+    audioStart?: SortOrder
+    audioEnd?: SortOrder
+    durationListened?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AudioPlaybackLogSumOrderByAggregateInput = {
+    audioLogsId?: SortOrder
+    userId?: SortOrder
+    audioId?: SortOrder
+    durationListened?: SortOrder
   }
 
   export type FeedbackCountOrderByAggregateInput = {
@@ -28385,6 +28413,45 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
+  export type ExhibitRelationFilter = {
+    is?: ExhibitWhereInput
+    isNot?: ExhibitWhereInput
+  }
+
+  export type QRCodeCountOrderByAggregateInput = {
+    qrId?: SortOrder
+    exhibitId?: SortOrder
+    qrUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type QRCodeAvgOrderByAggregateInput = {
+    qrId?: SortOrder
+    exhibitId?: SortOrder
+  }
+
+  export type QRCodeMaxOrderByAggregateInput = {
+    qrId?: SortOrder
+    exhibitId?: SortOrder
+    qrUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type QRCodeMinOrderByAggregateInput = {
+    qrId?: SortOrder
+    exhibitId?: SortOrder
+    qrUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type QRCodeSumOrderByAggregateInput = {
+    qrId?: SortOrder
+    exhibitId?: SortOrder
+  }
+
   export type BoolNullableFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
     not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
@@ -28478,45 +28545,6 @@ export namespace Prisma {
 
   export type PermissionSumOrderByAggregateInput = {
     permissionId?: SortOrder
-  }
-
-  export type ExhibitRelationFilter = {
-    is?: ExhibitWhereInput
-    isNot?: ExhibitWhereInput
-  }
-
-  export type QRCodeCountOrderByAggregateInput = {
-    qrId?: SortOrder
-    exhibitId?: SortOrder
-    qrUrl?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type QRCodeAvgOrderByAggregateInput = {
-    qrId?: SortOrder
-    exhibitId?: SortOrder
-  }
-
-  export type QRCodeMaxOrderByAggregateInput = {
-    qrId?: SortOrder
-    exhibitId?: SortOrder
-    qrUrl?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type QRCodeMinOrderByAggregateInput = {
-    qrId?: SortOrder
-    exhibitId?: SortOrder
-    qrUrl?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type QRCodeSumOrderByAggregateInput = {
-    qrId?: SortOrder
-    exhibitId?: SortOrder
   }
 
   export type UserRoleListRelationFilter = {
@@ -29116,186 +29144,6 @@ export namespace Prisma {
     badgeId?: SortOrder
   }
 
-  export type ExhibitCreateNestedOneWithoutAudioInput = {
-    create?: XOR<ExhibitCreateWithoutAudioInput, ExhibitUncheckedCreateWithoutAudioInput>
-    connectOrCreate?: ExhibitCreateOrConnectWithoutAudioInput
-    connect?: ExhibitWhereUniqueInput
-  }
-
-  export type LanguageCreateNestedOneWithoutAudioInput = {
-    create?: XOR<LanguageCreateWithoutAudioInput, LanguageUncheckedCreateWithoutAudioInput>
-    connectOrCreate?: LanguageCreateOrConnectWithoutAudioInput
-    connect?: LanguageWhereUniqueInput
-  }
-
-  export type AudioPlaybackLogCreateNestedManyWithoutAudioInput = {
-    create?: XOR<AudioPlaybackLogCreateWithoutAudioInput, AudioPlaybackLogUncheckedCreateWithoutAudioInput> | AudioPlaybackLogCreateWithoutAudioInput[] | AudioPlaybackLogUncheckedCreateWithoutAudioInput[]
-    connectOrCreate?: AudioPlaybackLogCreateOrConnectWithoutAudioInput | AudioPlaybackLogCreateOrConnectWithoutAudioInput[]
-    createMany?: AudioPlaybackLogCreateManyAudioInputEnvelope
-    connect?: AudioPlaybackLogWhereUniqueInput | AudioPlaybackLogWhereUniqueInput[]
-  }
-
-  export type SubtitleCreateNestedManyWithoutAudioInput = {
-    create?: XOR<SubtitleCreateWithoutAudioInput, SubtitleUncheckedCreateWithoutAudioInput> | SubtitleCreateWithoutAudioInput[] | SubtitleUncheckedCreateWithoutAudioInput[]
-    connectOrCreate?: SubtitleCreateOrConnectWithoutAudioInput | SubtitleCreateOrConnectWithoutAudioInput[]
-    createMany?: SubtitleCreateManyAudioInputEnvelope
-    connect?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
-  }
-
-  export type AudioPlaybackLogUncheckedCreateNestedManyWithoutAudioInput = {
-    create?: XOR<AudioPlaybackLogCreateWithoutAudioInput, AudioPlaybackLogUncheckedCreateWithoutAudioInput> | AudioPlaybackLogCreateWithoutAudioInput[] | AudioPlaybackLogUncheckedCreateWithoutAudioInput[]
-    connectOrCreate?: AudioPlaybackLogCreateOrConnectWithoutAudioInput | AudioPlaybackLogCreateOrConnectWithoutAudioInput[]
-    createMany?: AudioPlaybackLogCreateManyAudioInputEnvelope
-    connect?: AudioPlaybackLogWhereUniqueInput | AudioPlaybackLogWhereUniqueInput[]
-  }
-
-  export type SubtitleUncheckedCreateNestedManyWithoutAudioInput = {
-    create?: XOR<SubtitleCreateWithoutAudioInput, SubtitleUncheckedCreateWithoutAudioInput> | SubtitleCreateWithoutAudioInput[] | SubtitleUncheckedCreateWithoutAudioInput[]
-    connectOrCreate?: SubtitleCreateOrConnectWithoutAudioInput | SubtitleCreateOrConnectWithoutAudioInput[]
-    createMany?: SubtitleCreateManyAudioInputEnvelope
-    connect?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
-  }
-
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
-  }
-
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
-  }
-
-  export type ExhibitUpdateOneWithoutAudioNestedInput = {
-    create?: XOR<ExhibitCreateWithoutAudioInput, ExhibitUncheckedCreateWithoutAudioInput>
-    connectOrCreate?: ExhibitCreateOrConnectWithoutAudioInput
-    upsert?: ExhibitUpsertWithoutAudioInput
-    disconnect?: ExhibitWhereInput | boolean
-    delete?: ExhibitWhereInput | boolean
-    connect?: ExhibitWhereUniqueInput
-    update?: XOR<XOR<ExhibitUpdateToOneWithWhereWithoutAudioInput, ExhibitUpdateWithoutAudioInput>, ExhibitUncheckedUpdateWithoutAudioInput>
-  }
-
-  export type LanguageUpdateOneWithoutAudioNestedInput = {
-    create?: XOR<LanguageCreateWithoutAudioInput, LanguageUncheckedCreateWithoutAudioInput>
-    connectOrCreate?: LanguageCreateOrConnectWithoutAudioInput
-    upsert?: LanguageUpsertWithoutAudioInput
-    disconnect?: LanguageWhereInput | boolean
-    delete?: LanguageWhereInput | boolean
-    connect?: LanguageWhereUniqueInput
-    update?: XOR<XOR<LanguageUpdateToOneWithWhereWithoutAudioInput, LanguageUpdateWithoutAudioInput>, LanguageUncheckedUpdateWithoutAudioInput>
-  }
-
-  export type AudioPlaybackLogUpdateManyWithoutAudioNestedInput = {
-    create?: XOR<AudioPlaybackLogCreateWithoutAudioInput, AudioPlaybackLogUncheckedCreateWithoutAudioInput> | AudioPlaybackLogCreateWithoutAudioInput[] | AudioPlaybackLogUncheckedCreateWithoutAudioInput[]
-    connectOrCreate?: AudioPlaybackLogCreateOrConnectWithoutAudioInput | AudioPlaybackLogCreateOrConnectWithoutAudioInput[]
-    upsert?: AudioPlaybackLogUpsertWithWhereUniqueWithoutAudioInput | AudioPlaybackLogUpsertWithWhereUniqueWithoutAudioInput[]
-    createMany?: AudioPlaybackLogCreateManyAudioInputEnvelope
-    set?: AudioPlaybackLogWhereUniqueInput | AudioPlaybackLogWhereUniqueInput[]
-    disconnect?: AudioPlaybackLogWhereUniqueInput | AudioPlaybackLogWhereUniqueInput[]
-    delete?: AudioPlaybackLogWhereUniqueInput | AudioPlaybackLogWhereUniqueInput[]
-    connect?: AudioPlaybackLogWhereUniqueInput | AudioPlaybackLogWhereUniqueInput[]
-    update?: AudioPlaybackLogUpdateWithWhereUniqueWithoutAudioInput | AudioPlaybackLogUpdateWithWhereUniqueWithoutAudioInput[]
-    updateMany?: AudioPlaybackLogUpdateManyWithWhereWithoutAudioInput | AudioPlaybackLogUpdateManyWithWhereWithoutAudioInput[]
-    deleteMany?: AudioPlaybackLogScalarWhereInput | AudioPlaybackLogScalarWhereInput[]
-  }
-
-  export type SubtitleUpdateManyWithoutAudioNestedInput = {
-    create?: XOR<SubtitleCreateWithoutAudioInput, SubtitleUncheckedCreateWithoutAudioInput> | SubtitleCreateWithoutAudioInput[] | SubtitleUncheckedCreateWithoutAudioInput[]
-    connectOrCreate?: SubtitleCreateOrConnectWithoutAudioInput | SubtitleCreateOrConnectWithoutAudioInput[]
-    upsert?: SubtitleUpsertWithWhereUniqueWithoutAudioInput | SubtitleUpsertWithWhereUniqueWithoutAudioInput[]
-    createMany?: SubtitleCreateManyAudioInputEnvelope
-    set?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
-    disconnect?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
-    delete?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
-    connect?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
-    update?: SubtitleUpdateWithWhereUniqueWithoutAudioInput | SubtitleUpdateWithWhereUniqueWithoutAudioInput[]
-    updateMany?: SubtitleUpdateManyWithWhereWithoutAudioInput | SubtitleUpdateManyWithWhereWithoutAudioInput[]
-    deleteMany?: SubtitleScalarWhereInput | SubtitleScalarWhereInput[]
-  }
-
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
-  }
-
-  export type NullableBigIntFieldUpdateOperationsInput = {
-    set?: bigint | number | null
-    increment?: bigint | number
-    decrement?: bigint | number
-    multiply?: bigint | number
-    divide?: bigint | number
-  }
-
-  export type AudioPlaybackLogUncheckedUpdateManyWithoutAudioNestedInput = {
-    create?: XOR<AudioPlaybackLogCreateWithoutAudioInput, AudioPlaybackLogUncheckedCreateWithoutAudioInput> | AudioPlaybackLogCreateWithoutAudioInput[] | AudioPlaybackLogUncheckedCreateWithoutAudioInput[]
-    connectOrCreate?: AudioPlaybackLogCreateOrConnectWithoutAudioInput | AudioPlaybackLogCreateOrConnectWithoutAudioInput[]
-    upsert?: AudioPlaybackLogUpsertWithWhereUniqueWithoutAudioInput | AudioPlaybackLogUpsertWithWhereUniqueWithoutAudioInput[]
-    createMany?: AudioPlaybackLogCreateManyAudioInputEnvelope
-    set?: AudioPlaybackLogWhereUniqueInput | AudioPlaybackLogWhereUniqueInput[]
-    disconnect?: AudioPlaybackLogWhereUniqueInput | AudioPlaybackLogWhereUniqueInput[]
-    delete?: AudioPlaybackLogWhereUniqueInput | AudioPlaybackLogWhereUniqueInput[]
-    connect?: AudioPlaybackLogWhereUniqueInput | AudioPlaybackLogWhereUniqueInput[]
-    update?: AudioPlaybackLogUpdateWithWhereUniqueWithoutAudioInput | AudioPlaybackLogUpdateWithWhereUniqueWithoutAudioInput[]
-    updateMany?: AudioPlaybackLogUpdateManyWithWhereWithoutAudioInput | AudioPlaybackLogUpdateManyWithWhereWithoutAudioInput[]
-    deleteMany?: AudioPlaybackLogScalarWhereInput | AudioPlaybackLogScalarWhereInput[]
-  }
-
-  export type SubtitleUncheckedUpdateManyWithoutAudioNestedInput = {
-    create?: XOR<SubtitleCreateWithoutAudioInput, SubtitleUncheckedCreateWithoutAudioInput> | SubtitleCreateWithoutAudioInput[] | SubtitleUncheckedCreateWithoutAudioInput[]
-    connectOrCreate?: SubtitleCreateOrConnectWithoutAudioInput | SubtitleCreateOrConnectWithoutAudioInput[]
-    upsert?: SubtitleUpsertWithWhereUniqueWithoutAudioInput | SubtitleUpsertWithWhereUniqueWithoutAudioInput[]
-    createMany?: SubtitleCreateManyAudioInputEnvelope
-    set?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
-    disconnect?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
-    delete?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
-    connect?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
-    update?: SubtitleUpdateWithWhereUniqueWithoutAudioInput | SubtitleUpdateWithWhereUniqueWithoutAudioInput[]
-    updateMany?: SubtitleUpdateManyWithWhereWithoutAudioInput | SubtitleUpdateManyWithWhereWithoutAudioInput[]
-    deleteMany?: SubtitleScalarWhereInput | SubtitleScalarWhereInput[]
-  }
-
-  export type UserCreateNestedOneWithoutPlaybackLogsInput = {
-    create?: XOR<UserCreateWithoutPlaybackLogsInput, UserUncheckedCreateWithoutPlaybackLogsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutPlaybackLogsInput
-    connect?: UserWhereUniqueInput
-  }
-
-  export type AudioCreateNestedOneWithoutPlaybackLogsInput = {
-    create?: XOR<AudioCreateWithoutPlaybackLogsInput, AudioUncheckedCreateWithoutPlaybackLogsInput>
-    connectOrCreate?: AudioCreateOrConnectWithoutPlaybackLogsInput
-    connect?: AudioWhereUniqueInput
-  }
-
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
-  }
-
-  export type UserUpdateOneWithoutPlaybackLogsNestedInput = {
-    create?: XOR<UserCreateWithoutPlaybackLogsInput, UserUncheckedCreateWithoutPlaybackLogsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutPlaybackLogsInput
-    upsert?: UserUpsertWithoutPlaybackLogsInput
-    disconnect?: UserWhereInput | boolean
-    delete?: UserWhereInput | boolean
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPlaybackLogsInput, UserUpdateWithoutPlaybackLogsInput>, UserUncheckedUpdateWithoutPlaybackLogsInput>
-  }
-
-  export type AudioUpdateOneWithoutPlaybackLogsNestedInput = {
-    create?: XOR<AudioCreateWithoutPlaybackLogsInput, AudioUncheckedCreateWithoutPlaybackLogsInput>
-    connectOrCreate?: AudioCreateOrConnectWithoutPlaybackLogsInput
-    upsert?: AudioUpsertWithoutPlaybackLogsInput
-    disconnect?: AudioWhereInput | boolean
-    delete?: AudioWhereInput | boolean
-    connect?: AudioWhereUniqueInput
-    update?: XOR<XOR<AudioUpdateToOneWithWhereWithoutPlaybackLogsInput, AudioUpdateWithoutPlaybackLogsInput>, AudioUncheckedUpdateWithoutPlaybackLogsInput>
-  }
-
   export type StatusCreateNestedOneWithoutExhibitionsInput = {
     create?: XOR<StatusCreateWithoutExhibitionsInput, StatusUncheckedCreateWithoutExhibitionsInput>
     connectOrCreate?: StatusCreateOrConnectWithoutExhibitionsInput
@@ -29342,6 +29190,10 @@ export namespace Prisma {
     set?: string
   }
 
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
   }
@@ -29382,6 +29234,14 @@ export namespace Prisma {
     update?: ImageUpdateWithWhereUniqueWithoutExhibitionInput | ImageUpdateWithWhereUniqueWithoutExhibitionInput[]
     updateMany?: ImageUpdateManyWithWhereWithoutExhibitionInput | ImageUpdateManyWithWhereWithoutExhibitionInput[]
     deleteMany?: ImageScalarWhereInput | ImageScalarWhereInput[]
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type ExhibitUncheckedUpdateManyWithoutExhibitionNestedInput = {
@@ -29486,6 +29346,10 @@ export namespace Prisma {
     connect?: QRCodeWhereUniqueInput | QRCodeWhereUniqueInput[]
   }
 
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
   export type ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput = {
     create?: XOR<ExhibitionCreateWithoutExhibitsInput, ExhibitionUncheckedCreateWithoutExhibitsInput>
     connectOrCreate?: ExhibitionCreateOrConnectWithoutExhibitsInput
@@ -29570,6 +29434,14 @@ export namespace Prisma {
     deleteMany?: QRCodeScalarWhereInput | QRCodeScalarWhereInput[]
   }
 
+  export type NullableBigIntFieldUpdateOperationsInput = {
+    set?: bigint | number | null
+    increment?: bigint | number
+    decrement?: bigint | number
+    multiply?: bigint | number
+    divide?: bigint | number
+  }
+
   export type AudioUncheckedUpdateManyWithoutExhibitNestedInput = {
     create?: XOR<AudioCreateWithoutExhibitInput, AudioUncheckedCreateWithoutExhibitInput> | AudioCreateWithoutExhibitInput[] | AudioUncheckedCreateWithoutExhibitInput[]
     connectOrCreate?: AudioCreateOrConnectWithoutExhibitInput | AudioCreateOrConnectWithoutExhibitInput[]
@@ -29624,6 +29496,162 @@ export namespace Prisma {
     update?: QRCodeUpdateWithWhereUniqueWithoutExhibitInput | QRCodeUpdateWithWhereUniqueWithoutExhibitInput[]
     updateMany?: QRCodeUpdateManyWithWhereWithoutExhibitInput | QRCodeUpdateManyWithWhereWithoutExhibitInput[]
     deleteMany?: QRCodeScalarWhereInput | QRCodeScalarWhereInput[]
+  }
+
+  export type ExhibitCreateNestedOneWithoutAudioInput = {
+    create?: XOR<ExhibitCreateWithoutAudioInput, ExhibitUncheckedCreateWithoutAudioInput>
+    connectOrCreate?: ExhibitCreateOrConnectWithoutAudioInput
+    connect?: ExhibitWhereUniqueInput
+  }
+
+  export type LanguageCreateNestedOneWithoutAudioInput = {
+    create?: XOR<LanguageCreateWithoutAudioInput, LanguageUncheckedCreateWithoutAudioInput>
+    connectOrCreate?: LanguageCreateOrConnectWithoutAudioInput
+    connect?: LanguageWhereUniqueInput
+  }
+
+  export type AudioPlaybackLogCreateNestedManyWithoutAudioInput = {
+    create?: XOR<AudioPlaybackLogCreateWithoutAudioInput, AudioPlaybackLogUncheckedCreateWithoutAudioInput> | AudioPlaybackLogCreateWithoutAudioInput[] | AudioPlaybackLogUncheckedCreateWithoutAudioInput[]
+    connectOrCreate?: AudioPlaybackLogCreateOrConnectWithoutAudioInput | AudioPlaybackLogCreateOrConnectWithoutAudioInput[]
+    createMany?: AudioPlaybackLogCreateManyAudioInputEnvelope
+    connect?: AudioPlaybackLogWhereUniqueInput | AudioPlaybackLogWhereUniqueInput[]
+  }
+
+  export type SubtitleCreateNestedManyWithoutAudioInput = {
+    create?: XOR<SubtitleCreateWithoutAudioInput, SubtitleUncheckedCreateWithoutAudioInput> | SubtitleCreateWithoutAudioInput[] | SubtitleUncheckedCreateWithoutAudioInput[]
+    connectOrCreate?: SubtitleCreateOrConnectWithoutAudioInput | SubtitleCreateOrConnectWithoutAudioInput[]
+    createMany?: SubtitleCreateManyAudioInputEnvelope
+    connect?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
+  }
+
+  export type AudioPlaybackLogUncheckedCreateNestedManyWithoutAudioInput = {
+    create?: XOR<AudioPlaybackLogCreateWithoutAudioInput, AudioPlaybackLogUncheckedCreateWithoutAudioInput> | AudioPlaybackLogCreateWithoutAudioInput[] | AudioPlaybackLogUncheckedCreateWithoutAudioInput[]
+    connectOrCreate?: AudioPlaybackLogCreateOrConnectWithoutAudioInput | AudioPlaybackLogCreateOrConnectWithoutAudioInput[]
+    createMany?: AudioPlaybackLogCreateManyAudioInputEnvelope
+    connect?: AudioPlaybackLogWhereUniqueInput | AudioPlaybackLogWhereUniqueInput[]
+  }
+
+  export type SubtitleUncheckedCreateNestedManyWithoutAudioInput = {
+    create?: XOR<SubtitleCreateWithoutAudioInput, SubtitleUncheckedCreateWithoutAudioInput> | SubtitleCreateWithoutAudioInput[] | SubtitleUncheckedCreateWithoutAudioInput[]
+    connectOrCreate?: SubtitleCreateOrConnectWithoutAudioInput | SubtitleCreateOrConnectWithoutAudioInput[]
+    createMany?: SubtitleCreateManyAudioInputEnvelope
+    connect?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
+  }
+
+  export type ExhibitUpdateOneWithoutAudioNestedInput = {
+    create?: XOR<ExhibitCreateWithoutAudioInput, ExhibitUncheckedCreateWithoutAudioInput>
+    connectOrCreate?: ExhibitCreateOrConnectWithoutAudioInput
+    upsert?: ExhibitUpsertWithoutAudioInput
+    disconnect?: ExhibitWhereInput | boolean
+    delete?: ExhibitWhereInput | boolean
+    connect?: ExhibitWhereUniqueInput
+    update?: XOR<XOR<ExhibitUpdateToOneWithWhereWithoutAudioInput, ExhibitUpdateWithoutAudioInput>, ExhibitUncheckedUpdateWithoutAudioInput>
+  }
+
+  export type LanguageUpdateOneWithoutAudioNestedInput = {
+    create?: XOR<LanguageCreateWithoutAudioInput, LanguageUncheckedCreateWithoutAudioInput>
+    connectOrCreate?: LanguageCreateOrConnectWithoutAudioInput
+    upsert?: LanguageUpsertWithoutAudioInput
+    disconnect?: LanguageWhereInput | boolean
+    delete?: LanguageWhereInput | boolean
+    connect?: LanguageWhereUniqueInput
+    update?: XOR<XOR<LanguageUpdateToOneWithWhereWithoutAudioInput, LanguageUpdateWithoutAudioInput>, LanguageUncheckedUpdateWithoutAudioInput>
+  }
+
+  export type AudioPlaybackLogUpdateManyWithoutAudioNestedInput = {
+    create?: XOR<AudioPlaybackLogCreateWithoutAudioInput, AudioPlaybackLogUncheckedCreateWithoutAudioInput> | AudioPlaybackLogCreateWithoutAudioInput[] | AudioPlaybackLogUncheckedCreateWithoutAudioInput[]
+    connectOrCreate?: AudioPlaybackLogCreateOrConnectWithoutAudioInput | AudioPlaybackLogCreateOrConnectWithoutAudioInput[]
+    upsert?: AudioPlaybackLogUpsertWithWhereUniqueWithoutAudioInput | AudioPlaybackLogUpsertWithWhereUniqueWithoutAudioInput[]
+    createMany?: AudioPlaybackLogCreateManyAudioInputEnvelope
+    set?: AudioPlaybackLogWhereUniqueInput | AudioPlaybackLogWhereUniqueInput[]
+    disconnect?: AudioPlaybackLogWhereUniqueInput | AudioPlaybackLogWhereUniqueInput[]
+    delete?: AudioPlaybackLogWhereUniqueInput | AudioPlaybackLogWhereUniqueInput[]
+    connect?: AudioPlaybackLogWhereUniqueInput | AudioPlaybackLogWhereUniqueInput[]
+    update?: AudioPlaybackLogUpdateWithWhereUniqueWithoutAudioInput | AudioPlaybackLogUpdateWithWhereUniqueWithoutAudioInput[]
+    updateMany?: AudioPlaybackLogUpdateManyWithWhereWithoutAudioInput | AudioPlaybackLogUpdateManyWithWhereWithoutAudioInput[]
+    deleteMany?: AudioPlaybackLogScalarWhereInput | AudioPlaybackLogScalarWhereInput[]
+  }
+
+  export type SubtitleUpdateManyWithoutAudioNestedInput = {
+    create?: XOR<SubtitleCreateWithoutAudioInput, SubtitleUncheckedCreateWithoutAudioInput> | SubtitleCreateWithoutAudioInput[] | SubtitleUncheckedCreateWithoutAudioInput[]
+    connectOrCreate?: SubtitleCreateOrConnectWithoutAudioInput | SubtitleCreateOrConnectWithoutAudioInput[]
+    upsert?: SubtitleUpsertWithWhereUniqueWithoutAudioInput | SubtitleUpsertWithWhereUniqueWithoutAudioInput[]
+    createMany?: SubtitleCreateManyAudioInputEnvelope
+    set?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
+    disconnect?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
+    delete?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
+    connect?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
+    update?: SubtitleUpdateWithWhereUniqueWithoutAudioInput | SubtitleUpdateWithWhereUniqueWithoutAudioInput[]
+    updateMany?: SubtitleUpdateManyWithWhereWithoutAudioInput | SubtitleUpdateManyWithWhereWithoutAudioInput[]
+    deleteMany?: SubtitleScalarWhereInput | SubtitleScalarWhereInput[]
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type AudioPlaybackLogUncheckedUpdateManyWithoutAudioNestedInput = {
+    create?: XOR<AudioPlaybackLogCreateWithoutAudioInput, AudioPlaybackLogUncheckedCreateWithoutAudioInput> | AudioPlaybackLogCreateWithoutAudioInput[] | AudioPlaybackLogUncheckedCreateWithoutAudioInput[]
+    connectOrCreate?: AudioPlaybackLogCreateOrConnectWithoutAudioInput | AudioPlaybackLogCreateOrConnectWithoutAudioInput[]
+    upsert?: AudioPlaybackLogUpsertWithWhereUniqueWithoutAudioInput | AudioPlaybackLogUpsertWithWhereUniqueWithoutAudioInput[]
+    createMany?: AudioPlaybackLogCreateManyAudioInputEnvelope
+    set?: AudioPlaybackLogWhereUniqueInput | AudioPlaybackLogWhereUniqueInput[]
+    disconnect?: AudioPlaybackLogWhereUniqueInput | AudioPlaybackLogWhereUniqueInput[]
+    delete?: AudioPlaybackLogWhereUniqueInput | AudioPlaybackLogWhereUniqueInput[]
+    connect?: AudioPlaybackLogWhereUniqueInput | AudioPlaybackLogWhereUniqueInput[]
+    update?: AudioPlaybackLogUpdateWithWhereUniqueWithoutAudioInput | AudioPlaybackLogUpdateWithWhereUniqueWithoutAudioInput[]
+    updateMany?: AudioPlaybackLogUpdateManyWithWhereWithoutAudioInput | AudioPlaybackLogUpdateManyWithWhereWithoutAudioInput[]
+    deleteMany?: AudioPlaybackLogScalarWhereInput | AudioPlaybackLogScalarWhereInput[]
+  }
+
+  export type SubtitleUncheckedUpdateManyWithoutAudioNestedInput = {
+    create?: XOR<SubtitleCreateWithoutAudioInput, SubtitleUncheckedCreateWithoutAudioInput> | SubtitleCreateWithoutAudioInput[] | SubtitleUncheckedCreateWithoutAudioInput[]
+    connectOrCreate?: SubtitleCreateOrConnectWithoutAudioInput | SubtitleCreateOrConnectWithoutAudioInput[]
+    upsert?: SubtitleUpsertWithWhereUniqueWithoutAudioInput | SubtitleUpsertWithWhereUniqueWithoutAudioInput[]
+    createMany?: SubtitleCreateManyAudioInputEnvelope
+    set?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
+    disconnect?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
+    delete?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
+    connect?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
+    update?: SubtitleUpdateWithWhereUniqueWithoutAudioInput | SubtitleUpdateWithWhereUniqueWithoutAudioInput[]
+    updateMany?: SubtitleUpdateManyWithWhereWithoutAudioInput | SubtitleUpdateManyWithWhereWithoutAudioInput[]
+    deleteMany?: SubtitleScalarWhereInput | SubtitleScalarWhereInput[]
+  }
+
+  export type UserCreateNestedOneWithoutPlaybackLogsInput = {
+    create?: XOR<UserCreateWithoutPlaybackLogsInput, UserUncheckedCreateWithoutPlaybackLogsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPlaybackLogsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type AudioCreateNestedOneWithoutPlaybackLogsInput = {
+    create?: XOR<AudioCreateWithoutPlaybackLogsInput, AudioUncheckedCreateWithoutPlaybackLogsInput>
+    connectOrCreate?: AudioCreateOrConnectWithoutPlaybackLogsInput
+    connect?: AudioWhereUniqueInput
+  }
+
+  export type UserUpdateOneWithoutPlaybackLogsNestedInput = {
+    create?: XOR<UserCreateWithoutPlaybackLogsInput, UserUncheckedCreateWithoutPlaybackLogsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPlaybackLogsInput
+    upsert?: UserUpsertWithoutPlaybackLogsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPlaybackLogsInput, UserUpdateWithoutPlaybackLogsInput>, UserUncheckedUpdateWithoutPlaybackLogsInput>
+  }
+
+  export type AudioUpdateOneWithoutPlaybackLogsNestedInput = {
+    create?: XOR<AudioCreateWithoutPlaybackLogsInput, AudioUncheckedCreateWithoutPlaybackLogsInput>
+    connectOrCreate?: AudioCreateOrConnectWithoutPlaybackLogsInput
+    upsert?: AudioUpsertWithoutPlaybackLogsInput
+    disconnect?: AudioWhereInput | boolean
+    delete?: AudioWhereInput | boolean
+    connect?: AudioWhereUniqueInput
+    update?: XOR<XOR<AudioUpdateToOneWithWhereWithoutPlaybackLogsInput, AudioUpdateWithoutPlaybackLogsInput>, AudioUncheckedUpdateWithoutPlaybackLogsInput>
   }
 
   export type UserCreateNestedOneWithoutFeedbacksInput = {
@@ -29692,6 +29720,20 @@ export namespace Prisma {
     delete?: ExhibitionWhereInput | boolean
     connect?: ExhibitionWhereUniqueInput
     update?: XOR<XOR<ExhibitionUpdateToOneWithWhereWithoutImagesInput, ExhibitionUpdateWithoutImagesInput>, ExhibitionUncheckedUpdateWithoutImagesInput>
+  }
+
+  export type ExhibitCreateNestedOneWithoutQrCodesInput = {
+    create?: XOR<ExhibitCreateWithoutQrCodesInput, ExhibitUncheckedCreateWithoutQrCodesInput>
+    connectOrCreate?: ExhibitCreateOrConnectWithoutQrCodesInput
+    connect?: ExhibitWhereUniqueInput
+  }
+
+  export type ExhibitUpdateOneRequiredWithoutQrCodesNestedInput = {
+    create?: XOR<ExhibitCreateWithoutQrCodesInput, ExhibitUncheckedCreateWithoutQrCodesInput>
+    connectOrCreate?: ExhibitCreateOrConnectWithoutQrCodesInput
+    upsert?: ExhibitUpsertWithoutQrCodesInput
+    connect?: ExhibitWhereUniqueInput
+    update?: XOR<XOR<ExhibitUpdateToOneWithWhereWithoutQrCodesInput, ExhibitUpdateWithoutQrCodesInput>, ExhibitUncheckedUpdateWithoutQrCodesInput>
   }
 
   export type StatusCreateNestedOneWithoutLanguagesInput = {
@@ -29838,20 +29880,6 @@ export namespace Prisma {
     update?: RolePermissionUpdateWithWhereUniqueWithoutPermissionInput | RolePermissionUpdateWithWhereUniqueWithoutPermissionInput[]
     updateMany?: RolePermissionUpdateManyWithWhereWithoutPermissionInput | RolePermissionUpdateManyWithWhereWithoutPermissionInput[]
     deleteMany?: RolePermissionScalarWhereInput | RolePermissionScalarWhereInput[]
-  }
-
-  export type ExhibitCreateNestedOneWithoutQrCodesInput = {
-    create?: XOR<ExhibitCreateWithoutQrCodesInput, ExhibitUncheckedCreateWithoutQrCodesInput>
-    connectOrCreate?: ExhibitCreateOrConnectWithoutQrCodesInput
-    connect?: ExhibitWhereUniqueInput
-  }
-
-  export type ExhibitUpdateOneRequiredWithoutQrCodesNestedInput = {
-    create?: XOR<ExhibitCreateWithoutQrCodesInput, ExhibitUncheckedCreateWithoutQrCodesInput>
-    connectOrCreate?: ExhibitCreateOrConnectWithoutQrCodesInput
-    upsert?: ExhibitUpsertWithoutQrCodesInput
-    connect?: ExhibitWhereUniqueInput
-    update?: XOR<XOR<ExhibitUpdateToOneWithWhereWithoutQrCodesInput, ExhibitUpdateWithoutQrCodesInput>, ExhibitUncheckedUpdateWithoutQrCodesInput>
   }
 
   export type RolePermissionCreateNestedManyWithoutRoleInput = {
@@ -30822,165 +30850,6 @@ export namespace Prisma {
     update?: XOR<XOR<BadgeUpdateToOneWithWhereWithoutUserBadgesInput, BadgeUpdateWithoutUserBadgesInput>, BadgeUncheckedUpdateWithoutUserBadgesInput>
   }
 
-  export type NestedIntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
-  }
-
-  export type NestedBigIntNullableFilter<$PrismaModel = never> = {
-    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
-    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
-    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
-    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    not?: NestedBigIntNullableFilter<$PrismaModel> | bigint | number | null
-  }
-
-  export type NestedStringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
-  export type NestedBigIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
-    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
-    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
-    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    not?: NestedBigIntNullableWithAggregatesFilter<$PrismaModel> | bigint | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedBigIntNullableFilter<$PrismaModel>
-    _min?: NestedBigIntNullableFilter<$PrismaModel>
-    _max?: NestedBigIntNullableFilter<$PrismaModel>
-  }
-
-  export type NestedIntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
-  }
-
-  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
-  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
-  }
-
   export type NestedBigIntFilter<$PrismaModel = never> = {
     equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
     in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
@@ -31004,6 +30873,31 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringFilter<$PrismaModel> | string
+  }
+
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedDateTimeFilter<$PrismaModel = never> = {
@@ -31033,6 +30927,28 @@ export namespace Prisma {
     _max?: NestedBigIntFilter<$PrismaModel>
   }
 
+  export type NestedIntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -31050,6 +30966,50 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
+  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -31062,6 +31022,74 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedBigIntNullableFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntNullableFilter<$PrismaModel> | bigint | number | null
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedBigIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntNullableWithAggregatesFilter<$PrismaModel> | bigint | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedBigIntNullableFilter<$PrismaModel>
+    _min?: NestedBigIntNullableFilter<$PrismaModel>
+    _max?: NestedBigIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type NestedBoolFilter<$PrismaModel = never> = {
@@ -31137,416 +31165,6 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
-  export type ExhibitCreateWithoutAudioInput = {
-    exhibitId?: bigint | number
-    title: string
-    description?: string | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
-    status?: StatusCreateNestedOneWithoutExhibitsInput
-    badge?: BadgeCreateNestedOneWithoutExhibitInput
-    feedbacks?: FeedbackCreateNestedManyWithoutExhibitInput
-    images?: ImageCreateNestedManyWithoutExhibitInput
-    qrCodes?: QRCodeCreateNestedManyWithoutExhibitInput
-  }
-
-  export type ExhibitUncheckedCreateWithoutAudioInput = {
-    exhibitId?: bigint | number
-    exhibitionId: bigint | number
-    badgeId?: bigint | number | null
-    title: string
-    description?: string | null
-    statusId?: number | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutExhibitInput
-    images?: ImageUncheckedCreateNestedManyWithoutExhibitInput
-    qrCodes?: QRCodeUncheckedCreateNestedManyWithoutExhibitInput
-  }
-
-  export type ExhibitCreateOrConnectWithoutAudioInput = {
-    where: ExhibitWhereUniqueInput
-    create: XOR<ExhibitCreateWithoutAudioInput, ExhibitUncheckedCreateWithoutAudioInput>
-  }
-
-  export type LanguageCreateWithoutAudioInput = {
-    languageId?: bigint | number
-    title: string
-    code: string
-    isDefault?: boolean | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    status?: StatusCreateNestedOneWithoutLanguagesInput
-    subtitles?: SubtitleCreateNestedManyWithoutLanguageInput
-  }
-
-  export type LanguageUncheckedCreateWithoutAudioInput = {
-    languageId?: bigint | number
-    statusId?: number | null
-    title: string
-    code: string
-    isDefault?: boolean | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    subtitles?: SubtitleUncheckedCreateNestedManyWithoutLanguageInput
-  }
-
-  export type LanguageCreateOrConnectWithoutAudioInput = {
-    where: LanguageWhereUniqueInput
-    create: XOR<LanguageCreateWithoutAudioInput, LanguageUncheckedCreateWithoutAudioInput>
-  }
-
-  export type AudioPlaybackLogCreateWithoutAudioInput = {
-    audioStart?: Date | string | null
-    audioEnd?: Date | string | null
-    durationListened?: number | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    user?: UserCreateNestedOneWithoutPlaybackLogsInput
-  }
-
-  export type AudioPlaybackLogUncheckedCreateWithoutAudioInput = {
-    audioLogsId?: number
-    userId?: bigint | number | null
-    audioStart?: Date | string | null
-    audioEnd?: Date | string | null
-    durationListened?: number | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-  }
-
-  export type AudioPlaybackLogCreateOrConnectWithoutAudioInput = {
-    where: AudioPlaybackLogWhereUniqueInput
-    create: XOR<AudioPlaybackLogCreateWithoutAudioInput, AudioPlaybackLogUncheckedCreateWithoutAudioInput>
-  }
-
-  export type AudioPlaybackLogCreateManyAudioInputEnvelope = {
-    data: AudioPlaybackLogCreateManyAudioInput | AudioPlaybackLogCreateManyAudioInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type SubtitleCreateWithoutAudioInput = {
-    subtitleId?: bigint | number
-    text?: NullableJsonNullValueInput | InputJsonValue
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    language?: LanguageCreateNestedOneWithoutSubtitlesInput
-    user?: UserCreateNestedOneWithoutSubtitlesInput
-  }
-
-  export type SubtitleUncheckedCreateWithoutAudioInput = {
-    subtitleId?: bigint | number
-    languageId?: bigint | number | null
-    text?: NullableJsonNullValueInput | InputJsonValue
-    createdBy?: bigint | number | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-  }
-
-  export type SubtitleCreateOrConnectWithoutAudioInput = {
-    where: SubtitleWhereUniqueInput
-    create: XOR<SubtitleCreateWithoutAudioInput, SubtitleUncheckedCreateWithoutAudioInput>
-  }
-
-  export type SubtitleCreateManyAudioInputEnvelope = {
-    data: SubtitleCreateManyAudioInput | SubtitleCreateManyAudioInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type ExhibitUpsertWithoutAudioInput = {
-    update: XOR<ExhibitUpdateWithoutAudioInput, ExhibitUncheckedUpdateWithoutAudioInput>
-    create: XOR<ExhibitCreateWithoutAudioInput, ExhibitUncheckedCreateWithoutAudioInput>
-    where?: ExhibitWhereInput
-  }
-
-  export type ExhibitUpdateToOneWithWhereWithoutAudioInput = {
-    where?: ExhibitWhereInput
-    data: XOR<ExhibitUpdateWithoutAudioInput, ExhibitUncheckedUpdateWithoutAudioInput>
-  }
-
-  export type ExhibitUpdateWithoutAudioInput = {
-    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
-    status?: StatusUpdateOneWithoutExhibitsNestedInput
-    badge?: BadgeUpdateOneWithoutExhibitNestedInput
-    feedbacks?: FeedbackUpdateManyWithoutExhibitNestedInput
-    images?: ImageUpdateManyWithoutExhibitNestedInput
-    qrCodes?: QRCodeUpdateManyWithoutExhibitNestedInput
-  }
-
-  export type ExhibitUncheckedUpdateWithoutAudioInput = {
-    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
-    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
-    badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    statusId?: NullableIntFieldUpdateOperationsInput | number | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    feedbacks?: FeedbackUncheckedUpdateManyWithoutExhibitNestedInput
-    images?: ImageUncheckedUpdateManyWithoutExhibitNestedInput
-    qrCodes?: QRCodeUncheckedUpdateManyWithoutExhibitNestedInput
-  }
-
-  export type LanguageUpsertWithoutAudioInput = {
-    update: XOR<LanguageUpdateWithoutAudioInput, LanguageUncheckedUpdateWithoutAudioInput>
-    create: XOR<LanguageCreateWithoutAudioInput, LanguageUncheckedCreateWithoutAudioInput>
-    where?: LanguageWhereInput
-  }
-
-  export type LanguageUpdateToOneWithWhereWithoutAudioInput = {
-    where?: LanguageWhereInput
-    data: XOR<LanguageUpdateWithoutAudioInput, LanguageUncheckedUpdateWithoutAudioInput>
-  }
-
-  export type LanguageUpdateWithoutAudioInput = {
-    languageId?: BigIntFieldUpdateOperationsInput | bigint | number
-    title?: StringFieldUpdateOperationsInput | string
-    code?: StringFieldUpdateOperationsInput | string
-    isDefault?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: StatusUpdateOneWithoutLanguagesNestedInput
-    subtitles?: SubtitleUpdateManyWithoutLanguageNestedInput
-  }
-
-  export type LanguageUncheckedUpdateWithoutAudioInput = {
-    languageId?: BigIntFieldUpdateOperationsInput | bigint | number
-    statusId?: NullableIntFieldUpdateOperationsInput | number | null
-    title?: StringFieldUpdateOperationsInput | string
-    code?: StringFieldUpdateOperationsInput | string
-    isDefault?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    subtitles?: SubtitleUncheckedUpdateManyWithoutLanguageNestedInput
-  }
-
-  export type AudioPlaybackLogUpsertWithWhereUniqueWithoutAudioInput = {
-    where: AudioPlaybackLogWhereUniqueInput
-    update: XOR<AudioPlaybackLogUpdateWithoutAudioInput, AudioPlaybackLogUncheckedUpdateWithoutAudioInput>
-    create: XOR<AudioPlaybackLogCreateWithoutAudioInput, AudioPlaybackLogUncheckedCreateWithoutAudioInput>
-  }
-
-  export type AudioPlaybackLogUpdateWithWhereUniqueWithoutAudioInput = {
-    where: AudioPlaybackLogWhereUniqueInput
-    data: XOR<AudioPlaybackLogUpdateWithoutAudioInput, AudioPlaybackLogUncheckedUpdateWithoutAudioInput>
-  }
-
-  export type AudioPlaybackLogUpdateManyWithWhereWithoutAudioInput = {
-    where: AudioPlaybackLogScalarWhereInput
-    data: XOR<AudioPlaybackLogUpdateManyMutationInput, AudioPlaybackLogUncheckedUpdateManyWithoutAudioInput>
-  }
-
-  export type AudioPlaybackLogScalarWhereInput = {
-    AND?: AudioPlaybackLogScalarWhereInput | AudioPlaybackLogScalarWhereInput[]
-    OR?: AudioPlaybackLogScalarWhereInput[]
-    NOT?: AudioPlaybackLogScalarWhereInput | AudioPlaybackLogScalarWhereInput[]
-    audioLogsId?: IntFilter<"AudioPlaybackLog"> | number
-    userId?: BigIntNullableFilter<"AudioPlaybackLog"> | bigint | number | null
-    audioId?: IntNullableFilter<"AudioPlaybackLog"> | number | null
-    audioStart?: DateTimeNullableFilter<"AudioPlaybackLog"> | Date | string | null
-    audioEnd?: DateTimeNullableFilter<"AudioPlaybackLog"> | Date | string | null
-    durationListened?: IntNullableFilter<"AudioPlaybackLog"> | number | null
-    createdAt?: DateTimeNullableFilter<"AudioPlaybackLog"> | Date | string | null
-    updatedAt?: DateTimeNullableFilter<"AudioPlaybackLog"> | Date | string | null
-  }
-
-  export type SubtitleUpsertWithWhereUniqueWithoutAudioInput = {
-    where: SubtitleWhereUniqueInput
-    update: XOR<SubtitleUpdateWithoutAudioInput, SubtitleUncheckedUpdateWithoutAudioInput>
-    create: XOR<SubtitleCreateWithoutAudioInput, SubtitleUncheckedCreateWithoutAudioInput>
-  }
-
-  export type SubtitleUpdateWithWhereUniqueWithoutAudioInput = {
-    where: SubtitleWhereUniqueInput
-    data: XOR<SubtitleUpdateWithoutAudioInput, SubtitleUncheckedUpdateWithoutAudioInput>
-  }
-
-  export type SubtitleUpdateManyWithWhereWithoutAudioInput = {
-    where: SubtitleScalarWhereInput
-    data: XOR<SubtitleUpdateManyMutationInput, SubtitleUncheckedUpdateManyWithoutAudioInput>
-  }
-
-  export type SubtitleScalarWhereInput = {
-    AND?: SubtitleScalarWhereInput | SubtitleScalarWhereInput[]
-    OR?: SubtitleScalarWhereInput[]
-    NOT?: SubtitleScalarWhereInput | SubtitleScalarWhereInput[]
-    subtitleId?: BigIntFilter<"Subtitle"> | bigint | number
-    audioId?: IntNullableFilter<"Subtitle"> | number | null
-    languageId?: BigIntNullableFilter<"Subtitle"> | bigint | number | null
-    text?: JsonNullableFilter<"Subtitle">
-    createdBy?: BigIntNullableFilter<"Subtitle"> | bigint | number | null
-    createdAt?: DateTimeNullableFilter<"Subtitle"> | Date | string | null
-    updatedAt?: DateTimeNullableFilter<"Subtitle"> | Date | string | null
-  }
-
-  export type UserCreateWithoutPlaybackLogsInput = {
-    userId?: bigint | number
-    username: string
-    email: string
-    passwordHash: string
-    emailVerified?: boolean
-    lastLoginAt?: Date | string | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    status?: StatusCreateNestedOneWithoutUsersInput
-    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
-    roles?: UserRoleCreateNestedManyWithoutUserInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
-    subtitles?: SubtitleCreateNestedManyWithoutUserInput
-    adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
-    targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
-    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
-    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
-    userBadges?: UserBadgeCreateNestedManyWithoutUserInput
-  }
-
-  export type UserUncheckedCreateWithoutPlaybackLogsInput = {
-    userId?: bigint | number
-    username: string
-    email: string
-    passwordHash: string
-    emailVerified?: boolean
-    statusId?: number | null
-    lastLoginAt?: Date | string | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
-    roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
-    subtitles?: SubtitleUncheckedCreateNestedManyWithoutUserInput
-    adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
-    targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
-    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
-    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
-    userBadges?: UserBadgeUncheckedCreateNestedManyWithoutUserInput
-  }
-
-  export type UserCreateOrConnectWithoutPlaybackLogsInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutPlaybackLogsInput, UserUncheckedCreateWithoutPlaybackLogsInput>
-  }
-
-  export type AudioCreateWithoutPlaybackLogsInput = {
-    fileUrl?: string | null
-    title?: string | null
-    description?: string | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    exhibit?: ExhibitCreateNestedOneWithoutAudioInput
-    language?: LanguageCreateNestedOneWithoutAudioInput
-    subtitles?: SubtitleCreateNestedManyWithoutAudioInput
-  }
-
-  export type AudioUncheckedCreateWithoutPlaybackLogsInput = {
-    audioId?: number
-    exhibitId?: bigint | number | null
-    languageId?: bigint | number | null
-    fileUrl?: string | null
-    title?: string | null
-    description?: string | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    subtitles?: SubtitleUncheckedCreateNestedManyWithoutAudioInput
-  }
-
-  export type AudioCreateOrConnectWithoutPlaybackLogsInput = {
-    where: AudioWhereUniqueInput
-    create: XOR<AudioCreateWithoutPlaybackLogsInput, AudioUncheckedCreateWithoutPlaybackLogsInput>
-  }
-
-  export type UserUpsertWithoutPlaybackLogsInput = {
-    update: XOR<UserUpdateWithoutPlaybackLogsInput, UserUncheckedUpdateWithoutPlaybackLogsInput>
-    create: XOR<UserCreateWithoutPlaybackLogsInput, UserUncheckedCreateWithoutPlaybackLogsInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutPlaybackLogsInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutPlaybackLogsInput, UserUncheckedUpdateWithoutPlaybackLogsInput>
-  }
-
-  export type UserUpdateWithoutPlaybackLogsInput = {
-    userId?: BigIntFieldUpdateOperationsInput | bigint | number
-    username?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    passwordHash?: StringFieldUpdateOperationsInput | string
-    emailVerified?: BoolFieldUpdateOperationsInput | boolean
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: StatusUpdateOneWithoutUsersNestedInput
-    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
-    roles?: UserRoleUpdateManyWithoutUserNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
-    subtitles?: SubtitleUpdateManyWithoutUserNestedInput
-    adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
-    targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
-    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
-    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
-    userBadges?: UserBadgeUpdateManyWithoutUserNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutPlaybackLogsInput = {
-    userId?: BigIntFieldUpdateOperationsInput | bigint | number
-    username?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    passwordHash?: StringFieldUpdateOperationsInput | string
-    emailVerified?: BoolFieldUpdateOperationsInput | boolean
-    statusId?: NullableIntFieldUpdateOperationsInput | number | null
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
-    roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
-    subtitles?: SubtitleUncheckedUpdateManyWithoutUserNestedInput
-    adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
-    targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
-    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
-    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
-    userBadges?: UserBadgeUncheckedUpdateManyWithoutUserNestedInput
-  }
-
-  export type AudioUpsertWithoutPlaybackLogsInput = {
-    update: XOR<AudioUpdateWithoutPlaybackLogsInput, AudioUncheckedUpdateWithoutPlaybackLogsInput>
-    create: XOR<AudioCreateWithoutPlaybackLogsInput, AudioUncheckedCreateWithoutPlaybackLogsInput>
-    where?: AudioWhereInput
-  }
-
-  export type AudioUpdateToOneWithWhereWithoutPlaybackLogsInput = {
-    where?: AudioWhereInput
-    data: XOR<AudioUpdateWithoutPlaybackLogsInput, AudioUncheckedUpdateWithoutPlaybackLogsInput>
-  }
-
-  export type AudioUpdateWithoutPlaybackLogsInput = {
-    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    exhibit?: ExhibitUpdateOneWithoutAudioNestedInput
-    language?: LanguageUpdateOneWithoutAudioNestedInput
-    subtitles?: SubtitleUpdateManyWithoutAudioNestedInput
-  }
-
-  export type AudioUncheckedUpdateWithoutPlaybackLogsInput = {
-    audioId?: IntFieldUpdateOperationsInput | number
-    exhibitId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    languageId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    subtitles?: SubtitleUncheckedUpdateManyWithoutAudioNestedInput
-  }
-
   export type StatusCreateWithoutExhibitionsInput = {
     statusName: string
     users?: UserCreateNestedManyWithoutStatusInput
@@ -31571,6 +31189,7 @@ export namespace Prisma {
     exhibitId?: bigint | number
     title: string
     description?: string | null
+    additionalDescription?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     status?: StatusCreateNestedOneWithoutExhibitsInput
@@ -31586,6 +31205,7 @@ export namespace Prisma {
     badgeId?: bigint | number | null
     title: string
     description?: string | null
+    additionalDescription?: string | null
     statusId?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
@@ -31688,6 +31308,7 @@ export namespace Prisma {
     badgeId?: BigIntNullableFilter<"Exhibit"> | bigint | number | null
     title?: StringFilter<"Exhibit"> | string
     description?: StringNullableFilter<"Exhibit"> | string | null
+    additionalDescription?: StringNullableFilter<"Exhibit"> | string | null
     statusId?: IntNullableFilter<"Exhibit"> | number | null
     createdAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
@@ -32100,6 +31721,420 @@ export namespace Prisma {
     updatedAt?: DateTimeNullableFilter<"QRCode"> | Date | string | null
   }
 
+  export type ExhibitCreateWithoutAudioInput = {
+    exhibitId?: bigint | number
+    title: string
+    description?: string | null
+    additionalDescription?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
+    status?: StatusCreateNestedOneWithoutExhibitsInput
+    badge?: BadgeCreateNestedOneWithoutExhibitInput
+    feedbacks?: FeedbackCreateNestedManyWithoutExhibitInput
+    images?: ImageCreateNestedManyWithoutExhibitInput
+    qrCodes?: QRCodeCreateNestedManyWithoutExhibitInput
+  }
+
+  export type ExhibitUncheckedCreateWithoutAudioInput = {
+    exhibitId?: bigint | number
+    exhibitionId: bigint | number
+    badgeId?: bigint | number | null
+    title: string
+    description?: string | null
+    additionalDescription?: string | null
+    statusId?: number | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutExhibitInput
+    images?: ImageUncheckedCreateNestedManyWithoutExhibitInput
+    qrCodes?: QRCodeUncheckedCreateNestedManyWithoutExhibitInput
+  }
+
+  export type ExhibitCreateOrConnectWithoutAudioInput = {
+    where: ExhibitWhereUniqueInput
+    create: XOR<ExhibitCreateWithoutAudioInput, ExhibitUncheckedCreateWithoutAudioInput>
+  }
+
+  export type LanguageCreateWithoutAudioInput = {
+    languageId?: bigint | number
+    title: string
+    code: string
+    isDefault?: boolean | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    status?: StatusCreateNestedOneWithoutLanguagesInput
+    subtitles?: SubtitleCreateNestedManyWithoutLanguageInput
+  }
+
+  export type LanguageUncheckedCreateWithoutAudioInput = {
+    languageId?: bigint | number
+    statusId?: number | null
+    title: string
+    code: string
+    isDefault?: boolean | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    subtitles?: SubtitleUncheckedCreateNestedManyWithoutLanguageInput
+  }
+
+  export type LanguageCreateOrConnectWithoutAudioInput = {
+    where: LanguageWhereUniqueInput
+    create: XOR<LanguageCreateWithoutAudioInput, LanguageUncheckedCreateWithoutAudioInput>
+  }
+
+  export type AudioPlaybackLogCreateWithoutAudioInput = {
+    audioStart?: Date | string | null
+    audioEnd?: Date | string | null
+    durationListened?: number | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    user?: UserCreateNestedOneWithoutPlaybackLogsInput
+  }
+
+  export type AudioPlaybackLogUncheckedCreateWithoutAudioInput = {
+    audioLogsId?: number
+    userId?: bigint | number | null
+    audioStart?: Date | string | null
+    audioEnd?: Date | string | null
+    durationListened?: number | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+  }
+
+  export type AudioPlaybackLogCreateOrConnectWithoutAudioInput = {
+    where: AudioPlaybackLogWhereUniqueInput
+    create: XOR<AudioPlaybackLogCreateWithoutAudioInput, AudioPlaybackLogUncheckedCreateWithoutAudioInput>
+  }
+
+  export type AudioPlaybackLogCreateManyAudioInputEnvelope = {
+    data: AudioPlaybackLogCreateManyAudioInput | AudioPlaybackLogCreateManyAudioInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SubtitleCreateWithoutAudioInput = {
+    subtitleId?: bigint | number
+    text?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    language?: LanguageCreateNestedOneWithoutSubtitlesInput
+    user?: UserCreateNestedOneWithoutSubtitlesInput
+  }
+
+  export type SubtitleUncheckedCreateWithoutAudioInput = {
+    subtitleId?: bigint | number
+    languageId?: bigint | number | null
+    text?: NullableJsonNullValueInput | InputJsonValue
+    createdBy?: bigint | number | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+  }
+
+  export type SubtitleCreateOrConnectWithoutAudioInput = {
+    where: SubtitleWhereUniqueInput
+    create: XOR<SubtitleCreateWithoutAudioInput, SubtitleUncheckedCreateWithoutAudioInput>
+  }
+
+  export type SubtitleCreateManyAudioInputEnvelope = {
+    data: SubtitleCreateManyAudioInput | SubtitleCreateManyAudioInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ExhibitUpsertWithoutAudioInput = {
+    update: XOR<ExhibitUpdateWithoutAudioInput, ExhibitUncheckedUpdateWithoutAudioInput>
+    create: XOR<ExhibitCreateWithoutAudioInput, ExhibitUncheckedCreateWithoutAudioInput>
+    where?: ExhibitWhereInput
+  }
+
+  export type ExhibitUpdateToOneWithWhereWithoutAudioInput = {
+    where?: ExhibitWhereInput
+    data: XOR<ExhibitUpdateWithoutAudioInput, ExhibitUncheckedUpdateWithoutAudioInput>
+  }
+
+  export type ExhibitUpdateWithoutAudioInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
+    status?: StatusUpdateOneWithoutExhibitsNestedInput
+    badge?: BadgeUpdateOneWithoutExhibitNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutExhibitNestedInput
+    images?: ImageUpdateManyWithoutExhibitNestedInput
+    qrCodes?: QRCodeUpdateManyWithoutExhibitNestedInput
+  }
+
+  export type ExhibitUncheckedUpdateWithoutAudioInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    statusId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutExhibitNestedInput
+    images?: ImageUncheckedUpdateManyWithoutExhibitNestedInput
+    qrCodes?: QRCodeUncheckedUpdateManyWithoutExhibitNestedInput
+  }
+
+  export type LanguageUpsertWithoutAudioInput = {
+    update: XOR<LanguageUpdateWithoutAudioInput, LanguageUncheckedUpdateWithoutAudioInput>
+    create: XOR<LanguageCreateWithoutAudioInput, LanguageUncheckedCreateWithoutAudioInput>
+    where?: LanguageWhereInput
+  }
+
+  export type LanguageUpdateToOneWithWhereWithoutAudioInput = {
+    where?: LanguageWhereInput
+    data: XOR<LanguageUpdateWithoutAudioInput, LanguageUncheckedUpdateWithoutAudioInput>
+  }
+
+  export type LanguageUpdateWithoutAudioInput = {
+    languageId?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    isDefault?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StatusUpdateOneWithoutLanguagesNestedInput
+    subtitles?: SubtitleUpdateManyWithoutLanguageNestedInput
+  }
+
+  export type LanguageUncheckedUpdateWithoutAudioInput = {
+    languageId?: BigIntFieldUpdateOperationsInput | bigint | number
+    statusId?: NullableIntFieldUpdateOperationsInput | number | null
+    title?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    isDefault?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    subtitles?: SubtitleUncheckedUpdateManyWithoutLanguageNestedInput
+  }
+
+  export type AudioPlaybackLogUpsertWithWhereUniqueWithoutAudioInput = {
+    where: AudioPlaybackLogWhereUniqueInput
+    update: XOR<AudioPlaybackLogUpdateWithoutAudioInput, AudioPlaybackLogUncheckedUpdateWithoutAudioInput>
+    create: XOR<AudioPlaybackLogCreateWithoutAudioInput, AudioPlaybackLogUncheckedCreateWithoutAudioInput>
+  }
+
+  export type AudioPlaybackLogUpdateWithWhereUniqueWithoutAudioInput = {
+    where: AudioPlaybackLogWhereUniqueInput
+    data: XOR<AudioPlaybackLogUpdateWithoutAudioInput, AudioPlaybackLogUncheckedUpdateWithoutAudioInput>
+  }
+
+  export type AudioPlaybackLogUpdateManyWithWhereWithoutAudioInput = {
+    where: AudioPlaybackLogScalarWhereInput
+    data: XOR<AudioPlaybackLogUpdateManyMutationInput, AudioPlaybackLogUncheckedUpdateManyWithoutAudioInput>
+  }
+
+  export type AudioPlaybackLogScalarWhereInput = {
+    AND?: AudioPlaybackLogScalarWhereInput | AudioPlaybackLogScalarWhereInput[]
+    OR?: AudioPlaybackLogScalarWhereInput[]
+    NOT?: AudioPlaybackLogScalarWhereInput | AudioPlaybackLogScalarWhereInput[]
+    audioLogsId?: IntFilter<"AudioPlaybackLog"> | number
+    userId?: BigIntNullableFilter<"AudioPlaybackLog"> | bigint | number | null
+    audioId?: IntNullableFilter<"AudioPlaybackLog"> | number | null
+    audioStart?: DateTimeNullableFilter<"AudioPlaybackLog"> | Date | string | null
+    audioEnd?: DateTimeNullableFilter<"AudioPlaybackLog"> | Date | string | null
+    durationListened?: IntNullableFilter<"AudioPlaybackLog"> | number | null
+    createdAt?: DateTimeNullableFilter<"AudioPlaybackLog"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"AudioPlaybackLog"> | Date | string | null
+  }
+
+  export type SubtitleUpsertWithWhereUniqueWithoutAudioInput = {
+    where: SubtitleWhereUniqueInput
+    update: XOR<SubtitleUpdateWithoutAudioInput, SubtitleUncheckedUpdateWithoutAudioInput>
+    create: XOR<SubtitleCreateWithoutAudioInput, SubtitleUncheckedCreateWithoutAudioInput>
+  }
+
+  export type SubtitleUpdateWithWhereUniqueWithoutAudioInput = {
+    where: SubtitleWhereUniqueInput
+    data: XOR<SubtitleUpdateWithoutAudioInput, SubtitleUncheckedUpdateWithoutAudioInput>
+  }
+
+  export type SubtitleUpdateManyWithWhereWithoutAudioInput = {
+    where: SubtitleScalarWhereInput
+    data: XOR<SubtitleUpdateManyMutationInput, SubtitleUncheckedUpdateManyWithoutAudioInput>
+  }
+
+  export type SubtitleScalarWhereInput = {
+    AND?: SubtitleScalarWhereInput | SubtitleScalarWhereInput[]
+    OR?: SubtitleScalarWhereInput[]
+    NOT?: SubtitleScalarWhereInput | SubtitleScalarWhereInput[]
+    subtitleId?: BigIntFilter<"Subtitle"> | bigint | number
+    audioId?: IntNullableFilter<"Subtitle"> | number | null
+    languageId?: BigIntNullableFilter<"Subtitle"> | bigint | number | null
+    text?: JsonNullableFilter<"Subtitle">
+    createdBy?: BigIntNullableFilter<"Subtitle"> | bigint | number | null
+    createdAt?: DateTimeNullableFilter<"Subtitle"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"Subtitle"> | Date | string | null
+  }
+
+  export type UserCreateWithoutPlaybackLogsInput = {
+    userId?: bigint | number
+    username: string
+    email: string
+    passwordHash: string
+    emailVerified?: boolean
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    status?: StatusCreateNestedOneWithoutUsersInput
+    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
+    roles?: UserRoleCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    subtitles?: SubtitleCreateNestedManyWithoutUserInput
+    adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
+    targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
+    userBadges?: UserBadgeCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutPlaybackLogsInput = {
+    userId?: bigint | number
+    username: string
+    email: string
+    passwordHash: string
+    emailVerified?: boolean
+    statusId?: number | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
+    roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    subtitles?: SubtitleUncheckedCreateNestedManyWithoutUserInput
+    adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
+    targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+    userBadges?: UserBadgeUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutPlaybackLogsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutPlaybackLogsInput, UserUncheckedCreateWithoutPlaybackLogsInput>
+  }
+
+  export type AudioCreateWithoutPlaybackLogsInput = {
+    fileUrl?: string | null
+    title?: string | null
+    description?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    exhibit?: ExhibitCreateNestedOneWithoutAudioInput
+    language?: LanguageCreateNestedOneWithoutAudioInput
+    subtitles?: SubtitleCreateNestedManyWithoutAudioInput
+  }
+
+  export type AudioUncheckedCreateWithoutPlaybackLogsInput = {
+    audioId?: number
+    exhibitId?: bigint | number | null
+    languageId?: bigint | number | null
+    fileUrl?: string | null
+    title?: string | null
+    description?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    subtitles?: SubtitleUncheckedCreateNestedManyWithoutAudioInput
+  }
+
+  export type AudioCreateOrConnectWithoutPlaybackLogsInput = {
+    where: AudioWhereUniqueInput
+    create: XOR<AudioCreateWithoutPlaybackLogsInput, AudioUncheckedCreateWithoutPlaybackLogsInput>
+  }
+
+  export type UserUpsertWithoutPlaybackLogsInput = {
+    update: XOR<UserUpdateWithoutPlaybackLogsInput, UserUncheckedUpdateWithoutPlaybackLogsInput>
+    create: XOR<UserCreateWithoutPlaybackLogsInput, UserUncheckedCreateWithoutPlaybackLogsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutPlaybackLogsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutPlaybackLogsInput, UserUncheckedUpdateWithoutPlaybackLogsInput>
+  }
+
+  export type UserUpdateWithoutPlaybackLogsInput = {
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StatusUpdateOneWithoutUsersNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
+    roles?: UserRoleUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    subtitles?: SubtitleUpdateManyWithoutUserNestedInput
+    adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
+    targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
+    userBadges?: UserBadgeUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutPlaybackLogsInput = {
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    statusId?: NullableIntFieldUpdateOperationsInput | number | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
+    roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    subtitles?: SubtitleUncheckedUpdateManyWithoutUserNestedInput
+    adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
+    targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+    userBadges?: UserBadgeUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type AudioUpsertWithoutPlaybackLogsInput = {
+    update: XOR<AudioUpdateWithoutPlaybackLogsInput, AudioUncheckedUpdateWithoutPlaybackLogsInput>
+    create: XOR<AudioCreateWithoutPlaybackLogsInput, AudioUncheckedCreateWithoutPlaybackLogsInput>
+    where?: AudioWhereInput
+  }
+
+  export type AudioUpdateToOneWithWhereWithoutPlaybackLogsInput = {
+    where?: AudioWhereInput
+    data: XOR<AudioUpdateWithoutPlaybackLogsInput, AudioUncheckedUpdateWithoutPlaybackLogsInput>
+  }
+
+  export type AudioUpdateWithoutPlaybackLogsInput = {
+    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exhibit?: ExhibitUpdateOneWithoutAudioNestedInput
+    language?: LanguageUpdateOneWithoutAudioNestedInput
+    subtitles?: SubtitleUpdateManyWithoutAudioNestedInput
+  }
+
+  export type AudioUncheckedUpdateWithoutPlaybackLogsInput = {
+    audioId?: IntFieldUpdateOperationsInput | number
+    exhibitId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    languageId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    subtitles?: SubtitleUncheckedUpdateManyWithoutAudioNestedInput
+  }
+
   export type UserCreateWithoutFeedbacksInput = {
     userId?: bigint | number
     username: string
@@ -32151,6 +32186,7 @@ export namespace Prisma {
     exhibitId?: bigint | number
     title: string
     description?: string | null
+    additionalDescription?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
@@ -32167,6 +32203,7 @@ export namespace Prisma {
     badgeId?: bigint | number | null
     title: string
     description?: string | null
+    additionalDescription?: string | null
     statusId?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
@@ -32248,6 +32285,7 @@ export namespace Prisma {
     exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
@@ -32264,6 +32302,7 @@ export namespace Prisma {
     badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32276,6 +32315,7 @@ export namespace Prisma {
     exhibitId?: bigint | number
     title: string
     description?: string | null
+    additionalDescription?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
@@ -32292,6 +32332,7 @@ export namespace Prisma {
     badgeId?: bigint | number | null
     title: string
     description?: string | null
+    additionalDescription?: string | null
     statusId?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
@@ -32345,6 +32386,7 @@ export namespace Prisma {
     exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
@@ -32361,6 +32403,7 @@ export namespace Prisma {
     badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32398,6 +32441,82 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     exhibits?: ExhibitUncheckedUpdateManyWithoutExhibitionNestedInput
+  }
+
+  export type ExhibitCreateWithoutQrCodesInput = {
+    exhibitId?: bigint | number
+    title: string
+    description?: string | null
+    additionalDescription?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
+    status?: StatusCreateNestedOneWithoutExhibitsInput
+    badge?: BadgeCreateNestedOneWithoutExhibitInput
+    audio?: AudioCreateNestedManyWithoutExhibitInput
+    feedbacks?: FeedbackCreateNestedManyWithoutExhibitInput
+    images?: ImageCreateNestedManyWithoutExhibitInput
+  }
+
+  export type ExhibitUncheckedCreateWithoutQrCodesInput = {
+    exhibitId?: bigint | number
+    exhibitionId: bigint | number
+    badgeId?: bigint | number | null
+    title: string
+    description?: string | null
+    additionalDescription?: string | null
+    statusId?: number | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutExhibitInput
+    images?: ImageUncheckedCreateNestedManyWithoutExhibitInput
+  }
+
+  export type ExhibitCreateOrConnectWithoutQrCodesInput = {
+    where: ExhibitWhereUniqueInput
+    create: XOR<ExhibitCreateWithoutQrCodesInput, ExhibitUncheckedCreateWithoutQrCodesInput>
+  }
+
+  export type ExhibitUpsertWithoutQrCodesInput = {
+    update: XOR<ExhibitUpdateWithoutQrCodesInput, ExhibitUncheckedUpdateWithoutQrCodesInput>
+    create: XOR<ExhibitCreateWithoutQrCodesInput, ExhibitUncheckedCreateWithoutQrCodesInput>
+    where?: ExhibitWhereInput
+  }
+
+  export type ExhibitUpdateToOneWithWhereWithoutQrCodesInput = {
+    where?: ExhibitWhereInput
+    data: XOR<ExhibitUpdateWithoutQrCodesInput, ExhibitUncheckedUpdateWithoutQrCodesInput>
+  }
+
+  export type ExhibitUpdateWithoutQrCodesInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
+    status?: StatusUpdateOneWithoutExhibitsNestedInput
+    badge?: BadgeUpdateOneWithoutExhibitNestedInput
+    audio?: AudioUpdateManyWithoutExhibitNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutExhibitNestedInput
+    images?: ImageUpdateManyWithoutExhibitNestedInput
+  }
+
+  export type ExhibitUncheckedUpdateWithoutQrCodesInput = {
+    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
+    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    statusId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutExhibitNestedInput
+    images?: ImageUncheckedUpdateManyWithoutExhibitNestedInput
   }
 
   export type StatusCreateWithoutLanguagesInput = {
@@ -32579,78 +32698,6 @@ export namespace Prisma {
     NOT?: RolePermissionScalarWhereInput | RolePermissionScalarWhereInput[]
     roleId?: IntFilter<"RolePermission"> | number
     permissionId?: IntFilter<"RolePermission"> | number
-  }
-
-  export type ExhibitCreateWithoutQrCodesInput = {
-    exhibitId?: bigint | number
-    title: string
-    description?: string | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
-    status?: StatusCreateNestedOneWithoutExhibitsInput
-    badge?: BadgeCreateNestedOneWithoutExhibitInput
-    audio?: AudioCreateNestedManyWithoutExhibitInput
-    feedbacks?: FeedbackCreateNestedManyWithoutExhibitInput
-    images?: ImageCreateNestedManyWithoutExhibitInput
-  }
-
-  export type ExhibitUncheckedCreateWithoutQrCodesInput = {
-    exhibitId?: bigint | number
-    exhibitionId: bigint | number
-    badgeId?: bigint | number | null
-    title: string
-    description?: string | null
-    statusId?: number | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-    audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
-    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutExhibitInput
-    images?: ImageUncheckedCreateNestedManyWithoutExhibitInput
-  }
-
-  export type ExhibitCreateOrConnectWithoutQrCodesInput = {
-    where: ExhibitWhereUniqueInput
-    create: XOR<ExhibitCreateWithoutQrCodesInput, ExhibitUncheckedCreateWithoutQrCodesInput>
-  }
-
-  export type ExhibitUpsertWithoutQrCodesInput = {
-    update: XOR<ExhibitUpdateWithoutQrCodesInput, ExhibitUncheckedUpdateWithoutQrCodesInput>
-    create: XOR<ExhibitCreateWithoutQrCodesInput, ExhibitUncheckedCreateWithoutQrCodesInput>
-    where?: ExhibitWhereInput
-  }
-
-  export type ExhibitUpdateToOneWithWhereWithoutQrCodesInput = {
-    where?: ExhibitWhereInput
-    data: XOR<ExhibitUpdateWithoutQrCodesInput, ExhibitUncheckedUpdateWithoutQrCodesInput>
-  }
-
-  export type ExhibitUpdateWithoutQrCodesInput = {
-    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
-    status?: StatusUpdateOneWithoutExhibitsNestedInput
-    badge?: BadgeUpdateOneWithoutExhibitNestedInput
-    audio?: AudioUpdateManyWithoutExhibitNestedInput
-    feedbacks?: FeedbackUpdateManyWithoutExhibitNestedInput
-    images?: ImageUpdateManyWithoutExhibitNestedInput
-  }
-
-  export type ExhibitUncheckedUpdateWithoutQrCodesInput = {
-    exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
-    exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
-    badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    title?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    statusId?: NullableIntFieldUpdateOperationsInput | number | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
-    feedbacks?: FeedbackUncheckedUpdateManyWithoutExhibitNestedInput
-    images?: ImageUncheckedUpdateManyWithoutExhibitNestedInput
   }
 
   export type RolePermissionCreateWithoutRoleInput = {
@@ -33046,6 +33093,7 @@ export namespace Prisma {
     exhibitId?: bigint | number
     title: string
     description?: string | null
+    additionalDescription?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
@@ -33062,6 +33110,7 @@ export namespace Prisma {
     badgeId?: bigint | number | null
     title: string
     description?: string | null
+    additionalDescription?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
@@ -34473,6 +34522,7 @@ export namespace Prisma {
     exhibitId?: bigint | number
     title: string
     description?: string | null
+    additionalDescription?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     exhibition: ExhibitionCreateNestedOneWithoutExhibitsInput
@@ -34488,6 +34538,7 @@ export namespace Prisma {
     exhibitionId: bigint | number
     title: string
     description?: string | null
+    additionalDescription?: string | null
     statusId?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
@@ -34537,6 +34588,7 @@ export namespace Prisma {
     exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
@@ -34552,6 +34604,7 @@ export namespace Prisma {
     exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -34733,86 +34786,12 @@ export namespace Prisma {
     exhibit?: ExhibitUncheckedUpdateOneWithoutBadgeNestedInput
   }
 
-  export type AudioPlaybackLogCreateManyAudioInput = {
-    audioLogsId?: number
-    userId?: bigint | number | null
-    audioStart?: Date | string | null
-    audioEnd?: Date | string | null
-    durationListened?: number | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-  }
-
-  export type SubtitleCreateManyAudioInput = {
-    subtitleId?: bigint | number
-    languageId?: bigint | number | null
-    text?: NullableJsonNullValueInput | InputJsonValue
-    createdBy?: bigint | number | null
-    createdAt?: Date | string | null
-    updatedAt?: Date | string | null
-  }
-
-  export type AudioPlaybackLogUpdateWithoutAudioInput = {
-    audioStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    audioEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    durationListened?: NullableIntFieldUpdateOperationsInput | number | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    user?: UserUpdateOneWithoutPlaybackLogsNestedInput
-  }
-
-  export type AudioPlaybackLogUncheckedUpdateWithoutAudioInput = {
-    audioLogsId?: IntFieldUpdateOperationsInput | number
-    userId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    audioStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    audioEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    durationListened?: NullableIntFieldUpdateOperationsInput | number | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
-  export type AudioPlaybackLogUncheckedUpdateManyWithoutAudioInput = {
-    audioLogsId?: IntFieldUpdateOperationsInput | number
-    userId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    audioStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    audioEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    durationListened?: NullableIntFieldUpdateOperationsInput | number | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
-  export type SubtitleUpdateWithoutAudioInput = {
-    subtitleId?: BigIntFieldUpdateOperationsInput | bigint | number
-    text?: NullableJsonNullValueInput | InputJsonValue
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    language?: LanguageUpdateOneWithoutSubtitlesNestedInput
-    user?: UserUpdateOneWithoutSubtitlesNestedInput
-  }
-
-  export type SubtitleUncheckedUpdateWithoutAudioInput = {
-    subtitleId?: BigIntFieldUpdateOperationsInput | bigint | number
-    languageId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    text?: NullableJsonNullValueInput | InputJsonValue
-    createdBy?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
-  export type SubtitleUncheckedUpdateManyWithoutAudioInput = {
-    subtitleId?: BigIntFieldUpdateOperationsInput | bigint | number
-    languageId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    text?: NullableJsonNullValueInput | InputJsonValue
-    createdBy?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
   export type ExhibitCreateManyExhibitionInput = {
     exhibitId?: bigint | number
     badgeId?: bigint | number | null
     title: string
     description?: string | null
+    additionalDescription?: string | null
     statusId?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
@@ -34833,6 +34812,7 @@ export namespace Prisma {
     exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StatusUpdateOneWithoutExhibitsNestedInput
@@ -34848,6 +34828,7 @@ export namespace Prisma {
     badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -34862,6 +34843,7 @@ export namespace Prisma {
     badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -35050,6 +35032,81 @@ export namespace Prisma {
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type AudioPlaybackLogCreateManyAudioInput = {
+    audioLogsId?: number
+    userId?: bigint | number | null
+    audioStart?: Date | string | null
+    audioEnd?: Date | string | null
+    durationListened?: number | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+  }
+
+  export type SubtitleCreateManyAudioInput = {
+    subtitleId?: bigint | number
+    languageId?: bigint | number | null
+    text?: NullableJsonNullValueInput | InputJsonValue
+    createdBy?: bigint | number | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+  }
+
+  export type AudioPlaybackLogUpdateWithoutAudioInput = {
+    audioStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    audioEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    durationListened?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    user?: UserUpdateOneWithoutPlaybackLogsNestedInput
+  }
+
+  export type AudioPlaybackLogUncheckedUpdateWithoutAudioInput = {
+    audioLogsId?: IntFieldUpdateOperationsInput | number
+    userId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    audioStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    audioEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    durationListened?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type AudioPlaybackLogUncheckedUpdateManyWithoutAudioInput = {
+    audioLogsId?: IntFieldUpdateOperationsInput | number
+    userId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    audioStart?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    audioEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    durationListened?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type SubtitleUpdateWithoutAudioInput = {
+    subtitleId?: BigIntFieldUpdateOperationsInput | bigint | number
+    text?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    language?: LanguageUpdateOneWithoutSubtitlesNestedInput
+    user?: UserUpdateOneWithoutSubtitlesNestedInput
+  }
+
+  export type SubtitleUncheckedUpdateWithoutAudioInput = {
+    subtitleId?: BigIntFieldUpdateOperationsInput | bigint | number
+    languageId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    text?: NullableJsonNullValueInput | InputJsonValue
+    createdBy?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type SubtitleUncheckedUpdateManyWithoutAudioInput = {
+    subtitleId?: BigIntFieldUpdateOperationsInput | bigint | number
+    languageId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    text?: NullableJsonNullValueInput | InputJsonValue
+    createdBy?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type AudioCreateManyLanguageInput = {
     audioId?: number
     exhibitId?: bigint | number | null
@@ -35215,6 +35272,7 @@ export namespace Prisma {
     badgeId?: bigint | number | null
     title: string
     description?: string | null
+    additionalDescription?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
   }
@@ -35335,6 +35393,7 @@ export namespace Prisma {
     exhibitId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     exhibition?: ExhibitionUpdateOneRequiredWithoutExhibitsNestedInput
@@ -35351,6 +35410,7 @@ export namespace Prisma {
     badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
@@ -35365,6 +35425,7 @@ export namespace Prisma {
     badgeId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -35702,10 +35763,6 @@ export namespace Prisma {
    * Aliases for legacy arg types
    */
     /**
-     * @deprecated Use AudioCountOutputTypeDefaultArgs instead
-     */
-    export type AudioCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = AudioCountOutputTypeDefaultArgs<ExtArgs>
-    /**
      * @deprecated Use ExhibitionCountOutputTypeDefaultArgs instead
      */
     export type ExhibitionCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ExhibitionCountOutputTypeDefaultArgs<ExtArgs>
@@ -35713,6 +35770,10 @@ export namespace Prisma {
      * @deprecated Use ExhibitCountOutputTypeDefaultArgs instead
      */
     export type ExhibitCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ExhibitCountOutputTypeDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use AudioCountOutputTypeDefaultArgs instead
+     */
+    export type AudioCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = AudioCountOutputTypeDefaultArgs<ExtArgs>
     /**
      * @deprecated Use LanguageCountOutputTypeDefaultArgs instead
      */
@@ -35738,14 +35799,6 @@ export namespace Prisma {
      */
     export type BadgeCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = BadgeCountOutputTypeDefaultArgs<ExtArgs>
     /**
-     * @deprecated Use AudioDefaultArgs instead
-     */
-    export type AudioArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = AudioDefaultArgs<ExtArgs>
-    /**
-     * @deprecated Use AudioPlaybackLogDefaultArgs instead
-     */
-    export type AudioPlaybackLogArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = AudioPlaybackLogDefaultArgs<ExtArgs>
-    /**
      * @deprecated Use ExhibitionDefaultArgs instead
      */
     export type ExhibitionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ExhibitionDefaultArgs<ExtArgs>
@@ -35753,6 +35806,14 @@ export namespace Prisma {
      * @deprecated Use ExhibitDefaultArgs instead
      */
     export type ExhibitArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ExhibitDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use AudioDefaultArgs instead
+     */
+    export type AudioArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = AudioDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use AudioPlaybackLogDefaultArgs instead
+     */
+    export type AudioPlaybackLogArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = AudioPlaybackLogDefaultArgs<ExtArgs>
     /**
      * @deprecated Use FeedbackDefaultArgs instead
      */
@@ -35762,6 +35823,10 @@ export namespace Prisma {
      */
     export type ImageArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ImageDefaultArgs<ExtArgs>
     /**
+     * @deprecated Use QRCodeDefaultArgs instead
+     */
+    export type QRCodeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = QRCodeDefaultArgs<ExtArgs>
+    /**
      * @deprecated Use LanguageDefaultArgs instead
      */
     export type LanguageArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = LanguageDefaultArgs<ExtArgs>
@@ -35769,10 +35834,6 @@ export namespace Prisma {
      * @deprecated Use PermissionDefaultArgs instead
      */
     export type PermissionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = PermissionDefaultArgs<ExtArgs>
-    /**
-     * @deprecated Use QRCodeDefaultArgs instead
-     */
-    export type QRCodeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = QRCodeDefaultArgs<ExtArgs>
     /**
      * @deprecated Use RoleDefaultArgs instead
      */

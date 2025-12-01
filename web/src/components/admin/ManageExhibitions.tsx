@@ -6,7 +6,23 @@ import ExhibitForm from './ExhibitForm';
 import ExhibitionForm from './ExhibitionForm';
 import '../css/ManageExhibits.css';
 
-const DEFAULT_IMAGE_URL = '/images/Exhibit.jpg';
+const BACKEND_URL = import.meta.env.VITE_API_TARGET || '';
+const DEFAULT_IMAGE_URL = `${BACKEND_URL}/public/images/Exhibit.jpg`;
+
+// Helper function to construct the correct image URL
+const buildImageUrl = (fileUrl: string | null): string => {
+  if (!fileUrl) return DEFAULT_IMAGE_URL;
+
+  const cleanedPath = fileUrl.replace(/\\/g, '/');
+  const imagePrefix = '/images/';
+  const pathIndex = cleanedPath.indexOf(imagePrefix);
+
+  if (pathIndex !== -1) {
+    const filename = cleanedPath.substring(pathIndex + imagePrefix.length);
+    return `${BACKEND_URL}/public/images/${filename}`;
+  }
+  return DEFAULT_IMAGE_URL;
+};
 
 // Helper function to construct the correct image URL
 const getImageUrl = (fileUrl: string | null): string => {
@@ -37,12 +53,14 @@ interface ExhibitImageForAdmin {
   imageId: string;
   fileUrl: string;
   title: string | null;
+  isPrimary: boolean;
 }
 
 interface Exhibit {
   exhibitId: string;
   title: string;
   description: string;
+  additionalDescription: string;
   exhibitionId: string;
   images: ExhibitImageForAdmin[];
   _count: {
@@ -292,7 +310,11 @@ const ManageExhibitions: React.FC = () => {
             <div className="exhibits-list">
               {group.exhibits.length > 0 ? (
                 group.exhibits.map((exhibit) => {
-                  const imageUrl = getImageUrl(exhibit.images?.[0]?.fileUrl || null);
+                  // Prioritize primary image, fallback to first image, then default
+                  const primaryImage = exhibit.images.find(img => img.isPrimary);
+                  const imageToDisplay = primaryImage || exhibit.images[0] || null;
+                  const imageUrl = buildImageUrl(imageToDisplay?.fileUrl || null);
+                  
                   return (
                     <div key={exhibit.exhibitId} className="exhibit-card-manage">
                       <img src={imageUrl} alt={exhibit.title} className="exhibit-card-image" />

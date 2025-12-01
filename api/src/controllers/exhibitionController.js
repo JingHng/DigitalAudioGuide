@@ -55,8 +55,12 @@ exports.getExhibitionById = async (req, res) => {
             images: {
               select: {
                 fileUrl: true,
+                isPrimary: true,
               },
-              where: { isPrimary: true },
+              orderBy: [
+                { isPrimary: 'desc' }, // Primary images first
+                { imageId: 'asc' }     // Then by imageId
+              ],
               take: 1,
             },
           },
@@ -254,6 +258,7 @@ exports.getAllExhibitionsWithExhibits = async (req, res) => {
             exhibitId: true,
             title: true,
             description: true,
+            additionalDescription: true,
             // *** ADD THIS: Include the status of the nested exhibit ***
             status: {
               select: {
@@ -269,9 +274,8 @@ exports.getAllExhibitionsWithExhibits = async (req, res) => {
                 imageId: true,
                 fileUrl: true,
                 title: true,
+                isPrimary: true,
               },
-              where: { isPrimary: true },
-              take: 1,
             },
           },
           orderBy: {

@@ -9,6 +9,7 @@ const imagesRoutes = require('../routes/imageRoutes');
 const settingsRoutes = require('../routes/settingsRoutes');
 const badgeRoutes = require('./badgeRoutes');
 
+// Mount the routes
 router.use('/exhibits', exhibitsRoutes);
 router.use('/exhibitions', exhibitionsRoutes); 
 router.use('/badges', badgeRoutes);

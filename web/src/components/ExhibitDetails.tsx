@@ -4,45 +4,29 @@ import apiClient from "../utils/apiClient";
 import {
   Play,
   Pause,
-  Rewind,
-  FastForward,
   Volume2,
-  Loader2,
-  Pin,
   Languages,
-  MicOff,
+  ChevronLeft,
+  ChevronRight,
+  Headphones,
+  Eye,
+  ArrowLeft
 } from "lucide-react";
 
-import { useAuth } from '../contexts/AuthContext';
-import audioLogService from '../services/audioLogService';
-
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, A11y } from "swiper/modules";
+import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import "swiper/css/effect-fade";
+import "./ExhibitDetails.css";
 
-import "../css/ExhibitDetails.css";
-
+import "../styles/SmartExhibit.css";
 import EarnBadgeModal from "./earnBadgeModal";
 
 // --- Constants & Types  ---
 const BACKEND_URL = import.meta.env.VITE_API_TARGET || "";
-const DEFAULT_IMAGE_URL = `${BACKEND_URL}/public/images/Exhibit.jpg`;
-
-const getImageUrl = (fileUrl: string | null): string => {
-  if (!fileUrl) return DEFAULT_IMAGE_URL;
-
-  const cleanedPath = fileUrl.replace(/\\/g, "/");
-  const imagePrefix = "/images/";
-  const pathIndex = cleanedPath.indexOf(imagePrefix);
-
-  if (pathIndex !== -1) {
-    const filename = cleanedPath.substring(pathIndex + imagePrefix.length);
-    return `${BACKEND_URL}/public/images/${filename}`;
-  }
-  return DEFAULT_IMAGE_URL;
-};
+const DEFAULT_IMAGE_URL = `${BACKEND_URL}/public/images/Map.jpg`;
 
 interface Word {
   word: string;
@@ -56,6 +40,7 @@ interface Image {
   imageId: string;
   fileUrl: string | null;
   title: string | null;
+  isPrimary?: boolean;
 }
 interface LanguageInfo {
   languageId: string;
@@ -75,34 +60,26 @@ interface Exhibit {
   exhibitId: string;
   title: string;
   description: string;
+  additionalDescription?: string;
   images: Image[];
   audio: AudioTrack[];
 }
 
-const formatTime = (time: number) => {
-  if (isNaN(time)) return "00:00";
-  const minutes = Math.floor(time / 60);
-  const seconds = Math.floor(time % 60);
-  return `${minutes.toString().padStart(2, "0")}:${seconds
-    .toString()
-    .padStart(2, "0")}`;
-};
-
 const ExhibitDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
 
-  const { user } = useAuth();
+  // State management
+  const user = null; // Forces all user-dependent logic to be skipped
   const [exhibit, setExhibit] = useState<Exhibit | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Control badge modal & prevent multiple triggering
+  // Badge modal states
   const [showBadgeModal, setShowBadgeModal] = useState(false);
-  const [badgeAssigned, setBadgeAssigned] = useState(false); // Removed unused state 'selectedLanguageId' (Temporary)
-
-  // Store badge image URL returned from backend
+  const [badgeAssigned, setBadgeAssigned] = useState(false);
   const [badgeImageUrl, setBadgeImageUrl] = useState<string | undefined>(undefined);
 
+  // Audio states
   const [selectedAudioId, setSelectedAudioId] = useState<string | null>(null);
   const [currentAudio, setCurrentAudio] = useState<AudioTrack | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -110,13 +87,21 @@ const ExhibitDetails: React.FC = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [volume, setVolume] = useState(0.8);
   const [activeWordIndex, setActiveWordIndex] = useState(-1);
-  const [userHasScrolled, setUserHasScrolled] = useState(false); // Audio Logging states (kept but logging logic disabled)
+  
+  // Audio logging states
   const [currentPlaybackLogId, setCurrentPlaybackLogId] = useState<number | null>(null);
   const [playbackStartTime, setPlaybackStartTime] = useState<number>(0);
 
+  // Image gallery states
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showImageGallery, setShowImageGallery] = useState(false);
+  
+  // TTS states
+  const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0);
+  const [sentences, setSentences] = useState<string[]>([]);
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const activeWordRef = useRef<HTMLSpanElement | null>(null);
-  const scrollTimeoutRef = useRef<number | null>(null);
 
   // Load exhibit details
   useEffect(() => {
@@ -193,13 +178,13 @@ const ExhibitDetails: React.FC = () => {
 
   // Auto scroll transcript following active word
   useEffect(() => {
-    if (!userHasScrolled && activeWordRef.current) {
+    if (activeWordRef.current) {
       activeWordRef.current.scrollIntoView({
         behavior: "smooth",
         block: "center",
       });
     }
-  }, [activeWordIndex, userHasScrolled]);
+  }, [activeWordIndex]); // CHANGE: Remove audio logging cleanup
 
   // Cleanup audio logging when component unmounts or audio changes
   useEffect(() => {
@@ -304,92 +289,96 @@ const ExhibitDetails: React.FC = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [exhibit, badgeAssigned, id]);
 
-  const transcript = currentAudio?.subtitles?.[0]?.text;
-  let transcriptArray: Word[] = [];
-  if (transcript) {
-    console.log("Raw transcript data:", transcript, typeof transcript);
-    if (Array.isArray(transcript)) {
-      transcriptArray = transcript;
-      console.log("Using parsed array:", transcriptArray.length, "words");
-    } else if (typeof transcript === "string") {
-      try {
-        const parsed = JSON.parse(transcript);
-        transcriptArray = Array.isArray(parsed) ? parsed : [];
-        console.log("Parsed transcript:", transcriptArray.length, "words");
-      } catch (error) {
-        console.error("Error parsing transcript JSON:", error);
-        transcriptArray = [];
+  // Process transcript for current audio
+  useEffect(() => {
+    const transcript = currentAudio?.subtitles?.[0]?.text;
+    let transcriptArray: Word[] = [];
+    if (transcript) {
+      if (Array.isArray(transcript)) {
+        transcriptArray = transcript;
+      } else if (typeof transcript === 'string') {
+        try {
+          const parsed = JSON.parse(transcript);
+          transcriptArray = Array.isArray(parsed) ? parsed : [];
+        } catch (error) {
+          console.error('Error parsing transcript JSON:', error);
+          transcriptArray = [];
+        }
       }
     }
-  } else {
-    console.log("No transcript data available for current audio");
-  }
+    
+    // Convert words to sentences based on punctuation for display
+    if (transcriptArray.length > 0) {
+      const fullText = transcriptArray.map(word => word.word).join(' ');
+      const sentenceArray = fullText.split(/[.!?]+/).filter(s => s.trim().length > 0);
+      setSentences(sentenceArray.map(s => s.trim()));
+    } else {
+      setSentences([]);
+    }
+  }, [currentAudio]);
+
+  // Reset TTS state when audio changes
+  useEffect(() => {
+    setActiveWordIndex(-1);
+    setCurrentSentenceIndex(0);
+    setCurrentTime(0);
+  }, [currentAudio?.audioId]);
 
   const handleTimeUpdate = useCallback(() => {
     if (!audioRef.current) return;
     const time = audioRef.current.currentTime;
     setCurrentTime(time);
-    if (!transcriptArray.length) return;
-    const currentIndex = transcriptArray.findIndex(
-      (word) => time >= word.start && time < word.end
-    );
-    if (currentIndex !== -1 && currentIndex !== activeWordIndex) {
-      setActiveWordIndex(currentIndex);
+    
+    // Find current word based on audio timing
+    const transcript = currentAudio?.subtitles?.[0]?.text;
+    let transcriptArray: Word[] = [];
+    if (transcript) {
+      if (Array.isArray(transcript)) {
+        transcriptArray = transcript;
+      } else if (typeof transcript === 'string') {
+        try {
+          const parsed = JSON.parse(transcript);
+          transcriptArray = Array.isArray(parsed) ? parsed : [];
+        } catch (error) {
+          transcriptArray = [];
+        }
+      }
     }
-  }, [transcriptArray, activeWordIndex]);
+    
+    if (transcriptArray.length > 0) {
+      // Find current word index
+      const currentWordIndex = transcriptArray.findIndex((word) => {
+        const startTime = word.start || 0;
+        const endTime = word.end || word.start + 0.5;
+        return time >= startTime && time < endTime;
+      });
+      
+      if (currentWordIndex !== -1 && currentWordIndex !== activeWordIndex) {
+        setActiveWordIndex(currentWordIndex);
+        
+        // Find which sentence this word belongs to
+        const wordsUpToCurrent = transcriptArray.slice(0, currentWordIndex + 1);
+        const textUpToCurrent = wordsUpToCurrent.map(w => w.word).join(' ');
+        const sentenceMatches = textUpToCurrent.match(/[.!?]/g);
+        const currentSentIdx = sentenceMatches ? sentenceMatches.length : 0;
+        
+        if (currentSentIdx < sentences.length && currentSentIdx !== currentSentenceIndex) {
+          setCurrentSentenceIndex(currentSentIdx);
+        }
+      }
+    }
+  }, [currentAudio, activeWordIndex, sentences, currentSentenceIndex]);
 
-  const getHighlightClass = (currentIndex: number): string => {
-    if (activeWordIndex === -1) return "";
-    const isInWindow =
-      currentIndex >= activeWordIndex - 1 &&
-      currentIndex <= activeWordIndex + 1;
-    return isInWindow ? "highlight" : "";
-  };
-
-  const handlePlayPause = async () => {
-    if (!currentAudio?.fileUrl) return;
-    const audio = audioRef.current;
-    if (!audio) return;
+  const handlePlayPause = () => {
+    if (!currentAudio?.fileUrl || !audioRef.current) return;
     
     if (isPlaying) {
-      // Pause audio and end logging
-      audio.pause();
-      if (currentPlaybackLogId && user) {
-        try {
-          const durationListened = Math.round(audio.currentTime - playbackStartTime);
-          await audioLogService.endPlayback(currentPlaybackLogId, durationListened);
-          setCurrentPlaybackLogId(null);
-        } catch (error) {
-          console.error('Failed to log audio pause:', error);
-        }
-      }
+      audioRef.current.pause();
     } else {
-      // Start audio and begin logging
-      try {
-        await audio.play();
-        if (user && currentAudio.audioId) {
-          try {
-            const { logId } = await audioLogService.startPlayback(user.userId, currentAudio.audioId);
-            setCurrentPlaybackLogId(logId);
-            setPlaybackStartTime(audio.currentTime);
-          } catch (error) {
-            console.error('Failed to start audio logging:', error);
-          }
-        }
-      } catch (e) {
+      audioRef.current.play().catch((e) => {
         console.error("Audio play failed:", e);
-        return;
-      }
+      });
     }
-    setIsPlaying(!isPlaying);
-  };
-
-  const handleRewind = () => {
-    if (audioRef.current) audioRef.current.currentTime -= 10;
-  };
-
-  const handleForward = () => {
-    if (audioRef.current) audioRef.current.currentTime += 10;
   };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -404,249 +393,344 @@ const ExhibitDetails: React.FC = () => {
     setCurrentTime(newTime);
   };
 
-  const handleManualScroll = () => {
-    setUserHasScrolled(true);
-    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
-    scrollTimeoutRef.current = window.setTimeout(
-      () => setUserHasScrolled(false),
-      3000
-    );
+  // Helper functions
+  const formatTime = (time: number): string => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
-  const reEnableAutoScroll = () => setUserHasScrolled(false);
+  const getImageUrl = (fileUrl: string): string => {
+    if (!fileUrl) return DEFAULT_IMAGE_URL;
 
-  // ---- Early returns (no hooks below this line) ----
+    const cleanedPath = fileUrl.replace(/\\/g, '/');
+    const imagePrefix = '/images/';
+    const pathIndex = cleanedPath.indexOf(imagePrefix);
+
+    if (pathIndex !== -1) {
+      const filename = cleanedPath.substring(pathIndex + imagePrefix.length);
+      return `${BACKEND_URL}/public/images/${filename}`;
+    }
+    return DEFAULT_IMAGE_URL;
+  };
+
+  // Early returns
   if (loading)
     return (
-      <div className="page-status">
-        <Loader2 className="animate-spin" size={48} /> Loading Exhibit...
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading SmartExhibit Experience...</p>
       </div>
     );
-  if (error) return <div className="page-status error">{error}</div>;
-  if (!exhibit) return <div className="page-status">Exhibit not found.</div>;
+  if (error) return <div className="error-container">{error}</div>;
+  if (!exhibit) return <div className="error-container">Exhibit not found.</div>;
 
   const availableAudio = exhibit.audio.filter((a) => a.fileUrl);
   const hasAudioContent = availableAudio.length > 0;
-
+  // Separate primary and additional images
   const validImages = exhibit.images.filter((img) => img.fileUrl);
+  const primaryImages = validImages.filter((img) => img.isPrimary);
+  const additionalImages = validImages.filter((img) => !img.isPrimary);
+  const displayImages = primaryImages.length > 0 ? primaryImages : validImages.slice(0, 1); // Fallback to first image if no primary
 
   return (
-    <>
-      <div className="exhibit-detail-container">
-        <audio
-          ref={audioRef}
-          onLoadedMetadata={() => {
-            console.log("Audio metadata loaded successfully");
-            setDuration(audioRef.current?.duration || 0);
-          }}
-          onTimeUpdate={handleTimeUpdate}
-          onPlay={() => setIsPlaying(true)}
-          onPause={() => setIsPlaying(false)}
-          onError={(e) => {
-            console.error("Audio loading error:", e);
-            console.error("Audio error details:", audioRef.current?.error);
-          }}
-          onLoadStart={() => console.log("Audio load started")}
-          onCanPlay={() => console.log("Audio can start playing")}
-          onEnded={async () => {
-            setIsPlaying(false);
-            // Log the end of playback when audio finishes naturally
-            if (currentPlaybackLogId && user && audioRef.current) {
-              try {
-                const durationListened = Math.round(audioRef.current.currentTime - playbackStartTime);
-                await audioLogService.endPlayback(currentPlaybackLogId, durationListened);
-                setCurrentPlaybackLogId(null);
-              } catch (error) {
-                console.error('Failed to log audio end:', error);
-              }
-            }
-          }}
-        />
+    <div className="smart-exhibit-home">
+      {/* Audio element */}
+      <audio
+        ref={audioRef}
+        onLoadedMetadata={() => setDuration(audioRef.current?.duration || 0)}
+        onTimeUpdate={handleTimeUpdate}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => {
+          setIsPlaying(false);
+          setActiveWordIndex(-1); // Reset word highlighting when paused
+        }}
+        onEnded={() => {
+          setIsPlaying(false);
+          setActiveWordIndex(-1); // Reset word highlighting when ended
+          setCurrentTime(0);
+        }}
+      />
 
-        <div className="exhibit-main-content">
-          <RouterLink to="/exhibitions" className="back-link">
-            ← Back to All Exhibits
+      {/* Header Navigation */}
+      <div className="exhibit-header">
+        <div className="container">
+          <RouterLink to="/exhibitions" className="back-button">
+            <ArrowLeft size={20} />
+            <span>Back to Tours</span>
           </RouterLink>
+        </div>
+      </div>
 
-          <section className="image-gallery-section">
-            <Swiper
-              modules={[Navigation, Pagination, A11y]}
-              spaceBetween={50}
-              slidesPerView={1}
-              navigation
-              pagination={{ clickable: true }}
-              loop={validImages.length > 1}
-              className="exhibit-swiper"
-            >
-              {validImages.length > 0 ? (
-                validImages.map((image) => (
-                  <SwiperSlide key={image.imageId}>
-                    {/* FIX: Use the robust getImageUrl function */}
-                    <img
-                      src={getImageUrl(image.fileUrl)}
-                      alt={image.title || exhibit.title}
-                    />
-                  </SwiperSlide>
-                ))
+      {/* Main Content */}
+      <div className="exhibit-content">
+        <div className="container">
+          {/* Hero Section with Image Gallery */}
+          <section className="exhibit-hero">
+            {/* Title at Top */}
+            <h1 className="exhibit-main-title">{exhibit.title}</h1>
+            
+            {/* Centered Image Gallery */}
+            <div className="exhibit-images-centered">
+              {displayImages.length > 0 ? (
+                <Swiper
+                  modules={[Navigation, Pagination, EffectFade, Autoplay]}
+                  effect="fade"
+                  spaceBetween={0}
+                  slidesPerView={1}
+                  navigation={{
+                    prevEl: '.custom-prev',
+                    nextEl: '.custom-next'
+                  }}
+                  pagination={{ clickable: true }}
+                  autoplay={{ delay: 5000, disableOnInteraction: false }}
+                  loop={displayImages.length > 1}
+                  className="exhibit-image-swiper"
+                >
+                  {displayImages.map((image: Image, index: number) => (
+                    <SwiperSlide key={image.imageId}>
+                      <div className="exhibit-image-container">
+                        <img
+                          src={getImageUrl(image.fileUrl || '')}
+                          alt={image.title || exhibit.title}
+                          className="exhibit-main-image"
+                          onClick={() => {
+                            setCurrentImageIndex(index);
+                            setShowImageGallery(true);
+                          }}
+                        />
+                        <div className="image-overlay">
+                          <div className="image-counter">
+                            {index + 1} / {displayImages.length}
+                          </div>
+                        </div>
+                      </div>
+                    </SwiperSlide>
+                  ))}
+                  {displayImages.length > 1 && (
+                    <>
+                      <div className="custom-prev">
+                        <ChevronLeft size={24} />
+                      </div>
+                      <div className="custom-next">
+                        <ChevronRight size={24} />
+                      </div>
+                    </>
+                  )}
+                </Swiper>
               ) : (
-                <SwiperSlide>
-                  <img
-                    src={DEFAULT_IMAGE_URL}
-                    alt="Default placeholder for exhibit"
-                  />
-                </SwiperSlide>
-              )}
-            </Swiper>
-          </section>
-
-          <header className="exhibit-header">
-            <div className="exhibit-title-section">
-              <h1>{exhibit.title}</h1>
-              {/*<RouterLink to={`/exhibits/${id}/reviews`} className="review-button" title="View Reviews">
-                <MessageSquare size={24} />
-                <span>Reviews</span>
-              </RouterLink> */}
-            </div>
-            <p className="exhibit-description">{exhibit.description}</p>
-          </header>
-
-          <section className="audio-guide-section">
-            <div className="audio-section-header">
-              <h2>Audio Guide</h2>
-              {hasAudioContent && (
-                <div className="language-selector">
-                  <Languages size={20} />
-                  <select
-                    value={selectedAudioId || ""}
-                    onChange={(e) => setSelectedAudioId(e.target.value)}
-                  >
-                    {availableAudio.map((audio) => (
-                      <option key={audio.audioId} value={audio.audioId}>
-                        {audio.description ||
-                          audio.title ||
-                          `Audio ${audio.audioId}`}
-                        {audio.language ? ` (${audio.language.title})` : ""}
-                      </option>
-                    ))}
-                  </select>
+                <div className="no-images">
+                  <div className="no-images-placeholder">
+                    <Eye size={48} />
+                    <p>No images available for this exhibit</p>
+                  </div>
                 </div>
               )}
             </div>
-
-            <div className="audio-player">
-              <div className="player-controls">
-                <button
-                  onClick={handleRewind}
-                  className="control-button"
-                  title="Rewind 10s"
-                  disabled={!hasAudioContent}
-                >
-                  <Rewind />
-                </button>
-                <button
-                  onClick={handlePlayPause}
-                  className="control-button play-pause"
-                  title={isPlaying ? "Pause" : "Play"}
-                  disabled={!hasAudioContent}
-                >
-                  {isPlaying ? <Pause size={36} /> : <Play size={36} />}
-                </button>
-                <button
-                  onClick={handleForward}
-                  className="control-button"
-                  title="Forward 10s"
-                  disabled={!hasAudioContent}
-                >
-                  <FastForward />
-                </button>
+            
+            {/* Description Below Image */}
+            <div className="exhibit-info-centered">
+              <div className="description-box">
+                <p>{exhibit.description}</p>
               </div>
-              <div className="progress-and-volume">
-                <span className="time-label">{formatTime(currentTime)}</span>
-                <input
-                  type="range"
-                  min="0"
-                  max={duration || 1}
-                  value={currentTime}
-                  onChange={handleProgressChange}
-                  className="progress-bar"
-                  style={
-                    {
-                      "--progress": `${(currentTime / duration) * 100}%`,
-                    } as React.CSSProperties
-                  }
-                  disabled={!hasAudioContent}
-                />
-                <span className="time-label">{formatTime(duration)}</span>
+              <div className="exhibit-meta">
+                <div className="meta-item">
+                  <Eye size={16} />
+                  <span>Interactive Experience</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Text-to-Speech Section */}
+          {hasAudioContent && (
+            <section className="tts-section">
+              <div className="tts-header">
+                <div className="tts-title">
+                  <Headphones size={20} />
+                  <span>Audio Guide</span>
+                </div>
+                
+                {availableAudio.length > 0 && (
+                  <div className="language-selector">
+                    <Languages size={16} />
+                    <select
+                      value={selectedAudioId || ''}
+                      onChange={(e) => setSelectedAudioId(e.target.value)}
+                      disabled={availableAudio.length === 1}
+                    >
+                      {availableAudio.map((audio) => (
+                        <option key={audio.audioId} value={audio.audioId}>
+                          {audio.language?.title || audio.title || 'Unknown Language'}
+                        </option>
+                      ))}
+                    </select>
+                    {availableAudio.length === 1 && (
+                      <span className="single-language-note">
+                        {availableAudio.length === 1 ? '(Only language available)' : `(${availableAudio.length} languages)`}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <div className="tts-controls">
+                <button
+                  className="play-button"
+                  onClick={handlePlayPause}
+                  disabled={!currentAudio?.fileUrl}
+                >
+                  {isPlaying ? <Pause size={20} /> : <Play size={20} />}
+                </button>
+                
+                <div className="audio-progress">
+                  <input
+                    type="range"
+                    min="0"
+                    max={duration}
+                    value={currentTime}
+                    onChange={handleProgressChange}
+                    className="progress-slider"
+                  />
+                  <div className="time-display">
+                    <span>{formatTime(currentTime)}</span>
+                    <span>{formatTime(duration)}</span>
+                  </div>
+                </div>
+
                 <div className="volume-control">
-                  <Volume2 />
+                  <Volume2 size={16} />
                   <input
                     type="range"
                     min="0"
                     max="1"
-                    step="0.05"
+                    step="0.1"
                     value={volume}
                     onChange={handleVolumeChange}
                     className="volume-slider"
-                    style={
-                      {
-                        "--progress": `${volume * 100}%`,
-                      } as React.CSSProperties
-                    }
-                    disabled={!hasAudioContent}
                   />
                 </div>
               </div>
-            </div>
 
-            <div className="transcript-section">
-              <div className="transcript-header">
-                <h3>
-                  Transcript{" "}
-                  {hasAudioContent ? `(${currentAudio?.language?.title})` : ""}
-                </h3>
-                {userHasScrolled && (
-                  <button
-                    className="follow-button"
-                    onClick={reEnableAutoScroll}
-                  >
-                    <Pin size={16} /> Follow Text
-                  </button>
+              {/* Text-to-Speech Transcript Display */}
+              <div className="current-sentence">
+                {currentAudio?.subtitles?.[0]?.text ? (
+                  <div className="transcript-text">
+                    {(() => {
+                      const transcript = currentAudio.subtitles[0].text;
+                      let transcriptArray: Word[] = [];
+                      if (Array.isArray(transcript)) {
+                        transcriptArray = transcript;
+                      } else if (typeof transcript === 'string') {
+                        try {
+                          const parsed = JSON.parse(transcript);
+                          transcriptArray = Array.isArray(parsed) ? parsed : [];
+                        } catch (error) {
+                          return <p>Error loading transcript</p>;
+                        }
+                      }
+                      
+                      return transcriptArray.map((word, index) => (
+                        <span
+                          key={index}
+                          ref={index === activeWordIndex ? activeWordRef : null}
+                          className={`transcript-word ${
+                            index === activeWordIndex ? 'active-word' : ''
+                          }`}
+                        >
+                          {word.word}{' '}
+                        </span>
+                      ));
+                    })()}
+                  </div>
+                ) : (
+                  <p className="sentence-placeholder">No audio transcript available</p>
                 )}
               </div>
-              {hasAudioContent ? (
-                transcriptArray && transcriptArray.length > 0 ? (
-                  <div
-                    className="transcript-text"
-                    onWheel={handleManualScroll}
-                    onTouchStart={handleManualScroll}
-                  >
-                    {transcriptArray.map((word, index) => (
-                      <span
-                        key={index}
-                        ref={index === activeWordIndex ? activeWordRef : null}
-                        className={getHighlightClass(index)}
-                      >
-                        {word.word}{" "}
-                      </span>
+            </section>
+          )}
+
+          {/* Additional Info Section */}
+          <section className="additional-info">
+            <div className="additional-content">
+              {/* Additional Image Gallery */}
+              <div className="admin-image-gallery">
+                <h3>Additional Images</h3>
+                {additionalImages.length > 0 ? (
+                  <div className="additional-images-grid">
+                    {additionalImages.map((image, index) => (
+                      <div key={image.imageId} className="additional-image-item">
+                        <img 
+                          src={getImageUrl(image.fileUrl || '')}
+                          alt={image.title || `Additional image ${index + 1}`}
+                          onClick={() => {
+                            const allImagesIndex = validImages.findIndex(img => img.imageId === image.imageId);
+                            setCurrentImageIndex(allImagesIndex);
+                            setShowImageGallery(true);
+                          }}
+                        />
+                        <div className="image-overlay">
+                          <span>{image.title || `Image ${index + 1}`}</span>
+                        </div>
+                      </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="transcript-unavailable">
-                    <p>No transcript is available for this language.</p>
+                  <div className="no-additional-images">
+                    <p>No additional images available for this exhibit.</p>
                   </div>
-                )
-              ) : (
-                <div className="transcript-unavailable">
-                  <MicOff size={24} />
-                  <p>No audio guides have been created for this exhibit yet.</p>
+                )}
+              </div>
+
+              <div className="additional-descriptions">
+                <div className="description-block">
+                  <h3>Detailed Information</h3>
+                  <p className="centered-text">{exhibit.additionalDescription || "Additional information about this exhibit will be available soon. Our curators are working to provide more detailed insights into the historical significance, artifacts, and interactive features of this experience."}</p>
                 </div>
-              )}
+              </div>
             </div>
           </section>
         </div>
       </div>
 
-      {/* Badge modal */}
+      {/* Image Gallery Modal */}
+      {showImageGallery && (
+        <div className="image-gallery-modal" onClick={() => setShowImageGallery(false)}>
+          <div className="gallery-content" onClick={(e) => e.stopPropagation()}>
+            <button 
+              className="close-gallery"
+              onClick={() => setShowImageGallery(false)}
+            >
+              ×
+            </button>
+            <Swiper
+              modules={[Navigation, Pagination]}
+              spaceBetween={20}
+              slidesPerView={1}
+              navigation
+              pagination={{ clickable: true }}
+              initialSlide={currentImageIndex}
+              className="gallery-swiper"
+            >
+              {validImages.map((image: Image, index: number) => (
+                <SwiperSlide key={image.imageId}>
+                  <div className="gallery-slide">
+                    <img
+                      src={getImageUrl(image.fileUrl || '')}
+                      alt={image.title || `Image ${index + 1}`}
+                    />
+                    {image.title && (
+                      <div className="gallery-image-title">{image.title}</div>
+                    )}
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+        </div>
+      )}
+
+      {/* Badge Modal */}
       <EarnBadgeModal
         isOpen={showBadgeModal}
         onClose={() => setShowBadgeModal(false)}
@@ -654,7 +738,7 @@ const ExhibitDetails: React.FC = () => {
         badgeImageUrl={badgeImageUrl}
         className="responsive-badge-modal"
       />
-    </>
+    </div>
   );
 };
 

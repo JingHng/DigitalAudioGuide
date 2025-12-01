@@ -163,8 +163,8 @@ const Navbar: React.FC = () => {
         {/* Logo */}
         <a href="/" className="navbar-logo">
           <div className="logo-text">
-            <span className="logo-line-1">Singapore</span>
-            <span className="logo-line-2">Discovery Centre</span>
+            <span className="logo-line-1">Smart</span>
+            <span className="logo-line-2">Exhibit</span>
           </div>
         </a>
 
@@ -235,8 +235,11 @@ const Navbar: React.FC = () => {
         <div
           className={`nav-links mobile-controls ${isMenuOpen ? "open" : ""}`}
         >
+          <a href="/" onClick={() => setIsMenuOpen(false)}>
+            Home
+          </a>
           <a href="/exhibitions" onClick={() => setIsMenuOpen(false)}>
-            Exhibits
+            Tours
           </a>
           <a href="/reviews" onClick={() => setIsMenuOpen(false)}>
             Reviews
@@ -249,7 +252,8 @@ const Navbar: React.FC = () => {
 
         {/* --- Desktop Navigation Links Container --- */}
         <div className="nav-links">
-          <a href="/exhibitions">Exhibits</a>
+          <a href="/">Home</a>
+          <a href="/exhibitions">Tours</a>
           <a href="/reviews">Reviews</a>
           <a href="/#how-it-works">How It Works</a>
 
