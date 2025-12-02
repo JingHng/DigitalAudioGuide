@@ -244,4 +244,7 @@ jobs:
 
       # ---- Force restart to clear cache ----
       - name: Restart Azure Web App
-        run: az webapp restart --name ${{ env.WEBAPP_NAME }} --resource-group $(az webapp show --name ${{ env.WEBAPP_NAME }} --query resourceGroup -o tsv)
+        run: |
+          RESOURCE_GROUP=$(az webapp show --name ${{ env.WEBAPP_NAME }} --query resourceGroup -o tsv)
+          az webapp restart --name ${{ env.WEBAPP_NAME }} --resource-group $RESOURCE_GROUP
+          echo "✅ App restarted successfully"
