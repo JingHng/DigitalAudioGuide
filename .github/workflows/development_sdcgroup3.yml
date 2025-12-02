@@ -183,9 +183,9 @@ jobs:
           echo "📦 Creating deployment package"
           echo "📋 Verifying public folder before packaging:"
           ls -la public/ || echo "WARNING: public folder not found!"
-          # Package only production files: node_modules, source files, prisma, and frontend
+          
+          # Package ONLY necessary files - let Azure Oryx build node_modules
           zip -r "../${ARTIFACT_NAME}" \
-            node_modules/ \
             package*.json \
             prisma/ \
             public/ \
@@ -194,11 +194,13 @@ jobs:
             web.config \
             generated/ \
             .deployment \
+            -x "*.log" "*.test.js" "coverage/*" \
             || true
+          
           echo "✅ Deployment package created"
           cd ..
           ls -lh "${ARTIFACT_NAME}"
-          echo "📋 Verifying contents:"
+          echo "📋 Package size reduced by excluding node_modules (Azure will build them)"
           unzip -l "${ARTIFACT_NAME}" | grep -E "(public/|src/|app.js)" | head -15
 
       - name: Upload artifact
