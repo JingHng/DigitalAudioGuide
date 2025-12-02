@@ -43,15 +43,16 @@ console.log('Frontend build path:', frontendBuildPath);
 
 // === STATIC FILE SERVING FIX ===
 
-
 const publicStaticPath = isProduction
- ? path.join(__dirname, 'public') // Production: files are packaged into the root 'public' folder
+ ? path.resolve(__dirname, 'public') // Production: Using path.resolve to get a robust absolute path
  : path.join(__dirname, 'src', 'public'); // Localhost: files are still in the 'src/public' source folder
 
+// Use the explicit publicStaticPath for /public routes
 app.use('/public', express.static(publicStaticPath));
 
 
 // This serves the main frontend assets (index.html, /assets/...) from the root (/).
+// In production, this also points to the same physical 'public' folder.
 app.use(express.static(frontendBuildPath));
 
 
@@ -72,6 +73,8 @@ app.use('/api/translate', translateRoutes);
 app.use((req, res, next) => {
  if (req.path.startsWith('/api')) return next();
  
+ // Check if the request is for an existing static asset (already handled by express.static above)
+ // If the request wasn't matched by the static middleware, we assume it's a client-side route
  
  const indexPath = path.join(frontendBuildPath, 'index.html');
  res.sendFile(indexPath);
