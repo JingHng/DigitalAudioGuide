@@ -14,6 +14,7 @@ on:
 
 env:
   WEBAPP_NAME: "SDCGroup3"
+  RESOURCE_GROUP: "SingaporeDiscoveryCentre_Group3"
   NODE_VERSION: "20.x"
   API_DIR: "api"
   WEB_DIR: "web"
@@ -245,6 +246,6 @@ jobs:
       # ---- Force restart to clear cache ----
       - name: Restart Azure Web App
         run: |
-          RESOURCE_GROUP=$(az webapp show --name ${{ env.WEBAPP_NAME }} --query resourceGroup -o tsv)
-          az webapp restart --name ${{ env.WEBAPP_NAME }} --resource-group $RESOURCE_GROUP
+          echo "🔍 Restarting: ${{ env.WEBAPP_NAME }} in ${{ env.RESOURCE_GROUP }}"
+          az webapp restart --name ${{ env.WEBAPP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }}
           echo "✅ App restarted successfully"
