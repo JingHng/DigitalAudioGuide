@@ -235,6 +235,14 @@ jobs:
           tenant-id: ${{ env.TENANT_ID }}
           subscription-id: ${{ env.SUBSCRIPTION_ID }}
 
+      # ---- Configure startup command ----
+      - name: Set startup command
+        run: |
+          az webapp config set --name ${{ env.WEBAPP_NAME }} \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --startup-file "node server.js"
+          echo "✅ Startup command configured"
+
       # ---- Deploy ----
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
