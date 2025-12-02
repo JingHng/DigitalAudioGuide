@@ -167,10 +167,15 @@ jobs:
         run: |
           cd "${API_DIR}"
           echo "🧹 Preparing production build"
-          # Remove dev dependencies (keep only production)
-          npm prune --production
+          # Install ONLY production dependencies
+          npm ci --production --ignore-scripts
           # Remove unnecessary files for deployment
-          rm -rf tests/ *.log coverage/ || true
+          rm -rf tests/ *.log coverage/ .git/ .github/ || true
+          # Clean node_modules of unnecessary files
+          find node_modules -name "*.md" -delete || true
+          find node_modules -name "*.ts" -delete || true
+          find node_modules -name "test" -type d -exec rm -rf {} + || true
+          find node_modules -name "tests" -type d -exec rm -rf {} + || true
           echo "✅ Production preparation complete"
           echo "📊 Final API directory size:"
           du -sh . || true
@@ -184,8 +189,9 @@ jobs:
           echo "📋 Verifying public folder before packaging:"
           ls -la public/ || echo "WARNING: public folder not found!"
           
-          # Package ONLY necessary files - let Azure Oryx build node_modules
+          # Package production-ready files including node_modules
           zip -r "../${ARTIFACT_NAME}" \
+            node_modules/ \
             package*.json \
             prisma/ \
             public/ \
@@ -194,14 +200,14 @@ jobs:
             web.config \
             generated/ \
             .deployment \
-            -x "*.log" "*.test.js" "coverage/*" \
+            -x "*.log" "*.test.js" "coverage/*" "node_modules/*/test/*" "node_modules/*/tests/*" \
             || true
           
           echo "✅ Deployment package created"
           cd ..
           ls -lh "${ARTIFACT_NAME}"
-          echo "📋 Package size reduced by excluding node_modules (Azure will build them)"
-          unzip -l "${ARTIFACT_NAME}" | grep -E "(public/|src/|app.js)" | head -15
+          echo "📋 Verifying deployment package contents:"
+          unzip -l "${ARTIFACT_NAME}" | grep -E "(package.json|app.js|server.js)" | head -10
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
