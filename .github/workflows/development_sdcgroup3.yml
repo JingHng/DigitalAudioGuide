@@ -240,3 +240,8 @@ jobs:
         with:
           app-name: ${{ env.WEBAPP_NAME }}
           package: ${{ env.ARTIFACT_NAME }}
+          clean: true  # Clean deployment - removes old files before deploying
+
+      # ---- Force restart to clear cache ----
+      - name: Restart Azure Web App
+        run: az webapp restart --name ${{ env.WEBAPP_NAME }} --resource-group $(az webapp show --name ${{ env.WEBAPP_NAME }} --query resourceGroup -o tsv)
