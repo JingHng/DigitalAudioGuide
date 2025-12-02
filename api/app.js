@@ -45,8 +45,8 @@ console.log('Frontend build path:', frontendBuildPath);
 // === STATIC FILE SERVING FIX ===
 
 const publicStaticPath = isProduction
- ? path.join(__dirname, 'public') // Production: public folder is at api/public (same level as app.js)
- : path.join(__dirname, 'src', 'public'); // Localhost: files are still in the 'src/public' source folder
+ ? path.join(__dirname, 'src', 'public') // Production: images are at /wwwroot/src/public
+ : path.join(__dirname, 'src', 'public'); // Localhost: files are in 'src/public'
 
 // **LOGGING FOR DEBUGGING:**
 console.log('✅ DEBUG: publicStaticPath resolved to:', publicStaticPath);
