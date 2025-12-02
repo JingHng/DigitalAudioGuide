@@ -1,4 +1,4 @@
-# .github/workflows/development_sdcgroup3.yml (Updated)
+# .github/workflows/development_sdcgroup3.yml (Updated with Debugging)
 
 name: Deploy monorepo (api + web) to Azure App Service
 
@@ -140,14 +140,26 @@ jobs:
           echo "📄 Checking index.html exists:"
           cat "${API_DIR}/public/index.html" | head -20
 
-      # ---- Copy API Static Assets (Images & Audios) ----
-      - name: Copy API Static Assets
+      # ---- DEBUG and Copy API Static Assets (Images & Audios) ---- 👈 UPDATED STEP
+      - name: Debug and Copy API Static Assets
         run: |
-          echo "📁 Copying API source assets (images, audios) from src/public"
-          # -R: Recursive, -u: Update (copy only when source is newer), -v: Verbose
+          echo "==============================================="
+          echo "1. DEBUG: Checking Source Files (api/src/public)"
+          echo "==============================================="
+          ls -laR "${API_DIR}/src/public/"
+          
+          echo "==============================================="
+          echo "2. COPY: Moving API source assets to final public"
+          echo "==============================================="
+          # This copies contents from api/src/public/ to api/public/
           cp -R -u -v "${API_DIR}/src/public/." "${API_DIR}/public/" || true
-          echo "✅ API static assets copied into final deployment public folder."
+          echo "✅ API static assets copy attempted."
+          
+          echo "==============================================="
+          echo "3. DEBUG: Checking Final Public Folder (api/public)"
+          echo "==============================================="
           ls -laR "${API_DIR}/public/"
+          echo "==============================================="
 
       # ---- Prepare for production deployment ----
       - name: Prepare production API
