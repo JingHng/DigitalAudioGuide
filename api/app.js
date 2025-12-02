@@ -15,15 +15,16 @@ const cors = require('cors');
 
 // This is required to serialize BigInts (like Prisma IDs) to JSON.
 BigInt.prototype.toJSON = function() {
-  return this.toString();
+  return this.toString();
 };
+
 
 const app = express();
 
 const corsOptions = {
-  origin: true, // Allow all origins temporarily
-  credentials: true,
-  optionsSuccessStatus: 200
+ origin: true, // Allow all origins temporarily
+ credentials: true,
+ optionsSuccessStatus: 200
 };
 
 app.use(cors(corsOptions));
@@ -32,10 +33,9 @@ app.use(express.json());
 // Frontend build path: use api/public on Azure, ../web/dist locally
 const isProduction = process.env.NODE_ENV === 'production' || !!process.env.WEBSITE_SITE_NAME;
 
-// Updated to use path.resolve for maximum robustness in production
 const frontendBuildPath = isProduction 
-  ? path.resolve(__dirname, 'public')
-  : path.join(__dirname, '..', 'web', 'dist');
+ ? path.resolve(__dirname, '..', 'public') // production: __dirname/../public -> /home/site/wwwroot/public
+ : path.join(__dirname, '..', 'web', 'dist'); // local: remains correct
 
 console.log('🔍 NODE_ENV:', process.env.NODE_ENV);
 console.log('🔍 WEBSITE_SITE_NAME:', process.env.WEBSITE_SITE_NAME);
@@ -45,18 +45,26 @@ console.log('Frontend build path:', frontendBuildPath);
 // === STATIC FILE SERVING FIX ===
 
 const publicStaticPath = isProduction
-  ? path.resolve(__dirname, 'public') // Production: Using path.resolve to get a robust absolute path
-  : path.join(__dirname, 'src', 'public'); // Localhost: files are still in the 'src/public' source folder
+ ? path.resolve(__dirname, '..', 'public') // Production: Using path.resolve to get a robust absolute path
+ : path.join(__dirname, 'src', 'public'); // Localhost: files are still in the 'src/public' source folder
+
+// **LOGGING FOR DEBUGGING:**
+console.log('✅ DEBUG: publicStaticPath resolved to:', publicStaticPath);
+console.log('✅ DEBUG: frontendBuildPath resolved to:', frontendBuildPath);
 
 // Use the explicit publicStaticPath for /public routes
 app.use('/public', express.static(publicStaticPath));
 
+
 // 2. Serve the main frontend assets (index.html, /assets/...) from the root (/).
 app.use(express.static(frontendBuildPath));
 
+
 if (isProduction) {
-    app.use(express.static(path.resolve(__dirname, 'public')));
+    // FIX: Changed path.resolve(__dirname, 'public') to path.resolve(__dirname, '..', 'public')
+    app.use(express.static(path.resolve(__dirname, '..', 'public')));
 }
+
 
 // === API ROUTES ===
 
@@ -73,12 +81,12 @@ app.use('/api/translate', translateRoutes);
 
 // SPA catch-all: serve index.html for non-API routes (client-side routing)
 app.use((req, res, next) => {
-  if (req.path.startsWith('/api')) return next();
-  
-  // If the request wasn't matched by the static middleware, we assume it's a client-side route
-  
-  const indexPath = path.join(frontendBuildPath, 'index.html');
-  res.sendFile(indexPath);
+ if (req.path.startsWith('/api')) return next();
+ 
+ // If the request wasn't matched by the static middleware, we assume it's a client-side route
+ 
+ const indexPath = path.join(frontendBuildPath, 'index.html');
+ res.sendFile(indexPath);
 });
 
 module.exports = app;
