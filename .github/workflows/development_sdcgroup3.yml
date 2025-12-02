@@ -140,6 +140,15 @@ jobs:
           echo "📄 Checking index.html exists:"
           cat "${API_DIR}/public/index.html" | head -20
 
+      # ---- Copy API Static Assets (Images & Audios) ----
+      - name: Copy API Static Assets
+        run: |
+          echo "📁 Copying API source assets (images, audios) from src/public"
+          # -R: Recursive, -u: Update (copy only when source is newer), -v: Verbose
+          cp -R -u -v "${API_DIR}/src/public/." "${API_DIR}/public/" || true
+          echo "✅ API static assets copied into final deployment public folder."
+          ls -laR "${API_DIR}/public/"
+
       # ---- Prepare for production deployment ----
       - name: Prepare production API
         run: |
