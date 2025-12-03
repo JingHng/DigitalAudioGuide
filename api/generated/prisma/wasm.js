@@ -136,9 +136,9 @@ exports.Prisma.ExhibitScalarFieldEnum = {
   exhibitionId: 'exhibitionId',
   badgeId: 'badgeId',
   title: 'title',
+  statusId: 'statusId',
   description: 'description',
   additionalDescription: 'additionalDescription',
-  statusId: 'statusId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -307,6 +307,13 @@ exports.Prisma.UserBadgeScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.SettingsScalarFieldEnum = {
+  key: 'key',
+  value: 'value',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -314,6 +321,10 @@ exports.Prisma.SortOrder = {
 
 exports.Prisma.NullableJsonNullValueInput = {
   DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.JsonNullValueInput = {
   JsonNull: Prisma.JsonNull
 };
 
@@ -355,7 +366,8 @@ exports.Prisma.ModelName = {
   PasswordResetToken: 'PasswordResetToken',
   EmailVerificationToken: 'EmailVerificationToken',
   Badge: 'Badge',
-  UserBadge: 'UserBadge'
+  UserBadge: 'UserBadge',
+  settings: 'settings'
 };
 
 /**

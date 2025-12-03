@@ -19,10 +19,11 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
-import "./ExhibitDetails.css";
+import "./ExhibitDetails.minimal.css";
 
 import "../styles/SmartExhibit.css";
 import EarnBadgeModal from "./earnBadgeModal";
+import audioLogService from "../services/audioLogService";
 
 // --- Constants & Types  ---
 const BACKEND_URL = import.meta.env.VITE_API_TARGET || "";
