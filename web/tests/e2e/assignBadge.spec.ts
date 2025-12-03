@@ -25,9 +25,6 @@ const badgeUrlRegex = new RegExp(`/badges/assignBadges/${EXHIBIT_ID}$`);
 test.describe('ExhibitDetails badge behaviour', () => {
   // Login before each test so user is authenticated
   test.beforeEach(async ({ page }) => {
-    // Skip badge tests in CI due to timeout issues
-    test.skip(!!process.env.CI, 'Skipping badge tests in CI due to timeout issues');
-    
     await page.goto(`${FRONTEND_URL}/login`);
 
     await page

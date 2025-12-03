@@ -96,58 +96,8 @@ test.describe('Exhibitions Functionality and API Check', () => {
             console.log('API Error detected:', errorText);
         }
     });
-
-    // Test 3: Check navigation to exhibition details page
-    test.skip('should navigate to exhibition details when an exhibition card is clicked', async ({ page }) => {
-        try {
-            await page.waitForSelector('.tour-card-enhanced .exhibition-card-image, .no-tours', { state: 'visible', timeout: 30000 });
-        } catch (e) {
-            console.log('Exhibitions page took too long to load data for navigation test.');
-        }
-
-        const exhibitionCards = page.locator('.tour-card-enhanced'); 
-        const cardCount = await exhibitionCards.count();
-        
-        if (cardCount === 0) {
-            test.skip();
-            return;
-        }
-        
-        const firstCardLink = exhibitionCards.first().locator('.view-exhibition-btn'); 
-        const href = await firstCardLink.getAttribute('href');
-        expect(href).toMatch(/^\/exhibitions\/\d+$/);
-        
-        await firstCardLink.click();
-        await expect(page).toHaveURL(/.*\/exhibitions\/\d+/);
-    });
-
-    // Test 4: Verify images load correctly
-    test.skip('should load exhibition images without errors', async ({ page }) => {
-        try {
-            await page.waitForSelector('.tour-card-enhanced .exhibition-card-image, .no-tours', { state: 'visible', timeout: 30000 });
-        } catch (e) {
-            console.log('Exhibitions page took too long to load data for image test.');
-        }
-
-        const exhibitionCards = page.locator('.tour-card-enhanced'); 
-        const cardCount = await exhibitionCards.count();
-        
-        if (cardCount === 0) {
-            test.skip();
-            return;
-        }
-        
-        const firstImage = exhibitionCards.first().locator('.exhibition-card-image');
-        await expect(firstImage).toBeVisible();
-        
-        const imageSrc = await firstImage.getAttribute('src');
-        expect(imageSrc).toBeTruthy();
-        
-        const response = await page.request.get(imageSrc!);
-        expect(response.status()).toBeLessThan(400); 
-    });
     
-    // Test 5: Verify exhibitions API endpoint
+    // Test 3: Verify exhibitions API endpoint
     test('should confirm the exhibitions API endpoint is accessible and returns proper response', async ({ request }) => {
         try {
             const response = await request.get(`${API_URL}/api/exhibitions`, { timeout: 10000 });
@@ -224,7 +174,7 @@ test.describe('Exhibition Details Page Functionality', () => {
         }
     });
 
-    // Test 6: Check exhibition details page layout
+    // Test 4: Check exhibition details page layout
     test('should display exhibition details page with correct structure', async ({ page }) => {
         // Ensure we are on the success state
         await expect(page.locator('.exhibits-page-container')).toBeVisible();
@@ -239,7 +189,7 @@ test.describe('Exhibition Details Page Functionality', () => {
         await expect(description).toBeVisible();
     });
 
-    // Test 7: Verify exhibits within the exhibition load correctly
+    // Test 5: Verify exhibits within the exhibition load correctly
     test('should display exhibit images', async ({ page }) => {
         await expect(page.locator('.exhibits-page-container')).toBeVisible();
 
@@ -256,7 +206,7 @@ test.describe('Exhibition Details Page Functionality', () => {
         }
     });
 
-    // Test 8: Check navigation to individual exhibit details
+    // Test 6: Check navigation to individual exhibit details
     test('should navigate to exhibit details when an exhibit card is clicked', async ({ page }) => {
         const exhibitCards = page.locator('.exhibit-card-link');
         const cardCount = await exhibitCards.count();
@@ -274,7 +224,7 @@ test.describe('Exhibition Details Page Functionality', () => {
         await expect(page).toHaveURL(/.*\/exhibit\/\d+/);
     });
 
-    // Test 9: Verify specific exhibition API endpoint
+    // Test 7: Verify specific exhibition API endpoint
     test('should confirm the specific exhibition API endpoint returns correct data', async ({ request }) => {
         const response = await request.get(`${API_URL}/api/exhibitions/${exhibitionId}`);
         expect(response.status()).toBe(200);

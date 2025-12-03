@@ -70,11 +70,6 @@ test.describe('Scan Page Functionality and QR Code Scanner', () => {
     });
 
     test('should have working navigation buttons', async ({ page, browserName }) => {
-        // Skip navigation test in CI for problematic browsers
-        if (process.env.CI && (browserName === 'firefox' || browserName === 'webkit')) {
-            test.skip(true, `Skipping ${browserName} navigation test in CI due to timeout/stability issues`);
-        }
-        
         // Firefox-compatible load state - avoid networkidle timeout issues
         try {
             await page.waitForLoadState('domcontentloaded', { timeout: 5000 });
@@ -94,6 +89,8 @@ test.describe('Scan Page Functionality and QR Code Scanner', () => {
         await expect(exhibitsButton).toBeVisible({ timeout: 15000 });
         
         // Test home navigation with Firefox-compatible approach
+        // Scroll into view for webkit compatibility
+        await homeButton.scrollIntoViewIfNeeded();
         await homeButton.click({ timeout: 10000 });
         await page.waitForURL('/', { timeout: 15000 });
         await page.waitForLoadState('domcontentloaded', { timeout: 5000 });
@@ -107,6 +104,8 @@ test.describe('Scan Page Functionality and QR Code Scanner', () => {
         // Test exhibits navigation with Firefox-compatible selector
         const exhibitsBtn = navigation.locator('.nav-button').filter({ hasText: 'Exhibits' }).first();
         await expect(exhibitsBtn).toBeVisible({ timeout: 15000 });
+        // Scroll into view for webkit compatibility
+        await exhibitsBtn.scrollIntoViewIfNeeded();
         await exhibitsBtn.click({ timeout: 10000 });
         await page.waitForURL('/exhibitions', { timeout: 15000 });
         await page.waitForLoadState('domcontentloaded', { timeout: 5000 });
