@@ -44,20 +44,17 @@
     border-bottom: 1px solid var(--border-color);
     margin-bottom: 4rem;
     position: relative;
+    background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 50%, #e5e7eb 100%);
+    border-radius: 0;
+    margin-left: -5%;
+    margin-right: -5%;
+    padding-left: 5%;
+    padding-right: 5%;
 }
 
-/* Add subtle background gradient like home page */
+/* Remove the old subtle gradient */
 .exhibition-header::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: 
-        radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.03) 0%, transparent 40%),
-        radial-gradient(circle at 80% 20%, rgba(96, 165, 250, 0.03) 0%, transparent 40%);
-    z-index: 0;
+    display: none;
 }
 
 .exhibition-header-content {
@@ -78,11 +75,9 @@
     font-weight: 800;
     margin: 0 0 1.5rem 0;
     line-height: 1.2;
-    /* Gradient text like home page */
-    background: linear-gradient(135deg, var(--text-dark) 0%, #374151 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    /* Dark text for light gradient background */
+    color: var(--text-dark);
+    -webkit-text-fill-color: var(--text-dark);
 }
 
 /* Add underline accent like home page section headers */

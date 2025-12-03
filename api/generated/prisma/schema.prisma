@@ -1,5 +1,3 @@
-// 📁 prisma/schema.prisma
-
 generator client {
   provider      = "prisma-client-js"
   output        = "../generated/prisma"
@@ -11,70 +9,54 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ========================================================
-// CORE MODELS (Exhibition/Exhibit structure)
-// ========================================================
-
-// Exhibition model
 model Exhibition {
-  exhibitionId BigInt   @id @default(autoincrement()) @map("exhibition_id")
-  title        String   @unique @db.VarChar(255)
+  exhibitionId BigInt    @id @default(autoincrement()) @map("exhibition_id")
+  title        String    @unique @db.VarChar(255)
   description  String?
-  statusId     Int?     @map("status_id")
-  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt    DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
-
-  status   Status?   @relation(fields: [statusId], references: [statusId])
-  exhibits Exhibit[] // 1:M with Exhibit
-  images   Image[]
+  statusId     Int?      @map("status_id")
+  createdAt    DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
+  exhibits     Exhibit[]
+  status       Status?   @relation(fields: [statusId], references: [statusId], onUpdate: NoAction)
+  images       Image[]
 
   @@map("exhibitions")
 }
 
-// Exhibit Model 
 model Exhibit {
-  exhibitId             BigInt    @id @default(autoincrement()) @map("exhibit_id")
-  exhibitionId          BigInt    @map("exhibition_id") // FK to Exhibition 
-  badgeId               BigInt?   @unique @map("badge_id")
-  title                 String    @db.VarChar(255)
+  exhibitId             BigInt      @id @default(autoincrement()) @map("exhibit_id")
+  exhibitionId          BigInt?     @map("exhibition_id")
+  badgeId               BigInt?     @unique @map("badge_id")
+  title                 String      @db.VarChar(255)
+  statusId              Int?        @map("status_id")
   description           String?
-  additionalDescription String?   @map("additional_description")
-  statusId              Int?      @map("status_id")
-  createdAt             DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt             DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
-
-  exhibition Exhibition @relation(fields: [exhibitionId], references: [exhibitionId], onDelete: Cascade)
-  status     Status?    @relation(fields: [statusId], references: [statusId])
-  badge      Badge?     @relation("ExhibitToBadge", fields: [badgeId], references: [badgeId])
-
-  audio     Audio[]
-  feedbacks Feedback[]
-  images    Image[]
-  qrCodes   QRCode[]
+  additionalDescription String?     @map("additional_description")
+  createdAt             DateTime?   @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt             DateTime?   @default(now()) @map("updated_at") @db.Timestamptz(6)
+  audio                 Audio[]
+  badge                 Badge?      @relation("ExhibitToBadge", fields: [badgeId], references: [badgeId], onUpdate: NoAction)
+  exhibition            Exhibition? @relation(fields: [exhibitionId], references: [exhibitionId], onDelete: Cascade, onUpdate: NoAction)
+  status                Status?     @relation(fields: [statusId], references: [statusId], onUpdate: NoAction)
+  feedbacks             Feedback[]
+  images                Image[]
+  qrCodes               QRCode[]
 
   @@index([title], map: "idx_exhibit_title")
   @@index([createdAt], map: "idx_exhibit_created_at")
-  @@index([exhibitionId])
-  @@index([statusId])
   @@map("exhibit")
 }
 
-// ========================================================
-// RELATED MODELS (FIELD & INDEX MAPPING UPDATES)
-// ========================================================
-
 model Audio {
-  audioId     Int       @id @default(autoincrement()) @map("audio_id")
-  exhibitId   BigInt?   @map("exhibit_id") // FK to Exhibit
-  languageId  BigInt?   @map("language_id")
-  fileUrl     String?   @map("file_url") @db.VarChar(512)
-  title       String?
-  description String?
-  createdAt   DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt   DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
-
-  exhibit      Exhibit?           @relation(fields: [exhibitId], references: [exhibitId], onDelete: Cascade)
-  language     Language?          @relation(fields: [languageId], references: [languageId])
+  audioId      Int                @id @default(autoincrement()) @map("audio_id")
+  exhibitId    BigInt?            @map("exhibit_id")
+  languageId   BigInt?            @map("language_id")
+  fileUrl      String?            @map("file_url") @db.VarChar(512)
+  title        String?
+  description  String?
+  createdAt    DateTime?          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime?          @default(now()) @map("updated_at") @db.Timestamptz(6)
+  exhibit      Exhibit?           @relation(fields: [exhibitId], references: [exhibitId], onDelete: Cascade, onUpdate: NoAction)
+  language     Language?          @relation(fields: [languageId], references: [languageId], onUpdate: NoAction)
   playbackLogs AudioPlaybackLog[]
   subtitles    Subtitle[]
 
@@ -95,9 +77,8 @@ model AudioPlaybackLog {
   durationListened Int?      @map("duration_listened")
   createdAt        DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt        DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
-
-  user  User?  @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  audio Audio? @relation(fields: [audioId], references: [audioId], onDelete: Cascade)
+  audio            Audio?    @relation(fields: [audioId], references: [audioId], onDelete: Cascade, onUpdate: NoAction)
+  user             User?     @relation(fields: [userId], references: [userId], onDelete: Cascade, onUpdate: NoAction)
 
   @@index([userId], map: "idx_audio_playback_logs_user_id")
   @@index([audioId], map: "idx_audio_playback_logs_audio_id")
@@ -109,14 +90,13 @@ model AudioPlaybackLog {
 model Feedback {
   feedbackId  BigInt    @id @default(autoincrement()) @map("feedback_id")
   userId      BigInt?   @map("user_id")
-  exhibitId   BigInt?   @map("exhibit_id") // FK to Exhibit
+  exhibitId   BigInt?   @map("exhibit_id")
   rating      Int?
   description String?
   createdAt   DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt   DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
-
-  user    User?    @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  exhibit Exhibit? @relation(fields: [exhibitId], references: [exhibitId], onDelete: Cascade)
+  exhibit     Exhibit?  @relation(fields: [exhibitId], references: [exhibitId], onDelete: Cascade, onUpdate: NoAction)
+  user        User?     @relation(fields: [userId], references: [userId], onDelete: Cascade, onUpdate: NoAction)
 
   @@index([userId], map: "idx_feedback_user_id")
   @@index([exhibitId], map: "idx_feedback_exhibit_id")
@@ -127,18 +107,17 @@ model Feedback {
 }
 
 model Image {
-  imageId      BigInt    @id @default(autoincrement()) @map("image_id")
-  exhibitId    BigInt?   @map("exhibit_id") // FK to Exhibit
-  exhibitionId BigInt?   @map("exhibition_id") // FK to Exhibition
+  imageId      BigInt      @id @default(autoincrement()) @map("image_id")
+  exhibitId    BigInt?     @map("exhibit_id")
+  exhibitionId BigInt?     @map("exhibition_id")
   title        String?
   description  String?
-  fileUrl      String?   @map("file_url") @db.VarChar(512)
-  isPrimary    Boolean   @default(false) @map("is_primary")
-  createdAt    DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt    DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
-
-  exhibit    Exhibit?    @relation(fields: [exhibitId], references: [exhibitId], onDelete: Cascade)
-  exhibition Exhibition? @relation(fields: [exhibitionId], references: [exhibitionId], onDelete: Cascade)
+  fileUrl      String?     @map("file_url") @db.VarChar(512)
+  isPrimary    Boolean?    @default(false) @map("is_primary")
+  createdAt    DateTime?   @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime?   @default(now()) @map("updated_at") @db.Timestamptz(6)
+  exhibit      Exhibit?    @relation(fields: [exhibitId], references: [exhibitId], onDelete: Cascade, onUpdate: NoAction)
+  exhibition   Exhibition? @relation(fields: [exhibitionId], references: [exhibitionId], onDelete: Cascade, onUpdate: NoAction)
 
   @@index([exhibitId], map: "idx_images_exhibit_id")
   @@index([exhibitionId], map: "idx_images_exhibition_id")
@@ -149,48 +128,42 @@ model Image {
 
 model QRCode {
   qrId      Int       @id @default(autoincrement()) @map("qr_id")
-  exhibitId BigInt    @map("exhibit_id") // FK to Exhibit
+  exhibitId BigInt    @map("exhibit_id")
   qrUrl     String    @map("qr_url") @db.VarChar(255)
   createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
-
-  exhibit Exhibit @relation(fields: [exhibitId], references: [exhibitId], onDelete: Cascade)
+  exhibit   Exhibit   @relation(fields: [exhibitId], references: [exhibitId], onDelete: Cascade, onUpdate: NoAction)
 
   @@index([exhibitId], map: "idx_qr_code_exhibit_id")
   @@index([qrUrl], map: "idx_qr_code_url")
   @@map("qr_code")
 }
 
-// ========================================================
-// SUPPORTING MODELS
-// ========================================================
-
 model Language {
-  languageId BigInt    @id @default(autoincrement()) @map("language_id")
-  statusId   Int?      @map("status_id")
-  title      String
-  code       String    @unique @map("lang_code")
-  isDefault  Boolean?  @default(false) @map("is_default")
-  createdAt  DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt  DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
-
-  status    Status?    @relation(fields: [statusId], references: [statusId])
-  audio     Audio[]
-  subtitles Subtitle[]
+  languageId BigInt     @id @default(autoincrement()) @map("language_id")
+  statusId   Int?       @map("status_id")
+  title      String     @db.VarChar(255)
+  code       String     @unique @map("lang_code") @db.VarChar(10)
+  isDefault  Boolean?   @default(false) @map("is_default")
+  createdAt  DateTime?  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt  DateTime?  @default(now()) @map("updated_at") @db.Timestamptz(6)
+  audio      Audio[]
+  status     Status?    @relation(fields: [statusId], references: [statusId], onUpdate: NoAction)
+  subtitles  Subtitle[]
 
   @@index([statusId], map: "idx_language_status")
   @@index([code], map: "idx_language_code")
   @@index([title], map: "idx_language_title")
+  @@index([isDefault], map: "idx_language_is_default")
   @@map("language")
 }
 
 model Permission {
-  permissionId   Int       @id @default(autoincrement()) @map("permission_id")
-  permissionName String    @unique @map("permission_name") @db.VarChar(100)
-  description    String?
-  createdAt      DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt      DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
-
+  permissionId    Int              @id @default(autoincrement()) @map("permission_id")
+  permissionName  String           @unique @map("permission_name") @db.VarChar(100)
+  description     String?
+  createdAt       DateTime?        @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime?        @default(now()) @map("updated_at") @db.Timestamptz(6)
   rolePermissions RolePermission[]
 
   @@index([permissionName], map: "idx_permissions_name")
@@ -198,12 +171,11 @@ model Permission {
 }
 
 model Role {
-  roleId      Int       @id @default(autoincrement()) @map("role_id")
-  roleName    String    @unique @map("role_name") @db.VarChar(50)
-  description String?
-  createdAt   DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt   DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
-
+  roleId          Int              @id @default(autoincrement()) @map("role_id")
+  roleName        String           @unique @map("role_name") @db.VarChar(50)
+  description     String?
+  createdAt       DateTime?        @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime?        @default(now()) @map("updated_at") @db.Timestamptz(6)
   rolePermissions RolePermission[]
   userRoles       UserRole[]
 
@@ -212,11 +184,10 @@ model Role {
 }
 
 model RolePermission {
-  roleId       Int @map("role_id")
-  permissionId Int @map("permission_id")
-
-  role       Role       @relation(fields: [roleId], references: [roleId], onDelete: Cascade)
-  permission Permission @relation(fields: [permissionId], references: [permissionId], onDelete: Cascade)
+  roleId       Int        @map("role_id")
+  permissionId Int        @map("permission_id")
+  permission   Permission @relation(fields: [permissionId], references: [permissionId], onDelete: Cascade, onUpdate: NoAction)
+  role         Role       @relation(fields: [roleId], references: [roleId], onDelete: Cascade, onUpdate: NoAction)
 
   @@id([roleId, permissionId])
   @@index([roleId], map: "idx_roles_permission_role_id")
@@ -228,8 +199,7 @@ model Session {
   sessionId String    @id @default(dbgenerated("gen_random_uuid()")) @map("session_id") @db.Uuid
   userId    BigInt    @map("user_id")
   createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
-
-  user User @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [userId], onDelete: Cascade, onUpdate: NoAction)
 
   @@index([userId], map: "idx_sessions_user_id")
   @@index([createdAt], map: "idx_sessions_created_at")
@@ -237,13 +207,12 @@ model Session {
 }
 
 model Status {
-  statusId   Int    @id @default(autoincrement()) @map("status_id")
-  statusName String @unique @map("status_name") @db.VarChar(30)
-
-  users       User[]
-  languages   Language[]
-  exhibitions Exhibition[]
+  statusId    Int          @id @default(autoincrement()) @map("status_id")
+  statusName  String       @unique @map("status_name") @db.VarChar(30)
   exhibits    Exhibit[]
+  exhibitions Exhibition[]
+  languages   Language[]
+  users       User[]
 
   @@map("status")
 }
@@ -256,10 +225,9 @@ model Subtitle {
   createdBy  BigInt?   @map("created_by")
   createdAt  DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt  DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
-
-  audio    Audio?    @relation(fields: [audioId], references: [audioId], onDelete: Cascade)
-  language Language? @relation(fields: [languageId], references: [languageId], onDelete: SetNull)
-  user     User?     @relation(fields: [createdBy], references: [userId], onDelete: SetNull)
+  audio      Audio?    @relation(fields: [audioId], references: [audioId], onDelete: Cascade, onUpdate: NoAction)
+  user       User?     @relation(fields: [createdBy], references: [userId], onUpdate: NoAction)
+  language   Language? @relation(fields: [languageId], references: [languageId], onUpdate: NoAction)
 
   @@index([audioId], map: "idx_subtitle_audio_id")
   @@index([languageId], map: "idx_subtitle_language_id")
@@ -270,27 +238,26 @@ model Subtitle {
 }
 
 model User {
-  userId        BigInt    @id @default(autoincrement()) @map("user_id")
-  username      String    @unique @db.VarChar(100)
-  email         String    @unique @db.VarChar(100)
-  passwordHash  String    @map("password_hash") @db.VarChar(72)
-  emailVerified Boolean   @default(false) @map("email_verified")
-  statusId      Int?      @map("status_id")
-  lastLoginAt   DateTime? @map("last_login_at") @db.Timestamptz(6)
-  createdAt     DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt     DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
-
-  status                  Status?                  @relation(fields: [statusId], references: [statusId])
-  feedbacks               Feedback[]
-  roles                   UserRole[]
-  sessions                Session[]
-  subtitles               Subtitle[]
+  userId                  BigInt                   @id @default(autoincrement()) @map("user_id")
+  username                String                   @unique @db.VarChar(100)
+  email                   String                   @unique @db.VarChar(100)
+  passwordHash            String                   @map("password_hash") @db.VarChar(72)
+  emailVerified           Boolean?                 @default(false) @map("email_verified")
+  statusId                Int?                     @map("status_id")
+  lastLoginAt             DateTime?                @map("last_login_at") @db.Timestamptz(6)
+  createdAt               DateTime?                @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt               DateTime?                @default(now()) @map("updated_at") @db.Timestamptz(6)
   playbackLogs            AudioPlaybackLog[]
   adminAudits             AuditLog[]               @relation("AdminUserAudits")
   targetAudits            AuditLog[]               @relation("TargetUserAudits")
-  passwordResetTokens     PasswordResetToken[]
   emailVerificationTokens EmailVerificationToken[]
+  feedbacks               Feedback[]
+  passwordResetTokens     PasswordResetToken[]
+  sessions                Session[]
+  subtitles               Subtitle[]
+  status                  Status?                  @relation(fields: [statusId], references: [statusId], onUpdate: NoAction)
   userBadges              UserBadge[]
+  roles                   UserRole[]
 
   @@index([statusId], map: "idx_user_status")
   @@index([username], map: "idx_user_username")
@@ -305,9 +272,8 @@ model UserRole {
   userId    BigInt    @map("user_id")
   roleId    Int       @map("role_id")
   createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
-
-  user User @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  role Role @relation(fields: [roleId], references: [roleId], onDelete: Cascade)
+  role      Role      @relation(fields: [roleId], references: [roleId], onDelete: Cascade, onUpdate: NoAction)
+  user      User      @relation(fields: [userId], references: [userId], onDelete: Cascade, onUpdate: NoAction)
 
   @@id([userId, roleId])
   @@index([userId], map: "idx_userroles_user_id")
@@ -316,17 +282,16 @@ model UserRole {
 }
 
 model AuditLog {
-  auditLogId   BigInt   @id @default(autoincrement()) @map("audit_log_id")
-  adminUserId  BigInt?  @map("admin_user_id")
-  targetUserId BigInt?  @map("target_user_id")
-  resource     String   @db.VarChar(50)
-  action       String   @db.VarChar(50)
-  changes      String?  @db.Text
-  metadata     String?  @db.Text
-  timestamp    DateTime @default(now()) @db.Timestamptz(6)
-
-  adminUser  User? @relation("AdminUserAudits", fields: [adminUserId], references: [userId], onDelete: SetNull)
-  targetUser User? @relation("TargetUserAudits", fields: [targetUserId], references: [userId], onDelete: SetNull)
+  auditLogId   BigInt    @id @default(autoincrement()) @map("audit_log_id")
+  adminUserId  BigInt?   @map("admin_user_id")
+  targetUserId BigInt?   @map("target_user_id")
+  resource     String    @db.VarChar(50)
+  action       String    @db.VarChar(50)
+  changes      String?
+  metadata     String?
+  timestamp    DateTime? @default(now()) @db.Timestamptz(6)
+  adminUser    User?     @relation("AdminUserAudits", fields: [adminUserId], references: [userId], onUpdate: NoAction)
+  targetUser   User?     @relation("TargetUserAudits", fields: [targetUserId], references: [userId], onUpdate: NoAction)
 
   @@index([adminUserId], map: "idx_audit_logs_admin_user_id")
   @@index([targetUserId], map: "idx_audit_logs_target_user_id")
@@ -337,39 +302,44 @@ model AuditLog {
 }
 
 model PasswordResetToken {
-  passwordResetId BigInt   @id @default(autoincrement()) @map("password_reset_id")
-  userId          BigInt   @map("user_id")
-  token           String   @unique @db.VarChar(255)
-  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  expiresAt       DateTime @map("expires_at") @db.Timestamptz(6)
+  passwordResetId BigInt    @id @default(autoincrement()) @map("password_reset_id")
+  userId          BigInt    @map("user_id")
+  token           String    @unique @db.VarChar(255)
+  createdAt       DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  expiresAt       DateTime  @map("expires_at") @db.Timestamptz(6)
+  user            User      @relation(fields: [userId], references: [userId], onDelete: Cascade, onUpdate: NoAction)
 
-  user User @relation(fields: [userId], references: [userId], onDelete: Cascade)
-
+  @@index([createdAt], map: "idx_password_reset_created_at")
+  @@index([expiresAt], map: "idx_password_reset_expires_at")
+  @@index([token], map: "idx_password_reset_token")
+  @@index([userId], map: "idx_password_reset_user_id")
   @@map("password_reset_token")
 }
 
 model EmailVerificationToken {
-  emailVerificationId BigInt   @id @default(autoincrement()) @map("email_verification_id")
-  userId              BigInt   @map("user_id")
-  token               String   @unique @db.VarChar(255)
-  createdAt           DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  expiresAt           DateTime @map("expires_at") @db.Timestamptz(6)
+  emailVerificationId BigInt    @id @default(autoincrement()) @map("email_verification_id")
+  userId              BigInt    @map("user_id")
+  token               String    @unique @db.VarChar(255)
+  createdAt           DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  expiresAt           DateTime  @map("expires_at") @db.Timestamptz(6)
+  user                User      @relation(fields: [userId], references: [userId], onDelete: Cascade, onUpdate: NoAction)
 
-  user User @relation(fields: [userId], references: [userId], onDelete: Cascade)
-
+  @@index([createdAt], map: "idx_email_verification_created_at")
+  @@index([expiresAt], map: "idx_email_verification_expires_at")
+  @@index([token], map: "idx_email_verification_token")
+  @@index([userId], map: "idx_email_verification_user_id")
   @@map("email_verification_token")
 }
 
 model Badge {
-  badgeId     BigInt    @id @default(autoincrement()) @map("badge_id")
-  name        String?   @db.Text
-  description String?   @db.Text
-  imageUrl    String?   @map("image_url") @db.VarChar(512)
-  createdAt   DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt   DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
-
-  exhibit    Exhibit?    @relation("ExhibitToBadge")
-  userBadges UserBadge[]
+  badgeId     BigInt      @id @default(autoincrement()) @map("badge_id")
+  name        String?
+  description String?
+  imageUrl    String?     @map("image_url") @db.VarChar(512)
+  createdAt   DateTime?   @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime?   @default(now()) @map("updated_at") @db.Timestamptz(6)
+  exhibit     Exhibit?    @relation("ExhibitToBadge")
+  userBadges  UserBadge[]
 
   @@map("badge")
 }
@@ -378,12 +348,16 @@ model UserBadge {
   userId    BigInt    @map("user_id")
   badgeId   BigInt    @map("badge_id")
   createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
-
-  user  User  @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  badge Badge @relation(fields: [badgeId], references: [badgeId], onDelete: Cascade)
+  badge     Badge     @relation(fields: [badgeId], references: [badgeId], onDelete: Cascade, onUpdate: NoAction)
+  user      User      @relation(fields: [userId], references: [userId], onDelete: Cascade, onUpdate: NoAction)
 
   @@id([userId, badgeId])
-  @@index([userId], map: "idx_user_badge_user_id")
-  @@index([badgeId], map: "idx_user_badge_badge_id")
   @@map("user_badge")
+}
+
+model settings {
+  key        String    @id
+  value      Json
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at DateTime? @default(now()) @db.Timestamptz(6)
 }
