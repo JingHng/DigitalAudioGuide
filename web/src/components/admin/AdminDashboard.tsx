@@ -36,6 +36,24 @@ interface UserStats {
   averageSessionTime: number;
 }
 
+interface ExhibitReviewAnalytics {
+  exhibitId: string;
+  title: string;
+  totalReviews: number;
+  averageRating: number;
+  ratingDistribution: { [key: number]: number };
+  recentReviews: { rating: number; comment: string; created_at: string; user?: string }[];
+}
+
+interface ExhibitionReviewAnalytics {
+  exhibitionId: string;
+  title: string;
+  totalReviews: number;
+  averageRating: number;
+  ratingDistribution: { [key: number]: number };
+  recentReviews: { rating: number; comment: string; created_at: string; user?: string }[];
+}
+
 interface ExhibitStats {
   totalExhibits: number;
   popularExhibits: { id: string; name: string; visits: number }[];
@@ -118,6 +136,10 @@ const AdminDashboard = () => {
     totalActions: 0,
     recentActions: [],
   });
+
+  // --- Review Analytics State ---
+  const [exhibitReviewAnalytics, setExhibitReviewAnalytics] = useState<ExhibitReviewAnalytics[]>([]);
+  const [exhibitionReviewAnalytics, setExhibitionReviewAnalytics] = useState<ExhibitionReviewAnalytics[]>([]);
 
   // Function to validate date range
   const validateDateRange = (
@@ -397,7 +419,96 @@ const AdminDashboard = () => {
   // Load dashboard data on component mount
   useEffect(() => {
     fetchDashboardStats();
+    fetchReviewAnalytics();
   }, []);
+
+  // --- Fetch Review Analytics ---
+  /**
+   * Fetches review analytics for exhibitions and exhibits.
+   * For each exhibition, aggregates review statistics (average rating, total reviews, rating distribution)
+   * and collects recent reviews from all exhibits in the exhibition.
+   * For each exhibit, fetches review statistics and recent reviews.
+   */
+  const fetchReviewAnalytics = async () => {
+    try {
+      // Fetch all exhibitions and exhibits
+      const exhibitionsRes = await apiClient.get("/exhibitions");
+      const exhibitions = exhibitionsRes.data || [];
+  
+      // For each exhibition, fetch review stats and aggregate recent reviews
+      const exhibitionAnalytics: ExhibitionReviewAnalytics[] = await Promise.all(
+        exhibitions.map(async (exhibition: any) => {
+          // Get aggregated review stats for the exhibition
+          const statsRes = await apiClient.get(`/reviews/exhibition/${exhibition.exhibitionId}/stats`);
+          const stats = statsRes.data?.data || {};
+          // Aggregate recent reviews from all exhibits in the exhibition
+          let recentReviews: any[] = [];
+          if (exhibition.exhibits && exhibition.exhibits.length > 0) {
+            for (const exhibit of exhibition.exhibits) {
+              const reviewsRes = await apiClient.get(`/reviews/exhibit/${exhibit.exhibitId}?limit=5`);
+              if (reviewsRes.data?.data?.reviews) {
+                recentReviews = recentReviews.concat(
+                  reviewsRes.data.data.reviews.map((r: any) => ({
+                    rating: r.rating,
+                    comment: r.comment,
+                    created_at: r.created_at,
+                    user: r.user?.username || r.user?.email || "Anonymous",
+                  }))
+                );
+              }
+            }
+            // Sort reviews by most recent and limit to 5
+            recentReviews.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+            recentReviews = recentReviews.slice(0, 5);
+          }
+          return {
+            exhibitionId: exhibition.exhibitionId,
+            title: exhibition.title,
+            totalReviews: stats.total_reviews || 0,
+            averageRating: stats.average_rating || 0,
+            ratingDistribution: stats.rating_distribution || {},
+            recentReviews,
+          };
+        })
+      );
+      setExhibitionReviewAnalytics(exhibitionAnalytics);
+  
+      // For each exhibit, fetch review stats and recent reviews
+      let allExhibits: any[] = [];
+      exhibitions.forEach((exhibition: any) => {
+        if (exhibition.exhibits) allExhibits = allExhibits.concat(exhibition.exhibits);
+      });
+      const exhibitAnalytics: ExhibitReviewAnalytics[] = await Promise.all(
+        allExhibits.map(async (exhibit: any) => {
+          // Get review stats for the exhibit
+          const statsRes = await apiClient.get(`/reviews/exhibit/${exhibit.exhibitId}/stats`);
+          const stats = statsRes.data?.data || {};
+          // Get recent reviews for the exhibit
+          let recentReviews: any[] = [];
+          const reviewsRes = await apiClient.get(`/reviews/exhibit/${exhibit.exhibitId}?limit=5`);
+          if (reviewsRes.data?.data?.reviews) {
+            recentReviews = reviewsRes.data.data.reviews.map((r: any) => ({
+              rating: r.rating,
+              comment: r.comment,
+              created_at: r.created_at,
+              user: r.user?.username || r.user?.email || "Anonymous",
+            }));
+          }
+          return {
+            exhibitId: exhibit.exhibitId,
+            title: exhibit.title,
+            totalReviews: stats.total_reviews || 0,
+            averageRating: stats.average_rating || 0,
+            ratingDistribution: stats.rating_distribution || {},
+            recentReviews,
+          };
+        })
+      );
+      setExhibitReviewAnalytics(exhibitAnalytics);
+    } catch (error) {
+      console.error("Error fetching review analytics:", error);
+    }
+  };
 
   // Update dates when switching to period filter (only when actually switching TO period)
   useEffect(() => {
@@ -1006,7 +1117,86 @@ const AdminDashboard = () => {
             </div>
           </div>
         )}
+      {/* --- Review Analytics Section ---
+        Review Analytics Section:
+        - Shows aggregated review statistics for exhibitions and exhibits.
+        - Displays total reviews, average rating, rating distribution, and recent reviews.
+        - Data is fetched and aggregated in fetchReviewAnalytics above.
+      */}
+      <div className="review-analytics-section">
+        <h2>Review Analytics</h2>
+        <div className="review-analytics-grid">
+          {/* Exhibition Review Analytics */}
+          <div className="review-analytics-block">
+            <h3>Exhibitions</h3>
+            {exhibitionReviewAnalytics.map((exh) => (
+              <div key={exh.exhibitionId} className="review-analytics-card">
+                <h4>{exh.title}</h4>
+                <div className="review-kpis">
+                  <span>Total Reviews: {exh.totalReviews}</span>
+                  <span>Average Rating: {exh.averageRating.toFixed(2)}</span>
+                </div>
+                <div className="review-distribution">
+                  <strong>Rating Distribution:</strong>
+                  <ul>
+                    {Object.entries(exh.ratingDistribution).map(([star, count]) => (
+                      <li key={star}>{star}★: {count}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="recent-reviews">
+                  <strong>Recent Reviews:</strong>
+                  <ul>
+                    {exh.recentReviews.length === 0 && <li>No recent reviews.</li>}
+                    {exh.recentReviews.map((r, idx) => (
+                      <li key={idx}>
+                        <span>{r.rating}★</span> — <span>{r.comment || "No comment"}</span>
+                        <span style={{ marginLeft: "1em", color: "#888" }}>{r.user}</span>
+                        <span style={{ marginLeft: "1em", fontSize: "0.9em" }}>{new Date(r.created_at).toLocaleDateString()}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* Exhibit Review Analytics */}
+          <div className="review-analytics-block">
+            <h3>Exhibits</h3>
+            {exhibitReviewAnalytics.map((ex) => (
+              <div key={ex.exhibitId} className="review-analytics-card">
+                <h4>{ex.title}</h4>
+                <div className="review-kpis">
+                  <span>Total Reviews: {ex.totalReviews}</span>
+                  <span>Average Rating: {ex.averageRating.toFixed(2)}</span>
+                </div>
+                <div className="review-distribution">
+                  <strong>Rating Distribution:</strong>
+                  <ul>
+                    {Object.entries(ex.ratingDistribution).map(([star, count]) => (
+                      <li key={star}>{star}★: {count}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="recent-reviews">
+                  <strong>Recent Reviews:</strong>
+                  <ul>
+                    {ex.recentReviews.length === 0 && <li>No recent reviews.</li>}
+                    {ex.recentReviews.map((r, idx) => (
+                      <li key={idx}>
+                        <span>{r.rating}★</span> — <span>{r.comment || "No comment"}</span>
+                        <span style={{ marginLeft: "1em", color: "#888" }}>{r.user}</span>
+                        <span style={{ marginLeft: "1em", fontSize: "0.9em" }}>{new Date(r.created_at).toLocaleDateString()}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
+    </div>
     </AdminLayout>
   );
 };

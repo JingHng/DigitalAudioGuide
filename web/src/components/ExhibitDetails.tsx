@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, Link as RouterLink } from "react-router-dom";
 import apiClient from "../utils/apiClient";
+import { fetchExhibitRating, fetchExhibitReviews, submitExhibitReview } from "../utils/api";
 import {
   Play,
   Pause,
@@ -24,6 +25,7 @@ import "./ExhibitDetails.minimal.css";
 import "../styles/SmartExhibit.css";
 import EarnBadgeModal from "./earnBadgeModal";
 import audioLogService from "../services/audioLogService";
+import { useAuth } from "../contexts/AuthContext";
 
 // --- Constants & Types  ---
 const BACKEND_URL = import.meta.env.VITE_API_TARGET || "";
@@ -69,8 +71,18 @@ interface Exhibit {
 const ExhibitDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
 
+  // --- Review system state ---
+  const [rating, setRating] = useState<number>(0);
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [userRating, setUserRating] = useState<number>(0);
+  const [userDescription, setUserDescription] = useState<string>('');
+  const [submitting, setSubmitting] = useState(false);
+  const [reviewError, setReviewError] = useState<string | null>(null);
+  const [reviewSuccess, setReviewSuccess] = useState<string | null>(null);
+
   // State management
-  const user = null; // Forces all user-dependent logic to be skipped
+  // Use authentication context to get current user
+  const { user } = useAuth();
   const [exhibit, setExhibit] = useState<Exhibit | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -112,23 +124,76 @@ const ExhibitDetails: React.FC = () => {
       .get(`/exhibits/${id}`)
       .then((res) => {
         const data: Exhibit = res.data;
-        console.log("📡 API Response for exhibit:", id);
-        console.log("🎵 Audio array:", data.audio);
-        console.log("🎵 Audio count:", data.audio?.length || 0);
         setExhibit(data);
         const firstAvailableAudio = data.audio.find((a) => a.fileUrl);
         if (firstAvailableAudio) {
-          console.log(
-            "Setting initial audio:",
-            firstAvailableAudio.title,
-            firstAvailableAudio.audioId
-          );
-          setSelectedAudioId(firstAvailableAudio.audioId.toString()); // Removed setting of unused selectedLanguageId
+          setSelectedAudioId(firstAvailableAudio.audioId.toString());
         }
       })
       .catch(() => setError("Could not load exhibit information."))
       .finally(() => setLoading(false));
   }, [id]);
+
+  // Fetch rating and reviews
+  useEffect(() => {
+    if (!id) return;
+    fetchExhibitRating(id)
+      .then(setRating)
+      .catch((err) => {
+        let backendMsg = "Failed to fetch exhibit rating.";
+        if (err?.response?.data?.message) {
+          backendMsg = err.response.data.message;
+        } else if (err?.message) {
+          backendMsg = err.message;
+        }
+        setRating(0);
+        console.error("Fetch exhibit rating error:", err);
+      });
+    fetchExhibitReviews(id)
+      .then(setReviews)
+      .catch((err) => {
+        let backendMsg = "Failed to fetch exhibit reviews.";
+        if (err?.response?.data?.message) {
+          backendMsg = err.response.data.message;
+        } else if (err?.message) {
+          backendMsg = err.message;
+        }
+        setReviews([]);
+        console.error("Fetch exhibit reviews error:", err);
+      });
+  }, [id, reviewSuccess]);
+
+  // Handle review submission
+  const handleReviewSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setReviewError(null);
+    setReviewSuccess(null);
+    try {
+      if (!user || !user.userId) {
+        setReviewError("You must be logged in to submit a review.");
+        setSubmitting(false);
+        return;
+      }
+      await submitExhibitReview(id!, userRating, userDescription, user.userId);
+      setReviewSuccess("Review submitted!");
+      setUserRating(0);
+      setUserDescription('');
+    } catch (err: any) {
+      // Try to extract backend error message if available
+      let backendMsg = "Failed to submit review.";
+      if (err?.response?.data?.message) {
+        backendMsg = err.response.data.message;
+      } else if (err?.message) {
+        backendMsg = err.message;
+      }
+      setReviewError(backendMsg);
+      // Optionally log full error for debugging
+      console.error("Review submission error:", err);
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   // Handle audio selection changes & set audio src
   useEffect(() => {
@@ -436,6 +501,73 @@ const ExhibitDetails: React.FC = () => {
 
   return (
     <div className="smart-exhibit-home">
+      {/* --- Exhibit Rating --- */}
+      <div className="exhibit-rating" style={{ margin: '16px 0 8px 0', textAlign: 'center' }}>
+        <span>
+          {Array.from({ length: 5 }).map((_, i) => (
+            <span key={i} style={{ color: i < rating ? '#FFD700' : '#ccc', fontSize: '1.5em' }}>★</span>
+          ))}
+          <span style={{ marginLeft: 8, fontSize: '1.1em', color: '#555' }}>
+            {rating ? rating.toFixed(1) : '—'} / 5
+          </span>
+        </span>
+      </div>
+
+      {/* --- Review Submission Form --- */}
+      <div className="exhibit-review-form" style={{ margin: '16px auto', maxWidth: 400, background: '#f9f9f9', padding: 16, borderRadius: 8 }}>
+        <h3 style={{ marginBottom: 8 }}>Submit a Review</h3>
+        <form onSubmit={handleReviewSubmit}>
+          <div style={{ marginBottom: 8 }}>
+            <label>Rating: </label>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <span
+                key={i}
+                style={{ cursor: 'pointer', color: i < userRating ? '#FFD700' : '#ccc', fontSize: '1.3em' }}
+                onClick={() => setUserRating(i + 1)}
+                data-testid={`star-${i + 1}`}
+              >★</span>
+            ))}
+          </div>
+          <div style={{ marginBottom: 8 }}>
+            <textarea
+              placeholder="Optional description..."
+              value={userDescription}
+              onChange={e => setUserDescription(e.target.value)}
+              rows={3}
+              style={{ width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ddd' }}
+            />
+          </div>
+          <button type="submit" disabled={submitting || userRating === 0} style={{ padding: '8px 16px', borderRadius: 4, background: '#007bff', color: '#fff', border: 'none' }}>
+            {submitting ? 'Submitting...' : 'Submit Review'}
+          </button>
+          {reviewError && <div style={{ color: 'red', marginTop: 8 }}>{reviewError}</div>}
+          {reviewSuccess && <div style={{ color: 'green', marginTop: 8 }}>{reviewSuccess}</div>}
+        </form>
+      </div>
+
+      {/* --- Review List --- */}
+      <div className="exhibit-review-list" style={{ margin: '24px auto', maxWidth: 600 }}>
+        <h3 style={{ marginBottom: 8 }}>Reviews</h3>
+        {reviews.length === 0 ? (
+          <div style={{ color: '#888', fontStyle: 'italic' }}>No reviews yet.</div>
+        ) : (
+          <ul style={{ listStyle: 'none', padding: 0 }}>
+            {reviews.map((review, idx) => (
+              <li key={idx} style={{ marginBottom: 16, padding: 12, background: '#fff', borderRadius: 6, boxShadow: '0 1px 4px #eee' }}>
+                <div>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <span key={i} style={{ color: i < review.rating ? '#FFD700' : '#ccc', fontSize: '1.1em' }}>★</span>
+                  ))}
+                  <span style={{ marginLeft: 8, color: '#555', fontSize: '0.95em' }}>{review.rating} / 5</span>
+                </div>
+                {review.description && <div style={{ marginTop: 4 }}>{review.description}</div>}
+                <div style={{ fontSize: '0.85em', color: '#aaa', marginTop: 4 }}>{review.createdAt ? new Date(review.createdAt).toLocaleString() : ''}</div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
       {/* Audio element */}
       <audio
         ref={audioRef}

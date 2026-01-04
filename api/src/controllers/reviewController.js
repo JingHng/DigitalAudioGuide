@@ -1,14 +1,18 @@
 const ReviewModel = require('../models/reviewModel');
 
 class ReviewController {
-  
-  // GET /api/reviews - Get all reviews with pagination and filtering
+  /**
+   * GET /api/reviews
+   * Get all reviews with pagination and filtering.
+   * Supports filtering by exhibit, user, rating range, and sorting.
+   * Returns reviews and pagination info.
+   */
   static async getAllReviews(req, res) {
     try {
-      const { 
-        page = 1, 
-        limit = 10, 
-        exhibit_id, 
+      const {
+        page = 1,
+        limit = 10,
+        exhibit_id,
         user_id,
         min_rating,
         max_rating,
@@ -79,7 +83,12 @@ class ReviewController {
   // POST /api/reviews - Create a new review
   static async createReview(req, res) {
     try {
-      const { user_id, exhibit_id, rating, comment } = req.body;
+      // Log for debugging authentication
+      console.log('[ReviewController] Authorization header:', req.headers.authorization);
+      console.log('[ReviewController] req.user:', req.user);
+
+      const { exhibit_id, rating, comment } = req.body;
+      const user_id = req.user && req.user.userId;
 
       // Validate required fields
       if (!user_id || !exhibit_id || !rating) {
@@ -117,14 +126,7 @@ class ReviewController {
         });
       }
 
-      // Check if user has already reviewed this exhibit
-      const hasReviewed = await ReviewModel.hasUserReviewedExhibit(user_id, exhibit_id);
-      if (hasReviewed) {
-        return res.status(409).json({
-          success: false,
-          error: 'You have already reviewed this exhibit'
-        });
-      }
+      // No duplicate review check; unlimited reviews allowed
 
       const review = await ReviewModel.createReview({ user_id, exhibit_id, rating, comment });
 
@@ -232,7 +234,11 @@ class ReviewController {
     }
   }
 
-  // GET /api/reviews/exhibit/:exhibit_id/stats - Get review statistics for an exhibit
+  /**
+   * GET /api/reviews/exhibit/:exhibit_id/stats
+   * Get review statistics for a specific exhibit.
+   * Returns average rating, total reviews, and rating distribution.
+   */
   static async getExhibitReviewStats(req, res) {
     try {
       const { exhibit_id } = req.params;
@@ -248,6 +254,60 @@ class ReviewController {
       res.status(500).json({
         success: false,
         error: 'Failed to fetch review statistics'
+      });
+    }
+  }
+
+  // GET /api/reviews/exhibition/:exhibition_id/stats - Get review statistics for an exhibition
+  static async getExhibitionReviewStats(req, res) {
+    try {
+      const { exhibition_id } = req.params;
+      const stats = await ReviewModel.getExhibitionReviewStats(exhibition_id);
+      res.json({
+        success: true,
+        data: stats
+      });
+    } catch (error) {
+      console.error('Error fetching exhibition review stats:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to fetch exhibition review statistics'
+      });
+    }
+  }
+
+  // GET /api/reviews/exhibit/:exhibit_id - Get all reviews for a specific exhibit
+  static async getReviewsByExhibit(req, res) {
+    try {
+      const { exhibit_id } = req.params;
+      const reviews = await ReviewModel.getReviewsByExhibit(exhibit_id);
+      res.json({
+        success: true,
+        data: reviews
+      });
+    } catch (error) {
+      console.error('Error fetching reviews by exhibit:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to fetch reviews by exhibit'
+      });
+    }
+  }
+
+  // GET /api/reviews/exhibit/:exhibit_id/rating - Get average rating for a specific exhibit
+  static async getExhibitAverageRating(req, res) {
+    try {
+      const { exhibit_id } = req.params;
+      const avgRating = await ReviewModel.getExhibitAverageRating(exhibit_id);
+      res.json({
+        success: true,
+        data: { average_rating: avgRating }
+      });
+    } catch (error) {
+      console.error('Error fetching average rating:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to fetch average rating'
       });
     }
   }
@@ -286,7 +346,9 @@ class ReviewController {
         error: 'Failed to fetch user reviews'
       });
     }
-  }
+
+  // End of last valid method in class
+}
 }
 
 module.exports = ReviewController;

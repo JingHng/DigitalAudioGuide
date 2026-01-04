@@ -1,39 +1,41 @@
-// models/reviewModel.js - Fixed version
-const { PrismaClient } = require('../../generated/prisma/client');
+const { PrismaClient } = require('../../generated/prisma');
 const prisma = new PrismaClient();
-
 class ReviewModel {
-  
-  // Get all reviews with pagination and filtering
+  /**
+   * Get all reviews with pagination and filtering.
+   * Supports filtering by exhibit, user, rating range, and sorting.
+   * Returns reviews with user and exhibit details.
+   */
   static async getAllReviews(filters, pagination, sorting) {
     try {
       const { exhibit_id, user_id, min_rating, max_rating } = filters;
       const { skip, take } = pagination;
       const { sort_by, sort_order } = sorting;
 
-      // Build WHERE conditions
+      // Build WHERE conditions for SQL query
       let whereConditions = [];
       let params = [];
       let paramIndex = 1;
 
+      // Filter by exhibit
       if (exhibit_id) {
         whereConditions.push(`f.exhibit_id = $${paramIndex}`);
         params.push(parseInt(exhibit_id));
         paramIndex++;
       }
-      
+      // Filter by user
       if (user_id) {
         whereConditions.push(`f.user_id = $${paramIndex}`);
         params.push(parseInt(user_id));
         paramIndex++;
       }
-      
+      // Filter by minimum rating
       if (min_rating) {
         whereConditions.push(`f.rating >= $${paramIndex}`);
         params.push(parseInt(min_rating));
         paramIndex++;
       }
-      
+      // Filter by maximum rating
       if (max_rating) {
         whereConditions.push(`f.rating <= $${paramIndex}`);
         params.push(parseInt(max_rating));
@@ -51,9 +53,9 @@ class ReviewModel {
       const orderField = fieldMap[sort_by] || 'f.created_at';
       const orderDirection = sort_order === 'asc' ? 'ASC' : 'DESC';
 
-      // Get reviews with user and exhibit data
+      // SQL query to get reviews with user and exhibit data
       const reviewsQuery = `
-        SELECT 
+        SELECT
           f.feedback_id, f.user_id, f.exhibit_id, f.rating, f.description, f.created_at, f.updated_at,
           u.username, u.email,
           e.title as exhibit_title, e.description as exhibit_description
@@ -64,18 +66,17 @@ class ReviewModel {
         ORDER BY ${orderField} ${orderDirection}
         LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
       `;
-      
       params.push(take, skip);
 
-      // Get total count
+      // SQL query to get total count for pagination
       const countQuery = `
         SELECT COUNT(*) as total
         FROM feedback f
         ${whereClause}
       `;
-      
       const countParams = params.slice(0, -2); // Remove LIMIT and OFFSET params
 
+      // Execute queries in parallel
       const [reviews, countResult] = await Promise.all([
         prisma.$queryRawUnsafe(reviewsQuery, ...params),
         prisma.$queryRawUnsafe(countQuery, ...countParams)
@@ -318,67 +319,121 @@ class ReviewModel {
     }
   }
 
-  // Check if user has already reviewed exhibit
-  static async hasUserReviewedExhibit(userId, exhibitId) {
-    try {
-      const existingReview = await prisma.feedback.findFirst({
-        where: {
-          userId: BigInt(userId),
-          exhibitId: BigInt(exhibitId)
-        }
-      });
-      return !!existingReview;
-    } catch (error) {
-      console.error('Error in ReviewModel.hasUserReviewedExhibit:', error);
-      throw error;
+    // Check if user has already reviewed exhibit
+    // (No longer used; unlimited reviews allowed)
+    static async hasUserReviewedExhibit(userId, exhibitId) {
+      return false;
     }
-  }
 
-  // Get review statistics for an exhibit
-  static async getExhibitReviewStats(exhibitId) {
-    try {
-      const stats = await prisma.feedback.aggregate({
-        where: {
-          exhibitId: BigInt(exhibitId)
-        },
-        _avg: {
-          rating: true
-        },
-        _count: {
-          feedbackId: true
+    /**
+     * Get review statistics for a specific exhibit.
+     * Returns average rating, total reviews, and rating distribution (1-5 stars).
+     */
+    static async getExhibitReviewStats(exhibitId) {
+      try {
+        // Aggregate average rating and total count
+        const stats = await prisma.feedback.aggregate({
+          where: {
+            exhibitId: BigInt(exhibitId)
+          },
+          _avg: {
+            rating: true
+          },
+          _count: {
+            feedbackId: true
+          }
+        });
+
+        // Get rating distribution (how many reviews for each rating value)
+        const ratingDistribution = await prisma.feedback.groupBy({
+          by: ['rating'],
+          where: {
+            exhibitId: BigInt(exhibitId)
+          },
+          _count: {
+            feedbackId: true
+          }
+        });
+
+        // Format rating distribution as { 1: count, 2: count, ... }
+        const distribution = {};
+        for (let i = 1; i <= 5; i++) {
+          distribution[i] = 0;
         }
-      });
+        ratingDistribution.forEach(item => {
+          distribution[item.rating] = item._count.feedbackId;
+        });
 
-      // Get rating distribution
-      const ratingDistribution = await prisma.feedback.groupBy({
-        by: ['rating'],
-        where: {
-          exhibitId: BigInt(exhibitId)
-        },
-        _count: {
-          feedbackId: true
-        }
-      });
-
-      // Format rating distribution
-      const distribution = {};
-      for (let i = 1; i <= 5; i++) {
-        distribution[i] = 0;
+        return {
+          average_rating: stats._avg.rating || 0,
+          total_reviews: stats._count.feedbackId || 0,
+          rating_distribution: distribution
+        };
+      } catch (error) {
+        console.error('Error in ReviewModel.getExhibitReviewStats:', error);
+        throw error;
       }
-      ratingDistribution.forEach(item => {
-        distribution[item.rating] = item._count.feedbackId;
-      });
-
-      return {
-        average_rating: stats._avg.rating || 0,
-        total_reviews: stats._count.feedbackId || 0,
-        rating_distribution: distribution
-      };
-    } catch (error) {
-      console.error('Error in ReviewModel.getExhibitReviewStats:', error);
-      throw error;
     }
-  }
+  
+    /**
+     * Get review statistics for an exhibition (aggregates all exhibits).
+     * Returns average rating, total reviews, and rating distribution for all exhibits in the exhibition.
+     */
+    static async getExhibitionReviewStats(exhibitionId) {
+      try {
+        // Get all exhibit IDs for the exhibition
+        const exhibits = await prisma.exhibit.findMany({
+          where: { exhibitionId: BigInt(exhibitionId) },
+          select: { exhibitId: true }
+        });
+        const exhibitIds = exhibits.map(e => e.exhibitId);
+
+        // If no exhibits, return zeroed stats
+        if (exhibitIds.length === 0) {
+          return {
+            average_rating: 0,
+            total_reviews: 0,
+            rating_distribution: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
+          };
+        }
+
+        // Aggregate feedbacks for all exhibits in the exhibition
+        const stats = await prisma.feedback.aggregate({
+          where: {
+            exhibitId: { in: exhibitIds }
+          },
+          _avg: { rating: true },
+          _count: { feedbackId: true }
+        });
+
+        // Get rating distribution for all exhibits
+        const ratingDistribution = await prisma.feedback.groupBy({
+          by: ['rating'],
+          where: {
+            exhibitId: { in: exhibitIds }
+          },
+          _count: { feedbackId: true }
+        });
+
+        // Format rating distribution as { 1: count, ... }
+        const distribution = {};
+        for (let i = 1; i <= 5; i++) {
+          distribution[i] = 0;
+        }
+        ratingDistribution.forEach(item => {
+          distribution[item.rating] = item._count.feedbackId;
+        });
+
+        return {
+          average_rating: stats._avg.rating || 0,
+          total_reviews: stats._count.feedbackId || 0,
+          rating_distribution: distribution
+        };
+      } catch (error) {
+        console.error('Error in ReviewModel.getExhibitionReviewStats:', error);
+        throw error;
+      }
+    }
 
   // Get reviews by user
   static async getReviewsByUser(userId, pagination) {
@@ -431,6 +486,71 @@ class ReviewModel {
       return { reviews: transformedReviews, totalCount };
     } catch (error) {
       console.error('Error in ReviewModel.getReviewsByUser:', error);
+      throw error;
+    }
+  }
+  /**
+   * Get all reviews for a specific exhibit.
+   * Returns an array of reviews for the given exhibitId.
+   */
+  static async getReviewsByExhibit(exhibitId) {
+    try {
+      const reviews = await prisma.feedback.findMany({
+        where: {
+          exhibitId: BigInt(exhibitId)
+        },
+        orderBy: {
+          createdAt: 'desc'
+        },
+        include: {
+          user: {
+            select: {
+              userId: true,
+              username: true,
+              email: true
+            }
+          }
+        }
+      });
+
+      // Transform the response
+      return reviews.map(review => ({
+        feedback_id: Number(review.feedbackId),
+        user_id: Number(review.userId),
+        exhibit_id: Number(review.exhibitId),
+        rating: review.rating,
+        comment: review.description,
+        created_at: review.createdAt,
+        updated_at: review.updatedAt,
+        user: {
+          user_id: Number(review.user.userId),
+          username: review.user.username,
+          email: review.user.email
+        }
+      }));
+    } catch (error) {
+      console.error('Error in ReviewModel.getReviewsByExhibit:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get average rating for a specific exhibit.
+   * Returns a number (average rating) for the given exhibitId.
+   */
+  static async getExhibitAverageRating(exhibitId) {
+    try {
+      const stats = await prisma.feedback.aggregate({
+        where: {
+          exhibitId: BigInt(exhibitId)
+        },
+        _avg: {
+          rating: true
+        }
+      });
+      return stats._avg.rating || 0;
+    } catch (error) {
+      console.error('Error in ReviewModel.getExhibitAverageRating:', error);
       throw error;
     }
   }

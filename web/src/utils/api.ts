@@ -50,3 +50,47 @@ export async function authFetch(url: string, options: RequestInit = {}): Promise
 
   return response;
 }
+
+// --- Review & Rating API helpers ---
+
+export async function fetchExhibitionRating(exhibitionId: string): Promise<number> {
+  const res = await fetch(`/api/reviews/exhibition/${exhibitionId}/rating`);
+  if (!res.ok) throw new Error("Failed to fetch exhibition rating");
+  const data = await res.json();
+  return data.rating ?? 0;
+}
+
+export async function fetchExhibitRating(exhibitId: string): Promise<number> {
+  const res = await fetch(`/api/reviews/exhibit/${exhibitId}/rating`);
+  if (!res.ok) throw new Error("Failed to fetch exhibit rating");
+  const data = await res.json();
+  return data.rating ?? 0;
+}
+
+export async function fetchExhibitReviews(exhibitId: string): Promise<any[]> {
+  const res = await fetch(`/api/reviews/exhibit/${exhibitId}`);
+  if (!res.ok) throw new Error("Failed to fetch exhibit reviews");
+  return await res.json();
+}
+
+export async function submitExhibitReview(
+  exhibitId: string,
+  rating: number,
+  description?: string,
+  userId?: string
+): Promise<any> {
+  // userId should be provided by the caller (from auth context or similar)
+  if (!userId) throw new Error("User ID required to submit review");
+  const res = await authFetch(`/api/reviews`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      user_id: userId,
+      exhibit_id: exhibitId,
+      rating,
+      comment: description,
+    }),
+  });
+  if (!res.ok) throw new Error("Failed to submit review");
+  return await res.json();
+}
