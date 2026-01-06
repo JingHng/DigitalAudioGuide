@@ -30,6 +30,9 @@ router.get('/exhibit/:exhibit_id', ReviewController.getReviewsByExhibit);
 // Note: This must come before /:id route to avoid conflicts
 router.get('/exhibition/:exhibition_id/stats', ReviewController.getExhibitionReviewStats);
 
+// GET /api/reviews/exhibition/:exhibition_id/rating - Get average rating for an exhibition
+router.get('/exhibition/:exhibition_id/rating', ReviewController.getExhibitionAverageRating);
+
 // GET /api/reviews/user/:user_id - Get all reviews by a specific user
 // Note: This must come before /:id route to avoid conflicts
 router.get('/user/:user_id', ReviewController.getReviewsByUser);

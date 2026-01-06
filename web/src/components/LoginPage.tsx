@@ -48,8 +48,13 @@ const LoginPage: React.FC = () => {
         password,
       });
 
-      // On success, save the token to localStorage
+      // On success, save the token to localStorage (legacy and new format)
       localStorage.setItem("token", response.data.token);
+      // Also store in 'auth' for new code compatibility
+      localStorage.setItem(
+        "auth",
+        JSON.stringify({ accessToken: response.data.token, refreshToken: response.data.refreshToken || null })
+      );
 
       // Store user data for easy access
       if (response.data.user) {

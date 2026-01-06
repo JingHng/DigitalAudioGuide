@@ -1,6 +1,31 @@
 const { PrismaClient } = require('../../generated/prisma');
 const prisma = new PrismaClient();
 class ReviewModel {
+    /**
+     * Get average rating for all exhibits in a specific exhibition.
+     * Returns a number (average rating) for the given exhibitionId.
+     */
+    static async getExhibitionAverageRating(exhibitionId) {
+      try {
+        // Get all exhibit IDs for the exhibition
+        const exhibits = await prisma.exhibit.findMany({
+          where: { exhibitionId: BigInt(exhibitionId) },
+          select: { exhibitId: true }
+        });
+        const exhibitIds = exhibits.map(e => e.exhibitId);
+        if (exhibitIds.length === 0) return 0;
+
+        // Aggregate feedbacks for all exhibits in the exhibition
+        const stats = await prisma.feedback.aggregate({
+          where: { exhibitId: { in: exhibitIds } },
+          _avg: { rating: true }
+        });
+        return stats._avg.rating || 0;
+      } catch (error) {
+        console.error('Error in ReviewModel.getExhibitionAverageRating:', error);
+        throw error;
+      }
+    }
   /**
    * Get all reviews with pagination and filtering.
    * Supports filtering by exhibit, user, rating range, and sorting.
@@ -90,7 +115,7 @@ class ReviewModel {
         user_id: Number(review.user_id),
         exhibit_id: Number(review.exhibit_id),
         rating: review.rating,
-        comment: review.description,
+        description: review.description,
         created_at: review.created_at,
         updated_at: review.updated_at,
         user: {
@@ -145,7 +170,7 @@ class ReviewModel {
         user_id: Number(review.userId),
         exhibit_id: Number(review.exhibitId),
         rating: review.rating,
-        comment: review.description,
+        description: review.description,
         created_at: review.createdAt,
         updated_at: review.updatedAt,
         user: {
@@ -194,7 +219,7 @@ class ReviewModel {
         user_id: Number(newReview.user_id),
         exhibit_id: Number(newReview.exhibit_id),
         rating: newReview.rating,
-        comment: newReview.description,
+        description: newReview.description,
         created_at: newReview.created_at,
         updated_at: newReview.updated_at,
         user: {
@@ -493,41 +518,74 @@ class ReviewModel {
    * Get all reviews for a specific exhibit.
    * Returns an array of reviews for the given exhibitId.
    */
-  static async getReviewsByExhibit(exhibitId) {
+  static async getReviewsByExhibit(exhibitId, options = {}) {
     try {
-      const reviews = await prisma.feedback.findMany({
-        where: {
-          exhibitId: BigInt(exhibitId)
-        },
-        orderBy: {
-          createdAt: 'desc'
-        },
-        include: {
-          user: {
-            select: {
-              userId: true,
-              username: true,
-              email: true
+      const {
+        page = 1,
+        limit = 10,
+        rating,
+        sortByComment = false
+      } = options;
+
+      const skip = (parseInt(page) - 1) * parseInt(limit);
+      const take = parseInt(limit);
+
+      // Build where clause
+      let where = { exhibitId: BigInt(exhibitId) };
+      if (rating) {
+        where.rating = parseInt(rating);
+      }
+      if (sortByComment) {
+        where.description = { not: null };
+      }
+
+      // Build orderBy
+      let orderBy = [{ createdAt: 'desc' }];
+      if (sortByComment) {
+        // Sort by presence of description first, then by createdAt
+        orderBy = [
+          { description: 'desc' },
+          { createdAt: 'desc' }
+        ];
+      }
+
+      const [reviews, totalCount] = await Promise.all([
+        prisma.feedback.findMany({
+          where,
+          orderBy,
+          skip,
+          take,
+          include: {
+            user: {
+              select: {
+                userId: true,
+                username: true,
+                email: true
+              }
             }
           }
-        }
-      });
+        }),
+        prisma.feedback.count({ where })
+      ]);
 
       // Transform the response
-      return reviews.map(review => ({
-        feedback_id: Number(review.feedbackId),
-        user_id: Number(review.userId),
-        exhibit_id: Number(review.exhibitId),
-        rating: review.rating,
-        comment: review.description,
-        created_at: review.createdAt,
-        updated_at: review.updatedAt,
-        user: {
-          user_id: Number(review.user.userId),
-          username: review.user.username,
-          email: review.user.email
-        }
-      }));
+      return {
+        reviews: reviews.map(review => ({
+          feedback_id: Number(review.feedbackId),
+          user_id: Number(review.userId),
+          exhibit_id: Number(review.exhibitId),
+          rating: review.rating,
+          description: review.description,
+          created_at: review.createdAt,
+          updated_at: review.updatedAt,
+          user: {
+            user_id: Number(review.user.userId),
+            username: review.user.username,
+            email: review.user.email
+          }
+        })),
+        totalCount
+      };
     } catch (error) {
       console.error('Error in ReviewModel.getReviewsByExhibit:', error);
       throw error;

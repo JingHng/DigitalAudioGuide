@@ -1,6 +1,23 @@
 const ReviewModel = require('../models/reviewModel');
 
 class ReviewController {
+    // GET /api/reviews/exhibition/:exhibition_id/rating - Get average rating for an exhibition
+    static async getExhibitionAverageRating(req, res) {
+      try {
+        const { exhibition_id } = req.params;
+        const avgRating = await ReviewModel.getExhibitionAverageRating(exhibition_id);
+        res.json({
+          success: true,
+          data: { average_rating: avgRating }
+        });
+      } catch (error) {
+        console.error('Error fetching exhibition average rating:', error);
+        res.status(500).json({
+          success: false,
+          error: 'Failed to fetch exhibition average rating'
+        });
+      }
+    }
   /**
    * GET /api/reviews
    * Get all reviews with pagination and filtering.
@@ -280,10 +297,25 @@ class ReviewController {
   static async getReviewsByExhibit(req, res) {
     try {
       const { exhibit_id } = req.params;
-      const reviews = await ReviewModel.getReviewsByExhibit(exhibit_id);
+      const { page = 1, limit = 10, rating, sortByComment } = req.query;
+      const options = {
+        page,
+        limit,
+        rating,
+        sortByComment: sortByComment === 'true'
+      };
+      const { reviews, totalCount } = await ReviewModel.getReviewsByExhibit(exhibit_id, options);
       res.json({
         success: true,
-        data: reviews
+        data: {
+          reviews,
+          pagination: {
+            current_page: parseInt(page),
+            per_page: parseInt(limit),
+            total: totalCount,
+            total_pages: Math.ceil(totalCount / limit)
+          }
+        }
       });
     } catch (error) {
       console.error('Error fetching reviews by exhibit:', error);
