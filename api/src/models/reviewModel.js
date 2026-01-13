@@ -480,7 +480,13 @@ class ReviewModel {
               select: {
                 exhibitId: true,
                 title: true,
-                description: true
+                description: true,
+                exhibition: {
+                  select: {
+                    exhibitionId: true,
+                    title: true
+                  }
+                }
               }
             }
           }
@@ -504,8 +510,16 @@ class ReviewModel {
         exhibit: {
           exhibit_id: Number(review.exhibit.exhibitId),
           title: review.exhibit.title,
-          description: review.exhibit.description
-        }
+          description: review.exhibit.description,
+          exhibitionId: review.exhibit.exhibition?.exhibitionId ? Number(review.exhibit.exhibition.exhibitionId) : undefined,
+          exhibitionTitle: review.exhibit.exhibition?.title || undefined
+        },
+        exhibition: review.exhibit.exhibition
+          ? {
+              exhibitionId: Number(review.exhibit.exhibition.exhibitionId),
+              title: review.exhibit.exhibition.title
+            }
+          : undefined
       }));
 
       return { reviews: transformedReviews, totalCount };

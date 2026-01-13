@@ -378,9 +378,35 @@ class ReviewController {
         error: 'Failed to fetch user reviews'
       });
     }
+  }
 
-  // End of last valid method in class
-}
+  // PATCH /api/reviews/:id/visibility - Toggle visibility of a review
+  // This is intentionally defensive: if the DB schema does not include a visibility
+  // column, the endpoint will return 501 Not Implemented. Implementations that
+  // do support a visibility flag should update the ReviewModel accordingly.
+  static async setReviewVisibility(req, res) {
+    try {
+      const { id } = req.params;
+      const { visible } = req.body;
+
+      if (typeof visible === 'undefined') {
+        return res.status(400).json({ success: false, error: 'Missing `visible` in request body' });
+      }
+
+      // If ReviewModel implements setReviewVisibility, delegate to it.
+      if (typeof ReviewModel.setReviewVisibility === 'function') {
+        const updated = await ReviewModel.setReviewVisibility(id, !!visible);
+        return res.json({ success: true, data: updated, message: 'Visibility updated' });
+      }
+
+      // Otherwise respond with 501 to indicate server-side feature not available
+      return res.status(501).json({ success: false, error: 'Visibility toggle not implemented on server' });
+    } catch (error) {
+      console.error('Error setting review visibility:', error);
+      res.status(500).json({ success: false, error: 'Failed to set review visibility' });
+    }
+  }
+
 }
 
 module.exports = ReviewController;

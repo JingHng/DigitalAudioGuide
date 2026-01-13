@@ -1118,81 +1118,90 @@ const AdminDashboard = () => {
           </div>
         )}
       {/* --- Review Analytics Section ---
-        Review Analytics Section:
-        - Shows aggregated review statistics for exhibitions and exhibits.
-        - Displays total reviews, average rating, rating distribution, and recent reviews.
-        - Data is fetched and aggregated in fetchReviewAnalytics above.
+        Restyled to reuse existing dashboard chart/card classes for visual consistency
       */}
-      <div className="review-analytics-section">
-        <h2>Review Analytics</h2>
-        <div className="review-analytics-grid">
-          {/* Exhibition Review Analytics */}
-          <div className="review-analytics-block">
-            <h3>Exhibitions</h3>
-            {exhibitionReviewAnalytics.map((exh) => (
-              <div key={exh.exhibitionId} className="review-analytics-card">
-                <h4>{exh.title}</h4>
-                <div className="review-kpis">
-                  <span>Total Reviews: {exh.totalReviews}</span>
-                  <span>Average Rating: {exh.averageRating.toFixed(2)}</span>
-                </div>
-                <div className="review-distribution">
-                  <strong>Rating Distribution:</strong>
-                  <ul>
-                    {Object.entries(exh.ratingDistribution).map(([star, count]) => (
-                      <li key={star}>{star}★: {count}</li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="recent-reviews">
-                  <strong>Recent Reviews:</strong>
-                  <ul>
-                    {exh.recentReviews.length === 0 && <li>No recent reviews.</li>}
-                    {exh.recentReviews.map((r, idx) => (
-                      <li key={idx}>
-                        <span>{r.rating}★</span> — <span>{r.comment || "No comment"}</span>
-                        <span style={{ marginLeft: "1em", color: "#888" }}>{r.user}</span>
-                        <span style={{ marginLeft: "1em", fontSize: "0.9em" }}>{new Date(r.created_at).toLocaleDateString()}</span>
-                      </li>
-                    ))}
-                  </ul>
+      <div className="dashboard-charts">
+        <div className="charts-row">
+          <div className="chart-container">
+            <div className="chart-header">
+              <h2>Exhibition Reviews</h2>
+              <div className="chart-stats">
+                <div className="chart-stat">
+                  <span className="chart-stat-label">Exhibitions:</span>
+                  <span className="chart-stat-value">{exhibitionReviewAnalytics.length}</span>
                 </div>
               </div>
-            ))}
+            </div>
+            <div className="chart-content review-list">
+              {exhibitionReviewAnalytics.length === 0 ? (
+                <div className="chart-no-data">
+                  <p>No exhibition review analytics available.</p>
+                </div>
+              ) : (
+                exhibitionReviewAnalytics.map((exh) => (
+                  <div key={exh.exhibitionId} style={{ marginBottom: 16, borderBottom: '1px solid var(--neutral-100)', paddingBottom: 12 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <strong>{exh.title}</strong>
+                      <div style={{ textAlign: 'right', color: 'var(--neutral-600)' }}>
+                        <div>Total: {exh.totalReviews}</div>
+                        <div>Avg: {exh.averageRating.toFixed(2)}★</div>
+                      </div>
+                    </div>
+                    <div style={{ marginTop: 8 }}>
+                      <small style={{ color: 'var(--neutral-500)' }}>Recent:</small>
+                      <ul style={{ margin: '6px 0 0 0', paddingLeft: 16 }}>
+                        {exh.recentReviews.length === 0 ? <li style={{ color: 'var(--neutral-500)' }}>No recent reviews.</li> : exh.recentReviews.map((r, idx) => (
+                          <li key={idx} style={{ fontSize: '0.95em', color: 'var(--neutral-700)' }}>
+                            <span style={{ color: '#f59e0b' }}>{r.rating}★</span> — {r.comment || 'No comment'} <span style={{ color: 'var(--neutral-500)', marginLeft: 8 }}>{r.user}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
-          {/* Exhibit Review Analytics */}
-          <div className="review-analytics-block">
-            <h3>Exhibits</h3>
-            {exhibitReviewAnalytics.map((ex) => (
-              <div key={ex.exhibitId} className="review-analytics-card">
-                <h4>{ex.title}</h4>
-                <div className="review-kpis">
-                  <span>Total Reviews: {ex.totalReviews}</span>
-                  <span>Average Rating: {ex.averageRating.toFixed(2)}</span>
-                </div>
-                <div className="review-distribution">
-                  <strong>Rating Distribution:</strong>
-                  <ul>
-                    {Object.entries(ex.ratingDistribution).map(([star, count]) => (
-                      <li key={star}>{star}★: {count}</li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="recent-reviews">
-                  <strong>Recent Reviews:</strong>
-                  <ul>
-                    {ex.recentReviews.length === 0 && <li>No recent reviews.</li>}
-                    {ex.recentReviews.map((r, idx) => (
-                      <li key={idx}>
-                        <span>{r.rating}★</span> — <span>{r.comment || "No comment"}</span>
-                        <span style={{ marginLeft: "1em", color: "#888" }}>{r.user}</span>
-                        <span style={{ marginLeft: "1em", fontSize: "0.9em" }}>{new Date(r.created_at).toLocaleDateString()}</span>
-                      </li>
-                    ))}
-                  </ul>
+
+          <div className="chart-container">
+            <div className="chart-header">
+              <h2>Exhibit Reviews</h2>
+              <div className="chart-stats">
+                <div className="chart-stat">
+                  <span className="chart-stat-label">Exhibits:</span>
+                  <span className="chart-stat-value">{exhibitReviewAnalytics.length}</span>
                 </div>
               </div>
-            ))}
+            </div>
+            <div className="chart-content review-list">
+              {exhibitReviewAnalytics.length === 0 ? (
+                <div className="chart-no-data">
+                  <p>No exhibit review analytics available.</p>
+                </div>
+              ) : (
+                exhibitReviewAnalytics.map((ex) => (
+                  <div key={ex.exhibitId} style={{ marginBottom: 16, borderBottom: '1px solid var(--neutral-100)', paddingBottom: 12 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <strong>{ex.title}</strong>
+                      <div style={{ textAlign: 'right', color: 'var(--neutral-600)' }}>
+                        <div>Total: {ex.totalReviews}</div>
+                        <div>Avg: {ex.averageRating.toFixed(2)}★</div>
+                      </div>
+                    </div>
+                    <div style={{ marginTop: 8 }}>
+                      <small style={{ color: 'var(--neutral-500)' }}>Recent:</small>
+                      <ul style={{ margin: '6px 0 0 0', paddingLeft: 16 }}>
+                        {ex.recentReviews.length === 0 ? <li style={{ color: 'var(--neutral-500)' }}>No recent reviews.</li> : ex.recentReviews.map((r, idx) => (
+                          <li key={idx} style={{ fontSize: '0.95em', color: 'var(--neutral-700)' }}>
+                            <span style={{ color: '#f59e0b' }}>{r.rating}★</span> — {r.comment || 'No comment'} <span style={{ color: 'var(--neutral-500)', marginLeft: 8 }}>{r.user}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </div>
       </div>

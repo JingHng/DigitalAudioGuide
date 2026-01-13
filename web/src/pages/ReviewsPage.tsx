@@ -81,6 +81,13 @@ const ReviewsPage: React.FC = () => {
     setGrouped(Object.values(exhibitionMap));
   }, [reviews, sortOrder]);
 
+  // Return the most likely text/comment field for a review (many APIs use different names)
+  const getReviewText = (r: any) => {
+    return (
+      r.description || r.comment || r.comments || r.feedback || r.body || r.text || ""
+    );
+  };
+
   if (!user) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -119,28 +126,65 @@ const ReviewsPage: React.FC = () => {
         ) : (
           grouped.map(exh => (
             <section key={exh.exhibitionId} style={{ marginBottom: 40 }}>
-              <h2 style={{ fontSize: '1.3em', fontWeight: 600, marginBottom: 12 }}>{exh.title}</h2>
-              {exh.exhibits.map(ex => (
-                <div key={ex.exhibit_id} style={{ marginBottom: 24, padding: '18px 24px', background: '#fff', borderRadius: 12, boxShadow: '0 1px 6px #eee' }}>
-                  <h3 style={{ fontSize: '1.1em', fontWeight: 500, marginBottom: 8 }}>{ex.title}</h3>
-                  <ul style={{ listStyle: 'none', padding: 0 }}>
-                    {ex.reviews.map(rv => (
-                      <li key={rv.feedback_id} style={{ marginBottom: 12, paddingBottom: 12, borderBottom: '1px solid #f3f3f3' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          {Array.from({ length: 5 }).map((_, i) => (
-                            <span key={i} style={{ color: i < rv.rating ? '#FFD700' : '#ccc', fontSize: '1.1em' }}>★</span>
-                          ))}
-                          <span style={{ marginLeft: 8, color: '#555', fontSize: '0.95em' }}>{rv.rating} / 5</span>
-                        </div>
-                        {rv.description && (
-                          <div style={{ marginTop: 6, padding: '8px 12px', background: '#f7f7fa', color: '#222', borderRadius: 4, fontSize: '1em', fontStyle: 'italic', border: '1px solid #eee' }}>{rv.description}</div>
-                        )}
-                        <div style={{ fontSize: '0.85em', color: '#aaa', marginTop: 4 }}>{rv.created_at ? new Date(rv.created_at).toLocaleString() : ''}</div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
+              <h2 style={{ fontSize: '1.3em', fontWeight: 600, marginBottom: 20 }}>{exh.title}</h2>
+              <div style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '32px',
+                justifyContent: 'center',
+              }}>
+                {exh.exhibits.map(ex => (
+                  <div
+                    key={ex.exhibit_id}
+                    style={{
+                      width: '350px',
+                      minHeight: '180px',
+                      marginBottom: 0,
+                      padding: '20px 26px',
+                      background: 'linear-gradient(180deg, #ffffff, #f8fbff)',
+                      borderRadius: 16,
+                      border: '1px solid #e6f0ff',
+                      boxShadow: '0 8px 24px rgba(59,130,246,0.08)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'stretch',
+                      justifyContent: 'flex-start',
+                      transition: 'transform 0.15s, box-shadow 0.15s',
+                      cursor: 'default',
+                    }}
+                  >
+                    <div style={{ height: 6, width: '64px', background: '#3b82f6', borderRadius: 6, margin: '6px auto 12px' }} />
+                    <h3 style={{ fontSize: '1.15em', fontWeight: 600, marginBottom: 6, color: '#0f172a', textAlign: 'center' }}>{ex.title}</h3>
+                    <ul style={{ listStyle: 'none', padding: 0 }}>
+                      {ex.reviews.map(rv => {
+                        const reviewText = getReviewText(rv);
+                        return (
+                          <li
+                            key={rv.feedback_id}
+                            style={{
+                              marginBottom: 14,
+                              paddingBottom: 14,
+                              borderBottom: '1px solid #f3f3f3',
+                              wordBreak: 'break-word',
+                            }}
+                          >
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'center' }}>
+                              {Array.from({ length: 5 }).map((_, i) => (
+                                <span key={i} style={{ color: i < rv.rating ? '#FFD700' : '#ccc', fontSize: '1.1em' }}>★</span>
+                              ))}
+                              <span style={{ marginLeft: 8, color: '#555', fontSize: '0.95em' }}>{rv.rating} / 5</span>
+                            </div>
+                            {reviewText && (
+                              <div style={{ marginTop: 10, padding: '12px 16px', background: '#eff8ff', color: '#0f172a', borderRadius: 8, fontSize: '0.98em', fontStyle: 'italic', border: '1px solid #dbeafe', borderLeft: '4px solid #3b82f6', textAlign: 'left', lineHeight: 1.45 }}>{reviewText}</div>
+                            )}
+                            <div style={{ fontSize: '0.85em', color: '#aaa', marginTop: 6, textAlign: 'center' }}>{rv.created_at ? new Date(rv.created_at).toLocaleString() : ''}</div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                ))}
+              </div>
             </section>
           ))
         )}

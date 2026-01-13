@@ -1,17 +1,28 @@
+const express = require('express');
+const router = express.Router();
+
+const ReviewController = require('../controllers/reviewController');
+const jwtMiddleware = require('../middleware/jwtMiddleware');
+const permissionMiddleware = require('../middleware/permissionMiddleware');
+
 /**
  * Review routes for feedback system and analytics.
  * Order of routes is important to avoid conflicts with dynamic :id routes.
  */
-const express = require('express');
-const ReviewController = require('../controllers/reviewController');
-const jwtMiddleware = require('../middleware/jwtMiddleware');
-const router = express.Router();
 
 // Debug log for all review routes
 router.use((req, res, next) => {
   console.log(`[ReviewRoutes] ${req.method} ${req.originalUrl}`);
   next();
 });
+
+// PATCH /api/reviews/:id/visibility - Admin only
+router.patch(
+  '/:id/visibility',
+  jwtMiddleware.verifyToken,
+  permissionMiddleware.checkPermission('manage_feedback'),
+  ReviewController.setReviewVisibility
+);
 
 // GET /api/reviews - Get all reviews with pagination and filtering
 router.get('/', ReviewController.getAllReviews);

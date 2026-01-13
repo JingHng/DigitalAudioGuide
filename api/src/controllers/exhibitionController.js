@@ -2,6 +2,20 @@
 const { PrismaClient } = require('../../generated/prisma');
 const prisma = new PrismaClient();
 
+// Helper to convert BigInt values (and nested BigInts) to strings so JSON.stringify doesn't fail
+const sanitizeForJson = (value) => {
+  if (typeof value === 'bigint') return value.toString();
+  if (Array.isArray(value)) return value.map(sanitizeForJson);
+  if (value && typeof value === 'object') {
+    const out = {};
+    for (const k of Object.keys(value)) {
+      out[k] = sanitizeForJson(value[k]);
+    }
+    return out;
+  }
+  return value;
+};
+
 const { logAuditAction } = require("./auditLogsController");
 
 /**
@@ -21,7 +35,7 @@ exports.getAllExhibitions = async (req, res) => {
 
       },
     });
-    res.status(200).json(exhibitions);
+    res.status(200).json(sanitizeForJson(exhibitions));
   } catch (err) {
     console.error("Error fetching exhibitions:", err);
     res.status(500).json({ message: "Error fetching exhibitions" });
@@ -75,7 +89,7 @@ exports.getExhibitionById = async (req, res) => {
 
       return res.status(404).json({ message: "Active exhibition not found" });
     }
-    res.status(200).json(exhibition);
+    res.status(200).json(sanitizeForJson(exhibition));
   } catch (err) {
     console.error("Error fetching exhibition by ID:", err);
     res.status(500).json({ message: "Error fetching exhibition" });
@@ -114,7 +128,7 @@ exports.createExhibition = async (req, res) => {
       { ip_address: req.ip, user_agent: req.get("User-Agent") }
     );
 
-    res.status(201).json({ message: "Exhibition created successfully", exhibitionId: newExhibitionId });
+    res.status(201).json({ message: "Exhibition created successfully", exhibitionId: newExhibitionId ? newExhibitionId.toString() : null });
   } catch (err) {
     console.error("Error creating exhibition:", err);
     res.status(500).json({ message: "Failed to create exhibition" });
@@ -186,7 +200,7 @@ exports.updateExhibition = async (req, res) => {
       { ip_address: req.ip, user_agent: req.get("User-Agent") }
     );
 
-    res.status(200).json(updatedExhibition);
+    res.status(200).json(sanitizeForJson(updatedExhibition));
   } catch (err) {
     console.error("Error updating exhibition:", err);
     res.status(500).json({ message: "Failed to update exhibition" });
@@ -287,7 +301,7 @@ exports.getAllExhibitionsWithExhibits = async (req, res) => {
         title: 'asc',
       },
     });
-    res.status(200).json(exhibitionsWithExhibits);
+    res.status(200).json(sanitizeForJson(exhibitionsWithExhibits));
   } catch (err) {
     console.error("Error fetching exhibitions for admin:", err); 
     res.status(500).json({ message: "Error fetching data for admin panel" });
