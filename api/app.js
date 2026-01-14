@@ -10,6 +10,7 @@ const audioPlaybackRoutes = require('./src/routes/audioPlaybackRoutes');
 const audioRoutes = require('./src/routes/audioRoutes');
 const languageRoutes = require('./src/routes/languageRoutes');
 const translateRoutes = require('./src/routes/translationRoutes');
+const assistantRoutes = require('./src/routes/assistantRoutes');
 const path = require('path');
 const cors = require('cors');
 
@@ -78,6 +79,7 @@ app.use('/api/audio-logs', audioPlaybackRoutes);
 app.use('/api/audio', audioRoutes);
 app.use('/api/language', languageRoutes);
 app.use('/api/translate', translateRoutes);
+app.use('/api/assistant', assistantRoutes);
 
 // SPA catch-all: serve index.html for non-API routes (client-side routing)
 app.use((req, res, next) => {

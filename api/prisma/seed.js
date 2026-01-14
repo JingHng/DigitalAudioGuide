@@ -248,6 +248,47 @@ async function seed() {
   );
 `);
 
+    // 18. SENDER_TYPE table for AI Assistant
+    await client.query(`
+      CREATE TABLE sender_type (
+        sender_type_id SERIAL PRIMARY KEY,
+        sender_type VARCHAR(50) UNIQUE NOT NULL
+      );
+    `);
+
+    await client.query(`
+      INSERT INTO sender_type (sender_type_id, sender_type) VALUES
+      (1, 'user'),
+      (2, 'assistant');
+    `);
+
+    // 19. CONVERSATION table for AI Assistant
+    await client.query(`
+      CREATE TABLE conversation (
+        conversation_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id BIGINT NOT NULL,
+        title TEXT,
+        status_id INTEGER DEFAULT 1,
+        created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+        modified_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES "user"(user_id) ON DELETE CASCADE,
+        FOREIGN KEY (status_id) REFERENCES status(status_id) ON DELETE SET NULL
+      );
+    `);
+
+    // 20. MESSAGE table for AI Assistant
+    await client.query(`
+      CREATE TABLE message (
+        message_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        conversation_id UUID NOT NULL,
+        sender_type_id INTEGER NOT NULL,
+        content TEXT NOT NULL,
+        created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (conversation_id) REFERENCES conversation(conversation_id) ON DELETE CASCADE,
+        FOREIGN KEY (sender_type_id) REFERENCES sender_type(sender_type_id) ON DELETE RESTRICT
+      );
+    `);
+
     // 18. SUBTITLE table
     await client.query(`
       CREATE TABLE subtitle (
@@ -1119,6 +1160,8 @@ await client.query(`
     console.log(
       "   - User registration data distributed over 12 months for trend analysis"
     );
+    console.log("   - 2 sender types (user, assistant) for AI Assistant");
+    console.log("   - Conversation and message tables for AI Assistant (Omnie)");
   } catch (err) {
     console.error("❌ Error during seeding:", err);
     throw err;
