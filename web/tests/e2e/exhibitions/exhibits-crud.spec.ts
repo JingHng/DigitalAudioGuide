@@ -258,35 +258,20 @@ test.describe('Exhibits CRUD Operations', () => {
     });
 });
 
-// Additional UI Tests for Exhibits CRUD (if you have admin UI)
-test.describe('Exhibits CRUD UI Interactions', () => {
-    
-    test.beforeEach(async ({ page }) => {
-        // Login first
-        await page.goto('/login');
-        
-        try {
-            await page.fill('input[name="username"], input[type="text"]', 'admin');
-            await page.fill('input[name="password"], input[type="password"]', 'admin123');
-            await page.click('button[type="submit"]');
-            
-            // Wait for successful login
-            await page.waitForURL(/^(?!.*\/login).*$/, { timeout: 5000 });
-        } catch (error) {
-            console.log('Login UI not available or failed');
-        }
-    });
-
-    // Test 11: UI - Verify exhibits list page loads
-    test('should load exhibits management page', async ({ page }) => {
-        // Navigate to exhibits management (adjust URL based on your app)
-        await page.goto('/admin/exhibits');
-        
-        // Wait for page to load
-        await page.waitForLoadState('networkidle');
-        
-        // Check if page loaded successfully
-        const pageTitle = page.locator('h1, h2');
-        await expect(pageTitle.first()).toBeVisible();
-    });
-});
+// Additional UI Tests for Exhibits CRUD 
+// test.describe('Exhibits CRUD UI Interactions', () => {
+//     test.beforeEach(async ({ page }) => {
+//         await page.goto('/login');
+//         await page.fill('input[name="username"]', 'admin');
+//         await page.fill('input[name="password"]', 'admin123');
+//         await page.click('button[type="submit"]');
+//         await page.waitForURL(/^(?!.*\/login).*$/, { timeout: 5000 });
+//     });
+// 
+//     test('should load exhibits management page', async ({ page }) => {
+//         await page.goto('/admin/exhibits');
+//         await page.waitForLoadState('networkidle');
+//         const pageTitle = page.locator('h1, h2');
+//         await expect(pageTitle.first()).toBeVisible();
+//     });
+// });

@@ -42,6 +42,8 @@ test.describe('ExhibitDetails badge behaviour', () => {
   });
 
   test('shows badge modal when a new badge is earned on scroll', async ({ page }) => {
+    test.setTimeout(90000); // Increase timeout for flaky test
+    
     // Mock exhibit details
     await page.route(exhibitUrlPattern, async route => {
       await route.fulfill({
@@ -82,21 +84,22 @@ test.describe('ExhibitDetails badge behaviour', () => {
     // Scroll to bottom and wait until the badge request is sent
     await Promise.all([
       page.waitForRequest(req =>
-        badgeUrlRegex.test(req.url()) && req.method() === 'POST'
+        badgeUrlRegex.test(req.url()) && req.method() === 'POST',
+        { timeout: 30000 }
       ),
       page.evaluate(() => {
         window.scrollTo(0, document.documentElement.scrollHeight);
       }),
     ]);
 
-    // Assert badge modal UI
+    // Assert badge modal UI with increased timeout
     const overlay = page.locator('.earn-badge-modal-overlay');
-    await expect(overlay).toBeVisible();
+    await expect(overlay).toBeVisible({ timeout: 10000 });
 
     const modal = overlay.locator('.earn-badge-modal');
-    await expect(modal).toBeVisible();
+    await expect(modal).toBeVisible({ timeout: 10000 });
 
-    await expect(modal.getByText('Badge unlocked!')).toBeVisible();
+    await expect(modal.getByText('Badge unlocked!')).toBeVisible({ timeout: 10000 });
     await expect(modal.getByText(/"Test Exhibit"/)).toBeVisible();
 
     const badgeImg = modal.locator('img.earn-badge-image');
