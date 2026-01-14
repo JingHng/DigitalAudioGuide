@@ -24,6 +24,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Extract feature name from branch
+        id: extract-feature
+        run: |
+          # Extract feature name from branch (e.g., feature/exhibitions -> exhibitions)
+          BRANCH_NAME="${{ github.ref_name }}"
+          FEATURE_NAME=$(echo "$BRANCH_NAME" | sed 's/feature\///' | sed 's/features\///')
+          echo "feature_name=$FEATURE_NAME" >> $GITHUB_OUTPUT
+          echo "Running tests for feature folder: $FEATURE_NAME"
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -69,7 +78,15 @@ jobs:
 
       - name: Run Playwright tests
         working-directory: ${{ env.WEB_DIR }}
-        run: npm run e2e
+        run: |
+          FEATURE_FOLDER="tests/e2e/${{ steps.extract-feature.outputs.feature_name }}"
+          if [ -d "$FEATURE_FOLDER" ]; then
+            echo "Running all tests in folder: $FEATURE_FOLDER"
+            npx playwright test "$FEATURE_FOLDER" --workers=8
+          else
+            echo "Error: Feature folder $FEATURE_FOLDER does not exist"
+            exit 1
+          fi
         env:
           CI: true
           VITE_API_TARGET: http://localhost:5175
