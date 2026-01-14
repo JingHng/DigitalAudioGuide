@@ -790,3 +790,37 @@
 {"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2025-12-03 20:18:38"}
 {"level":"info","message":"Default inactivity threshold setting initialized","service":"user-inactivity-service","timestamp":"2025-12-03 20:18:42"}
 {"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2025-12-03 20:18:42"}
+{"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2025-12-04 09:42:14"}
+{"level":"info","message":"Default inactivity threshold setting initialized","service":"user-inactivity-service","timestamp":"2025-12-04 09:42:18"}
+{"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2025-12-04 09:42:18"}
+{"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2025-12-04 09:42:59"}
+{"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2025-12-04 09:43:02"}
+{"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2025-12-04 11:27:25"}
+{"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2025-12-04 11:27:28"}
+{"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2025-12-05 15:34:57"}
+{"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2025-12-05 15:35:00"}
+{"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2025-12-05 20:58:19"}
+{"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2025-12-05 20:58:22"}
+{"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2025-12-05 20:59:11"}
+{"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2025-12-05 20:59:13"}
+{"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2025-12-05 21:03:54"}
+{"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2025-12-05 21:03:56"}
+{"level":"error","message":"Error ensuring settings table exists: \nInvalid `prisma.$queryRaw()` invocation:\n\n\nCan't reach database server at `ep-polished-mountain-adh5qv6r-pooler.c-2.us-east-1.aws.neon.tech:5432`\n\nPlease make sure your database server is running at `ep-polished-mountain-adh5qv6r-pooler.c-2.us-east-1.aws.neon.tech:5432`.","service":"user-inactivity-service","timestamp":"2025-12-07 22:06:47"}
+{"level":"error","message":"Failed to initialize settings module: \nInvalid `prisma.$queryRaw()` invocation:\n\n\nCan't reach database server at `ep-polished-mountain-adh5qv6r-pooler.c-2.us-east-1.aws.neon.tech:5432`\n\nPlease make sure your database server is running at `ep-polished-mountain-adh5qv6r-pooler.c-2.us-east-1.aws.neon.tech:5432`.","service":"user-inactivity-service","timestamp":"2025-12-07 22:06:47"}
+{"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2025-12-07 23:18:09"}
+{"level":"error","message":"Error ensuring settings table exists: \nInvalid `prisma.$queryRaw()` invocation:\n\n\nCan't reach database server at `ep-polished-mountain-adh5qv6r-pooler.c-2.us-east-1.aws.neon.tech:5432`\n\nPlease make sure your database server is running at `ep-polished-mountain-adh5qv6r-pooler.c-2.us-east-1.aws.neon.tech:5432`.","service":"user-inactivity-service","timestamp":"2026-01-08 10:27:45"}
+{"level":"error","message":"Failed to initialize settings module: \nInvalid `prisma.$queryRaw()` invocation:\n\n\nCan't reach database server at `ep-polished-mountain-adh5qv6r-pooler.c-2.us-east-1.aws.neon.tech:5432`\n\nPlease make sure your database server is running at `ep-polished-mountain-adh5qv6r-pooler.c-2.us-east-1.aws.neon.tech:5432`.","service":"user-inactivity-service","timestamp":"2026-01-08 10:27:45"}
+{"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2026-01-08 10:53:14"}
+{"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2026-01-09 10:27:40"}
+{"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2026-01-09 10:27:43"}
+{"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2026-01-09 16:49:38"}
+{"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2026-01-09 16:49:41"}
+{"level":"error","message":"Error ensuring settings table exists: \nInvalid `prisma.$queryRaw()` invocation:\n\n\nCan't reach database server at `ep-polished-mountain-adh5qv6r-pooler.c-2.us-east-1.aws.neon.tech:5432`\n\nPlease make sure your database server is running at `ep-polished-mountain-adh5qv6r-pooler.c-2.us-east-1.aws.neon.tech:5432`.","service":"user-inactivity-service","timestamp":"2026-01-12 12:03:52"}
+{"level":"error","message":"Failed to initialize settings module: \nInvalid `prisma.$queryRaw()` invocation:\n\n\nCan't reach database server at `ep-polished-mountain-adh5qv6r-pooler.c-2.us-east-1.aws.neon.tech:5432`\n\nPlease make sure your database server is running at `ep-polished-mountain-adh5qv6r-pooler.c-2.us-east-1.aws.neon.tech:5432`.","service":"user-inactivity-service","timestamp":"2026-01-12 12:03:52"}
+{"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2026-01-12 12:10:25"}
+{"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2026-01-14 13:04:58"}
+{"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2026-01-14 13:05:01"}
+{"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2026-01-14 13:24:43"}
+{"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2026-01-14 13:24:46"}
+{"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2026-01-14 15:46:53"}
+{"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2026-01-14 15:46:56"}

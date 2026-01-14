@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
-const FRONTEND_URL = process.env.VITE_FRONTEND_URL || 'http://localhost:5173';
-const API_URL = process.env.VITE_API_TARGET || 'http://localhost:3000';
+const FRONTEND_URL = 'http://localhost:5173';
+const API_URL = 'http://localhost:5175';
 
 test.describe('AR Photobooth Page', () => {
     let exhibitionId: string;
