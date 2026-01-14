@@ -41,8 +41,6 @@ test.describe('Exhibitions Functionality and API Check', () => {
     
     // Test 2: Verify tours data loads and displays on the page
     test('should successfully load exhibitions data and display exhibition cards', async ({ page }) => {
-        // FIX: Wait explicitly for the most critical element (the first card image) 
-        // OR the 'no-tours' message to ensure the page has resolved its loading state.
         try {
             await page.waitForSelector('.tour-card-enhanced .card-image-enhanced img, .no-tours', { state: 'visible', timeout: 30000 });
         } catch (e) {
@@ -254,5 +252,4 @@ test.describe('Exhibition Error Handling', () => {
         }
     });
 
-    // Test removed: API server unavailable test was causing timeouts
 });
