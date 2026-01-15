@@ -78,7 +78,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
     },
     {
       id: 'ai-assistant',
-      label: 'AI Assistant',
+      label: 'AI Assistant - Omnie',
       icon: <Bot size={20} />,
       path: '/admin/assistant'
     },

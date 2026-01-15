@@ -377,9 +377,14 @@ async function generateAIResponse(userMessage, conversationHistory = []) {
   } catch (error) {
     console.error('Error generating AI response:', error);
     
-    // Fallback response if AI fails
-    if (error.message?.includes('API_KEY') || error.message?.includes('quota')) {
-      return 'Sorry, the AI service is temporarily unavailable. Please try again later.';
+    // Fallback response for quota/rate limit errors
+    if (error.status === 429 || error.message?.includes('quota') || error.message?.includes('RESOURCE_EXHAUSTED')) {
+      return 'The AI service has reached its daily quota limit. I\'m currently operating in limited mode. How can I help you with general information about the system?';
+    }
+    
+    // Fallback for API key issues
+    if (error.message?.includes('API_KEY')) {
+      return 'AI service configuration error. Please contact the administrator.';
     }
     
     return 'I apologize, but I encountered an error processing your request. Please try again.';
@@ -416,6 +421,12 @@ async function generateConversationTitle(firstMessage) {
     return title;
   } catch (error) {
     console.error('Error generating conversation title:', error);
+    
+    // For quota/rate limit errors, create a meaningful fallback title from the message
+    if (error.status === 429 || error.message?.includes('quota') || error.message?.includes('RESOURCE_EXHAUSTED')) {
+      const words = firstMessage.split(' ').slice(0, 5).join(' ');
+      return words.length > 40 ? words.substring(0, 37) + '...' : (words || 'New Conversation');
+    }
     
     // Fallback to first few words of the message
     const words = firstMessage.split(' ').slice(0, 5).join(' ');

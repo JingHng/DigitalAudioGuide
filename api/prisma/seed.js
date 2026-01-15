@@ -283,6 +283,8 @@ async function seed() {
         conversation_id UUID NOT NULL,
         sender_type_id INTEGER NOT NULL,
         content TEXT NOT NULL,
+        metadata JSONB,
+        status_id INTEGER NOT NULL DEFAULT 1 REFERENCES status(status_id) ON DELETE SET NULL,
         created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (conversation_id) REFERENCES conversation(conversation_id) ON DELETE CASCADE,
         FOREIGN KEY (sender_type_id) REFERENCES sender_type(sender_type_id) ON DELETE RESTRICT
@@ -434,6 +436,10 @@ async function seed() {
       CREATE INDEX idx_audit_logs_admin_user_id ON audit_logs(admin_user_id);
       CREATE INDEX idx_audit_logs_target_user_id ON audit_logs(target_user_id);
       CREATE INDEX idx_audit_logs_timestamp ON audit_logs(timestamp);
+
+      -- AI Assistant (Omnie) indexes
+      CREATE INDEX idx_message_conversation_status ON message(conversation_id, status_id, created_at, sender_type_id);
+      CREATE INDEX idx_conversation_user_status ON conversation(user_id, status_id, created_at);
 
       -- Composite indexes for common queries
       CREATE INDEX idx_user_email_status ON "user"(email, status_id);
