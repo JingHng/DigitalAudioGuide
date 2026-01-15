@@ -12,7 +12,8 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
-  Settings
+  Settings,
+  Bot
 } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -74,6 +75,12 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
       label: 'Home',
       icon: <Home size={20} />,
       path: '/admin/dashboard'
+    },
+    {
+      id: 'ai-assistant',
+      label: 'AI Assistant - Omnie',
+      icon: <Bot size={20} />,
+      path: '/admin/assistant'
     },
     {
       id: 'audio-analytics',

@@ -207,12 +207,14 @@ model Session {
 }
 
 model Status {
-  statusId    Int          @id @default(autoincrement()) @map("status_id")
-  statusName  String       @unique @map("status_name") @db.VarChar(30)
-  exhibits    Exhibit[]
-  exhibitions Exhibition[]
-  languages   Language[]
-  users       User[]
+  statusId      Int            @id @default(autoincrement()) @map("status_id")
+  statusName    String         @unique @map("status_name") @db.VarChar(30)
+  exhibits      Exhibit[]
+  exhibitions   Exhibition[]
+  languages     Language[]
+  users         User[]
+  conversations Conversation[]
+  messages      Message[]
 
   @@map("status")
 }
@@ -258,6 +260,7 @@ model User {
   status                  Status?                  @relation(fields: [statusId], references: [statusId], onUpdate: NoAction)
   userBadges              UserBadge[]
   roles                   UserRole[]
+  conversations           Conversation[]
 
   @@index([statusId], map: "idx_user_status")
   @@index([username], map: "idx_user_username")
@@ -360,4 +363,43 @@ model settings {
   value      Json
   created_at DateTime? @default(now()) @db.Timestamptz(6)
   updated_at DateTime? @default(now()) @db.Timestamptz(6)
+}
+
+model SenderType {
+  senderTypeId Int       @id @default(autoincrement()) @map("sender_type_id")
+  senderType   String    @unique @map("sender_type") @db.VarChar(20)
+  messages     Message[]
+
+  @@map("sender_type")
+}
+
+model Conversation {
+  conversationId String    @id @default(dbgenerated("gen_random_uuid()")) @map("conversation_id") @db.Uuid
+  userId         BigInt    @map("user_id")
+  title          String?   @db.VarChar(100)
+  statusId       Int       @map("status_id")
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  modifiedAt     DateTime  @default(now()) @map("modified_at") @db.Timestamptz(6)
+  user           User      @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  status         Status    @relation(fields: [statusId], references: [statusId])
+  messages       Message[]
+
+  @@index([userId, statusId], map: "idx_conversation_user_status")
+  @@map("conversation")
+}
+
+model Message {
+  messageId      String       @id @default(dbgenerated("gen_random_uuid()")) @map("message_id") @db.Uuid
+  conversationId String       @map("conversation_id") @db.Uuid
+  senderTypeId   Int          @map("sender_type_id")
+  content        String
+  metadata       Json?        @db.JsonB
+  statusId       Int          @map("status_id")
+  createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  senderType     SenderType   @relation(fields: [senderTypeId], references: [senderTypeId], onDelete: Cascade)
+  conversation   Conversation @relation(fields: [conversationId], references: [conversationId], onDelete: Cascade)
+  status         Status       @relation(fields: [statusId], references: [statusId])
+
+  @@index([conversationId, statusId, createdAt, senderTypeId], map: "idx_message_conversation_status")
+  @@map("message")
 }
