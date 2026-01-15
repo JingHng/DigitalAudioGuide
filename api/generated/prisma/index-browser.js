@@ -296,6 +296,7 @@ exports.Prisma.BadgeScalarFieldEnum = {
   badgeId: 'badgeId',
   name: 'name',
   description: 'description',
+  style: 'style',
   imageUrl: 'imageUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
