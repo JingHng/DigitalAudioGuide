@@ -38,7 +38,6 @@ import AudioManagement from "./components/admin/AudioManagement";
 import SettingsPage from "./components/admin/SettingsPage";
 
 import NotFoundPage from "./components/NotFoundPage.tsx"; // KEEP: Good practice for * route
-import ReviewsPage from "./pages/ReviewsPage";
 
 // --- COMMENTED OUT: Loaders/Providers ---
 // import GoogleTranslateLoader from "./components/GoogleTranslateLoader";
@@ -79,7 +78,6 @@ function App() {
             { <Route path="/exhibitions/:id" element={<ExhibitionDetails />} /> }
             { <Route path="/exhibitions/:id/ar-photobooth" element={<ARPhotobooth />} /> }
             { <Route path="/exhibit/:id" element={<ExhibitDetails />} /> }
-            { <Route path="/reviews" element={<ReviewsPage />} /> }
 
             {/* --- Other Public/Auth Routes --- */}
             <Route path="/login" element={<LoginPage />} />
