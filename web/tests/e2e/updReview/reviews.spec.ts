@@ -2,8 +2,8 @@ import { test, expect } from '@playwright/test';
 
 // Configurable via environment (CI sets these); fallbacks for local runs
 const API_URL = process.env.API_URL || process.env.VITE_API_TARGET || 'http://localhost:5175';
-const TEST_EMAIL = process.env.E2E_TEST_EMAIL || 'admin';
-const TEST_PASSWORD = process.env.E2E_TEST_PASSWORD || 'admin123';
+const TEST_EMAIL = process.env.E2E_TEST_EMAIL || 'daddyTeo';
+const TEST_PASSWORD = process.env.E2E_TEST_PASSWORD || 'daddyTeo';
 const EXHIBIT_ID = process.env.E2E_EXHIBIT_ID || '1';
 
 test.describe('Review System E2E', () => {
