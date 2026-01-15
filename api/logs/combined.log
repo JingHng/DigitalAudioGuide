@@ -830,3 +830,5 @@
 {"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2026-01-15 09:29:05"}
 {"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2026-01-15 09:30:16"}
 {"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2026-01-15 09:30:19"}
+{"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2026-01-15 10:11:11"}
+{"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2026-01-15 10:11:11"}

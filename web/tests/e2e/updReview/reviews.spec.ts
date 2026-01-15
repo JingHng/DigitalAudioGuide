@@ -37,7 +37,7 @@ test.describe('Review System E2E', () => {
     const reviewPayload = {
       exhibit_id: EXHIBIT_ID,
       rating: 5,
-      comment: 'Automated E2E review'
+      comment: 'Automated E2E review 2'
     };
 
     const createRes = await request.post(`${API_URL}/api/reviews`, {
