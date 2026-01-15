@@ -537,249 +537,6 @@ const ExhibitDetails: React.FC = () => {
 
   return (
     <div className="smart-exhibit-home">
-      {/* --- Exhibit Rating --- */}
-      <div className="exhibit-rating" style={{ margin: '16px 0 8px 0', textAlign: 'center' }}>
-        <span>
-          {Array.from({ length: 5 }).map((_, i) => (
-            <span key={i} style={{ color: i < rating ? '#FFD700' : '#ccc', fontSize: '1.5em' }}>★</span>
-          ))}
-          <span style={{ marginLeft: 8, fontSize: '1.1em', color: '#555' }}>
-            {rating ? rating.toFixed(1) : '—'} / 5
-          </span>
-        </span>
-      </div>
-
-      {/* --- Review Submission Form --- */}
-      <div className="exhibit-review-form" style={{ margin: '24px auto', maxWidth: 420, background: '#f3f4f8', padding: 24, borderRadius: 16, boxShadow: '0 2px 12px #eee' }}>
-        <h3 style={{ marginBottom: 16, fontWeight: 600, fontSize: '1.25em', color: '#222' }}>Submit a Review</h3>
-        <form onSubmit={handleReviewSubmit}>
-          {/* Modern star rating group */}
-          <div style={{ marginBottom: 18, display: 'flex', alignItems: 'center', gap: 12 }}>
-            <span style={{ fontWeight: 500, color: '#444', marginRight: 8 }}>Your rating:</span>
-            <div style={{ display: 'flex', gap: 0, background: '#fff', borderRadius: 24, boxShadow: '0 1px 4px #eee', overflow: 'hidden' }}>
-              {Array.from({ length: 5 }).map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => setUserRating(i + 1)}
-                  style={{
-                    padding: '10px 20px',
-                    background: userRating === i + 1 ? '#007bff' : 'transparent',
-                    color: userRating >= i + 1 ? '#FFD700' : '#bbb',
-                    border: 'none',
-                    fontWeight: 600,
-                    fontSize: '1.3em',
-                    cursor: 'pointer',
-                    transition: 'background 0.2s',
-                    borderRadius: i === 0 ? '24px 0 0 24px' : i === 4 ? '0 24px 24px 0' : '0',
-                    outline: 'none',
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.color = '#FFD700'}
-                  onMouseLeave={e => e.currentTarget.style.color = userRating >= i + 1 ? '#FFD700' : '#bbb'}
-                  aria-label={`Rate ${i + 1} stars`}
-                  data-testid={`star-${i + 1}`}
-                >★</button>
-              ))}
-            </div>
-          </div>
-          {/* Label above textarea */}
-          <div style={{ marginBottom: 18 }}>
-            <label htmlFor="review-description" style={{
-              display: 'block',
-              marginBottom: 6,
-              fontWeight: 500,
-              color: '#444',
-              fontSize: '1em',
-            }}>
-              Optional description...
-            </label>
-            <textarea
-              id="review-description"
-              value={userDescription}
-              onChange={e => setUserDescription(e.target.value)}
-              rows={3}
-              style={{
-                width: '100%',
-                padding: '16px 12px 8px 12px',
-                borderRadius: 8,
-                border: '1.5px solid #ddd',
-                fontSize: '1em',
-                background: '#fff',
-                outline: 'none',
-                boxShadow: '0 1px 4px #eee',
-                resize: 'vertical',
-              }}
-            />
-          </div>
-          {/* Modern submit button */}
-          <button
-            type="submit"
-            disabled={submitting || userRating === 0}
-            style={{
-              padding: '12px 32px',
-              borderRadius: 24,
-              background: submitting || userRating === 0 ? '#bbb' : '#007bff',
-              color: '#fff',
-              border: 'none',
-              fontWeight: 600,
-              fontSize: '1.08em',
-              boxShadow: '0 1px 4px #ddd',
-              cursor: submitting || userRating === 0 ? 'not-allowed' : 'pointer',
-              transition: 'background 0.2s',
-            }}
-          >
-            {submitting ? <span style={{ display: 'inline-block', width: 18, height: 18, border: '2px solid #fff', borderTop: '2px solid #007bff', borderRadius: '50%', animation: 'spin 1s linear infinite', marginRight: 8, verticalAlign: 'middle' }} /> : null}
-            {submitting ? 'Submitting...' : 'Submit Review'}
-          </button>
-          {/* Error/success messages */}
-          {reviewError && <div style={{ color: '#e74c3c', marginTop: 12, fontWeight: 500, fontSize: '1em', textAlign: 'center', background: '#fff3f3', borderRadius: 8, padding: '8px 0' }}>{reviewError}</div>}
-          {reviewSuccess && <div style={{ color: '#27ae60', marginTop: 12, fontWeight: 500, fontSize: '1em', textAlign: 'center', background: '#f3fff3', borderRadius: 8, padding: '8px 0' }}>{reviewSuccess}</div>}
-        </form>
-      </div>
-
-      {/* --- Review List --- */}
-      <div className="exhibit-review-list" style={{ margin: '24px auto', maxWidth: 600 }}>
-        <h3 style={{ marginBottom: 8 }}>Reviews</h3>
-        <div style={{ display: 'flex', gap: 24, alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', justifyContent: 'flex-start' }}>
-          {/* Modern rating filter button group */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <span style={{ marginRight: 12, fontWeight: 500, fontSize: '1.05em', color: '#444' }}>Filter by rating:</span>
-            <div style={{ display: 'flex', gap: 0, background: '#f3f4f8', borderRadius: 24, boxShadow: '0 1px 4px #eee', overflow: 'hidden' }}>
-              <button
-                type="button"
-                onClick={() => { setReviewRatingFilter(null); setReviewPage(1); }}
-                style={{
-                  padding: '8px 18px',
-                  background: reviewRatingFilter === null ? '#007bff' : 'transparent',
-                  color: reviewRatingFilter === null ? '#fff' : '#444',
-                  border: 'none',
-                  fontWeight: 500,
-                  fontSize: '1em',
-                  cursor: 'pointer',
-                  transition: 'background 0.2s',
-                  borderRadius: '24px 0 0 24px',
-                  outline: 'none',
-                }}
-              >All</button>
-              {Array.from({ length: 5 }).map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => { setReviewRatingFilter(i + 1); setReviewPage(1); }}
-                  style={{
-                    padding: '8px 18px',
-                    background: reviewRatingFilter === i + 1 ? '#007bff' : 'transparent',
-                    color: reviewRatingFilter === i + 1 ? '#fff' : '#444',
-                    border: 'none',
-                    fontWeight: 500,
-                    fontSize: '1em',
-                    cursor: 'pointer',
-                    transition: 'background 0.2s',
-                    borderRadius: i === 4 ? '0 24px 24px 0' : '0',
-                    outline: 'none',
-                  }}
-                >{i + 1}★</button>
-              ))}
-            </div>
-          </div>
-          {/* Modern toggle switch for sort by comment */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontWeight: 500, fontSize: '1.05em', color: '#444' }}>Sort by comment</span>
-            <label style={{ position: 'relative', display: 'inline-block', width: 44, height: 24 }}>
-              <input
-                type="checkbox"
-                checked={sortByComment}
-                onChange={e => { setSortByComment(e.target.checked); setReviewPage(1); }}
-                style={{ opacity: 0, width: 0, height: 0 }}
-              />
-              <span style={{
-                position: 'absolute',
-                cursor: 'pointer',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                background: sortByComment ? '#007bff' : '#ccc',
-                borderRadius: 24,
-                transition: 'background 0.2s',
-                display: 'block',
-              }}></span>
-              <span style={{
-                position: 'absolute',
-                left: sortByComment ? 22 : 2,
-                top: 2,
-                width: 20,
-                height: 20,
-                background: '#fff',
-                borderRadius: '50%',
-                boxShadow: '0 1px 4px #aaa',
-                transition: 'left 0.2s',
-                display: 'block',
-              }}></span>
-            </label>
-          </div>
-        </div>
-        <button
-          onClick={() => setReviewsExpanded((prev) => !prev)}
-          style={{ marginBottom: 8, padding: '6px 14px', borderRadius: 4, background: '#eee', border: 'none', cursor: 'pointer', fontWeight: 500 }}
-        >
-          {reviewsExpanded ? 'Hide Reviews' : 'Show Reviews'}
-        </button>
-        {reviewsExpanded && (
-          Array.isArray(reviews) && reviews.length === 0 ? (
-            <div style={{ color: '#888', fontStyle: 'italic' }}>No reviews yet.</div>
-          ) : (
-            <>
-              <ul style={{ listStyle: 'none', padding: 0 }}>
-                {(Array.isArray(reviews) ? reviews : []).map((review, idx) => (
-                  <li key={idx} style={{ marginBottom: 16, padding: 12, background: '#fff', borderRadius: 6, boxShadow: '0 1px 4px #eee' }}>
-                    <div>
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <span key={i} style={{ color: i < review.rating ? '#FFD700' : '#ccc', fontSize: '1.1em' }}>★</span>
-                      ))}
-                      <span style={{ marginLeft: 8, color: '#555', fontSize: '0.95em' }}>{review.rating} / 5</span>
-                    </div>
-                    {review.description && (
-                      <div style={{
-                        marginTop: 8,
-                        padding: '8px 12px',
-                        background: '#f7f7fa',
-                        color: '#222',
-                        borderRadius: 4,
-                        fontSize: '1em',
-                        fontStyle: 'italic',
-                        border: '1px solid #eee'
-                      }}>
-                        {review.description}
-                      </div>
-                    )}
-                    <div style={{ fontSize: '0.85em', color: '#aaa', marginTop: 4 }}>{review.createdAt ? new Date(review.createdAt).toLocaleString() : ''}</div>
-                  </li>
-                ))}
-              </ul>
-              {/* Pagination controls */}
-              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 12, marginTop: 12 }}>
-                <button
-                  onClick={() => setReviewPage(p => Math.max(1, p - 1))}
-                  disabled={reviewPagination.current_page <= 1}
-                  style={{ padding: '4px 10px', borderRadius: 4, border: '1px solid #ccc', background: '#f7f7f7', cursor: reviewPagination.current_page <= 1 ? 'not-allowed' : 'pointer' }}
-                >
-                  Prev
-                </button>
-                <span>Page {reviewPagination.current_page} of {reviewPagination.total_pages}</span>
-                <button
-                  onClick={() => setReviewPage(p => Math.min(reviewPagination.total_pages, p + 1))}
-                  disabled={reviewPagination.current_page >= reviewPagination.total_pages}
-                  style={{ padding: '4px 10px', borderRadius: 4, border: '1px solid #ccc', background: '#f7f7f7', cursor: reviewPagination.current_page >= reviewPagination.total_pages ? 'not-allowed' : 'pointer' }}
-                >
-                  Next
-                </button>
-              </div>
-            </>
-          )
-        )}
-      </div>
-
       {/* Audio element */}
       <audio
         ref={audioRef}
@@ -1036,6 +793,243 @@ const ExhibitDetails: React.FC = () => {
             </div>
           </section>
         </div>
+      </div>
+
+      {/* --- Exhibit Rating & Reviews (moved to bottom) --- */}
+      <div className="exhibit-rating" style={{ margin: '16px 0 8px 0', textAlign: 'center' }}>
+        <span>
+          {Array.from({ length: 5 }).map((_, i) => (
+            <span key={i} style={{ color: i < rating ? '#FFD700' : '#ccc', fontSize: '1.5em' }}>★</span>
+          ))}
+          <span style={{ marginLeft: 8, fontSize: '1.1em', color: '#555' }}>
+            {rating ? rating.toFixed(1) : '—'} / 5
+          </span>
+        </span>
+      </div>
+
+      {/* --- Review Submission Form --- */}
+      <div className="exhibit-review-form" style={{ margin: '24px auto', maxWidth: 420, background: '#f3f4f8', padding: 24, borderRadius: 16, boxShadow: '0 2px 12px #eee' }}>
+        <h3 style={{ marginBottom: 16, fontWeight: 600, fontSize: '1.25em', color: '#222' }}>Submit a Review</h3>
+        <form onSubmit={handleReviewSubmit}>
+          <div style={{ marginBottom: 18, display: 'flex', alignItems: 'center', gap: 12 }}>
+            <span style={{ fontWeight: 500, color: '#444', marginRight: 8 }}>Your rating:</span>
+            <div style={{ display: 'flex', gap: 0, background: '#fff', borderRadius: 24, boxShadow: '0 1px 4px #eee', overflow: 'hidden' }}>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => setUserRating(i + 1)}
+                  style={{
+                    padding: '10px 20px',
+                    background: userRating === i + 1 ? '#007bff' : 'transparent',
+                    color: userRating >= i + 1 ? '#FFD700' : '#bbb',
+                    border: 'none',
+                    fontWeight: 600,
+                    fontSize: '1.3em',
+                    cursor: 'pointer',
+                    transition: 'background 0.2s',
+                    borderRadius: i === 0 ? '24px 0 0 24px' : i === 4 ? '0 24px 24px 0' : '0',
+                    outline: 'none',
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.color = '#FFD700'}
+                  onMouseLeave={e => e.currentTarget.style.color = userRating >= i + 1 ? '#FFD700' : '#bbb'}
+                  aria-label={`Rate ${i + 1} stars`}
+                  data-testid={`star-${i + 1}`}
+                >★</button>
+              ))}
+            </div>
+          </div>
+          <div style={{ marginBottom: 18 }}>
+            <label htmlFor="review-description" style={{
+              display: 'block',
+              marginBottom: 6,
+              fontWeight: 500,
+              color: '#444',
+              fontSize: '1em',
+            }}>
+              Optional description...
+            </label>
+            <textarea
+              id="review-description"
+              value={userDescription}
+              onChange={e => setUserDescription(e.target.value)}
+              rows={3}
+              style={{
+                width: '100%',
+                padding: '16px 12px 8px 12px',
+                borderRadius: 8,
+                border: '1.5px solid #ddd',
+                fontSize: '1em',
+                background: '#fff',
+                outline: 'none',
+                boxShadow: '0 1px 4px #eee',
+                resize: 'vertical',
+              }}
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={submitting || userRating === 0}
+            style={{
+              padding: '12px 32px',
+              borderRadius: 24,
+              background: submitting || userRating === 0 ? '#bbb' : '#007bff',
+              color: '#fff',
+              border: 'none',
+              fontWeight: 600,
+              fontSize: '1.08em',
+              boxShadow: '0 1px 4px #ddd',
+              cursor: submitting || userRating === 0 ? 'not-allowed' : 'pointer',
+              transition: 'background 0.2s',
+            }}
+          >
+            {submitting ? <span style={{ display: 'inline-block', width: 18, height: 18, border: '2px solid #fff', borderTop: '2px solid #007bff', borderRadius: '50%', animation: 'spin 1s linear infinite', marginRight: 8, verticalAlign: 'middle' }} /> : null}
+            {submitting ? 'Submitting...' : 'Submit Review'}
+          </button>
+          {reviewError && <div style={{ color: '#e74c3c', marginTop: 12, fontWeight: 500, fontSize: '1em', textAlign: 'center', background: '#fff3f3', borderRadius: 8, padding: '8px 0' }}>{reviewError}</div>}
+          {reviewSuccess && <div style={{ color: '#27ae60', marginTop: 12, fontWeight: 500, fontSize: '1em', textAlign: 'center', background: '#f3fff3', borderRadius: 8, padding: '8px 0' }}>{reviewSuccess}</div>}
+        </form>
+      </div>
+
+      {/* --- Review List --- */}
+      <div className="exhibit-review-list" style={{ margin: '24px auto', maxWidth: 600 }}>
+        <h3 style={{ marginBottom: 8 }}>Reviews</h3>
+        <div style={{ display: 'flex', gap: 24, alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', justifyContent: 'flex-start' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <span style={{ marginRight: 12, fontWeight: 500, fontSize: '1.05em', color: '#444' }}>Filter by rating:</span>
+            <div style={{ display: 'flex', gap: 0, background: '#f3f4f8', borderRadius: 24, boxShadow: '0 1px 4px #eee', overflow: 'hidden' }}>
+              <button
+                type="button"
+                onClick={() => { setReviewRatingFilter(null); setReviewPage(1); }}
+                style={{
+                  padding: '8px 18px',
+                  background: reviewRatingFilter === null ? '#007bff' : 'transparent',
+                  color: reviewRatingFilter === null ? '#fff' : '#444',
+                  border: 'none',
+                  fontWeight: 500,
+                  fontSize: '1em',
+                  cursor: 'pointer',
+                  transition: 'background 0.2s',
+                  borderRadius: '24px 0 0 24px',
+                  outline: 'none',
+                }}
+              >All</button>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => { setReviewRatingFilter(i + 1); setReviewPage(1); }}
+                  style={{
+                    padding: '8px 18px',
+                    background: reviewRatingFilter === i + 1 ? '#007bff' : 'transparent',
+                    color: reviewRatingFilter === i + 1 ? '#fff' : '#444',
+                    border: 'none',
+                    fontWeight: 500,
+                    fontSize: '1em',
+                    cursor: 'pointer',
+                    transition: 'background 0.2s',
+                    borderRadius: i === 4 ? '0 24px 24px 0' : '0',
+                    outline: 'none',
+                  }}
+                >{i + 1}★</button>
+              ))}
+            </div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontWeight: 500, fontSize: '1.05em', color: '#444' }}>Sort by comment</span>
+            <label style={{ position: 'relative', display: 'inline-block', width: 44, height: 24 }}>
+              <input
+                type="checkbox"
+                checked={sortByComment}
+                onChange={e => { setSortByComment(e.target.checked); setReviewPage(1); }}
+                style={{ opacity: 0, width: 0, height: 0 }}
+              />
+              <span style={{
+                position: 'absolute',
+                cursor: 'pointer',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: sortByComment ? '#007bff' : '#ccc',
+                borderRadius: 24,
+                transition: 'background 0.2s',
+                display: 'block',
+              }}></span>
+              <span style={{
+                position: 'absolute',
+                left: sortByComment ? 22 : 2,
+                top: 2,
+                width: 20,
+                height: 20,
+                background: '#fff',
+                borderRadius: '50%',
+                boxShadow: '0 1px 4px #aaa',
+                transition: 'left 0.2s',
+                display: 'block',
+              }}></span>
+            </label>
+          </div>
+        </div>
+        <button
+          onClick={() => setReviewsExpanded((prev) => !prev)}
+          style={{ marginBottom: 8, padding: '6px 14px', borderRadius: 4, background: '#eee', border: 'none', cursor: 'pointer', fontWeight: 500 }}
+        >
+          {reviewsExpanded ? 'Hide Reviews' : 'Show Reviews'}
+        </button>
+        {reviewsExpanded && (
+          Array.isArray(reviews) && reviews.length === 0 ? (
+            <div style={{ color: '#888', fontStyle: 'italic' }}>No reviews yet.</div>
+          ) : (
+            <>
+              <ul style={{ listStyle: 'none', padding: 0 }}>
+                {(Array.isArray(reviews) ? reviews : []).map((review, idx) => (
+                  <li key={idx} style={{ marginBottom: 16, padding: 12, background: '#fff', borderRadius: 6, boxShadow: '0 1px 4px #eee' }}>
+                    <div>
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <span key={i} style={{ color: i < review.rating ? '#FFD700' : '#ccc', fontSize: '1.1em' }}>★</span>
+                      ))}
+                      <span style={{ marginLeft: 8, color: '#555', fontSize: '0.95em' }}>{review.rating} / 5</span>
+                    </div>
+                    {review.description && (
+                      <div style={{
+                        marginTop: 8,
+                        padding: '8px 12px',
+                        background: '#f7f7fa',
+                        color: '#222',
+                        borderRadius: 4,
+                        fontSize: '1em',
+                        fontStyle: 'italic',
+                        border: '1px solid #eee'
+                      }}>
+                        {review.description}
+                      </div>
+                    )}
+                    <div style={{ fontSize: '0.85em', color: '#aaa', marginTop: 4 }}>{review.createdAt ? new Date(review.createdAt).toLocaleString() : ''}</div>
+                  </li>
+                ))}
+              </ul>
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 12, marginTop: 12 }}>
+                <button
+                  onClick={() => setReviewPage(p => Math.max(1, p - 1))}
+                  disabled={reviewPagination.current_page <= 1}
+                  style={{ padding: '4px 10px', borderRadius: 4, border: '1px solid #ccc', background: '#f7f7f7', cursor: reviewPagination.current_page <= 1 ? 'not-allowed' : 'pointer' }}
+                >
+                  Prev
+                </button>
+                <span>Page {reviewPagination.current_page} of {reviewPagination.total_pages}</span>
+                <button
+                  onClick={() => setReviewPage(p => Math.min(reviewPagination.total_pages, p + 1))}
+                  disabled={reviewPagination.current_page >= reviewPagination.total_pages}
+                  style={{ padding: '4px 10px', borderRadius: 4, border: '1px solid #ccc', background: '#f7f7f7', cursor: reviewPagination.current_page >= reviewPagination.total_pages ? 'not-allowed' : 'pointer' }}
+                >
+                  Next
+                </button>
+              </div>
+            </>
+          )
+        )}
+
       </div>
 
       {/* Image Gallery Modal */}
