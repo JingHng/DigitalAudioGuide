@@ -4,8 +4,6 @@ import { ArrowRight, Loader2, MapPin, Building2, Sparkles } from 'lucide-react';
 import apiClient from '../utils/apiClient';
 import '../styles/SmartExhibit.css';
 
-import { fetchExhibitionRating } from '../utils/api';
-
 const BACKEND_URL = import.meta.env.VITE_API_TARGET || '';
 const DEFAULT_IMAGE_URL = `${BACKEND_URL}/public/images/SmartExhibit.avif`;
 
@@ -35,7 +33,6 @@ const getImageUrl = (fileUrl: string | null | undefined): string => {
 const ToursPage: React.FC = () => {
   const [tours, setTours] = useState<Tour[]>([]);
   const [loading, setLoading] = useState(true);
-  const [ratings, setRatings] = useState<{ [id: string]: number }>({});
 
   useEffect(() => {
     const fetchTours = async () => {
@@ -58,26 +55,6 @@ const ToursPage: React.FC = () => {
 
     fetchTours();
   }, []);
-
-  useEffect(() => {
-    // Fetch ratings for each exhibition after tours are loaded
-    if (tours.length === 0) return;
-    const fetchRatings = async () => {
-      const ratingsObj: { [id: string]: number } = {};
-      await Promise.all(
-        tours.map(async (tour) => {
-          try {
-            const rating = await fetchExhibitionRating(tour.exhibitionId);
-            ratingsObj[tour.exhibitionId] = rating;
-          } catch {
-            ratingsObj[tour.exhibitionId] = 0;
-          }
-        })
-      );
-      setRatings(ratingsObj);
-    };
-    fetchRatings();
-  }, [tours]);
 
   if (loading) {
     return (
@@ -154,9 +131,9 @@ const ToursPage: React.FC = () => {
                   >
                     <div className="tour-card-inner">
                       <div className="card-image-enhanced">
-                        <img
-                          src={getImageUrl(tour.images?.[0]?.fileUrl)}
-                          alt={tour.title}
+                        <img 
+                          src={getImageUrl(tour.images?.[0]?.fileUrl)} 
+                          alt={tour.title} 
                           loading="lazy"
                         />
                         <div className="card-badge">
@@ -176,16 +153,6 @@ const ToursPage: React.FC = () => {
                           <div className="tour-type">
                             <Sparkles size={16} />
                             <span>Interactive Experience</span>
-                          </div>
-                          <div className="tour-rating" style={{ marginTop: '8px' }}>
-                            <span>
-                              {Array.from({ length: 5 }).map((_, i) => (
-                                <span key={i} style={{ color: i < (ratings[tour.exhibitionId] || 0) ? '#FFD700' : '#ccc' }}>★</span>
-                              ))}
-                              <span style={{ marginLeft: 4, fontSize: '0.95em', color: '#555' }}>
-                                {ratings[tour.exhibitionId] ? ratings[tour.exhibitionId].toFixed(1) : '—'}
-                              </span>
-                            </span>
                           </div>
                         </div>
                       </div>

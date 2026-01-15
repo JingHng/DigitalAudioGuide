@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, Link as RouterLink } from "react-router-dom";
 import apiClient from "../utils/apiClient";
-import { fetchExhibitRating, fetchExhibitReviews, submitExhibitReview } from "../utils/api";
 import {
   Play,
   Pause,
@@ -25,7 +24,6 @@ import "./ExhibitDetails.minimal.css";
 import "../styles/SmartExhibit.css";
 import EarnBadgeModal from "./earnBadgeModal";
 import audioLogService from "../services/audioLogService";
-import { useAuth } from "../contexts/AuthContext";
 
 // --- Constants & Types  ---
 const BACKEND_URL = import.meta.env.VITE_API_TARGET || "";
@@ -71,30 +69,13 @@ interface Exhibit {
 const ExhibitDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
 
-  // --- Review system state ---
-  const [rating, setRating] = useState<number>(0);
-  const [reviews, setReviews] = useState<any[]>([]);
-  const [reviewPagination, setReviewPagination] = useState<any>({ current_page: 1, per_page: 10, total: 0, total_pages: 1 });
-  const [reviewPage, setReviewPage] = useState(1);
-  const [reviewRatingFilter, setReviewRatingFilter] = useState<number | null>(null);
-  const [sortByComment, setSortByComment] = useState(false);
-  const [userRating, setUserRating] = useState<number>(0);
-  const [userDescription, setUserDescription] = useState<string>('');
-  const [submitting, setSubmitting] = useState(false);
-  const [reviewError, setReviewError] = useState<string | null>(null);
-  const [reviewSuccess, setReviewSuccess] = useState<string | null>(null);
-
   // State management
-  // Use authentication context to get current user
-  const { user } = useAuth();
+  const user = null; // Forces all user-dependent logic to be skipped
   const [exhibit, setExhibit] = useState<Exhibit | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   // Badge modal states
-
-  // Expand/collapse state for reviews section
-  const [reviewsExpanded, setReviewsExpanded] = useState<boolean>(false);
   const [showBadgeModal, setShowBadgeModal] = useState(false);
   const [badgeAssigned, setBadgeAssigned] = useState(false);
   const [badgeImageUrl, setBadgeImageUrl] = useState<string | undefined>(undefined);
@@ -131,105 +112,23 @@ const ExhibitDetails: React.FC = () => {
       .get(`/exhibits/${id}`)
       .then((res) => {
         const data: Exhibit = res.data;
+        console.log("📡 API Response for exhibit:", id);
+        console.log("🎵 Audio array:", data.audio);
+        console.log("🎵 Audio count:", data.audio?.length || 0);
         setExhibit(data);
         const firstAvailableAudio = data.audio.find((a) => a.fileUrl);
         if (firstAvailableAudio) {
-          setSelectedAudioId(firstAvailableAudio.audioId.toString());
+          console.log(
+            "Setting initial audio:",
+            firstAvailableAudio.title,
+            firstAvailableAudio.audioId
+          );
+          setSelectedAudioId(firstAvailableAudio.audioId.toString()); // Removed setting of unused selectedLanguageId
         }
       })
       .catch(() => setError("Could not load exhibit information."))
       .finally(() => setLoading(false));
   }, [id]);
-
-  // Fetch rating and reviews
-  useEffect(() => {
-    if (!id) return;
-    fetchExhibitRating(id)
-      .then(setRating)
-      .catch((err) => {
-        let backendMsg = "Failed to fetch exhibit rating.";
-        if (err?.response?.data?.message) {
-          backendMsg = err.response.data.message;
-        } else if (err?.message) {
-          backendMsg = err.message;
-        }
-        setRating(0);
-        console.error("Fetch exhibit rating error:", err);
-      });
-    fetchExhibitReviews(id, {
-      page: reviewPage,
-      limit: 5,
-      rating: reviewRatingFilter || undefined,
-      sortByComment,
-    })
-      .then(({ reviews, pagination }) => {
-        setReviews(reviews);
-        setReviewPagination(pagination);
-      })
-      .catch((err) => {
-        let backendMsg = "Failed to fetch exhibit reviews.";
-        if (err?.response?.data?.message) {
-          backendMsg = err.response.data.message;
-        } else if (err?.message) {
-          backendMsg = err.message;
-        }
-        setReviews([]);
-        setReviewPagination({ current_page: 1, per_page: 5, total: 0, total_pages: 1 });
-        console.error("Fetch exhibit reviews error:", err);
-      });
-  }, [id, reviewSuccess, reviewPage, reviewRatingFilter, sortByComment]);
-
-  // Handle review submission
-  const handleReviewSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitting(true);
-    setReviewError(null);
-    setReviewSuccess(null);
-    try {
-      if (!user || !user.userId) {
-        setReviewError("You must be logged in to submit a review.");
-        setSubmitting(false);
-        return;
-      }
-      await submitExhibitReview(id!, userRating, userDescription, user.userId);
-      setReviewSuccess("Review submitted!");
-      setUserRating(0);
-      setUserDescription('');
-      // Immediately refresh reviews and rating after successful submission
-      fetchExhibitReviews(id, {
-        page: 1,
-        limit: 5,
-        rating: reviewRatingFilter || undefined,
-        sortByComment,
-      })
-        .then(({ reviews, pagination }) => {
-          setReviews(reviews);
-          setReviewPagination(pagination);
-          setReviewPage(1);
-        })
-        .catch((err) => {
-          console.error("Failed to refresh reviews after submission:", err);
-        });
-      fetchExhibitRating(id)
-        .then(setRating)
-        .catch((err) => {
-          console.error("Failed to refresh rating after submission:", err);
-        });
-    } catch (err: any) {
-      // Try to extract backend error message if available
-      let backendMsg = "Failed to submit review.";
-      if (err?.response?.data?.message) {
-        backendMsg = err.response.data.message;
-      } else if (err?.message) {
-        backendMsg = err.message;
-      }
-      setReviewError(backendMsg);
-      // Optionally log full error for debugging
-      console.error("Review submission error:", err);
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
   // Handle audio selection changes & set audio src
   useEffect(() => {

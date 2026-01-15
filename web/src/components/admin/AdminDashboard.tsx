@@ -36,24 +36,6 @@ interface UserStats {
   averageSessionTime: number;
 }
 
-interface ExhibitReviewAnalytics {
-  exhibitId: string;
-  title: string;
-  totalReviews: number;
-  averageRating: number;
-  ratingDistribution: { [key: number]: number };
-  recentReviews: { rating: number; comment: string; created_at: string; user?: string }[];
-}
-
-interface ExhibitionReviewAnalytics {
-  exhibitionId: string;
-  title: string;
-  totalReviews: number;
-  averageRating: number;
-  ratingDistribution: { [key: number]: number };
-  recentReviews: { rating: number; comment: string; created_at: string; user?: string }[];
-}
-
 interface ExhibitStats {
   totalExhibits: number;
   popularExhibits: { id: string; name: string; visits: number }[];
@@ -136,10 +118,6 @@ const AdminDashboard = () => {
     totalActions: 0,
     recentActions: [],
   });
-
-  // --- Review Analytics State ---
-  const [exhibitReviewAnalytics, setExhibitReviewAnalytics] = useState<ExhibitReviewAnalytics[]>([]);
-  const [exhibitionReviewAnalytics, setExhibitionReviewAnalytics] = useState<ExhibitionReviewAnalytics[]>([]);
 
   // Function to validate date range
   const validateDateRange = (
@@ -419,96 +397,7 @@ const AdminDashboard = () => {
   // Load dashboard data on component mount
   useEffect(() => {
     fetchDashboardStats();
-    fetchReviewAnalytics();
   }, []);
-
-  // --- Fetch Review Analytics ---
-  /**
-   * Fetches review analytics for exhibitions and exhibits.
-   * For each exhibition, aggregates review statistics (average rating, total reviews, rating distribution)
-   * and collects recent reviews from all exhibits in the exhibition.
-   * For each exhibit, fetches review statistics and recent reviews.
-   */
-  const fetchReviewAnalytics = async () => {
-    try {
-      // Fetch all exhibitions and exhibits
-      const exhibitionsRes = await apiClient.get("/exhibitions");
-      const exhibitions = exhibitionsRes.data || [];
-  
-      // For each exhibition, fetch review stats and aggregate recent reviews
-      const exhibitionAnalytics: ExhibitionReviewAnalytics[] = await Promise.all(
-        exhibitions.map(async (exhibition: any) => {
-          // Get aggregated review stats for the exhibition
-          const statsRes = await apiClient.get(`/reviews/exhibition/${exhibition.exhibitionId}/stats`);
-          const stats = statsRes.data?.data || {};
-          // Aggregate recent reviews from all exhibits in the exhibition
-          let recentReviews: any[] = [];
-          if (exhibition.exhibits && exhibition.exhibits.length > 0) {
-            for (const exhibit of exhibition.exhibits) {
-              const reviewsRes = await apiClient.get(`/reviews/exhibit/${exhibit.exhibitId}?limit=5`);
-              if (reviewsRes.data?.data?.reviews) {
-                recentReviews = recentReviews.concat(
-                  reviewsRes.data.data.reviews.map((r: any) => ({
-                    rating: r.rating,
-                    comment: r.comment,
-                    created_at: r.created_at,
-                    user: r.user?.username || r.user?.email || "Anonymous",
-                  }))
-                );
-              }
-            }
-            // Sort reviews by most recent and limit to 5
-            recentReviews.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-            recentReviews = recentReviews.slice(0, 5);
-          }
-          return {
-            exhibitionId: exhibition.exhibitionId,
-            title: exhibition.title,
-            totalReviews: stats.total_reviews || 0,
-            averageRating: stats.average_rating || 0,
-            ratingDistribution: stats.rating_distribution || {},
-            recentReviews,
-          };
-        })
-      );
-      setExhibitionReviewAnalytics(exhibitionAnalytics);
-  
-      // For each exhibit, fetch review stats and recent reviews
-      let allExhibits: any[] = [];
-      exhibitions.forEach((exhibition: any) => {
-        if (exhibition.exhibits) allExhibits = allExhibits.concat(exhibition.exhibits);
-      });
-      const exhibitAnalytics: ExhibitReviewAnalytics[] = await Promise.all(
-        allExhibits.map(async (exhibit: any) => {
-          // Get review stats for the exhibit
-          const statsRes = await apiClient.get(`/reviews/exhibit/${exhibit.exhibitId}/stats`);
-          const stats = statsRes.data?.data || {};
-          // Get recent reviews for the exhibit
-          let recentReviews: any[] = [];
-          const reviewsRes = await apiClient.get(`/reviews/exhibit/${exhibit.exhibitId}?limit=5`);
-          if (reviewsRes.data?.data?.reviews) {
-            recentReviews = reviewsRes.data.data.reviews.map((r: any) => ({
-              rating: r.rating,
-              comment: r.comment,
-              created_at: r.created_at,
-              user: r.user?.username || r.user?.email || "Anonymous",
-            }));
-          }
-          return {
-            exhibitId: exhibit.exhibitId,
-            title: exhibit.title,
-            totalReviews: stats.total_reviews || 0,
-            averageRating: stats.average_rating || 0,
-            ratingDistribution: stats.rating_distribution || {},
-            recentReviews,
-          };
-        })
-      );
-      setExhibitReviewAnalytics(exhibitAnalytics);
-    } catch (error) {
-      console.error("Error fetching review analytics:", error);
-    }
-  };
 
   // Update dates when switching to period filter (only when actually switching TO period)
   useEffect(() => {
@@ -1117,95 +1006,7 @@ const AdminDashboard = () => {
             </div>
           </div>
         )}
-      {/* --- Review Analytics Section ---
-        Restyled to reuse existing dashboard chart/card classes for visual consistency
-      */}
-      <div className="dashboard-charts">
-        <div className="charts-row">
-          <div className="chart-container">
-            <div className="chart-header">
-              <h2>Exhibition Reviews</h2>
-              <div className="chart-stats">
-                <div className="chart-stat">
-                  <span className="chart-stat-label">Exhibitions:</span>
-                  <span className="chart-stat-value">{exhibitionReviewAnalytics.length}</span>
-                </div>
-              </div>
-            </div>
-            <div className="chart-content review-list">
-              {exhibitionReviewAnalytics.length === 0 ? (
-                <div className="chart-no-data">
-                  <p>No exhibition review analytics available.</p>
-                </div>
-              ) : (
-                exhibitionReviewAnalytics.map((exh) => (
-                  <div key={exh.exhibitionId} style={{ marginBottom: 16, borderBottom: '1px solid var(--neutral-100)', paddingBottom: 12 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <strong>{exh.title}</strong>
-                      <div style={{ textAlign: 'right', color: 'var(--neutral-600)' }}>
-                        <div>Total: {exh.totalReviews}</div>
-                        <div>Avg: {exh.averageRating.toFixed(2)}★</div>
-                      </div>
-                    </div>
-                    <div style={{ marginTop: 8 }}>
-                      <small style={{ color: 'var(--neutral-500)' }}>Recent:</small>
-                      <ul style={{ margin: '6px 0 0 0', paddingLeft: 16 }}>
-                        {exh.recentReviews.length === 0 ? <li style={{ color: 'var(--neutral-500)' }}>No recent reviews.</li> : exh.recentReviews.map((r, idx) => (
-                          <li key={idx} style={{ fontSize: '0.95em', color: 'var(--neutral-700)' }}>
-                            <span style={{ color: '#f59e0b' }}>{r.rating}★</span> — {r.comment || 'No comment'} <span style={{ color: 'var(--neutral-500)', marginLeft: 8 }}>{r.user}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-
-          <div className="chart-container">
-            <div className="chart-header">
-              <h2>Exhibit Reviews</h2>
-              <div className="chart-stats">
-                <div className="chart-stat">
-                  <span className="chart-stat-label">Exhibits:</span>
-                  <span className="chart-stat-value">{exhibitReviewAnalytics.length}</span>
-                </div>
-              </div>
-            </div>
-            <div className="chart-content review-list">
-              {exhibitReviewAnalytics.length === 0 ? (
-                <div className="chart-no-data">
-                  <p>No exhibit review analytics available.</p>
-                </div>
-              ) : (
-                exhibitReviewAnalytics.map((ex) => (
-                  <div key={ex.exhibitId} style={{ marginBottom: 16, borderBottom: '1px solid var(--neutral-100)', paddingBottom: 12 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <strong>{ex.title}</strong>
-                      <div style={{ textAlign: 'right', color: 'var(--neutral-600)' }}>
-                        <div>Total: {ex.totalReviews}</div>
-                        <div>Avg: {ex.averageRating.toFixed(2)}★</div>
-                      </div>
-                    </div>
-                    <div style={{ marginTop: 8 }}>
-                      <small style={{ color: 'var(--neutral-500)' }}>Recent:</small>
-                      <ul style={{ margin: '6px 0 0 0', paddingLeft: 16 }}>
-                        {ex.recentReviews.length === 0 ? <li style={{ color: 'var(--neutral-500)' }}>No recent reviews.</li> : ex.recentReviews.map((r, idx) => (
-                          <li key={idx} style={{ fontSize: '0.95em', color: 'var(--neutral-700)' }}>
-                            <span style={{ color: '#f59e0b' }}>{r.rating}★</span> — {r.comment || 'No comment'} <span style={{ color: 'var(--neutral-500)', marginLeft: 8 }}>{r.user}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-        </div>
       </div>
-    </div>
     </AdminLayout>
   );
 };

@@ -36,9 +36,9 @@ import AuditLogsPage from "./components/admin/AuditLogsPage";
 import AudioAnalyticsPage from "./components/admin/AudioAnalyticsPage";
 import AudioManagement from "./components/admin/AudioManagement";
 import SettingsPage from "./components/admin/SettingsPage";
+import AssistantPage from "./components/admin/AssistantPage";
 
 import NotFoundPage from "./components/NotFoundPage.tsx"; // KEEP: Good practice for * route
-import ReviewsPage from "./pages/ReviewsPage";
 
 // --- COMMENTED OUT: Loaders/Providers ---
 // import GoogleTranslateLoader from "./components/GoogleTranslateLoader";
@@ -59,6 +59,7 @@ function App() {
       {isAdminRoute ? (
         <Routes>
           <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+          <Route path="/admin/assistant" element={<AdminRoute><AssistantPage /></AdminRoute>} />
           <Route path="/admin/exhibits" element={<AdminRoute><ExhibitsPage /></AdminRoute>} />
           <Route path="/admin/audio" element={<AdminRoute><AudioManagement /></AdminRoute>} />
           <Route path="/admin/roles" element={<AdminRoute><RolesPage /></AdminRoute>} />
@@ -79,7 +80,6 @@ function App() {
             { <Route path="/exhibitions/:id" element={<ExhibitionDetails />} /> }
             { <Route path="/exhibitions/:id/ar-photobooth" element={<ARPhotobooth />} /> }
             { <Route path="/exhibit/:id" element={<ExhibitDetails />} /> }
-            { <Route path="/reviews" element={<ReviewsPage />} /> }
 
             {/* --- Other Public/Auth Routes --- */}
             <Route path="/login" element={<LoginPage />} />
