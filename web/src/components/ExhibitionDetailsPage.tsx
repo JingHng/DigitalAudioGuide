@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { ArrowRight, Loader2, Camera, Sparkles } from 'lucide-react';
 import apiClient from '../utils/apiClient';
+import { fetchExhibitRating } from '../utils/api';
 
 const BACKEND_URL = import.meta.env.VITE_API_TARGET || '';
 const DEFAULT_IMAGE_URL = `${BACKEND_URL}/public/images/Exhibit.jpg`;
@@ -42,6 +43,7 @@ const ExhibitionDetailsPage: React.FC = () => {
   const [exhibition, setExhibition] = useState<Exhibition | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [ratings, setRatings] = useState<{ [id: string]: number }>({});
 
   useEffect(() => {
     if (!id) {
@@ -68,6 +70,26 @@ const ExhibitionDetailsPage: React.FC = () => {
         setLoading(false);
       });
   }, [id]);
+
+  useEffect(() => {
+    // Fetch ratings for each exhibit after exhibition is loaded
+    if (!exhibition || exhibition.exhibits.length === 0) return;
+    const fetchRatings = async () => {
+      const ratingsObj: { [id: string]: number } = {};
+      await Promise.all(
+        exhibition.exhibits.map(async (exhibit) => {
+          try {
+            const rating = await fetchExhibitRating(exhibit.exhibitId);
+            ratingsObj[exhibit.exhibitId] = rating;
+          } catch {
+            ratingsObj[exhibit.exhibitId] = 0;
+          }
+        })
+      );
+      setRatings(ratingsObj);
+    };
+    fetchRatings();
+  }, [exhibition]);
 
   if (loading) {
     return (
@@ -132,6 +154,16 @@ const ExhibitionDetailsPage: React.FC = () => {
                     <div className="exhibit-card-content">
                       <h3>{exhibit.title}</h3>
                       <p className="exhibit-description">{exhibit.description}</p>
+                      <div className="exhibit-rating" style={{ margin: '6px 0 8px 0' }}>
+                        <span>
+                          {Array.from({ length: 5 }).map((_, i) => (
+                            <span key={i} style={{ color: i < (ratings[exhibit.exhibitId] || 0) ? '#FFD700' : '#ccc' }}>★</span>
+                          ))}
+                          <span style={{ marginLeft: 4, fontSize: '0.95em', color: '#555' }}>
+                            {ratings[exhibit.exhibitId] ? ratings[exhibit.exhibitId].toFixed(1) : '—'}
+                          </span>
+                        </span>
+                      </div>
                       <div className="exhibit-learn-more-btn">
                         <span>Learn More</span>
                         <ArrowRight size={16} />
