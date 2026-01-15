@@ -24,6 +24,8 @@ import "./ExhibitDetails.minimal.css";
 import "../styles/SmartExhibit.css";
 import EarnBadgeModal from "./earnBadgeModal";
 import audioLogService from "../services/audioLogService";
+import { useAuth } from "../contexts/AuthContext";
+import { fetchExhibitRating, fetchExhibitReviews, submitExhibitReview } from "../utils/api";
 
 // --- Constants & Types  ---
 const BACKEND_URL = import.meta.env.VITE_API_TARGET || "";
@@ -70,10 +72,24 @@ const ExhibitDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
 
   // State management
-  const user = null; // Forces all user-dependent logic to be skipped
+  const { user } = useAuth();
   const [exhibit, setExhibit] = useState<Exhibit | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // --- Review system state ---
+  const [rating, setRating] = useState<number>(0);
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [reviewPagination, setReviewPagination] = useState<any>({ current_page: 1, per_page: 5, total: 0, total_pages: 1 });
+  const [reviewPage, setReviewPage] = useState(1);
+  const [reviewRatingFilter, setReviewRatingFilter] = useState<number | null>(null);
+  const [sortByComment, setSortByComment] = useState(false);
+  const [userRating, setUserRating] = useState<number>(0);
+  const [userDescription, setUserDescription] = useState<string>('');
+  const [submitting, setSubmitting] = useState(false);
+  const [reviewError, setReviewError] = useState<string | null>(null);
+  const [reviewSuccess, setReviewSuccess] = useState<string | null>(null);
+  const [reviewsExpanded, setReviewsExpanded] = useState<boolean>(false);
 
   // Badge modal states
   const [showBadgeModal, setShowBadgeModal] = useState(false);
@@ -413,6 +429,108 @@ const ExhibitDetails: React.FC = () => {
       return `${BACKEND_URL}/public/images/${filename}`;
     }
     return DEFAULT_IMAGE_URL;
+  };
+
+  // Fetch reviews and rating for this exhibit
+  useEffect(() => {
+    if (!id) return;
+
+    let cancelled = false;
+
+    const loadReviewsAndRating = async () => {
+      try {
+        const avg = await fetchExhibitRating(id);
+        if (!cancelled) setRating(Number(avg) || 0);
+
+        const res = await fetchExhibitReviews(id, { page: reviewPage, limit: reviewPagination.per_page, rating: reviewRatingFilter || undefined, sortByComment });
+        // res expected shape: { reviews, pagination }
+        if (!cancelled) {
+          let fetched: any[] = [];
+          if (res && Array.isArray(res.reviews)) {
+            fetched = res.reviews;
+          } else if (Array.isArray(res)) {
+            fetched = res;
+          }
+
+          // If sorting by comment, bring reviews with a non-empty comment to the top
+          if (sortByComment) {
+            fetched = fetched.slice().sort((a: any, b: any) => {
+              const aHas = a.comment && String(a.comment).trim().length > 0 ? 1 : 0;
+              const bHas = b.comment && String(b.comment).trim().length > 0 ? 1 : 0;
+              if (aHas === bHas) {
+                // keep newest first as tiebreaker
+                const aTime = a.created_at ? new Date(a.created_at).getTime() : 0;
+                const bTime = b.created_at ? new Date(b.created_at).getTime() : 0;
+                return bTime - aTime;
+              }
+              return bHas - aHas; // items with comment (bHas=1) come before
+            });
+          }
+
+          setReviews(fetched);
+
+          if (res && res.pagination) {
+            setReviewPagination((prev: any) => ({
+              ...prev,
+              current_page: res.pagination.current_page,
+              total_pages: res.pagination.total_pages,
+              total: res.pagination.total_count,
+              per_page: res.pagination.per_page,
+            }));
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load reviews or rating:', err);
+      }
+    };
+
+    loadReviewsAndRating();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [id, reviewPage, reviewRatingFilter, sortByComment]);
+
+  const handleReviewSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!id) return;
+    setSubmitting(true);
+    setReviewError(null);
+    setReviewSuccess(null);
+
+    if (!user) {
+      setReviewError('You must be logged in to submit a review.');
+      setSubmitting(false);
+      return;
+    }
+
+    try {
+      await submitExhibitReview(id, userRating, userDescription || null, user.userId);
+      setReviewSuccess('Review submitted successfully.');
+      setUserRating(0);
+      setUserDescription('');
+      // Refresh reviews and rating
+      setReviewPage(1);
+      const avg = await fetchExhibitRating(id);
+      setRating(Number(avg) || 0);
+      const res = await fetchExhibitReviews(id, { page: 1, limit: reviewPagination.per_page });
+      if (res && Array.isArray(res.reviews)) setReviews(res.reviews);
+      if (res && res.pagination) {
+        setReviewPagination((prev: any) => ({
+          ...prev,
+          current_page: res.pagination.current_page,
+          total_pages: res.pagination.total_pages,
+          total: res.pagination.total_count,
+          per_page: res.pagination.per_page,
+        }));
+      }
+    } catch (error: any) {
+      console.error('Review submit failed:', error);
+      const backendMsg = error?.response?.data?.error || error?.message || 'Failed to submit review';
+      setReviewError(String(backendMsg));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   // Early returns
