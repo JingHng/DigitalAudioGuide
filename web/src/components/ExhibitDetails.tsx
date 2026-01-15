@@ -24,6 +24,8 @@ import "./ExhibitDetails.minimal.css";
 import "../styles/SmartExhibit.css";
 import EarnBadgeModal from "./earnBadgeModal";
 import audioLogService from "../services/audioLogService";
+import { useAuth } from "../contexts/AuthContext";
+import { fetchExhibitRating, fetchExhibitReviews, submitExhibitReview } from "../utils/api";
 
 // --- Constants & Types  ---
 const BACKEND_URL = import.meta.env.VITE_API_TARGET || "";
@@ -70,10 +72,24 @@ const ExhibitDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
 
   // State management
-  const user = null; // Forces all user-dependent logic to be skipped
+  const { user } = useAuth();
   const [exhibit, setExhibit] = useState<Exhibit | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // --- Review system state ---
+  const [rating, setRating] = useState<number>(0);
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [reviewPagination, setReviewPagination] = useState<any>({ current_page: 1, per_page: 5, total: 0, total_pages: 1 });
+  const [reviewPage, setReviewPage] = useState(1);
+  const [reviewRatingFilter, setReviewRatingFilter] = useState<number | null>(null);
+  const [sortByComment, setSortByComment] = useState(false);
+  const [userRating, setUserRating] = useState<number>(0);
+  const [userDescription, setUserDescription] = useState<string>('');
+  const [submitting, setSubmitting] = useState(false);
+  const [reviewError, setReviewError] = useState<string | null>(null);
+  const [reviewSuccess, setReviewSuccess] = useState<string | null>(null);
+  const [reviewsExpanded, setReviewsExpanded] = useState<boolean>(false);
 
   // Badge modal states
   const [showBadgeModal, setShowBadgeModal] = useState(false);
@@ -415,6 +431,108 @@ const ExhibitDetails: React.FC = () => {
     return DEFAULT_IMAGE_URL;
   };
 
+  // Fetch reviews and rating for this exhibit
+  useEffect(() => {
+    if (!id) return;
+
+    let cancelled = false;
+
+    const loadReviewsAndRating = async () => {
+      try {
+        const avg = await fetchExhibitRating(id);
+        if (!cancelled) setRating(Number(avg) || 0);
+
+        const res = await fetchExhibitReviews(id, { page: reviewPage, limit: reviewPagination.per_page, rating: reviewRatingFilter || undefined, sortByComment });
+        // res expected shape: { reviews, pagination }
+        if (!cancelled) {
+          let fetched: any[] = [];
+          if (res && Array.isArray(res.reviews)) {
+            fetched = res.reviews;
+          } else if (Array.isArray(res)) {
+            fetched = res;
+          }
+
+          // If sorting by comment, bring reviews with a non-empty comment to the top
+          if (sortByComment) {
+            fetched = fetched.slice().sort((a: any, b: any) => {
+              const aHas = a.comment && String(a.comment).trim().length > 0 ? 1 : 0;
+              const bHas = b.comment && String(b.comment).trim().length > 0 ? 1 : 0;
+              if (aHas === bHas) {
+                // keep newest first as tiebreaker
+                const aTime = a.created_at ? new Date(a.created_at).getTime() : 0;
+                const bTime = b.created_at ? new Date(b.created_at).getTime() : 0;
+                return bTime - aTime;
+              }
+              return bHas - aHas; // items with comment (bHas=1) come before
+            });
+          }
+
+          setReviews(fetched);
+
+          if (res && res.pagination) {
+            setReviewPagination((prev: any) => ({
+              ...prev,
+              current_page: res.pagination.current_page,
+              total_pages: res.pagination.total_pages,
+              total: res.pagination.total_count,
+              per_page: res.pagination.per_page,
+            }));
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load reviews or rating:', err);
+      }
+    };
+
+    loadReviewsAndRating();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [id, reviewPage, reviewRatingFilter, sortByComment]);
+
+  const handleReviewSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!id) return;
+    setSubmitting(true);
+    setReviewError(null);
+    setReviewSuccess(null);
+
+    if (!user) {
+      setReviewError('You must be logged in to submit a review.');
+      setSubmitting(false);
+      return;
+    }
+
+    try {
+      await submitExhibitReview(id, userRating, userDescription || null, user.userId);
+      setReviewSuccess('Review submitted successfully.');
+      setUserRating(0);
+      setUserDescription('');
+      // Refresh reviews and rating
+      setReviewPage(1);
+      const avg = await fetchExhibitRating(id);
+      setRating(Number(avg) || 0);
+      const res = await fetchExhibitReviews(id, { page: 1, limit: reviewPagination.per_page });
+      if (res && Array.isArray(res.reviews)) setReviews(res.reviews);
+      if (res && res.pagination) {
+        setReviewPagination((prev: any) => ({
+          ...prev,
+          current_page: res.pagination.current_page,
+          total_pages: res.pagination.total_pages,
+          total: res.pagination.total_count,
+          per_page: res.pagination.per_page,
+        }));
+      }
+    } catch (error: any) {
+      console.error('Review submit failed:', error);
+      const backendMsg = error?.response?.data?.error || error?.message || 'Failed to submit review';
+      setReviewError(String(backendMsg));
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   // Early returns
   if (loading)
     return (
@@ -692,6 +810,243 @@ const ExhibitDetails: React.FC = () => {
             </div>
           </section>
         </div>
+      </div>
+
+      {/* --- Exhibit Rating & Reviews (moved to bottom) --- */}
+      <div className="exhibit-rating" style={{ margin: '16px 0 8px 0', textAlign: 'center' }}>
+        <span>
+          {Array.from({ length: 5 }).map((_, i) => (
+            <span key={i} style={{ color: i < rating ? '#FFD700' : '#ccc', fontSize: '1.5em' }}>★</span>
+          ))}
+          <span style={{ marginLeft: 8, fontSize: '1.1em', color: '#555' }}>
+            {rating ? rating.toFixed(1) : '—'} / 5
+          </span>
+        </span>
+      </div>
+
+      {/* --- Review Submission Form --- */}
+      <div className="exhibit-review-form" style={{ margin: '24px auto', maxWidth: 420, background: '#f3f4f8', padding: 24, borderRadius: 16, boxShadow: '0 2px 12px #eee' }}>
+        <h3 style={{ marginBottom: 16, fontWeight: 600, fontSize: '1.25em', color: '#222' }}>Submit a Review</h3>
+        <form onSubmit={handleReviewSubmit}>
+          <div style={{ marginBottom: 18, display: 'flex', alignItems: 'center', gap: 12 }}>
+            <span style={{ fontWeight: 500, color: '#444', marginRight: 8 }}>Your rating:</span>
+            <div style={{ display: 'flex', gap: 0, background: '#fff', borderRadius: 24, boxShadow: '0 1px 4px #eee', overflow: 'hidden' }}>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => setUserRating(i + 1)}
+                  style={{
+                    padding: '10px 20px',
+                    background: userRating === i + 1 ? '#007bff' : 'transparent',
+                    color: userRating >= i + 1 ? '#FFD700' : '#bbb',
+                    border: 'none',
+                    fontWeight: 600,
+                    fontSize: '1.3em',
+                    cursor: 'pointer',
+                    transition: 'background 0.2s',
+                    borderRadius: i === 0 ? '24px 0 0 24px' : i === 4 ? '0 24px 24px 0' : '0',
+                    outline: 'none',
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.color = '#FFD700'}
+                  onMouseLeave={e => e.currentTarget.style.color = userRating >= i + 1 ? '#FFD700' : '#bbb'}
+                  aria-label={`Rate ${i + 1} stars`}
+                  data-testid={`star-${i + 1}`}
+                >★</button>
+              ))}
+            </div>
+          </div>
+          <div style={{ marginBottom: 18 }}>
+            <label htmlFor="review-description" style={{
+              display: 'block',
+              marginBottom: 6,
+              fontWeight: 500,
+              color: '#444',
+              fontSize: '1em',
+            }}>
+              Optional description...
+            </label>
+            <textarea
+              id="review-description"
+              value={userDescription}
+              onChange={e => setUserDescription(e.target.value)}
+              rows={3}
+              style={{
+                width: '100%',
+                padding: '16px 12px 8px 12px',
+                borderRadius: 8,
+                border: '1.5px solid #ddd',
+                fontSize: '1em',
+                background: '#fff',
+                outline: 'none',
+                boxShadow: '0 1px 4px #eee',
+                resize: 'vertical',
+              }}
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={submitting || userRating === 0}
+            style={{
+              padding: '12px 32px',
+              borderRadius: 24,
+              background: submitting || userRating === 0 ? '#bbb' : '#007bff',
+              color: '#fff',
+              border: 'none',
+              fontWeight: 600,
+              fontSize: '1.08em',
+              boxShadow: '0 1px 4px #ddd',
+              cursor: submitting || userRating === 0 ? 'not-allowed' : 'pointer',
+              transition: 'background 0.2s',
+            }}
+          >
+            {submitting ? <span style={{ display: 'inline-block', width: 18, height: 18, border: '2px solid #fff', borderTop: '2px solid #007bff', borderRadius: '50%', animation: 'spin 1s linear infinite', marginRight: 8, verticalAlign: 'middle' }} /> : null}
+            {submitting ? 'Submitting...' : 'Submit Review'}
+          </button>
+          {reviewError && <div style={{ color: '#e74c3c', marginTop: 12, fontWeight: 500, fontSize: '1em', textAlign: 'center', background: '#fff3f3', borderRadius: 8, padding: '8px 0' }}>{reviewError}</div>}
+          {reviewSuccess && <div style={{ color: '#27ae60', marginTop: 12, fontWeight: 500, fontSize: '1em', textAlign: 'center', background: '#f3fff3', borderRadius: 8, padding: '8px 0' }}>{reviewSuccess}</div>}
+        </form>
+      </div>
+
+      {/* --- Review List --- */}
+      <div className="exhibit-review-list" style={{ margin: '24px auto', maxWidth: 600 }}>
+        <h3 style={{ marginBottom: 8 }}>Reviews</h3>
+        <div style={{ display: 'flex', gap: 24, alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', justifyContent: 'flex-start' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <span style={{ marginRight: 12, fontWeight: 500, fontSize: '1.05em', color: '#444' }}>Filter by rating:</span>
+            <div style={{ display: 'flex', gap: 0, background: '#f3f4f8', borderRadius: 24, boxShadow: '0 1px 4px #eee', overflow: 'hidden' }}>
+              <button
+                type="button"
+                onClick={() => { setReviewRatingFilter(null); setReviewPage(1); }}
+                style={{
+                  padding: '8px 18px',
+                  background: reviewRatingFilter === null ? '#007bff' : 'transparent',
+                  color: reviewRatingFilter === null ? '#fff' : '#444',
+                  border: 'none',
+                  fontWeight: 500,
+                  fontSize: '1em',
+                  cursor: 'pointer',
+                  transition: 'background 0.2s',
+                  borderRadius: '24px 0 0 24px',
+                  outline: 'none',
+                }}
+              >All</button>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => { setReviewRatingFilter(i + 1); setReviewPage(1); }}
+                  style={{
+                    padding: '8px 18px',
+                    background: reviewRatingFilter === i + 1 ? '#007bff' : 'transparent',
+                    color: reviewRatingFilter === i + 1 ? '#fff' : '#444',
+                    border: 'none',
+                    fontWeight: 500,
+                    fontSize: '1em',
+                    cursor: 'pointer',
+                    transition: 'background 0.2s',
+                    borderRadius: i === 4 ? '0 24px 24px 0' : '0',
+                    outline: 'none',
+                  }}
+                >{i + 1}★</button>
+              ))}
+            </div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontWeight: 500, fontSize: '1.05em', color: '#444' }}>Sort by comment</span>
+            <label style={{ position: 'relative', display: 'inline-block', width: 44, height: 24 }}>
+              <input
+                type="checkbox"
+                checked={sortByComment}
+                onChange={e => { setSortByComment(e.target.checked); setReviewPage(1); }}
+                style={{ opacity: 0, width: 0, height: 0 }}
+              />
+              <span style={{
+                position: 'absolute',
+                cursor: 'pointer',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: sortByComment ? '#007bff' : '#ccc',
+                borderRadius: 24,
+                transition: 'background 0.2s',
+                display: 'block',
+              }}></span>
+              <span style={{
+                position: 'absolute',
+                left: sortByComment ? 22 : 2,
+                top: 2,
+                width: 20,
+                height: 20,
+                background: '#fff',
+                borderRadius: '50%',
+                boxShadow: '0 1px 4px #aaa',
+                transition: 'left 0.2s',
+                display: 'block',
+              }}></span>
+            </label>
+          </div>
+        </div>
+        <button
+          onClick={() => setReviewsExpanded((prev) => !prev)}
+          style={{ marginBottom: 8, padding: '6px 14px', borderRadius: 4, background: '#eee', border: 'none', cursor: 'pointer', fontWeight: 500 }}
+        >
+          {reviewsExpanded ? 'Hide Reviews' : 'Show Reviews'}
+        </button>
+        {reviewsExpanded && (
+          Array.isArray(reviews) && reviews.length === 0 ? (
+            <div style={{ color: '#888', fontStyle: 'italic' }}>No reviews yet.</div>
+          ) : (
+            <>
+              <ul style={{ listStyle: 'none', padding: 0 }}>
+                {(Array.isArray(reviews) ? reviews : []).map((review, idx) => (
+                  <li key={idx} style={{ marginBottom: 16, padding: 12, background: '#fff', borderRadius: 6, boxShadow: '0 1px 4px #eee' }}>
+                    <div>
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <span key={i} style={{ color: i < review.rating ? '#FFD700' : '#ccc', fontSize: '1.1em' }}>★</span>
+                      ))}
+                      <span style={{ marginLeft: 8, color: '#555', fontSize: '0.95em' }}>{review.rating} / 5</span>
+                    </div>
+                    {review.description && (
+                      <div style={{
+                        marginTop: 8,
+                        padding: '8px 12px',
+                        background: '#f7f7fa',
+                        color: '#222',
+                        borderRadius: 4,
+                        fontSize: '1em',
+                        fontStyle: 'italic',
+                        border: '1px solid #eee'
+                      }}>
+                        {review.description}
+                      </div>
+                    )}
+                    <div style={{ fontSize: '0.85em', color: '#aaa', marginTop: 4 }}>{review.createdAt ? new Date(review.createdAt).toLocaleString() : ''}</div>
+                  </li>
+                ))}
+              </ul>
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 12, marginTop: 12 }}>
+                <button
+                  onClick={() => setReviewPage(p => Math.max(1, p - 1))}
+                  disabled={reviewPagination.current_page <= 1}
+                  style={{ padding: '4px 10px', borderRadius: 4, border: '1px solid #ccc', background: '#f7f7f7', cursor: reviewPagination.current_page <= 1 ? 'not-allowed' : 'pointer' }}
+                >
+                  Prev
+                </button>
+                <span>Page {reviewPagination.current_page} of {reviewPagination.total_pages}</span>
+                <button
+                  onClick={() => setReviewPage(p => Math.min(reviewPagination.total_pages, p + 1))}
+                  disabled={reviewPagination.current_page >= reviewPagination.total_pages}
+                  style={{ padding: '4px 10px', borderRadius: 4, border: '1px solid #ccc', background: '#f7f7f7', cursor: reviewPagination.current_page >= reviewPagination.total_pages ? 'not-allowed' : 'pointer' }}
+                >
+                  Next
+                </button>
+              </div>
+            </>
+          )
+        )}
+
       </div>
 
       {/* Image Gallery Modal */}

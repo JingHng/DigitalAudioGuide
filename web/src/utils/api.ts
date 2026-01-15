@@ -50,3 +50,35 @@ export async function authFetch(url: string, options: RequestInit = {}): Promise
 
   return response;
 }
+
+// --- Convenience functions used by components ---
+import apiClient from './apiClient';
+
+export async function fetchExhibitReviews(exhibitId: string | number, opts: { page?: number; limit?: number; rating?: number; sortByComment?: boolean } = {}) {
+  const { page = 1, limit = 5, rating, sortByComment } = opts;
+  const params = new URLSearchParams();
+  params.append('page', String(page));
+  params.append('limit', String(limit));
+  if (rating) params.append('min_rating', String(rating));
+  if (sortByComment) params.append('sort_by', 'comment');
+
+  const res = await apiClient.get(`/reviews?${params.toString()}&exhibit_id=${exhibitId}`);
+  return res.data.data;
+}
+
+export async function fetchExhibitRating(exhibitId: string | number) {
+  const res = await apiClient.get(`/reviews/exhibit/${exhibitId}/stats`);
+  // Expecting { success: true, data: { average_rating: x, ... } }
+  return res.data.data?.average_rating || 0;
+}
+
+export async function submitExhibitReview(exhibitId: string | number, rating: number, description: string | null, userId: number | string) {
+  const payload = {
+    user_id: userId,
+    exhibit_id: exhibitId,
+    rating,
+    comment: description || null,
+  };
+  const res = await apiClient.post('/reviews', payload);
+  return res.data;
+}

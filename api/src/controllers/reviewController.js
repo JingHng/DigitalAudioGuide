@@ -117,14 +117,7 @@ class ReviewController {
         });
       }
 
-      // Check if user has already reviewed this exhibit
-      const hasReviewed = await ReviewModel.hasUserReviewedExhibit(user_id, exhibit_id);
-      if (hasReviewed) {
-        return res.status(409).json({
-          success: false,
-          error: 'You have already reviewed this exhibit'
-        });
-      }
+      // Allow multiple reviews per user per exhibit (no uniqueness restriction)
 
       const review = await ReviewModel.createReview({ user_id, exhibit_id, rating, comment });
 
