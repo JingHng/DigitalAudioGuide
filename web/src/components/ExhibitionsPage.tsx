@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Loader2, MapPin, Building2, Sparkles } from 'lucide-react';
+import { ArrowRight, Loader2, MapPin, Building2, Sparkles, PlayCircle } from 'lucide-react';
 import apiClient from '../utils/apiClient';
 import '../styles/SmartExhibit.css';
 
@@ -124,7 +124,7 @@ const ToursPage: React.FC = () => {
               <div className="tours-grid-enhanced">
                 {tours.map((tour, index) => (
                   <Link 
-                    to={`/exhibitions/${tour.exhibitionId}`} 
+                    to={`/exhibitions/${tour.exhibitionId}/tour`} 
                     key={tour.exhibitionId} 
                     className="tour-card-enhanced"
                     style={{ animationDelay: `${index * 0.1}s` }}

@@ -4510,6 +4510,7 @@ export namespace Prisma {
     exhibitionId: number | null
     badgeId: number | null
     statusId: number | null
+    sequence: number | null
   }
 
   export type ExhibitSumAggregateOutputType = {
@@ -4517,6 +4518,7 @@ export namespace Prisma {
     exhibitionId: bigint | null
     badgeId: bigint | null
     statusId: number | null
+    sequence: number | null
   }
 
   export type ExhibitMinAggregateOutputType = {
@@ -4527,6 +4529,7 @@ export namespace Prisma {
     statusId: number | null
     description: string | null
     additionalDescription: string | null
+    sequence: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -4539,6 +4542,7 @@ export namespace Prisma {
     statusId: number | null
     description: string | null
     additionalDescription: string | null
+    sequence: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -4551,6 +4555,7 @@ export namespace Prisma {
     statusId: number
     description: number
     additionalDescription: number
+    sequence: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -4562,6 +4567,7 @@ export namespace Prisma {
     exhibitionId?: true
     badgeId?: true
     statusId?: true
+    sequence?: true
   }
 
   export type ExhibitSumAggregateInputType = {
@@ -4569,6 +4575,7 @@ export namespace Prisma {
     exhibitionId?: true
     badgeId?: true
     statusId?: true
+    sequence?: true
   }
 
   export type ExhibitMinAggregateInputType = {
@@ -4579,6 +4586,7 @@ export namespace Prisma {
     statusId?: true
     description?: true
     additionalDescription?: true
+    sequence?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -4591,6 +4599,7 @@ export namespace Prisma {
     statusId?: true
     description?: true
     additionalDescription?: true
+    sequence?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -4603,6 +4612,7 @@ export namespace Prisma {
     statusId?: true
     description?: true
     additionalDescription?: true
+    sequence?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -4702,6 +4712,7 @@ export namespace Prisma {
     statusId: number | null
     description: string | null
     additionalDescription: string | null
+    sequence: number | null
     createdAt: Date | null
     updatedAt: Date | null
     _count: ExhibitCountAggregateOutputType | null
@@ -4733,6 +4744,7 @@ export namespace Prisma {
     statusId?: boolean
     description?: boolean
     additionalDescription?: boolean
+    sequence?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     audio?: boolean | Exhibit$audioArgs<ExtArgs>
@@ -4753,6 +4765,7 @@ export namespace Prisma {
     statusId?: boolean
     description?: boolean
     additionalDescription?: boolean
+    sequence?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     badge?: boolean | Exhibit$badgeArgs<ExtArgs>
@@ -4768,6 +4781,7 @@ export namespace Prisma {
     statusId?: boolean
     description?: boolean
     additionalDescription?: boolean
+    sequence?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
@@ -4807,6 +4821,7 @@ export namespace Prisma {
       statusId: number | null
       description: string | null
       additionalDescription: string | null
+      sequence: number | null
       createdAt: Date | null
       updatedAt: Date | null
     }, ExtArgs["result"]["exhibit"]>
@@ -5216,6 +5231,7 @@ export namespace Prisma {
     readonly statusId: FieldRef<"Exhibit", 'Int'>
     readonly description: FieldRef<"Exhibit", 'String'>
     readonly additionalDescription: FieldRef<"Exhibit", 'String'>
+    readonly sequence: FieldRef<"Exhibit", 'Int'>
     readonly createdAt: FieldRef<"Exhibit", 'DateTime'>
     readonly updatedAt: FieldRef<"Exhibit", 'DateTime'>
   }
@@ -29014,6 +29030,7 @@ export namespace Prisma {
     statusId: 'statusId',
     description: 'description',
     additionalDescription: 'additionalDescription',
+    sequence: 'sequence',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -29504,6 +29521,7 @@ export namespace Prisma {
     statusId?: IntNullableFilter<"Exhibit"> | number | null
     description?: StringNullableFilter<"Exhibit"> | string | null
     additionalDescription?: StringNullableFilter<"Exhibit"> | string | null
+    sequence?: IntNullableFilter<"Exhibit"> | number | null
     createdAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
     audio?: AudioListRelationFilter
@@ -29523,6 +29541,7 @@ export namespace Prisma {
     statusId?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
     additionalDescription?: SortOrderInput | SortOrder
+    sequence?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrderInput | SortOrder
     audio?: AudioOrderByRelationAggregateInput
@@ -29537,6 +29556,7 @@ export namespace Prisma {
   export type ExhibitWhereUniqueInput = Prisma.AtLeast<{
     exhibitId?: bigint | number
     badgeId?: bigint | number
+    exhibitionId_sequence?: ExhibitExhibitionIdSequenceCompoundUniqueInput
     AND?: ExhibitWhereInput | ExhibitWhereInput[]
     OR?: ExhibitWhereInput[]
     NOT?: ExhibitWhereInput | ExhibitWhereInput[]
@@ -29545,6 +29565,7 @@ export namespace Prisma {
     statusId?: IntNullableFilter<"Exhibit"> | number | null
     description?: StringNullableFilter<"Exhibit"> | string | null
     additionalDescription?: StringNullableFilter<"Exhibit"> | string | null
+    sequence?: IntNullableFilter<"Exhibit"> | number | null
     createdAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
     audio?: AudioListRelationFilter
@@ -29554,7 +29575,7 @@ export namespace Prisma {
     feedbacks?: FeedbackListRelationFilter
     images?: ImageListRelationFilter
     qrCodes?: QRCodeListRelationFilter
-  }, "exhibitId" | "badgeId">
+  }, "exhibitId" | "badgeId" | "exhibitionId_sequence">
 
   export type ExhibitOrderByWithAggregationInput = {
     exhibitId?: SortOrder
@@ -29564,6 +29585,7 @@ export namespace Prisma {
     statusId?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
     additionalDescription?: SortOrderInput | SortOrder
+    sequence?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrderInput | SortOrder
     _count?: ExhibitCountOrderByAggregateInput
@@ -29584,6 +29606,7 @@ export namespace Prisma {
     statusId?: IntNullableWithAggregatesFilter<"Exhibit"> | number | null
     description?: StringNullableWithAggregatesFilter<"Exhibit"> | string | null
     additionalDescription?: StringNullableWithAggregatesFilter<"Exhibit"> | string | null
+    sequence?: IntNullableWithAggregatesFilter<"Exhibit"> | number | null
     createdAt?: DateTimeNullableWithAggregatesFilter<"Exhibit"> | Date | string | null
     updatedAt?: DateTimeNullableWithAggregatesFilter<"Exhibit"> | Date | string | null
   }
@@ -31135,6 +31158,7 @@ export namespace Prisma {
     title: string
     description?: string | null
     additionalDescription?: string | null
+    sequence?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioCreateNestedManyWithoutExhibitInput
@@ -31154,6 +31178,7 @@ export namespace Prisma {
     statusId?: number | null
     description?: string | null
     additionalDescription?: string | null
+    sequence?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
@@ -31167,6 +31192,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    sequence?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUpdateManyWithoutExhibitNestedInput
@@ -31186,6 +31212,7 @@ export namespace Prisma {
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    sequence?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
@@ -31202,6 +31229,7 @@ export namespace Prisma {
     statusId?: number | null
     description?: string | null
     additionalDescription?: string | null
+    sequence?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
   }
@@ -31211,6 +31239,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    sequence?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -31223,6 +31252,7 @@ export namespace Prisma {
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    sequence?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -32917,6 +32947,11 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type ExhibitExhibitionIdSequenceCompoundUniqueInput = {
+    exhibitionId: bigint | number
+    sequence: number
+  }
+
   export type ExhibitCountOrderByAggregateInput = {
     exhibitId?: SortOrder
     exhibitionId?: SortOrder
@@ -32925,6 +32960,7 @@ export namespace Prisma {
     statusId?: SortOrder
     description?: SortOrder
     additionalDescription?: SortOrder
+    sequence?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -32934,6 +32970,7 @@ export namespace Prisma {
     exhibitionId?: SortOrder
     badgeId?: SortOrder
     statusId?: SortOrder
+    sequence?: SortOrder
   }
 
   export type ExhibitMaxOrderByAggregateInput = {
@@ -32944,6 +32981,7 @@ export namespace Prisma {
     statusId?: SortOrder
     description?: SortOrder
     additionalDescription?: SortOrder
+    sequence?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -32956,6 +32994,7 @@ export namespace Prisma {
     statusId?: SortOrder
     description?: SortOrder
     additionalDescription?: SortOrder
+    sequence?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -32965,6 +33004,7 @@ export namespace Prisma {
     exhibitionId?: SortOrder
     badgeId?: SortOrder
     statusId?: SortOrder
+    sequence?: SortOrder
   }
 
   export type BigIntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -36502,6 +36542,7 @@ export namespace Prisma {
     title: string
     description?: string | null
     additionalDescription?: string | null
+    sequence?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioCreateNestedManyWithoutExhibitInput
@@ -36519,6 +36560,7 @@ export namespace Prisma {
     statusId?: number | null
     description?: string | null
     additionalDescription?: string | null
+    sequence?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
@@ -36620,6 +36662,7 @@ export namespace Prisma {
     statusId?: IntNullableFilter<"Exhibit"> | number | null
     description?: StringNullableFilter<"Exhibit"> | string | null
     additionalDescription?: StringNullableFilter<"Exhibit"> | string | null
+    sequence?: IntNullableFilter<"Exhibit"> | number | null
     createdAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
   }
@@ -37074,6 +37117,7 @@ export namespace Prisma {
     title: string
     description?: string | null
     additionalDescription?: string | null
+    sequence?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     badge?: BadgeCreateNestedOneWithoutExhibitInput
@@ -37092,6 +37136,7 @@ export namespace Prisma {
     statusId?: number | null
     description?: string | null
     additionalDescription?: string | null
+    sequence?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     feedbacks?: FeedbackUncheckedCreateNestedManyWithoutExhibitInput
@@ -37204,6 +37249,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    sequence?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     badge?: BadgeUpdateOneWithoutExhibitNestedInput
@@ -37222,6 +37268,7 @@ export namespace Prisma {
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    sequence?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     feedbacks?: FeedbackUncheckedUpdateManyWithoutExhibitNestedInput
@@ -37492,6 +37539,7 @@ export namespace Prisma {
     title: string
     description?: string | null
     additionalDescription?: string | null
+    sequence?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioCreateNestedManyWithoutExhibitInput
@@ -37510,6 +37558,7 @@ export namespace Prisma {
     statusId?: number | null
     description?: string | null
     additionalDescription?: string | null
+    sequence?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
@@ -37587,6 +37636,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    sequence?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUpdateManyWithoutExhibitNestedInput
@@ -37605,6 +37655,7 @@ export namespace Prisma {
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    sequence?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
@@ -37672,6 +37723,7 @@ export namespace Prisma {
     title: string
     description?: string | null
     additionalDescription?: string | null
+    sequence?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioCreateNestedManyWithoutExhibitInput
@@ -37690,6 +37742,7 @@ export namespace Prisma {
     statusId?: number | null
     description?: string | null
     additionalDescription?: string | null
+    sequence?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
@@ -37743,6 +37796,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    sequence?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUpdateManyWithoutExhibitNestedInput
@@ -37761,6 +37815,7 @@ export namespace Prisma {
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    sequence?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
@@ -37804,6 +37859,7 @@ export namespace Prisma {
     title: string
     description?: string | null
     additionalDescription?: string | null
+    sequence?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioCreateNestedManyWithoutExhibitInput
@@ -37822,6 +37878,7 @@ export namespace Prisma {
     statusId?: number | null
     description?: string | null
     additionalDescription?: string | null
+    sequence?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
@@ -37850,6 +37907,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    sequence?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUpdateManyWithoutExhibitNestedInput
@@ -37868,6 +37926,7 @@ export namespace Prisma {
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    sequence?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
@@ -38348,6 +38407,7 @@ export namespace Prisma {
     title: string
     description?: string | null
     additionalDescription?: string | null
+    sequence?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioCreateNestedManyWithoutExhibitInput
@@ -38365,6 +38425,7 @@ export namespace Prisma {
     title: string
     description?: string | null
     additionalDescription?: string | null
+    sequence?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
@@ -40082,6 +40143,7 @@ export namespace Prisma {
     title: string
     description?: string | null
     additionalDescription?: string | null
+    sequence?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioCreateNestedManyWithoutExhibitInput
@@ -40099,6 +40161,7 @@ export namespace Prisma {
     statusId?: number | null
     description?: string | null
     additionalDescription?: string | null
+    sequence?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
@@ -40148,6 +40211,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    sequence?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUpdateManyWithoutExhibitNestedInput
@@ -40165,6 +40229,7 @@ export namespace Prisma {
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    sequence?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
@@ -40742,6 +40807,7 @@ export namespace Prisma {
     statusId?: number | null
     description?: string | null
     additionalDescription?: string | null
+    sequence?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
   }
@@ -40762,6 +40828,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    sequence?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUpdateManyWithoutExhibitNestedInput
@@ -40779,6 +40846,7 @@ export namespace Prisma {
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    sequence?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
@@ -40794,6 +40862,7 @@ export namespace Prisma {
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    sequence?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -41194,6 +41263,7 @@ export namespace Prisma {
     title: string
     description?: string | null
     additionalDescription?: string | null
+    sequence?: number | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
   }
@@ -41248,6 +41318,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    sequence?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUpdateManyWithoutExhibitNestedInput
@@ -41265,6 +41336,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    sequence?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
@@ -41280,6 +41352,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    sequence?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }

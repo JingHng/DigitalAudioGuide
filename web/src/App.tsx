@@ -22,6 +22,8 @@ import AllExhibitions from "./components/ExhibitionsPage.tsx";
 import ExhibitionDetails from "./components/ExhibitionDetailsPage.tsx"; 
 import ExhibitDetails from "./components/ExhibitDetails.tsx";
 import ARPhotobooth from "./components/ARPhotobooth.tsx";
+import TourView from "./components/TourView.tsx";
+import TourSummary from "./components/TourSummary.tsx";
 
 // --- COMMENTED OUT: Other Public/Protected Components ---
 // import ReviewPage from "./components/reviewPage/ReviewPage";
@@ -78,8 +80,11 @@ function App() {
             {/* --- NEW/MODIFIED Public Exhibition Routes (Enabled) --- */}
             { <Route path="/exhibitions" element={<AllExhibitions />} /> }
             { <Route path="/exhibitions/:id" element={<ExhibitionDetails />} /> }
+            { <Route path="/exhibitions/:id/tour" element={<TourView />} /> }
+            { <Route path="/exhibitions/:id/tour/summary" element={<TourSummary />} /> }
             { <Route path="/exhibitions/:id/ar-photobooth" element={<ARPhotobooth />} /> }
             { <Route path="/exhibit/:id" element={<ExhibitDetails />} /> }
+            { <Route path="/exhibitions/:exhibitionId/exhibit/:id" element={<ExhibitDetails />} /> }
 
             {/* --- Other Public/Auth Routes --- */}
             <Route path="/login" element={<LoginPage />} />

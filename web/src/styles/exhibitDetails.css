@@ -1,0 +1,185 @@
+:root {
+  --smart-blue: #3b82f6;
+  --smart-border: #e2e8f0;
+  --smart-bg: #f8fafc;
+  --smart-text: #1e293b;
+  --smart-muted: #64748b;
+}
+
+.exhibit-page-wrapper {
+  background-color: var(--smart-bg);
+  min-height: 100vh;
+}
+
+.exhibit-main-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* Layout: Forces equal height columns */
+.exhibit-grid {
+  display: grid; 
+  grid-template-columns: 1fr 400px;
+  gap: 1.5rem; 
+  align-items: stretch; 
+}
+
+.info-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.audio-column {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Fix: Image fills container completely */
+.image-container-full {
+  background: #ffffff; 
+  border-radius: 12px; 
+  border: 1px solid var(--smart-border); 
+  margin-bottom: 1.5rem;
+  overflow: hidden; /* Clips image to the border radius */
+  width: 100%;
+  display: flex;
+}
+
+.image-container-full img {
+  width: 100%; 
+  height: auto; /* Maintains aspect ratio while filling width */
+  max-height: 450px; 
+  object-fit: cover; /* Change to "contain" if you don't want any cropping */
+  display: block;
+}
+
+/* Cards */
+.section-card {
+  background: #ffffff; 
+  border-radius: 12px; 
+  padding: 1.5rem;
+  border: 1px solid var(--smart-border); 
+  margin-bottom: 1.5rem;
+}
+
+/* Removes margin from last card so heights match perfectly at the bottom */
+.section-card.no-margin {
+  margin-bottom: 0;
+}
+
+.card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; color: var(--smart-blue); }
+.card-header h3 { font-size: 1.1rem; color: var(--smart-text); margin: 0; font-weight: 700; }
+.description-text { line-height: 1.6; color: #475569; font-size: 0.95rem; }
+
+.additional-description-box {
+  background-color: #f1f5f9; padding: 1.25rem;
+  border-radius: 8px; border-left: 4px solid var(--smart-blue);
+}
+
+/* Audio Guide matched height */
+.audio-card.matched-height {
+  background: #fff; 
+  border-radius: 12px;
+  border: 1px solid var(--smart-border);
+  display: flex; 
+  flex-direction: column;
+  height: 100%; /* Spans exactly the height of the left column */
+}
+
+.audio-header {
+  padding: 1.25rem; 
+  border-bottom: 1px solid var(--smart-border);
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+}
+
+.transcript-area {
+  padding: 1.5rem; 
+  overflow-y: auto; 
+  flex-grow: 1; /* Pushes player to bottom */
+}
+
+.player-footer {
+  padding: 1.25rem;
+  border-top: 1px solid var(--smart-border);
+}
+
+/* Player controls */
+.controls-section { display: flex; align-items: center; justify-content: space-between; margin-top: 1rem; }
+.playback-btns { display: flex; align-items: center; gap: 1rem; }
+.btn-play {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--smart-blue); border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.btn-skip { background: none; border: none; color: var(--smart-muted); cursor: pointer; }
+.volume-section { display: flex; align-items: center; gap: 8px; }
+.vol-slider { width: 80px; accent-color: var(--smart-blue); cursor: pointer; }
+.seek-bar { width: 100%; accent-color: var(--smart-blue); cursor: pointer; }
+/* --- Navigation Bar Styling --- */
+.exhibit-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #ffffff;
+  padding: 0.75rem 2rem;
+  border-bottom: 1px solid var(--smart-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  margin-bottom: 1rem;
+}
+
+/* Back Button Styling */
+.nav-back {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: transparent;
+  border: 1px solid var(--smart-border);
+  padding: 8px 16px;
+  border-radius: 8px;
+  color: var(--smart-text);
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nav-back:hover {
+  background-color: var(--smart-bg);
+  border-color: var(--smart-blue);
+  color: var(--smart-blue);
+  transform: translateX(-2px); /* Subtle hint of movement */
+}
+
+.nav-back span {
+  margin-top: 1px; /* Optical alignment for text */
+}
+
+/* Exhibit Title Styling */
+.nav-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--smart-text);
+  letter-spacing: -0.01em;
+  /* Ensures title doesn't overflow on small screens */
+  max-width: 60%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+/* --- Keep the rest of your CSS as is --- */
+:root {
+  --smart-blue: #3b82f6;
+  --smart-border: #e2e8f0;
+  --smart-bg: #f8fafc;
+  --smart-text: #1e293b;
+  --smart-muted: #64748b;
+}
+

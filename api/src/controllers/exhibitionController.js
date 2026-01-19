@@ -328,3 +328,433 @@ exports.reactivateExhibition = async (req, res) => {
     res.status(500).json({ message: "Failed to reactivate exhibition" });
   }
 };
+
+// ====================================================================
+// TOUR-RELATED ENDPOINTS
+// ====================================================================
+
+/**
+ * @route   GET /api/exhibitions/:id/tour
+ * @desc    Get exhibition with exhibits ordered by sequence (for tour experience)
+ * @access  Public
+ */
+exports.getExhibitionTour = async (req, res) => {
+  try {
+    console.log('🎯 getExhibitionTour called with ID:', req.params.id);
+    const exhibitionId = BigInt(req.params.id);
+    console.log('🎯 Converted to BigInt:', exhibitionId);
+    
+    const exhibition = await prisma.exhibition.findFirst({ 
+      where: {
+        exhibitionId: exhibitionId,
+        statusId: 1, 
+      },
+      select: {
+        exhibitionId: true,
+        title: true,
+        description: true,
+        images: {
+          select: {
+            fileUrl: true,
+            isPrimary: true,
+          },
+          where: { isPrimary: true },
+          take: 1,
+        },
+        exhibits: {
+          where: { statusId: 1 },
+          select: {
+            exhibitId: true,
+            title: true,
+            description: true,
+            additionalDescription: true,
+            sequence: true,
+            badge: {
+              select: {
+                badgeId: true,
+                name: true,
+                description: true,
+                imageUrl: true,
+              },
+            },
+            images: {
+              select: {
+                imageId: true,
+                fileUrl: true,
+                title: true,
+                isPrimary: true,
+              },
+              orderBy: [
+                { isPrimary: 'desc' },
+                { imageId: 'asc' }
+              ],
+            },
+            audio: {
+              select: {
+                audioId: true,
+                fileUrl: true,
+                title: true,
+                description: true,
+                language: {
+                  select: {
+                    languageId: true,
+                    title: true,
+                    code: true,
+                  },
+                },
+              },
+              where: { languageId: 1 }, // Default to English
+              take: 1,
+            },
+            qrCodes: {
+              select: {
+                qrId: true,
+                qrUrl: true,
+              },
+              take: 1,
+            },
+          },
+          orderBy: {
+            sequence: 'asc', // Order by sequence for tour flow
+          },
+        },
+      },
+    });
+
+    console.log('🎯 Exhibition found:', exhibition ? 'YES' : 'NO');
+    if (exhibition) {
+      console.log('🎯 Exhibits count:', exhibition.exhibits.length);
+    }
+
+    if (!exhibition) {
+      return res.status(404).json({ message: "Active exhibition not found" });
+    }
+
+    // Add totalStops count and current position metadata
+    const totalStops = exhibition.exhibits.length;
+    const exhibitsWithPosition = exhibition.exhibits.map((exhibit, index) => {
+      // Convert badge object to badges array for frontend consistency
+      const badges = exhibit.badge ? [exhibit.badge] : [];
+      
+      return {
+        ...exhibit,
+        badge: undefined, // Remove singular badge
+        badges: badges,   // Add badges array
+        currentStop: index + 1,
+        totalStops: totalStops,
+        isFirst: index === 0,
+        isLast: index === totalStops - 1,
+      };
+    });
+
+    res.status(200).json({
+      ...exhibition,
+      exhibits: exhibitsWithPosition,
+      totalStops: totalStops,
+    });
+    console.log('🎯 Successfully sent tour response');
+  } catch (err) {
+    console.error("❌ Error fetching exhibition tour:", err);
+    console.error("❌ Error stack:", err.stack);
+    res.status(500).json({ message: "Error fetching exhibition tour", error: err.message });
+  }
+};
+
+/**
+ * @route   GET /api/exhibits/:id/next
+ * @desc    Get the next exhibit in the tour sequence
+ * @access  Public
+ */
+exports.getNextExhibit = async (req, res) => {
+  try {
+    const exhibitId = BigInt(req.params.id);
+
+    // Get current exhibit with its sequence
+    const currentExhibit = await prisma.exhibit.findUnique({
+      where: { exhibitId: exhibitId },
+      select: {
+        exhibitionId: true,
+        sequence: true,
+      },
+    });
+
+    if (!currentExhibit || !currentExhibit.exhibitionId || currentExhibit.sequence === null) {
+      return res.status(404).json({ message: "Current exhibit not found or not part of a tour" });
+    }
+
+    // Find next exhibit in sequence
+    const nextExhibit = await prisma.exhibit.findFirst({
+      where: {
+        exhibitionId: currentExhibit.exhibitionId,
+        sequence: { gt: currentExhibit.sequence },
+        statusId: 1,
+      },
+      select: {
+        exhibitId: true,
+        title: true,
+        description: true,
+        additionalDescription: true,
+        sequence: true,
+        badge: {
+          select: {
+            badgeId: true,
+            name: true,
+            description: true,
+            imageUrl: true,
+          },
+        },
+        images: {
+          select: {
+            imageId: true,
+            fileUrl: true,
+            title: true,
+            isPrimary: true,
+          },
+          orderBy: [
+            { isPrimary: 'desc' },
+            { imageId: 'asc' }
+          ],
+        },
+        audio: {
+          select: {
+            audioId: true,
+            fileUrl: true,
+            title: true,
+            description: true,
+            language: {
+              select: {
+                languageId: true,
+                title: true,
+                code: true,
+              },
+            },
+          },
+          where: { languageId: 1 },
+          take: 1,
+        },
+      },
+      orderBy: { sequence: 'asc' },
+    });
+
+    if (!nextExhibit) {
+      return res.status(404).json({ message: "No next exhibit found. Tour complete!" });
+    }
+
+    // Get total exhibits count for position metadata
+    const totalExhibits = await prisma.exhibit.count({
+      where: {
+        exhibitionId: currentExhibit.exhibitionId,
+        statusId: 1,
+      },
+    });
+
+    // Find the position of this exhibit
+    const exhibitsBeforeThis = await prisma.exhibit.count({
+      where: {
+        exhibitionId: currentExhibit.exhibitionId,
+        sequence: { lt: nextExhibit.sequence },
+        statusId: 1,
+      },
+    });
+
+    const currentStop = exhibitsBeforeThis + 1;
+    
+    // Convert badge to badges array
+    const badges = nextExhibit.badge ? [nextExhibit.badge] : [];
+
+    res.status(200).json({
+      ...nextExhibit,
+      badge: undefined,
+      badges: badges,
+      currentStop: currentStop,
+      totalStops: totalExhibits,
+      isFirst: currentStop === 1,
+      isLast: currentStop === totalExhibits,
+    });
+  } catch (err) {
+    console.error("Error fetching next exhibit:", err);
+    res.status(500).json({ message: "Error fetching next exhibit" });
+  }
+};
+
+/**
+ * @route   GET /api/exhibits/:id/previous
+ * @desc    Get the previous exhibit in the tour sequence
+ * @access  Public
+ */
+exports.getPreviousExhibit = async (req, res) => {
+  try {
+    const exhibitId = BigInt(req.params.id);
+
+    // Get current exhibit with its sequence
+    const currentExhibit = await prisma.exhibit.findUnique({
+      where: { exhibitId: exhibitId },
+      select: {
+        exhibitionId: true,
+        sequence: true,
+      },
+    });
+
+    if (!currentExhibit || !currentExhibit.exhibitionId || currentExhibit.sequence === null) {
+      return res.status(404).json({ message: "Current exhibit not found or not part of a tour" });
+    }
+
+    // Find previous exhibit in sequence
+    const previousExhibit = await prisma.exhibit.findFirst({
+      where: {
+        exhibitionId: currentExhibit.exhibitionId,
+        sequence: { lt: currentExhibit.sequence },
+        statusId: 1,
+      },
+      select: {
+        exhibitId: true,
+        title: true,
+        description: true,
+        additionalDescription: true,
+        sequence: true,
+        badge: {
+          select: {
+            badgeId: true,
+            name: true,
+            description: true,
+            imageUrl: true,
+          },
+        },
+        images: {
+          select: {
+            imageId: true,
+            fileUrl: true,
+            title: true,
+            isPrimary: true,
+          },
+          orderBy: [
+            { isPrimary: 'desc' },
+            { imageId: 'asc' }
+          ],
+        },
+        audio: {
+          select: {
+            audioId: true,
+            fileUrl: true,
+            title: true,
+            description: true,
+            language: {
+              select: {
+                languageId: true,
+                title: true,
+                code: true,
+              },
+            },
+          },
+          where: { languageId: 1 },
+          take: 1,
+        },
+      },
+      orderBy: { sequence: 'desc' },
+    });
+
+    if (!previousExhibit) {
+      return res.status(404).json({ message: "No previous exhibit found. This is the first stop!" });
+    }
+
+    // Get total exhibits count for position metadata
+    const totalExhibits = await prisma.exhibit.count({
+      where: {
+        exhibitionId: currentExhibit.exhibitionId,
+        statusId: 1,
+      },
+    });
+
+    // Find the position of this exhibit
+    const exhibitsBeforeThis = await prisma.exhibit.count({
+      where: {
+        exhibitionId: currentExhibit.exhibitionId,
+        sequence: { lt: previousExhibit.sequence },
+        statusId: 1,
+      },
+    });
+
+    const currentStop = exhibitsBeforeThis + 1;
+    
+    // Convert badge to badges array
+    const badges = previousExhibit.badge ? [previousExhibit.badge] : [];
+
+    res.status(200).json({
+      ...previousExhibit,
+      badge: undefined,
+      badges: badges,
+      currentStop: currentStop,
+      totalStops: totalExhibits,
+      isFirst: currentStop === 1,
+      isLast: currentStop === totalExhibits,
+    });
+  } catch (err) {
+    console.error("Error fetching previous exhibit:", err);
+    res.status(500).json({ message: "Error fetching previous exhibit" });
+  }
+};
+
+/**
+ * @route   PUT /api/exhibits/:id/sequence
+ * @desc    Update the sequence order of an exhibit (Admin only)
+ * @access  Private (Admin)
+ */
+exports.updateExhibitSequence = async (req, res) => {
+  try {
+    const exhibitId = BigInt(req.params.id);
+    const { sequence } = req.body;
+    const adminUserId = req.user?.userId;
+
+    if (sequence === undefined || sequence === null) {
+      return res.status(400).json({ error: 'Sequence number is required.' });
+    }
+
+    const exhibit = await prisma.exhibit.findUnique({
+      where: { exhibitId: exhibitId },
+      select: { exhibitId: true, title: true, exhibitionId: true, sequence: true },
+    });
+
+    if (!exhibit) {
+      return res.status(404).json({ message: "Exhibit not found." });
+    }
+
+    // Update the sequence
+    const updatedExhibit = await prisma.exhibit.update({
+      where: { exhibitId: exhibitId },
+      data: { sequence: parseInt(sequence) },
+      select: {
+        exhibitId: true,
+        title: true,
+        sequence: true,
+        exhibitionId: true,
+      },
+    });
+
+    await logAuditAction(
+      adminUserId, null, "exhibit", "update_sequence", 
+      {
+        exhibitId: exhibitId.toString(),
+        title: exhibit.title,
+        oldSequence: exhibit.sequence,
+        newSequence: sequence,
+      },
+      { ip_address: req.ip, user_agent: req.get("User-Agent") }
+    );
+
+    res.status(200).json({ 
+      message: "Exhibit sequence updated successfully.",
+      exhibit: updatedExhibit 
+    });
+  } catch (err) {
+    console.error("Error updating exhibit sequence:", err);
+    
+    // Handle unique constraint violation
+    if (err.code === 'P2002') {
+      return res.status(400).json({ 
+        message: "Sequence number already exists for this exhibition. Please choose a different number." 
+      });
+    }
+    
+    res.status(500).json({ message: "Failed to update exhibit sequence" });
+  }
+};
