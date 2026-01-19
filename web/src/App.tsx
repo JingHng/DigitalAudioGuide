@@ -38,6 +38,7 @@ import AudioAnalyticsPage from "./components/admin/AudioAnalyticsPage";
 import AudioManagement from "./components/admin/AudioManagement";
 import SettingsPage from "./components/admin/SettingsPage";
 import AssistantPage from "./components/admin/AssistantPage";
+import AdminReviewsPage from "./components/admin/AdminReviewsPage";
 
 import NotFoundPage from "./components/NotFoundPage.tsx"; // KEEP: Good practice for * route
 
@@ -63,6 +64,7 @@ function App() {
           <Route path="/admin/assistant" element={<AdminRoute><AssistantPage /></AdminRoute>} />
           <Route path="/admin/exhibits" element={<AdminRoute><ExhibitsPage /></AdminRoute>} />
           <Route path="/admin/audio" element={<AdminRoute><AudioManagement /></AdminRoute>} />
+          <Route path="/admin/reviews" element={<AdminRoute><AdminReviewsPage /></AdminRoute>} />
           <Route path="/admin/roles" element={<AdminRoute><RolesPage /></AdminRoute>} />
           <Route path="/admin/users" element={<AdminRoute><UsersPage /></AdminRoute>} />
           <Route path="/admin/audit-logs" element={<AdminRoute><AuditLogsPage /></AdminRoute>} />
