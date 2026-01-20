@@ -341,6 +341,7 @@ model Badge {
   badgeId     BigInt      @id @default(autoincrement()) @map("badge_id")
   name        String?
   description String?
+  style       String?
   imageUrl    String?     @map("image_url") @db.VarChar(512)
   createdAt   DateTime?   @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt   DateTime?   @default(now()) @map("updated_at") @db.Timestamptz(6)

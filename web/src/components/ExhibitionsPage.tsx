@@ -40,7 +40,48 @@ const ToursPage: React.FC = () => {
         const response = await fetch('/api/exhibitions');
         if (response.ok) {
           const data = await response.json();
-          setTours(Array.isArray(data) ? data : []);
+          const rawTours: any[] = Array.isArray(data) ? data : [];
+
+          // Enrich each tour with an averageRating computed from its exhibits' review stats
+          const enriched = await Promise.all(rawTours.map(async (tour) => {
+            try {
+              // Fetch exhibition details to get exhibits list
+              const exRes = await apiClient.get(`/exhibitions/${tour.exhibitionId}`);
+              const exhibits = exRes.data?.exhibits || [];
+              if (!Array.isArray(exhibits) || exhibits.length === 0) {
+                return { ...tour, averageRating: 0 };
+              }
+
+              // Fetch stats for each exhibit
+              const statsPromises = exhibits.map((ex: any) => apiClient.get(`/reviews/exhibit/${ex.exhibitId}/stats`).then(r => r.data?.data).catch(() => null));
+              const stats = await Promise.all(statsPromises);
+
+              // Compute weighted average by total_reviews when available
+              let weightedSum = 0;
+              let totalReviews = 0;
+              stats.forEach((s: any) => {
+                if (s && typeof s.average_rating === 'number' && s.total_reviews) {
+                  weightedSum += Number(s.average_rating) * Number(s.total_reviews);
+                  totalReviews += Number(s.total_reviews);
+                }
+              });
+
+              let avg = 0;
+              if (totalReviews > 0) {
+                avg = weightedSum / totalReviews;
+              } else {
+                // fallback: average of averages where available
+                const avgVals = stats.filter((s: any) => s && typeof s.average_rating === 'number').map((s: any) => Number(s.average_rating));
+                if (avgVals.length > 0) avg = avgVals.reduce((a,b) => a+b, 0) / avgVals.length;
+              }
+
+              return { ...tour, averageRating: Number(avg.toFixed(1)) };
+            } catch (err) {
+              return { ...tour, averageRating: 0 };
+            }
+          }));
+
+          setTours(enriched);
         } else {
           console.error('Failed to fetch tours');
           setTours([]);
@@ -148,7 +189,15 @@ const ToursPage: React.FC = () => {
                       </div>
                       <div className="card-content-enhanced">
                         <h3>{tour.title}</h3>
-                        <p>{tour.description}</p>
+                          <p>{tour.description}</p>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 }}>
+                            <div style={{ color: '#f5b301', fontSize: 18 }}>
+                              {Array.from({ length: 5 }).map((_, i) => (
+                                <span key={i} style={{ color: (tour as any).averageRating && i < (tour as any).averageRating ? '#FFD700' : '#ccc', fontSize: '1.1em' }}>★</span>
+                              ))}
+                            </div>
+                            <div style={{ color: '#555', fontSize: '0.95em' }}>{(tour as any).averageRating ? (tour as any).averageRating.toFixed ? (tour as any).averageRating.toFixed(1) : String((tour as any).averageRating) : '—'} / 5</div>
+                          </div>
                         <div className="tour-meta">
                           <div className="tour-type">
                             <Sparkles size={16} />

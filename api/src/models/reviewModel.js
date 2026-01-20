@@ -1,5 +1,5 @@
 // models/reviewModel.js - Fixed version
-const { PrismaClient } = require('../../generated/prisma/client');
+const { PrismaClient } = require('../../generated/prisma');
 const prisma = new PrismaClient();
 
 class ReviewModel {
@@ -51,15 +51,17 @@ class ReviewModel {
       const orderField = fieldMap[sort_by] || 'f.created_at';
       const orderDirection = sort_order === 'asc' ? 'ASC' : 'DESC';
 
-      // Get reviews with user and exhibit data
+      // Get reviews with user, exhibit and exhibition data
       const reviewsQuery = `
         SELECT 
           f.feedback_id, f.user_id, f.exhibit_id, f.rating, f.description, f.created_at, f.updated_at,
           u.username, u.email,
-          e.title as exhibit_title, e.description as exhibit_description
+          e.title as exhibit_title, e.description as exhibit_description,
+          ex.title as exhibition_title
         FROM feedback f
         LEFT JOIN "user" u ON f.user_id = u.user_id
         LEFT JOIN exhibit e ON f.exhibit_id = e.exhibit_id
+        LEFT JOIN exhibitions ex ON e.exhibition_id = ex.exhibition_id
         ${whereClause}
         ORDER BY ${orderField} ${orderDirection}
         LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
@@ -101,6 +103,9 @@ class ReviewModel {
           exhibit_id: Number(review.exhibit_id),
           title: review.exhibit_title,
           description: review.exhibit_description
+        },
+        exhibition: {
+          title: review.exhibition_title || null
         }
       }));
 
