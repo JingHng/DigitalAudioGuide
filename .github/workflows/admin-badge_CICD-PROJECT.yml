@@ -1,66 +1,180 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
-name: Build and deploy Node.js app to Azure Web App - CICD-PROJECT
+name: Deploy monorepo (api + web) to Azure App Service
 
 on:
   push:
     branches:
       - admin/badge
+    paths-ignore:
+      - "modules/**"
+      - "**/*.md"
   workflow_dispatch:
 
+env:
+  WEBAPP_NAME: "CICD-PROJECT"
+  RESOURCE_GROUP: "CICD-PROJECT_group"
+  NODE_VERSION: "20.x"
+  API_DIR: "api"
+  WEB_DIR: "web"
+  ARTIFACT_NAME: "deployment.zip"
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+  JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
+  CLIENT_ID: ${{ secrets.AZUREAPPSERVICE_CLIENTID_3B1308AB21D34754A7B15E6F77C7DAD2 }}
+  TENANT_ID: ${{ secrets.AZUREAPPSERVICE_TENANTID_D94C02BEE565489CAB4E6BA0B5448DD0 }}
+  SUBSCRIPTION_ID: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_14A3F065463E4E7498F3F3754F15E1A4 }}
+
 jobs:
-  build:
+  e2e:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read #This is required for actions/checkout
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Node.js version
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
 
-      - name: npm install, build, and test
-        run: |
-          npm ci
-          npm run build --if-present
-          npm run test --if-present
+      - run: npm ci
+        working-directory: ${{ env.API_DIR }}
 
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
+      - run: npm ci
+        working-directory: ${{ env.WEB_DIR }}
+
+      - run: |
+          npx prisma generate
+          npm run build
+        working-directory: ${{ env.API_DIR }}
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+
+      - run: npx playwright install --with-deps
+        working-directory: ${{ env.WEB_DIR }}
+
+      - run: |
+          npm start &
+          sleep 10
+          curl -f http://localhost:5175/health || curl -f http://localhost:5175/ || echo "API server not responding"
+        working-directory: ${{ env.API_DIR }}
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+          PORT: 5175
+          JWT_SECRET_KEY: ${{ env.JWT_SECRET_KEY }}
+          JWT_REFRESH_SECRET: ${{ env.JWT_REFRESH_SECRET }}
+          NODE_ENV: test
+
+      - run: npm run e2e
+        working-directory: ${{ env.WEB_DIR }}
+        env:
+          CI: true
+          VITE_API_TARGET: http://localhost:5175
+
+      - uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: node-app
-          path: .
+          name: playwright-report
+          path: ${{ env.WEB_DIR }}/playwright-report/
+          retention-days: 7
+
+  build:
+    runs-on: ubuntu-latest
+    needs: e2e
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - run: npm ci
+        working-directory: ${{ env.WEB_DIR }}
+
+      - run: npm run build
+        working-directory: ${{ env.WEB_DIR }}
+
+      - run: npm ci
+        working-directory: ${{ env.API_DIR }}
+
+      - run: npm run build
+        working-directory: ${{ env.API_DIR }}
+
+      - run: npm prune --production
+        working-directory: ${{ env.API_DIR }}
+
+      - run: |
+          rm -rf "${API_DIR}/public"
+          mkdir -p "${API_DIR}/public"
+          cp -R "${WEB_DIR}/dist/." "${API_DIR}/public/"
+      
+      - run: |
+          if [ -d "${API_DIR}/src/public" ]; then
+            cp -R -u "${API_DIR}/src/public/." "${API_DIR}/public/" || true
+          fi
+
+      - run: |
+          cd "${API_DIR}"
+          npm ci --production --ignore-scripts
+          rm -rf tests/ *.log coverage/ .git/ .github/ || true
+
+      - run: |
+          cd "${API_DIR}"
+          zip -r "../${ARTIFACT_NAME}" \
+            node_modules/ \
+            package*.json \
+            prisma/ \
+            public/ \
+            dist/ \
+            *.js \
+            web.config \
+            generated/ \
+            .deployment \
+            -x "*.log" "*.test.js" "coverage/*" "node_modules/*/test/*" "node_modules/*/tests/*" \
+            || true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: deployment-package
+          path: ${{ env.ARTIFACT_NAME }}
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
+    if: startsWith(github.ref, 'refs/heads/admin/badge')
     permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
+      id-token: write
+      contents: read
 
     steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: node-app
-      
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_3B1308AB21D34754A7B15E6F77C7DAD2 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_D94C02BEE565489CAB4E6BA0B5448DD0 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_14A3F065463E4E7498F3F3754F15E1A4 }}
+      - uses: actions/checkout@v4
 
-      - name: 'Deploy to Azure Web App'
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v3
+      - uses: actions/download-artifact@v4
         with:
-          app-name: 'CICD-PROJECT'
-          slot-name: 'Production'
-          package: .
+          name: deployment-package
+          path: .
 
-          
+      - run: |
+          npm ci
+          npx prisma generate
+          npx prisma migrate deploy
+        working-directory: ${{ env.API_DIR }}
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ env.CLIENT_ID }}
+          tenant-id: ${{ env.TENANT_ID }}
+          subscription-id: ${{ env.SUBSCRIPTION_ID }}
+
+      - uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.WEBAPP_NAME }}
+          package: ${{ env.ARTIFACT_NAME }}
+          clean: true
+
+      - run: |
+          az webapp restart --name ${{ env.WEBAPP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }}
