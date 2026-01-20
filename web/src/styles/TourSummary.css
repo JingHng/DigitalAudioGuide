@@ -1,0 +1,376 @@
+/* Tour Summary Styles */
+.tour-summary-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 3rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.summary-content {
+  max-width: 900px;
+  width: 100%;
+  background: white;
+  border-radius: 24px;
+  padding: 3rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Completion Header */
+.completion-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.completion-icon {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  animation: popIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.check-icon {
+  color: #10b981;
+  filter: drop-shadow(0 4px 12px rgba(16, 185, 129, 0.3));
+}
+
+.completion-header h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0 0 0.75rem 0;
+}
+
+.completion-subtitle {
+  font-size: 1.125rem;
+  color: #4a5568;
+  margin: 0;
+}
+
+.completion-subtitle strong {
+  color: #1a202c;
+  font-weight: 600;
+}
+
+/* Tour Statistics */
+.tour-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, #f7fafc, #edf2f7);
+  border-radius: 16px;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  transition: transform 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+}
+
+.stat-card.highlight {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border-color: #fbbf24;
+}
+
+.stat-icon {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: white;
+  color: #667eea;
+  flex-shrink: 0;
+}
+
+.stat-card.highlight .stat-icon {
+  color: #f59e0b;
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #1a202c;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: #4a5568;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Badges Section */
+.badges-earned-section {
+  margin-bottom: 3rem;
+}
+
+.badges-earned-section h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 0 0 1.5rem 0;
+}
+
+.badges-earned-section h2 svg {
+  color: #fbbf24;
+}
+
+.badges-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.25rem;
+}
+
+.badge-card {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border: 2px solid #fbbf24;
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  animation: fadeIn 0.5s ease-out forwards;
+  opacity: 0;
+}
+
+.badge-card:nth-child(1) { animation-delay: 0.1s; }
+.badge-card:nth-child(2) { animation-delay: 0.2s; }
+.badge-card:nth-child(3) { animation-delay: 0.3s; }
+.badge-card:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+.badge-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(251, 191, 36, 0.3);
+}
+
+.badge-icon-container {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.badge-icon-img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.badge-icon-fallback {
+  color: #f59e0b;
+}
+
+.badge-card h3 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #92400e;
+  margin: 0 0 0.5rem 0;
+}
+
+.badge-card p {
+  font-size: 0.875rem;
+  color: #78350f;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* No Badges State */
+.no-badges {
+  text-align: center;
+  padding: 3rem;
+  background: #f7fafc;
+  border-radius: 12px;
+  border: 2px dashed #cbd5e0;
+}
+
+.no-badges-icon {
+  color: #a0aec0;
+  margin-bottom: 1rem;
+}
+
+.no-badges p {
+  color: #4a5568;
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+/* Action Buttons */
+.summary-actions {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.summary-actions button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+  background: white;
+  color: #667eea;
+  border: 2px solid #667eea;
+}
+
+.btn-secondary:hover {
+  background: #667eea;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.btn-accent {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: white;
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+}
+
+.btn-accent:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4);
+}
+
+/* Motivational Message */
+.motivational-message {
+  background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+  border-left: 4px solid #8b5cf6;
+  padding: 1.5rem;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.motivational-message p {
+  margin: 0;
+  color: #5b21b6;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .summary-content {
+    padding: 2rem 1.5rem;
+  }
+
+  .completion-header h1 {
+    font-size: 2rem;
+  }
+
+  .tour-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .badges-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-actions {
+    flex-direction: column;
+  }
+
+  .summary-actions button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .tour-summary-container {
+    padding: 1.5rem 1rem;
+  }
+
+  .summary-content {
+    padding: 1.5rem 1rem;
+  }
+
+  .completion-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .stat-card {
+    padding: 1.5rem;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+  }
+}

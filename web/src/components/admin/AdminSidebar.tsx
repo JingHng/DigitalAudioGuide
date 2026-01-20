@@ -119,7 +119,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
     },
     {
       id: 'exhibits',
-      label: 'Exhibits',
+      label: 'Tour & Exhibits ',
       icon: <Image size={20} />,
       path: '/admin/exhibits',
       hasAddButton: true,

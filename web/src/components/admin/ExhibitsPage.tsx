@@ -37,8 +37,8 @@ const ExhibitsPage: React.FC = () => {
     >
       <div className="admin-page-content">
         <div className="admin-page-header-local">
-          <h1>Exhibitition & Exhibit Management</h1>
-          <p>Create and manage main exhibitions, then add and edit the individual exhibits within them.</p>
+          <h1>Tour & Exhibit Management</h1>
+          <p>Create and manage main tours, then add and edit the individual exhibits within them.</p>
         </div>
         <div className="admin-page-main">
           <ManageExhibitions />

@@ -14,6 +14,13 @@ router.get('/', exhibitController.getExhibits);
 // Route to get a specific exhibit by ID
 router.get('/:id', exhibitController.getExhibitById);
 
+// --- TOUR NAVIGATION ROUTES (Public) ---
+const exhibitionController = require('../controllers/exhibitionController');
+// Get next exhibit in tour sequence
+router.get('/:id/next', exhibitionController.getNextExhibit);
+// Get previous exhibit in tour sequence
+router.get('/:id/previous', exhibitionController.getPreviousExhibit);
+
 
 // ==========================================
 // ===    PRIVATE / PROTECTED ROUTES      ===
@@ -49,6 +56,15 @@ router.patch(
   jwtMiddleware.verifyToken, 
   checkPermission('update_exhibit'), 
   exhibitController.reactivateExhibit
+);
+
+// --- ADMIN SEQUENCE MANAGEMENT ---
+// Update exhibit sequence order (Admin only)
+router.put(
+  '/:id/sequence',
+  jwtMiddleware.verifyToken,
+  checkPermission('update_exhibit'),
+  exhibitionController.updateExhibitSequence
 );
 
 module.exports = router;

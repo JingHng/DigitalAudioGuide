@@ -95,51 +95,56 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ exhibitionToEdit, onSav
 
   // --- Render ---
   return (
-    <form onSubmit={handleSubmit} className="exhibit-form">
-      {error && <p className="form-error">{error}</p>}
-      
-      <div className="form-group">
-        <label htmlFor="exhibitionTitle">Collection Title</label>
-        <input
-          id="exhibitionTitle"
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-          placeholder="e.g., Founding Stories of Singapore"
-        />
-      </div>
+    <div className="exhibit-form-container-unique">
+      <form onSubmit={handleSubmit} className="exhibit-internal-form">
+        {error && <div className="form-error-banner">{error}</div>}
+        
+        <div className="form-section-card">
+          <div className="exhibit-input-field">
+            <label htmlFor="exhibitionTitle">Tour Title</label>
+            <input
+              id="exhibitionTitle"
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+              placeholder="e.g., Founding Stories of Singapore"
+            />
+          </div>
 
-      <div className="form-group">
-        <label htmlFor="exhibitionDescription">Collection Description</label>
-        <textarea
-          id="exhibitionDescription"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          rows={4}
-          placeholder="A brief summary of what this collection is about."
-        />
-      </div>
+          <div className="exhibit-input-field">
+            <label htmlFor="exhibitionDescription">Tour Description</label>
+            <textarea
+              id="exhibitionDescription"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={5}
+              placeholder="A brief summary of what this tour is about."
+            />
+          </div>
 
-      <div className="form-group">
-        <label htmlFor="exhibitionImage">Cover Image</label>
-        <input
-          id="exhibitionImage"
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-        />
-        {exhibitionToEdit && <p className="form-hint">Uploading a new image will replace the current cover image.</p>}
-        {imageFile && <p className="file-preview">Selected: {imageFile.name}</p>}
-      </div>
+          <div className="exhibit-input-field">
+            <label htmlFor="exhibitionImage">Cover Image</label>
+            <input
+              id="exhibitionImage"
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="file-input-styled"
+            />
+            {exhibitionToEdit && <p className="file-status-text">Uploading a new image will replace the current cover image.</p>}
+            {imageFile && <p className="file-status-text" style={{color: '#3b82f6', fontWeight: 600}}>Selected: {imageFile.name}</p>}
+          </div>
+        </div>
 
-      <div className="form-actions">
-        <button type="button" onClick={onClose} className="button-secondary">Cancel</button>
-        <button type="submit" className="button-primary" disabled={loading}>
-          {loading ? <><Loader2 className="animate-spin" /> Saving...</> : (exhibitionToEdit ? 'Save Changes' : 'Create Collection')}
-        </button>
-      </div>
-    </form>
+        <div className="exhibit-form-footer">
+          <button type="button" onClick={onClose} className="exhibit-btn-cancel">Cancel</button>
+          <button type="submit" className="exhibit-btn-save" disabled={loading}>
+            {loading ? <><Loader2 className="animate-spin" size={18} /> Saving...</> : (exhibitionToEdit ? 'Save Changes' : 'Create Tour')}
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
 

@@ -1,6 +1,19 @@
 import React, { useState, useEffect, useCallback, useMemo, FC } from 'react';
 import apiClient from '../../utils/apiClient';
-import { Edit, Trash2, PlusCircle, Loader2, QrCode, Building2, RotateCcw } from 'lucide-react';
+import { 
+  Edit, 
+  Trash2, 
+  PlusCircle, 
+  Loader2, 
+  QrCode, 
+  MapPin, 
+  ImageIcon, 
+  Mic, 
+  Download, 
+  ArrowUp, 
+  ArrowDown,
+  RotateCcw 
+} from 'lucide-react';
 import Modal from './Modal';
 import ExhibitForm from './ExhibitForm';
 import ExhibitionForm from './ExhibitionForm';
@@ -9,14 +22,11 @@ import '../css/ManageExhibits.css';
 const BACKEND_URL = import.meta.env.VITE_API_TARGET || '';
 const DEFAULT_IMAGE_URL = `${BACKEND_URL}/public/images/Exhibit.jpg`;
 
-// Helper function to construct the correct image URL
 const buildImageUrl = (fileUrl: string | null): string => {
   if (!fileUrl) return DEFAULT_IMAGE_URL;
-
   const cleanedPath = fileUrl.replace(/\\/g, '/');
   const imagePrefix = '/images/';
   const pathIndex = cleanedPath.indexOf(imagePrefix);
-
   if (pathIndex !== -1) {
     const filename = cleanedPath.substring(pathIndex + imagePrefix.length);
     return `${BACKEND_URL}/public/images/${filename}`;
@@ -24,48 +34,32 @@ const buildImageUrl = (fileUrl: string | null): string => {
   return DEFAULT_IMAGE_URL;
 };
 
-// Helper function to construct the correct image URL
-const getImageUrl = (fileUrl: string | null): string => {
-  if (!fileUrl) return DEFAULT_IMAGE_URL;
+// --- Interfaces ---
 
-  const cleanedPath = fileUrl.replace(/\\/g, '/');
-  const imagePrefix = '/images/';
-  const pathIndex = cleanedPath.indexOf(imagePrefix);
-
-  if (pathIndex !== -1) {
-    const filename = cleanedPath.substring(pathIndex + imagePrefix.length);
-    // Images are served from /public/images/ on the backend
-    // The backend serves static files from /public (not under /api)
-    // So we need to use the full backend URL for images
-    const backendUrl = import.meta.env.VITE_API_TARGET || 'http://localhost:3000';
-    return `${backendUrl}/public/images/${filename}`;
-  }
-  return DEFAULT_IMAGE_URL;
-};
-
-// --- Type Definitions ---
-interface Status {
-  statusId: number;
-  statusName: string;
+interface Status { 
+  statusId: number; 
+  statusName: string; 
 }
 
-interface ExhibitImageForAdmin {
-  imageId: string;
-  fileUrl: string;
-  title: string | null;
+interface ExhibitImage { 
+  imageId: string; 
+  fileUrl: string; 
   isPrimary: boolean;
+  title: string;
+  altText: string;
 }
 
 interface Exhibit {
   exhibitId: string;
+  exhibitionId: string;
   title: string;
   description: string;
-  additionalDescription: string;
-  exhibitionId: string;
-  images: ExhibitImageForAdmin[];
-  _count: {
-    images: number;
-    audio: number;
+  additionalDescription: string; 
+  sequence: number;
+  images: ExhibitImage[];
+  _count: { 
+    images: number; 
+    audio: number; 
   };
   status: Status;
 }
@@ -78,169 +72,95 @@ interface ExhibitionGroup {
   status: Status;
 }
 
-interface QRCodeData {
-  qrUrl: string;
-  qrCodeImage: string;
-  exhibitId: string;
-}
-
-// --- Reusable Badge Component ---
-interface StatusBadgeProps {
-  statusName?: string;
-}
-const StatusBadge: FC<StatusBadgeProps> = ({ statusName }) => {
+const StatusBadge: FC<{ statusName?: string }> = ({ statusName }) => {
   const statusClass = (statusName || 'unknown').toLowerCase();
   return <span className={`status-badge ${statusClass}`}>{statusName || 'Unknown'}</span>;
 };
 
-// --- Main Component ---
 const ManageExhibitions: React.FC = () => {
   const [exhibitionGroups, setExhibitionGroups] = useState<ExhibitionGroup[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'inactive'>('all');
   
   const [isExhibitModalOpen, setIsExhibitModalOpen] = useState(false);
   const [isExhibitionModalOpen, setIsExhibitionModalOpen] = useState(false);
+  const [isQRModalOpen, setIsQRModalOpen] = useState(false);
   
   const [editingExhibit, setEditingExhibit] = useState<Exhibit | null>(null);
   const [editingExhibition, setEditingExhibition] = useState<ExhibitionGroup | null>(null);
   const [preselectedExhibitionId, setPreselectedExhibitionId] = useState<string | null>(null);
-  
-  const [isQRModalOpen, setIsQRModalOpen] = useState(false);
-  const [qrCodeData, setQRCodeData] = useState<QRCodeData | null>(null);
+  const [qrCodeData, setQRCodeData] = useState<{ qrUrl: string; qrCodeImage: string; exhibitId: string } | null>(null);
 
-  const [filter, setFilter] = useState('all');
-
-  // --- Data Fetching ---
   const fetchAdminData = useCallback(async () => {
     try {
       setLoading(true);
-      setError('');
       const response = await apiClient.get('/exhibitions/admin/all');
       setExhibitionGroups(response.data);
     } catch (err) {
-      setError('Failed to fetch data.');
+      console.error(err);
     } finally {
       setLoading(false);
     }
   }, []);
 
-  useEffect(() => {
-    fetchAdminData();
-  }, [fetchAdminData]);
-  
-  // Hash change logic for deep linking
-  useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash;
-      if (hash === '#add-collection') {
-        handleOpenCreateExhibitionModal();
-        history.replaceState(null, document.title, window.location.pathname + window.location.search);
-      } else if (hash.startsWith('#add-exhibit-')) {
-        const exhibitionId = hash.replace('#add-exhibit-', '');
-        if (exhibitionId) {
-          handleOpenCreateExhibitModal(exhibitionId);
-          history.replaceState(null, document.title, window.location.pathname + window.location.search);
-        }
-      }
-    };
-    handleHashChange();
-    window.addEventListener('hashchange', handleHashChange);
-    return () => {
-      window.removeEventListener('hashchange', handleHashChange);
-    };
-  }, []);
+  useEffect(() => { fetchAdminData(); }, [fetchAdminData]);
 
-  // Filtering Logic
-  const filteredData = useMemo(() => {
-    if (filter === 'all') {
-      return exhibitionGroups;
-    }
+  const processedData = useMemo(() => {
     return exhibitionGroups
+      .filter(group => {
+        if (filterStatus === 'all') return true;
+        const isGroupActive = group.status?.statusName.toLowerCase() === 'active';
+        return filterStatus === 'active' ? isGroupActive : !isGroupActive;
+      })
       .map(group => ({
         ...group,
-        exhibits: group.exhibits.filter(
-          (exhibit) => exhibit.status?.statusName.toLowerCase() === filter
-        ),
-      }))
-      .filter(group =>
-        group.status?.statusName.toLowerCase() === filter ||
-        group.exhibits.length > 0
-      );
-  }, [exhibitionGroups, filter]);
+        exhibits: [...group.exhibits].sort((a, b) => (a.sequence || 0) - (b.sequence || 0))
+      }));
+  }, [exhibitionGroups, filterStatus]);
 
-  // --- Handlers for Exhibitions (Collections) ---
-  const handleOpenCreateExhibitionModal = () => {
-    setEditingExhibition(null);
-    setIsExhibitionModalOpen(true);
-  };
-
-  const handleOpenEditExhibitionModal = (exhibition: ExhibitionGroup) => {
-    setEditingExhibition(exhibition);
-    setIsExhibitionModalOpen(true);
-  };
-
-  const handleDeleteExhibition = async (exhibitionId: string, exhibitCount: number) => {
-    const confirmMsg = exhibitCount > 0
-      ? `This will also mark all ${exhibitCount} exhibits inside as Inactive. Are you sure?`
-      : 'Are you sure you want to mark this exhibition as Inactive?';
-    if (window.confirm(confirmMsg)) {
+  const handleToggleExhibitionStatus = async (exhibitionId: string, title: string, currentStatus: string) => {
+    const isActive = currentStatus.toLowerCase() === 'active';
+    const action = isActive ? 'deactivate' : 'reactivate';
+    
+    if (window.confirm(`Are you sure you want to ${action} "${title}"?`)) {
       try {
-        await apiClient.delete(`/exhibitions/${exhibitionId}`);
-        fetchAdminData();
-      } catch (err) { setError('Failed to deactivate exhibition.'); }
-    }
-  };
-
-  const handleReactivateExhibition = async (exhibitionId: string) => {
-    if (window.confirm('Are you sure you want to reactivate this exhibition and all exhibits inside?')) {
-      try {
-        await apiClient.patch(`/exhibitions/${exhibitionId}/reactivate`);
+        if (isActive) {
+          await apiClient.delete(`/exhibitions/${exhibitionId}`);
+        } else {
+          // Uses PATCH to match backend route
+          await apiClient.patch(`/exhibitions/${exhibitionId}/reactivate`);
+        }
         fetchAdminData();
       } catch (err) {
-        setError('Failed to reactivate exhibition.');
-        console.error(err);
+        console.error(`Error ${action}ing tour:`, err);
+        alert(`Failed to ${action} the tour.`);
       }
     }
   };
 
-  // --- Handlers for Exhibits (Items) ---
-  const handleOpenCreateExhibitModal = (exhibitionId: string) => {
-    setEditingExhibit(null);
-    setPreselectedExhibitionId(exhibitionId);
-    setIsExhibitModalOpen(true);
-  };
+  const handleMove = async (exhibitId: string, direction: 'up' | 'down', currentExhibits: Exhibit[]) => {
+    try {
+      const currentIndex = currentExhibits.findIndex(e => e.exhibitId === exhibitId);
+      if (currentIndex === -1) return;
 
-  const handleOpenEditExhibitModal = (exhibit: Exhibit) => {
-    setEditingExhibit(exhibit);
-    setPreselectedExhibitionId(null);
-    setIsExhibitModalOpen(true);
-  };
+      const currentExhibit = currentExhibits[currentIndex];
+      const currentSequence = currentExhibit.sequence || 0;
+      const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+      
+      if (targetIndex < 0 || targetIndex >= currentExhibits.length) return;
+      
+      const swapExhibit = currentExhibits[targetIndex];
+      const swapSequence = swapExhibit.sequence || 0;
 
-  const handleDeleteExhibit = async (exhibitId: string) => {
-    if (window.confirm('Are you sure you want to mark this exhibit as Inactive?')) {
-      try {
-        await apiClient.delete(`/exhibits/${exhibitId}`);
-        fetchAdminData();
-      } catch (err) { setError('Failed to deactivate exhibit.'); }
+      await apiClient.put(`/exhibits/${exhibitId}/sequence`, { sequence: -999 });
+      await apiClient.put(`/exhibits/${swapExhibit.exhibitId}/sequence`, { sequence: currentSequence });
+      await apiClient.put(`/exhibits/${exhibitId}/sequence`, { sequence: swapSequence });
+      
+      fetchAdminData();
+    } catch (err) {
+      console.error('Reorder error:', err);
+      alert('Order update failed.');
     }
-  };
-
-  const handleReactivateExhibit = async (exhibitId: string) => {
-    if (window.confirm('Are you sure you want to reactivate this exhibit?')) {
-      try {
-        await apiClient.patch(`/exhibits/${exhibitId}/reactivate`);
-        fetchAdminData();
-      } catch (err) {
-        setError('Failed to reactivate exhibit.');
-        console.error(err);
-      }
-    }
-  };
-  
-  // --- Universal Handlers ---
-  const handleSave = () => {
-    fetchAdminData();
   };
 
   const handleViewQRCode = async (exhibitId: string) => {
@@ -249,150 +169,191 @@ const ManageExhibitions: React.FC = () => {
       setQRCodeData({ ...response.data, exhibitId });
       setIsQRModalOpen(true);
     } catch (err) {
-      alert('Failed to load QR code.');
+      alert('Failed to load QR.');
     }
   };
 
-  if (loading) return <div className="status-container"><Loader2 className="animate-spin" /> Loading Exhibitions/Exhibits...</div>;
-  if (error) return <div className="error-message">{error}</div>;
+  if (loading) return (
+    <div className="status-container">
+      <Loader2 className="animate-spin" /> 
+      <p>Loading sequences...</p>
+    </div>
+  );
 
   return (
     <div className="manage-exhibits-container">
-      <div className="manage-header">
-        <div className="filter-container">
-          <label htmlFor="status-filter" className="form-label" style={{marginBottom: 0, fontWeight: 500}}>Filter Status:</label>
-          <select
-            id="status-filter"
-            className="form-input form-select"
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            style={{ minWidth: '150px' }}
-          >
-            <option value="all">All</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-          </select>
+      <header className="page-main-header">
+        <div className="header-text">
+          <h1>Tour & Exhibit Flow</h1>
+          <p>Sequence your exhibits and manage visitor paths.</p>
         </div>
-        
-        <button className="button-primary" onClick={handleOpenCreateExhibitionModal}>
-          <Building2 size={18} />
-          Create New Exhibitions
+        <button className="button-primary" onClick={() => { 
+          setEditingExhibition(null); 
+          setIsExhibitionModalOpen(true); 
+        }}>
+          <PlusCircle size={18} /> New Tour
         </button>
+      </header>
+
+      {/* --- Filter Bar --- */}
+      <div className="filter-bar">
+        <div className="filter-group">
+          <button 
+            className={`filter-btn ${filterStatus === 'all' ? 'active' : ''}`}
+            onClick={() => setFilterStatus('all')}
+          >
+            All Tours
+          </button>
+          <button 
+            className={`filter-btn ${filterStatus === 'active' ? 'active' : ''}`}
+            onClick={() => setFilterStatus('active')}
+          >
+            Active
+          </button>
+          <button 
+            className={`filter-btn ${filterStatus === 'inactive' ? 'active' : ''}`}
+            onClick={() => setFilterStatus('inactive')}
+          >
+            Inactive
+          </button>
+        </div>
+        <div className="filter-stats">
+            {processedData.length} Tour{processedData.length !== 1 ? 's' : ''} Listed
+        </div>
       </div>
-      
-      <div className="exhibitions-grouped-list">
-        {filteredData.map((group) => (
-          <section key={group.exhibitionId} className="exhibition-group">
-            <header className="exhibition-group-header">
-              <div className="exhibition-group-title">
-                <h3>{group.title}</h3>
-                <span className="exhibit-count">({group.exhibits.length} exhibits)</span>
-                <StatusBadge statusName={group.status?.statusName} />
-              </div>
-              <div className="exhibition-group-actions">
-                <button className="action-button create" onClick={() => handleOpenCreateExhibitModal(group.exhibitionId)}>
-                  <PlusCircle size={16} /> Add Exhibit
-                </button>
-                <button className="action-button edit" onClick={() => handleOpenEditExhibitionModal(group)}>
-                  <Edit size={16} /> Edit Exhibit
-                </button>
-                {group.status?.statusName.toLowerCase() === 'inactive' ? (
-                  <button className="action-button reactivate" onClick={() => handleReactivateExhibition(group.exhibitionId)}>
-                    <RotateCcw size={16} /> Reactivate
+
+      <div className="tour-timeline-stack">
+        {processedData.map((group) => {
+          const isTourActive = group.status?.statusName.toLowerCase() === 'active';
+          
+          return (
+            <div key={group.exhibitionId} className={`tour-card ${!isTourActive ? 'tour-inactive' : ''}`}>
+              <div className="tour-card-header">
+                <div className="tour-meta">
+                  <div className={`tour-icon-box ${!isTourActive ? 'inactive' : ''}`}>
+                    <MapPin size={20} />
+                  </div>
+                  <div className="tour-titles">
+                    <h3>{group.title}</h3>
+                    <StatusBadge statusName={group.status?.statusName} />
+                  </div>
+                </div>
+                <div className="tour-actions">
+                  <button className="btn-ghost" onClick={() => { 
+                    setPreselectedExhibitionId(group.exhibitionId); 
+                    setEditingExhibit(null); 
+                    setIsExhibitModalOpen(true); 
+                  }}>
+                    <PlusCircle size={16} /> Add Exhibit
                   </button>
-                ) : (
-                  <button className="action-button delete" onClick={() => handleDeleteExhibition(group.exhibitionId, group.exhibits.length)}>
-                    <Trash2 size={16} /> Deactivate
+                  <button className="btn-ghost" onClick={() => { 
+                    setEditingExhibition(group); 
+                    setIsExhibitionModalOpen(true); 
+                  }}>
+                    <Edit size={16} /> Edit Tour
                   </button>
-                )}
-              </div>
-            </header>
-            <div className="exhibits-list">
-              {group.exhibits.length > 0 ? (
-                group.exhibits.map((exhibit) => {
-                  // Prioritize primary image, fallback to first image, then default
-                  const primaryImage = exhibit.images.find(img => img.isPrimary);
-                  const imageToDisplay = primaryImage || exhibit.images[0] || null;
-                  const imageUrl = buildImageUrl(imageToDisplay?.fileUrl || null);
                   
+                  {isTourActive ? (
+                    <button 
+                      className="btn-ghost danger" 
+                      onClick={() => handleToggleExhibitionStatus(group.exhibitionId, group.title, 'active')}
+                    >
+                      <Trash2 size={16} /> Deactivate
+                    </button>
+                  ) : (
+                    <button 
+                      className="btn-ghost success" 
+                      onClick={() => handleToggleExhibitionStatus(group.exhibitionId, group.title, 'inactive')}
+                    >
+                      <RotateCcw size={16} /> Reactivate
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="timeline-body">
+                {group.exhibits.map((exhibit, index) => {
+                  const primaryImage = exhibit.images.find(img => img.isPrimary) || exhibit.images[0];
+                  const isFirst = index === 0;
+                  const isLast = index === group.exhibits.length - 1;
+
                   return (
-                    <div key={exhibit.exhibitId} className="exhibit-card-manage">
-                      <img src={imageUrl} alt={exhibit.title} className="exhibit-card-image" />
-                      <div className="exhibit-card-body">
-                          <h4>{exhibit.title}</h4>
-                          <p className="item-counts">Images: {exhibit._count.images} | Audio: {exhibit._count.audio}</p>
-                          <div style={{ marginTop: '0.5rem', marginBottom: '1rem' }}>
-                            <StatusBadge statusName={exhibit.status?.statusName} />
+                    <div key={exhibit.exhibitId} className="timeline-row">
+                      <div className="timeline-rail">
+                        <div className={`timeline-dot ${index === 0 && isTourActive ? 'active' : ''}`}>
+                          {exhibit.sequence}
+                        </div>
+                        {!isLast && <div className="timeline-bar"></div>}
+                      </div>
+
+                      <div className="timeline-content">
+                        <div className="content-card">
+                          <img src={buildImageUrl(primaryImage?.fileUrl)} alt="" className="content-img" />
+                          <div className="content-text">
+                            <h4>{exhibit.title}</h4>
+                            <div className="content-stats">
+                              <span><ImageIcon size={14} /> {exhibit._count.images}</span>
+                              <span><Mic size={14} /> {exhibit._count.audio}</span>
+                              <StatusBadge statusName={exhibit.status?.statusName} />
+                            </div>
                           </div>
-                          <div className="exhibit-card-actions">
-                            <button className="action-button edit" onClick={() => handleOpenEditExhibitModal(exhibit)}>
-                              <Edit size={16} /> Edit
-                            </button>
-                            <button className="action-button qr-code" onClick={() => handleViewQRCode(exhibit.exhibitId)}>
-                              <QrCode size={16} /> QR
-                            </button>
-                            {exhibit.status?.statusName.toLowerCase() === 'inactive' ? (
-                              <button className="action-button reactivate" onClick={() => handleReactivateExhibit(exhibit.exhibitId)}>
-                                <RotateCcw size={16} /> Reactivate
+                          
+                          <div className="content-actions">
+                            <div className="reorder-controls">
+                              <button disabled={isFirst} onClick={() => handleMove(exhibit.exhibitId, 'up', group.exhibits)} className="order-btn">
+                                <ArrowUp size={14} />
                               </button>
-                            ) : (
-                              <button className="action-button delete" onClick={() => handleDeleteExhibit(exhibit.exhibitId)}>
-                                <Trash2 size={16} /> Deactivate
+                              <button disabled={isLast} onClick={() => handleMove(exhibit.exhibitId, 'down', group.exhibits)} className="order-btn">
+                                <ArrowDown size={14} />
                               </button>
-                            )}
+                            </div>
+                            <div className="v-divider"></div>
+                            <button className="icon-btn" onClick={() => { setEditingExhibit(exhibit); setIsExhibitModalOpen(true); }}><Edit size={18} /></button>
+                            <button className="icon-btn" onClick={() => handleViewQRCode(exhibit.exhibitId)}><QrCode size={18} /></button>
+                            <button className="icon-btn danger" onClick={() => { if(window.confirm('Deactivate Exhibit?')) apiClient.delete(`/exhibits/${exhibit.exhibitId}`).then(fetchAdminData); }}><Trash2 size={18} /></button>
                           </div>
+                        </div>
                       </div>
                     </div>
                   );
-                })
-              ) : (
-                <div className="no-exhibits-message">
-                  <p>No exhibits match the current filter.</p>
-                </div>
-              )}
+                })}
+                {group.exhibits.length === 0 && <p className="empty-msg">No exhibits added yet.</p>}
+              </div>
             </div>
-          </section>
-        ))}
+          );
+        })}
+        {processedData.length === 0 && (
+            <div className="empty-filter-state">
+                <p>No {filterStatus} tours found matching your criteria.</p>
+            </div>
+        )}
       </div>
 
-      <Modal
-        isOpen={isExhibitModalOpen}
-        onClose={() => setIsExhibitModalOpen(false)}
-        title={editingExhibit ? `Edit Exhibit: ${editingExhibit.title}` : 'Create New Exhibit'}
-      >
-        <ExhibitForm
-          exhibitToEdit={editingExhibit}
-          preselectedExhibitionId={preselectedExhibitionId}
-          onSave={handleSave}
-          onClose={() => setIsExhibitModalOpen(false)}
+      <Modal isOpen={isExhibitModalOpen} onClose={() => setIsExhibitModalOpen(false)} title={editingExhibit ? "Edit Exhibit" : "Add Exhibit"}>
+        <ExhibitForm 
+          exhibitToEdit={editingExhibit} 
+          preselectedExhibitionId={preselectedExhibitionId} 
+          onSave={() => { fetchAdminData(); setIsExhibitModalOpen(false); }} 
+          onClose={() => setIsExhibitModalOpen(false)} 
         />
       </Modal>
 
-      <Modal
-        isOpen={isExhibitionModalOpen}
-        onClose={() => setIsExhibitionModalOpen(false)}
-        title={editingExhibition ? `Edit Exhibition: ${editingExhibition.title}` : 'Create New Exhibition'}
-      >
-        <ExhibitionForm
-          exhibitionToEdit={editingExhibition}
-          onSave={handleSave}
-          onClose={() => setIsExhibitionModalOpen(false)}
+      <Modal isOpen={isExhibitionModalOpen} onClose={() => setIsExhibitionModalOpen(false)} title={editingExhibition ? "Edit Tour" : "New Tour"}>
+        <ExhibitionForm 
+          exhibitionToEdit={editingExhibition} 
+          onSave={() => { fetchAdminData(); setIsExhibitionModalOpen(false); }} 
+          onClose={() => setIsExhibitionModalOpen(false)} 
         />
       </Modal>
-      
+
       {isQRModalOpen && qrCodeData && (
-        <Modal
-          isOpen={isQRModalOpen}
-          onClose={() => setIsQRModalOpen(false)}
-          title={`QR Code for Exhibit`}
-        >
-          <div className="qr-code-modal-content">
-              <img src={qrCodeData.qrCodeImage} alt="Exhibit QR Code" className="qr-image" />
-              <p>Scan this code to go directly to the exhibit page.</p>
-              <a href={qrCodeData.qrUrl} target="_blank" rel="noopener noreferrer" className="qr-url-link">{qrCodeData.qrUrl}</a>
-              <a href={qrCodeData.qrCodeImage} download={`exhibit-${qrCodeData.exhibitId}-qr.png`} className="button-primary qr-download-btn">
-                Download QR Image
-              </a>
+        <Modal isOpen={isQRModalOpen} onClose={() => setIsQRModalOpen(false)} title="QR Access">
+          <div className="qr-modal-body">
+             <div className="qr-container"><img src={qrCodeData.qrCodeImage} alt="QR" /></div>
+             <code className="qr-link">{qrCodeData.qrUrl}</code>
+             <div className="qr-footer-btns">
+                <a href={qrCodeData.qrCodeImage} download className="btn-download-primary"><Download size={16} /> Download PNG</a>
+             </div>
           </div>
         </Modal>
       )}

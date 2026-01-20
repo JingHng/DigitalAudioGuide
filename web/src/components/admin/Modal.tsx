@@ -10,15 +10,22 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
+  // Handle Escape key and body scroll lock
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
+      if (event.key === 'Escape') onClose();
     };
-    window.addEventListener('keydown', handleEsc);
-    return () => window.removeEventListener('keydown', handleEsc);
-  }, [onClose]);
+
+    if (isOpen) {
+      window.addEventListener('keydown', handleEsc);
+      document.body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -27,11 +34,13 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>{title}</h2>
-          <button onClick={onClose} className="modal-close-button">
-            <X size={24} />
+          <button onClick={onClose} className="modal-close-button" aria-label="Close">
+            <X size={20} />
           </button>
         </div>
-        <div className="modal-body">{children}</div>
+        <div className="modal-body">
+          {children}
+        </div>
       </div>
     </div>
   );

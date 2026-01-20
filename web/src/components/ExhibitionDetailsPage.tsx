@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { ArrowRight, Loader2, Camera, Sparkles } from 'lucide-react';
+import { ArrowRight, Loader2, Camera, Sparkles, PlayCircle } from 'lucide-react';
 import apiClient from '../utils/apiClient';
 
 const BACKEND_URL = import.meta.env.VITE_API_TARGET || '';
@@ -109,6 +109,13 @@ const ExhibitionDetailsPage: React.FC = () => {
             <p>{exhibition.description}</p>
           </div>
           <div className="exhibition-actions">
+            <button 
+              onClick={() => navigate(`/exhibitions/${id}/tour`)}
+              className="start-tour-btn-main"
+            >
+              <PlayCircle size={20} />
+              <span>Start Tour</span>
+            </button>
             <button 
               onClick={() => navigate(`/exhibitions/${id}/ar-photobooth`)}
               className="ar-photobooth-btn"
