@@ -30,6 +30,7 @@ import ProtectedRoute, { AdminRoute } from "./components/ProtectedRoute";
 // --- Admin Components ---
 import AdminDashboard from "./components/admin/AdminDashboard";
 import ExhibitsPage from "./components/admin/ExhibitsPage";
+import BadgesPage from "./components/admin/BadgesPage";
 import RolesPage from "./components/admin/RolesPage";
 import UsersPage from "./components/admin/UsersPage";
 import AuditLogsPage from "./components/admin/AuditLogsPage";
@@ -61,6 +62,7 @@ function App() {
           <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
           <Route path="/admin/assistant" element={<AdminRoute><AssistantPage /></AdminRoute>} />
           <Route path="/admin/exhibits" element={<AdminRoute><ExhibitsPage /></AdminRoute>} />
+          <Route path="/admin/badges" element={<AdminRoute><BadgesPage /></AdminRoute>} />
           <Route path="/admin/audio" element={<AdminRoute><AudioManagement /></AdminRoute>} />
           <Route path="/admin/roles" element={<AdminRoute><RolesPage /></AdminRoute>} />
           <Route path="/admin/users" element={<AdminRoute><UsersPage /></AdminRoute>} />
