@@ -21,7 +21,7 @@ const { getPaginatedEventLogs } = require('../models/eventLogModel');
 const { getAllUsers } = require('../models/userModel');
 
 // Initialize the AI model
-const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 
 // Model configuration - using gemini-2.5-flash 
 const MODEL_NAME = 'gemini-2.5-flash';
@@ -134,7 +134,8 @@ async function executeFunction(funcCall, context = null) {
 
     switch (name) {
       case 'get_user_count_statistics':
-        result = await getUserCountStatistics(args.filter);
+        // Don't pass filter - function has its own date filtering logic
+        result = await getUserCountStatistics();
         break;
 
       case 'get_display_member_signups':
@@ -303,6 +304,82 @@ async function executeFunction(funcCall, context = null) {
 }
 
 /**
+ * Fallback function to manually execute queries when AI quota is exceeded
+ */
+async function executeFallbackQuery(userMessage) {
+  const lowerMessage = userMessage.toLowerCase();
+  
+  try {
+    // User count queries
+    if (lowerMessage.includes('how many users') || lowerMessage.includes('user count') || lowerMessage.includes('total users')) {
+      const result = await getUserCountStatistics();
+      return `📊 **User Statistics**
+
+**Total Users:** ${result.totalUsers}
+
+**Registrations:**
+- Today: ${result.registrations.today}
+- This Month: ${result.registrations.thisMonth}
+- This Year: ${result.registrations.thisYear}
+
+*Note: AI quota exceeded - showing basic data format*`;
+    }
+    
+    // Exhibit queries
+    if (lowerMessage.includes('exhibit') && (lowerMessage.includes('all') || lowerMessage.includes('show') || lowerMessage.includes('list') || lowerMessage.includes('how many'))) {
+      const exhibits = await prisma.exhibit.findMany({
+        take: 20,
+        include: { images: true }
+      });
+      const count = await prisma.exhibit.count();
+      
+      let response = `🏛️ **Exhibits (${count} total)**\n\n`;
+      exhibits.forEach((ex, i) => {
+        response += `${i + 1}. **${ex.title}**\n   ${ex.description.substring(0, 100)}...\n\n`;
+      });
+      response += `*Note: AI quota exceeded - showing basic data format*`;
+      return response;
+    }
+    
+    // Language queries
+    if (lowerMessage.includes('language') || lowerMessage.includes('common language')) {
+      const result = await getDisplayCommonLanguagesUsed({ limit: 10 });
+      let response = `🌐 **Most Common Languages**\n\n`;
+      result.languages.forEach((lang, i) => {
+        response += `${i + 1}. ${lang.languageName}: ${lang.userCount} users\n`;
+      });
+      response += `\n*Note: AI quota exceeded - showing basic data format*`;
+      return response;
+    }
+    
+    // Demographics queries
+    if (lowerMessage.includes('demographic') || lowerMessage.includes('sign up') || lowerMessage.includes('member')) {
+      const result = await getDisplayMemberSignUps();
+      return `📈 **Member Sign-ups**
+
+**Total:** ${result.totalSignups}
+
+**By Age Group:**
+- Children: ${result.ageGroupBreakdown.Children}
+- Youth: ${result.ageGroupBreakdown.Youth}
+- Adults: ${result.ageGroupBreakdown.Adults}
+- Seniors: ${result.ageGroupBreakdown.Seniors}
+
+**By Gender:**
+- Male: ${result.genderBreakdown.M}
+- Female: ${result.genderBreakdown.F}
+
+*Note: AI quota exceeded - showing basic data format*`;
+    }
+    
+    return null; // Return null if no pattern matched
+  } catch (error) {
+    console.error('Fallback query error:', error);
+    return null;
+  }
+}
+
+/**
  * Generate AI response with function calling support
  * @param {string} userMessage - The user's input message
  * @param {Array} conversationHistory - Array of previous messages for context
@@ -320,7 +397,7 @@ async function generateAIResponse(userMessage, conversationHistory = []) {
     }));
 
     // Create a chat session with function calling
-    const chat = genAI.chats.create({
+    const chat = ai.chats.create({
       model: MODEL_NAME,
       history: history,
       config: {
@@ -346,7 +423,9 @@ async function generateAIResponse(userMessage, conversationHistory = []) {
 
       // Execute all function calls with context
       for (const funcCall of response.functionCalls) {
+        console.log(`Executing function: ${funcCall.name} with args:`, funcCall.args);
         const result = await executeFunction(funcCall, context);
+        console.log(`Function ${funcCall.name} result:`, result);
         functionResults.push({
           function: funcCall.name,
           result: result,
@@ -372,14 +451,102 @@ async function generateAIResponse(userMessage, conversationHistory = []) {
       context.incrementIteration();
     }
 
-    // Return the final text response
-    return response.text || 'I apologize, but I encountered an issue processing your request.';
+    // Return the final text response - access text from response structure
+    const responseText = response.candidates?.[0]?.content?.parts?.[0]?.text || response.text;
+    console.log('Final AI response:', responseText);
+    return responseText || 'I apologize, but I encountered an issue processing your request.';
   } catch (error) {
     console.error('Error generating AI response:', error);
     
-    // Fallback response for quota/rate limit errors
-    if (error.status === 429 || error.message?.includes('quota') || error.message?.includes('RESOURCE_EXHAUSTED')) {
-      return 'The AI service has reached its daily quota limit. I\'m currently operating in limited mode. How can I help you with general information about the system?';
+    // Fallback response for quota/rate limit errors - but still try to provide helpful info
+    if (error.status === 429 || error.status === 503 || error.message?.includes('quota') || error.message?.includes('RESOURCE_EXHAUSTED') || error.message?.includes('503') || error.message?.includes('overloaded')) {
+      console.log('AI quota exceeded, attempting fallback query execution...');
+      
+      // Try to execute a fallback query
+      const fallbackResult = await executeFallbackQuery(userMessage);
+      if (fallbackResult) {
+        return fallbackResult;
+      }
+      
+      // Check if user is asking a simple question we can answer without AI
+      const lowerMessage = userMessage.toLowerCase();
+      
+      // Greetings
+      if (lowerMessage.match(/^(hi|hello|hey|greetings|good morning|good afternoon|good evening)[\s!.]*$/i)) {
+        return `Hello! 👋 I'm Omnie, your AI assistant for the Digital Audio Guide System.
+
+**⚠️ Note:** The AI service is currently at quota limit, but I can still help you!
+
+**To get specific data, please type exactly:**
+- "How many users do we have?" - for user statistics
+- "Show me all exhibits" - for exhibit list
+- "What are the most common languages?" - for language stats
+- "Show me demographics" - for user demographics
+- "What can you do?" - for full capabilities list
+
+Type the exact phrases above to get the information you need! 🚀`;
+      }
+      
+      // System info questions
+      if (lowerMessage.includes('what can you do') || lowerMessage.includes('what can omnie do') || lowerMessage.includes('help')) {
+        return `I'm Omnie, your AI assistant for the Digital Audio Guide System! 🤖
+
+**I can help you with:**
+📊 User statistics and demographics
+🏛️ Exhibit information and management
+🎧 Audio engagement metrics
+📱 QR code scan analytics
+⭐ User reviews and feedback
+📋 Audit and event logs
+👥 User management
+
+**⚠️ AI Quota Limit Reached**
+The natural language AI is temporarily unavailable, but I can still fetch data!
+
+**Type these exact phrases to get data:**
+- "How many users do we have?"
+- "Show me all exhibits"
+- "What are the most common languages?"
+- "Show me demographics"
+- "Who are you?"
+- "What time is it?"
+
+Copy and paste the exact phrases above for best results! 💡`;
+      }
+      
+      // About questions
+      if (lowerMessage.includes('who are you') || lowerMessage.includes('what are you')) {
+        return `I'm Omnie 🤖, an AI-powered assistant built specifically for the Digital Audio Guide System at Singapore Polytechnic School of Computing. I help administrators manage exhibits, analyze user data, and gain insights into system usage.
+
+**Status:** Currently in limited mode due to API quota limits, but I can still access and retrieve data from the database!`;
+      }
+      
+      // Time/date questions
+      if (lowerMessage.includes('what time') || lowerMessage.includes('what date') || lowerMessage.includes('today')) {
+        const now = new Date();
+        return `Current date and time: ${now.toLocaleString('en-SG', { timeZone: 'Asia/Singapore' })} (Singapore Time) 🕐
+
+**Note:** The AI service is temporarily at quota limit, so I'm providing basic responses. You can still ask me to fetch data about exhibits, users, statistics, etc.!`;
+      }
+      
+      // Default quota message with more info
+      return `⚠️ **AI Service Quota Reached**
+
+The Gemini AI service has reached its daily quota limit. However, I can still help you with data queries!
+
+**To get data, type exactly one of these phrases:**
+
+📊 **"How many users do we have?"** - User statistics
+🏛️ **"Show me all exhibits"** - Full exhibit list  
+🌐 **"What are the most common languages?"** - Language stats
+📈 **"Show me demographics"** - User demographics breakdown
+ℹ️ **"What can you do?"** - Full capabilities list
+🤖 **"Who are you?"** - About Omnie
+🕐 **"What time is it?"** - Current date/time
+
+**Tip:** Copy and paste the exact phrases above for accurate results!
+
+The AI quota typically resets at midnight UTC. Until then, please use the exact phrases listed above.`;
     }
     
     // Fallback for API key issues
@@ -400,7 +567,7 @@ async function generateConversationTitle(firstMessage) {
   try {
     const prompt = `Generate a short, descriptive title (max 6 words) for a conversation that starts with: "${firstMessage}"\n\nTitle:`;
 
-    const response = await genAI.models.generateContent({
+    const response = await ai.models.generateContent({
       model: MODEL_NAME,
       contents: prompt,
       config: {
@@ -408,7 +575,7 @@ async function generateConversationTitle(firstMessage) {
       }
     });
 
-    let title = response.text.trim();
+    let title = response.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || response.text?.trim() || '';
 
     // Remove quotes if present
     title = title.replace(/^["']|["']$/g, '');
