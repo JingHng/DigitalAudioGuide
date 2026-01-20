@@ -99,6 +99,47 @@
   padding: 1.5rem; 
   overflow-y: auto; 
   flex-grow: 1; /* Pushes player to bottom */
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--smart-text);
+}
+
+/* Word highlighting for audio transcript */
+.transcript-area .word {
+  transition: all 0.2s ease;
+}
+
+.transcript-area .word.active {
+  background-color: #fef08a;
+  color: #854d0e;
+  font-weight: 600;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+/* No Audio Message */
+.no-audio-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  text-align: center;
+  flex-grow: 1;
+}
+
+.no-audio-message h3 {
+  margin: 1rem 0 0.5rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--smart-text);
+}
+
+.no-audio-message p {
+  margin: 0;
+  color: var(--smart-muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
 .player-footer {

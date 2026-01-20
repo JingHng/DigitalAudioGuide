@@ -27,19 +27,41 @@ const ExhibitDetails: React.FC = () => {
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  // 1. Fetch Exhibit Data
   useEffect(() => {
     if (!id) return;
     setLoading(true);
     apiClient.get(`/exhibits/${id}`)
       .then((res) => {
         setExhibit(res.data);
-        const firstAudio = res.data.audio.find((a: any) => a.fileUrl);
+        const firstAudio = res.data.audio?.find((a: any) => a.fileUrl);
         if (firstAudio) setSelectedAudioId(firstAudio.audioId.toString());
       })
-      .catch((err) => console.error(err))
+      .catch((err) => console.error('Error fetching exhibit:', err))
       .finally(() => setLoading(false));
   }, [id]);
 
+  // --- NEW: PROGRESS TRACKING LOGIC ---
+  useEffect(() => {
+    if (exhibit && id && exhibitionId) {
+      const storageKey = `tour_progress_${exhibitionId}`;
+      const rawProgress = localStorage.getItem(storageKey);
+      const progress = rawProgress 
+        ? JSON.parse(rawProgress) 
+        : { completed: [], unlocked: [] };
+
+      const currentId = parseInt(id, 10);
+      
+      // Mark current exhibit as completed
+      if (!progress.completed.includes(currentId)) {
+        progress.completed.push(currentId);
+        localStorage.setItem(storageKey, JSON.stringify(progress));
+        console.log(`Progress Saved: Exhibit ${currentId} completed in Tour ${exhibitionId}`);
+      }
+    }
+  }, [exhibit, id, exhibitionId]);
+
+  // 2. Audio Switching Logic
   useEffect(() => {
     if (!exhibit || !selectedAudioId) return;
     const newAudio = exhibit.audio.find((a: any) => a.audioId.toString() === selectedAudioId);
@@ -87,7 +109,7 @@ const ExhibitDetails: React.FC = () => {
 
       <nav className="exhibit-nav">
         <button onClick={() => navigate(`/exhibitions/${exhibitionId}/tour`)} className="nav-back">
-          <ArrowLeft size={18} /> <span>Back</span>
+          <ArrowLeft size={18} /> <span>Back to Tour</span>
         </button>
         <div className="nav-title">{exhibit.title}</div>
         <div style={{width: '60px'}}></div>
@@ -110,7 +132,7 @@ const ExhibitDetails: React.FC = () => {
 
             {exhibit.additionalDescription && (
               <div className="section-card no-margin">
-                <div className="card-header"><BookOpen size={20} /><h3>Additional Description</h3></div>
+                <div className="card-header"><BookOpen size={20} /><h3>Context & History</h3></div>
                 <div className="additional-description-box">
                   <p className="description-text">{exhibit.additionalDescription}</p>
                 </div>
@@ -125,47 +147,59 @@ const ExhibitDetails: React.FC = () => {
                   <Headphones size={18} />
                   <span>Audio Guide</span>
                 </div>
-                <div className="lang-selector">
-                  <Languages size={14} />
-                  <select value={selectedAudioId || ''} onChange={(e) => setSelectedAudioId(e.target.value)}>
-                    {exhibit.audio.map((a: any) => <option key={a.audioId} value={a.audioId}>{a.language?.title || 'Language'}</option>)}
-                  </select>
-                </div>
+                {exhibit.audio && exhibit.audio.length > 0 && (
+                  <div className="lang-selector">
+                    <Languages size={14} />
+                    <select value={selectedAudioId || ''} onChange={(e) => setSelectedAudioId(e.target.value)}>
+                      {exhibit.audio.map((a: any) => <option key={a.audioId} value={a.audioId}>{a.language?.title || 'Language'}</option>)}
+                    </select>
+                  </div>
+                )}
               </div>
 
-              <div className="transcript-area">
-                {currentAudio?.subtitles?.[0]?.text.map((word: any, idx: number) => (
-                  <span key={idx} className={`word ${activeWordIndex === idx ? 'active' : ''}`}>
-                    {word.word}{' '}
-                  </span>
-                ))}
-              </div>
+              {exhibit.audio && exhibit.audio.length > 0 ? (
+                <>
+                  <div className="transcript-area">
+                    {currentAudio?.subtitles?.[0]?.text.map((word: any, idx: number) => (
+                      <span key={idx} className={`word ${activeWordIndex === idx ? 'active' : ''}`}>
+                        {word.word}{' '}
+                      </span>
+                    ))}
+                  </div>
 
-              <div className="player-footer">
-                <div className="progress-section">
-                    <input type="range" max={duration} value={currentTime} className="seek-bar" onChange={(e) => audioRef.current && (audioRef.current.currentTime = parseFloat(e.target.value))} />
-                    <div className="time-display"><span>{Math.floor(currentTime)}s</span><span>{Math.floor(duration)}s</span></div>
-                </div>
-
-                <div className="controls-section">
-                    <div className="playback-btns">
-                        <button onClick={() => audioRef.current && (audioRef.current.currentTime -= 10)} className="btn-skip"><RotateCcw size={18} /></button>
-                        <button onClick={() => isPlaying ? audioRef.current?.pause() : audioRef.current?.play()} className="btn-play">
-                            {isPlaying ? <Pause fill="white" size={20} /> : <Play fill="white" size={20} />}
-                        </button>
-                        <button onClick={() => audioRef.current && (audioRef.current.currentTime += 10)} className="btn-skip"><RotateCw size={18} /></button>
+                  <div className="player-footer">
+                    <div className="progress-section">
+                        <input type="range" max={duration} value={currentTime} className="seek-bar" onChange={(e) => audioRef.current && (audioRef.current.currentTime = parseFloat(e.target.value))} />
+                        <div className="time-display"><span>{Math.floor(currentTime)}s</span><span>{Math.floor(duration)}s</span></div>
                     </div>
 
-                    <div className="volume-section">
-                        <Volume2 size={16} color="#64748b" />
-                        <input type="range" min="0" max="1" step="0.1" value={volume} className="vol-slider" onChange={(e) => {
-                            const v = parseFloat(e.target.value);
-                            setVolume(v);
-                            if (audioRef.current) audioRef.current.volume = v;
-                        }} />
+                    <div className="controls-section">
+                        <div className="playback-btns">
+                            <button onClick={() => audioRef.current && (audioRef.current.currentTime -= 10)} className="btn-skip"><RotateCcw size={18} /></button>
+                            <button onClick={() => isPlaying ? audioRef.current?.pause() : audioRef.current?.play()} className="btn-play">
+                                {isPlaying ? <Pause fill="white" size={20} /> : <Play fill="white" size={20} />}
+                            </button>
+                            <button onClick={() => audioRef.current && (audioRef.current.currentTime += 10)} className="btn-skip"><RotateCw size={18} /></button>
+                        </div>
+
+                        <div className="volume-section">
+                            <Volume2 size={16} color="#64748b" />
+                            <input type="range" min="0" max="1" step="0.1" value={volume} className="vol-slider" onChange={(e) => {
+                                const v = parseFloat(e.target.value);
+                                setVolume(v);
+                                if (audioRef.current) audioRef.current.volume = v;
+                            }} />
+                        </div>
                     </div>
+                  </div>
+                </>
+              ) : (
+                <div className="no-audio-message">
+                  <VolumeX size={48} color="#cbd5e1" />
+                  <h3>No Audio Available</h3>
+                  <p>Audio guides are not yet available for this stop.</p>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>

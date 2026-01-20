@@ -98,26 +98,55 @@ exports.createExhibition = async (req, res) => {
       return res.status(400).json({ error: 'Exhibition title is required.' });
     }
 
-    const imageUrl = file ? `/images/${file.filename}` : null;
+    //Use a Transaction to create the exhibition and the image together
+    const newExhibition = await prisma.$transaction(async (tx) => {
+      // Create the exhibition
+      const exhibition = await tx.exhibition.create({
+        data: {
+          title,
+          description,
+          statusId: 1, // Default to Active
+        },
+      });
 
-    // Call the stored procedure
-    const result = await prisma.$queryRaw`CALL sp_create_exhibition(${title}, ${description}, ${imageUrl}, NULL::bigint);`;
-    
-    const newExhibitionId = result[0].p_new_exhibition_id;
-    if (!newExhibitionId) {
-        throw new Error("Exhibition creation failed in database.");
-    }
+      //If an image was uploaded, create the image record linked to this exhibition
+      if (file) {
+        await tx.image.create({
+          data: {
+            fileUrl: `/images/${file.filename}`,
+            title: `Cover for ${title}`,
+            isPrimary: true,
+            exhibitionId: exhibition.exhibitionId,
+          },
+        });
+      }
 
+      return exhibition;
+    });
+
+    //Log the action
     await logAuditAction(
       adminUserId, null, "exhibition", "create",
-      { exhibitionId: newExhibitionId.toString(), title, hasCoverImage: !!file },
+      { 
+        exhibitionId: newExhibition.exhibitionId.toString(), 
+        title: newExhibition.title, 
+        hasCoverImage: !!file 
+      },
       { ip_address: req.ip, user_agent: req.get("User-Agent") }
     );
 
-    res.status(201).json({ message: "Exhibition created successfully", exhibitionId: newExhibitionId });
+    // Return the ID as a string to avoid BigInt serialization issues
+    res.status(201).json({ 
+      message: "Exhibition created successfully", 
+      exhibitionId: newExhibition.exhibitionId.toString() 
+    });
+
   } catch (err) {
-    console.error("Error creating exhibition:", err);
-    res.status(500).json({ message: "Failed to create exhibition" });
+    console.error("Detailed Server Error:", err);
+    res.status(500).json({ 
+      message: "Failed to create exhibition", 
+      error: err.message 
+    });
   }
 };
 
@@ -203,6 +232,7 @@ exports.deleteExhibition = async (req, res) => {
     const exhibitionId = BigInt(req.params.id);
     const adminUserId = req.user?.userId;
 
+    // 1. Check if it exists and get exhibit count for auditing
     const exhibitionToDeactivate = await prisma.exhibition.findUnique({
       where: { exhibitionId },
       include: { _count: { select: { exhibits: true } } },
@@ -212,9 +242,22 @@ exports.deleteExhibition = async (req, res) => {
       return res.status(404).json({ message: "Exhibition not found." });
     }
 
-    // Call the stored procedure for deactivation
-    await prisma.$executeRaw`CALL sp_deactivate_exhibition(${exhibitionId});`;
+    // 2. Run deactivation in a transaction
+    await prisma.$transaction(async (tx) => {
+      // Deactivate the parent exhibition (assuming statusId 2 is 'Inactive')
+      await tx.exhibition.update({
+        where: { exhibitionId },
+        data: { statusId: 2 }, 
+      });
 
+      // Deactivate all exhibits inside this exhibition
+      await tx.exhibit.updateMany({
+        where: { exhibitionId },
+        data: { statusId: 2 },
+      });
+    });
+
+    // 3. Log the action (Converting IDs to string for JSON safety)
     await logAuditAction(
       adminUserId, null, "exhibition", "deactivate", 
       {
@@ -228,7 +271,10 @@ exports.deleteExhibition = async (req, res) => {
     res.status(200).json({ message: "Exhibition and its exhibits were marked as inactive." });
   } catch (err) {
     console.error("Error deactivating exhibition:", err);
-    res.status(500).json({ message: "Failed to deactivate exhibition" });
+    res.status(500).json({ 
+      message: "Failed to deactivate exhibition", 
+      error: err.message 
+    });
   }
 };
 
@@ -259,6 +305,7 @@ exports.getAllExhibitionsWithExhibits = async (req, res) => {
             title: true,
             description: true,
             additionalDescription: true,
+            sequence: true,
             // *** ADD THIS: Include the status of the nested exhibit ***
             status: {
               select: {
@@ -279,7 +326,7 @@ exports.getAllExhibitionsWithExhibits = async (req, res) => {
             },
           },
           orderBy: {
-            title: 'asc',
+            sequence: 'asc',
           },
         },
       },
@@ -309,8 +356,18 @@ exports.reactivateExhibition = async (req, res) => {
       return res.status(404).json({ message: "Exhibition not found." });
     }
 
-    // Call the stored procedure for reactivation
-    await prisma.$executeRaw`CALL sp_reactivate_exhibition(${exhibitionId});`;
+    // Standard Prisma Transaction to set everything back to Active (statusId 1)
+    await prisma.$transaction(async (tx) => {
+      await tx.exhibition.update({
+        where: { exhibitionId },
+        data: { statusId: 1 }, 
+      });
+
+      await tx.exhibit.updateMany({
+        where: { exhibitionId },
+        data: { statusId: 1 },
+      });
+    });
 
     await logAuditAction(
       adminUserId, null, "exhibition", "reactivate", 
@@ -325,7 +382,7 @@ exports.reactivateExhibition = async (req, res) => {
     res.status(200).json({ message: "Exhibition and its exhibits were reactivated." });
   } catch (err) {
     console.error("Error reactivating exhibition:", err);
-    res.status(500).json({ message: "Failed to reactivate exhibition" });
+    res.status(500).json({ message: "Failed to reactivate exhibition", error: err.message });
   }
 };
 

@@ -9,7 +9,7 @@ import {
   PlayCircle, 
   RotateCcw 
 } from 'lucide-react';
-import apiClient from '../utils/apiClient'; // Use the same client as ExhibitDetails
+import apiClient from '../utils/apiClient';
 import '../styles/TourView.css';
 
 interface Exhibit {
@@ -40,7 +40,7 @@ const TourView: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  // 1. FETCH TOUR DATA
+  // 1. Fetch Tour Data
   useEffect(() => {
     const fetchTour = async () => {
       setIsLoading(true);
@@ -67,38 +67,30 @@ const TourView: React.FC = () => {
     fetchTour();
   }, [id]);
 
-  // 2. PROGRESS LOGIC (Unlock next exhibit automatically)
+  // 2. STATUS HELPER
   const getExhibitStatus = (exhibitId: number) => {
     const storageKey = `tour_progress_${id}`;
     const progress = JSON.parse(localStorage.getItem(storageKey) || '{"completed":[], "unlocked":[]}');
     
     const completed = progress.completed || [];
-    let unlocked = progress.unlocked || [];
 
-    // Default: The first exhibit in the sequence is always unlocked
-    if (unlocked.length === 0 && exhibits.length > 0) {
-      unlocked = [exhibits[0].id];
+    // Rule 1: Always unlocked if already completed
+    if (completed.includes(exhibitId)) return 'completed';
+
+    // Rule 2: First exhibit in sequence is always unlocked
+    if (exhibits.length > 0 && exhibits[0].id === exhibitId) return 'unlocked';
+
+    // Rule 3: Unlock if the PREVIOUS exhibit in the sequence is completed
+    const currentIdx = exhibits.findIndex(e => e.id === exhibitId);
+    if (currentIdx > 0) {
+        const prevExhibit = exhibits[currentIdx - 1];
+        if (completed.includes(prevExhibit.id)) return 'unlocked';
     }
 
-    // Logic: If the previous exhibit is completed, the next one should be unlocked
-    exhibits.forEach((ex, idx) => {
-      if (completed.includes(ex.id) && exhibits[idx + 1]) {
-        const nextId = exhibits[idx + 1].id;
-        if (!unlocked.includes(nextId)) {
-          unlocked.push(nextId);
-        }
-      }
-    });
-
-    // Save back if we updated unlocked status
-    localStorage.setItem(storageKey, JSON.stringify({ ...progress, unlocked }));
-
-    if (completed.includes(exhibitId)) return 'completed';
-    if (unlocked.includes(exhibitId)) return 'unlocked';
     return 'locked';
   };
 
-  // 3. AUTO-SCROLL TO CURRENT STOP
+  // 3. AUTO-SCROLL TO PROGRESS
   useEffect(() => {
     if (!isLoading && exhibits.length > 0) {
       const firstUnlockedIndex = exhibits.findIndex(e => getExhibitStatus(e.id) === 'unlocked');
@@ -107,7 +99,7 @@ const TourView: React.FC = () => {
       if (itemRefs.current[targetIndex]) {
         setTimeout(() => {
           itemRefs.current[targetIndex]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, 300);
+        }, 500);
       }
     }
   }, [isLoading, exhibits]);
@@ -122,7 +114,7 @@ const TourView: React.FC = () => {
   const completedCount = exhibits.filter(e => getExhibitStatus(e.id) === 'completed').length;
   const progressPercent = Math.round((completedCount / (exhibits.length || 1)) * 100);
 
-  if (isLoading) return <div className="loading-state">Loading Roadmap...</div>;
+  if (isLoading) return <div className="loading-state">Loading Tour Roadmap...</div>;
   if (error) return <div className="error-state">{error}</div>;
 
   return (
@@ -130,7 +122,7 @@ const TourView: React.FC = () => {
       <header className="roadmap-header">
         <div className="header-inner">
           <div className="header-left">
-            <h1 className="header-title">{exhibition?.title || 'SoC Tour'}</h1>
+            <h1 className="header-title">{exhibition?.title || 'Museum Tour'}</h1>
             <div className="progress-pill">
               <div 
                 className="progress-circle" 
@@ -142,9 +134,9 @@ const TourView: React.FC = () => {
 
           <div className="header-right">
             <button onClick={() => navigate('/exhibitions')} className="header-action-btn">
-              <LogOut size={18} /> Exit
+              <LogOut size={18} /> Exit Tour
             </button>
-            <button onClick={handleReset} className="reset-icon-btn" title="Reset Progress">
+            <button onClick={handleReset} className="reset-icon-btn" title="Clear Progress">
               <RotateCcw size={20} />
             </button>
           </div>
@@ -190,15 +182,16 @@ const TourView: React.FC = () => {
                   <div className="card-body">
                     <div className="card-meta">
                       <span className="step-label">STOP {index + 1}</span>
-                      {isCurrent && <span className="current-badge">Start Here</span>}
+                      {isCurrent && <span className="current-badge">Next Stop</span>}
+                      {isCompleted && <span className="completed-badge">Visited</span>}
                     </div>
                     <h3 className="card-name">{exhibit.name}</h3>
                     <p className="card-description">
-                      {isLocked ? "Complete previous stops to unlock." : exhibit.description}
+                      {isLocked ? "Complete previous stops to unlock this exhibit." : exhibit.description}
                     </p>
                     {!isLocked && (
                       <button className={`card-btn ${isCurrent ? 'primary' : 'secondary'}`}>
-                        {isCurrent ? <><PlayCircle size={18} /> Explore</> : 'Review'}
+                        {isCurrent ? <><PlayCircle size={18} /> Start Exploring</> : 'Review Stop'}
                       </button>
                     )}
                   </div>
