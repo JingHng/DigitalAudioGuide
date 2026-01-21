@@ -207,7 +207,7 @@ export default function AssistantPage() {
             alignItems: 'center',
             padding: '1rem 1.5rem 0 1.5rem',
             background: 'transparent',
-            zIndex: 10,
+            zIndex: 50,
             position: 'absolute',
             top: 0,
             right: 0
@@ -239,6 +239,7 @@ export default function AssistantPage() {
               </motion.button>
               
               <motion.button
+              data-testid="history-toggle-button" 
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setSidebarOpen(!sidebarOpen)}
