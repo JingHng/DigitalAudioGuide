@@ -8,7 +8,7 @@ import "../css/ManageExhibits.css";
 const BACKEND_URL = import.meta.env.VITE_API_TARGET || "";
 const DEFAULT_IMAGE_URL = `${BACKEND_URL}/public/images/Badge.jpg`;
 
-// Convert stored imageUrl to actual browser URL (same logic style as exhibits)
+// Convert stored imageUrl to actual browser URL
 const getImageUrl = (imageUrl: string | null): string => {
   if (!imageUrl) return DEFAULT_IMAGE_URL;
 
@@ -30,36 +30,31 @@ const getImageUrl = (imageUrl: string | null): string => {
   return DEFAULT_IMAGE_URL;
 };
 
-// ---------- Types (match your backend response) ----------
-// NOTE: Your backend serializes BigInt to string -> keep as string in admin UI
-
+// ---------- Types ----------
 interface ExhibitionLite {
   exhibitionId: string;
   title: string;
 }
-
 interface ExhibitLite {
   exhibitId: string;
   title?: string;
   exhibition?: ExhibitionLite | null;
 }
-
 interface BadgeDTO {
   badgeId: string;
   name?: string | null;
   description?: string | null;
   style?: string | null;
   imageUrl?: string | null;
-  exhibit?: ExhibitLite | null; // included by getAllBadgesWithRelations()
+  exhibit?: ExhibitLite | null;
 }
-
 interface ExhibitionBadgeGroup {
   exhibitionId: string;
   exhibitionTitle: string;
   badges: BadgeDTO[];
 }
 
-// ---------- Small reusable style badge (same idea as status badge) ----------
+// ---------- Style badge ----------
 interface StyleBadgeProps {
   style?: string | null;
 }
@@ -68,24 +63,31 @@ const StyleBadge: FC<StyleBadgeProps> = ({ style }) => {
   return <span className={`status-badge ${styleName}`}>{style || "Unknown"}</span>;
 };
 
+// ✅ upload helper (matches your backend route)
+const uploadBadgeImage = async (badgeId: string, file: File) => {
+  const formData = new FormData();
+  formData.append("image", file); // uploadImage.single("image")
+
+  const res = await apiClient.post(`/badges/${badgeId}/upload-image`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+  return res.data as { message: string; badgeId: string; imageUrl: string };
+};
+
 // ---------- Main Component ----------
 const BadgeManagement: React.FC = () => {
-  // Data
   const [badges, setBadges] = useState<BadgeDTO[]>([]);
   const [styles, setStyles] = useState<string[]>([]);
-
-  // UI states (same pattern as ManageExhibitions)
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   const [isBadgeModalOpen, setIsBadgeModalOpen] = useState(false);
   const [editingBadge, setEditingBadge] = useState<BadgeDTO | null>(null);
 
-  // Filter/search
   const [styleFilter, setStyleFilter] = useState("all");
   const [searchText, setSearchText] = useState("");
 
-  // ---------- Fetching ----------
   const fetchBadgeData = useCallback(async () => {
     try {
       setLoading(true);
@@ -126,9 +128,7 @@ const BadgeManagement: React.FC = () => {
     return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
 
-
-  // ---------- Build Exhibit options for BadgeForm ----------
-  // We can derive all exhibits from badges relations (no extra endpoint needed)
+  // Exhibit options from relations
   const exhibitOptions: ExhibitOption[] = useMemo(() => {
     const map = new Map<string, ExhibitOption>();
 
@@ -142,12 +142,7 @@ const BadgeManagement: React.FC = () => {
       const exhibitionTitle = ex.exhibition?.title || "Unknown Exhibition";
 
       if (!map.has(exId)) {
-        map.set(exId, {
-          exhibitId: exId,
-          exhibitTitle: exTitle,
-          exhibitionId,
-          exhibitionTitle,
-        });
+        map.set(exId, { exhibitId: exId, exhibitTitle: exTitle, exhibitionId, exhibitionTitle });
       }
     }
 
@@ -158,18 +153,15 @@ const BadgeManagement: React.FC = () => {
     });
   }, [badges]);
 
-  // ---------- Filtering + Search ----------
   const normalizedSearch = searchText.trim().toLowerCase();
 
   const filteredBadges = useMemo(() => {
     return badges.filter((b) => {
-      // style filter
       if (styleFilter !== "all") {
         const s = (b.style || "").toLowerCase();
         if (s !== styleFilter.toLowerCase()) return false;
       }
 
-      // search
       if (!normalizedSearch) return true;
 
       const badgeName = (b.name || "").toLowerCase();
@@ -184,7 +176,6 @@ const BadgeManagement: React.FC = () => {
     });
   }, [badges, styleFilter, normalizedSearch]);
 
-  // ---------- Group by Exhibition (same as ManageExhibitions sections) ----------
   const groupedData: ExhibitionBadgeGroup[] = useMemo(() => {
     const map = new Map<string, ExhibitionBadgeGroup>();
 
@@ -193,16 +184,11 @@ const BadgeManagement: React.FC = () => {
       const exhibitionTitle = b.exhibit?.exhibition?.title || "Unknown Exhibition";
 
       if (!map.has(exhibitionId)) {
-        map.set(exhibitionId, {
-          exhibitionId,
-          exhibitionTitle,
-          badges: [],
-        });
+        map.set(exhibitionId, { exhibitionId, exhibitionTitle, badges: [] });
       }
       map.get(exhibitionId)!.badges.push(b);
     }
 
-    // sort badges + sort groups
     const groups = Array.from(map.values()).map((g) => ({
       ...g,
       badges: g.badges.sort((a, b) => (a.name || "").localeCompare(b.name || "")),
@@ -212,7 +198,6 @@ const BadgeManagement: React.FC = () => {
     return groups;
   }, [filteredBadges]);
 
-  // ---------- Modal handlers ----------
   const handleOpenCreateBadgeModal = () => {
     setEditingBadge(null);
     setIsBadgeModalOpen(true);
@@ -227,7 +212,6 @@ const BadgeManagement: React.FC = () => {
     fetchBadgeData();
   };
 
-  // ---------- CRUD actions ----------
   const handleDeleteBadge = async (badge: BadgeDTO) => {
     const name = badge.name || "this badge";
     if (!window.confirm(`Are you sure you want to delete "${name}"?`)) return;
@@ -241,39 +225,60 @@ const BadgeManagement: React.FC = () => {
     }
   };
 
+  // ✅ FIX: create body MUST include imageUrl
   const handleSubmitBadgeForm = async (values: BadgeFormValues) => {
     try {
       setError("");
 
       if (editingBadge) {
-        // UPDATE
+        // UPDATE (keep your old behavior: still send imageUrl; safe for your backend)
         await apiClient.put(`/badges/${editingBadge.badgeId}`, {
           name: values.name,
           description: values.description,
           style: values.style,
-          imageUrl: values.imageUrl,
+          imageUrl: values.imageUrl, // keep
           exhibitId: values.exhibitId,
         });
+
+        if (values.imageFile) {
+          await uploadBadgeImage(editingBadge.badgeId, values.imageFile);
+        }
       } else {
-        // CREATE
-        await apiClient.post("/badges", {
+        // CREATE (your backend requires imageUrl)
+        if (!values.imageUrl || !values.imageUrl.trim()) {
+          throw new Error("imageUrl is required for create (auto-generated from file).");
+        }
+
+        const createRes = await apiClient.post("/badges", {
           name: values.name,
           description: values.description,
           style: values.style,
-          imageUrl: values.imageUrl,
+          imageUrl: values.imageUrl, // ✅ REQUIRED
           exhibitId: values.exhibitId,
         });
+
+        const createdBadgeId =
+          createRes?.data?.badgeId?.toString?.() ?? createRes?.data?.badgeId ?? null;
+
+        if (!createdBadgeId) {
+          console.warn("Create badge response has no badgeId:", createRes.data);
+          throw new Error("Create badge succeeded but badgeId is missing in response.");
+        }
+
+        // upload file after create
+        if (values.imageFile) {
+          await uploadBadgeImage(String(createdBadgeId), values.imageFile);
+        }
       }
 
       setIsBadgeModalOpen(false);
       handleSave();
     } catch (err: any) {
       console.error(err);
-      setError(err?.response?.data?.message || "Failed to save badge.");
+      setError(err?.response?.data?.message || err?.message || "Failed to save badge.");
     }
   };
 
-  // ---------- Render ----------
   if (loading)
     return (
       <div className="status-container">
@@ -285,7 +290,6 @@ const BadgeManagement: React.FC = () => {
 
   return (
     <div className="manage-exhibits-container">
-      {/* Header (same layout style as ManageExhibitions) */}
       <div className="manage-header">
         <div className="filter-container" style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
           <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
@@ -327,7 +331,6 @@ const BadgeManagement: React.FC = () => {
         </button>
       </div>
 
-      {/* Grouped list (reuse exhibition-group + exhibits-list grid) */}
       <div className="exhibitions-grouped-list">
         {groupedData.length === 0 ? (
           <div className="no-exhibits-message">
@@ -389,7 +392,6 @@ const BadgeManagement: React.FC = () => {
         )}
       </div>
 
-      {/* Badge Modal */}
       <Modal
         isOpen={isBadgeModalOpen}
         onClose={() => setIsBadgeModalOpen(false)}

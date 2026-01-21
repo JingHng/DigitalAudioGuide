@@ -50,6 +50,30 @@ class BadgeModel {
   /* ============================================================
      ADMIN – CREATE & MANAGE BADGES
      ============================================================ */
+   /**
+   * Get a single badge by badgeId (with relations)
+   * Used by admin pages / upload image API
+   */
+  static async getBadgeById(badgeId) {
+    if (badgeId === undefined || badgeId === null) return null;
+
+    const id = BigInt(badgeId);
+
+    return prisma.badge.findUnique({
+      where: { badgeId: id },
+      include: {
+        exhibit: {
+          select: {
+            exhibitId: true,
+            title: true,
+            exhibition: {
+              select: { exhibitionId: true, title: true },
+            },
+          },
+        },
+      },
+    });
+  }
 
   /**
    * Create a new badge and assign it to an Exhibit
