@@ -14,7 +14,7 @@ const SenderTypes = {
 exports.createMessage = async (req, res) => {
   try {
     const userId = req.user.userId; // From JWT middleware
-    let { conversationId } = req.query;
+    let { conversationId } = req.body; // Get from body, not query
     const { content } = req.body;
 
     if (!content || content.trim() === '') {
@@ -61,7 +61,16 @@ exports.createMessage = async (req, res) => {
       aiResponseText,
     );
 
-    res.status(201).json({ conversation, message, aiMessage });
+    // Fetch the full conversation with all messages to return to frontend
+    const fullConversation = await assistantModel.getConversation(userId, conversationId);
+    const allMessages = await assistantModel.listMessages(userId, conversationId, 1, 100);
+    
+    res.status(201).json({ 
+      conversation: {
+        ...fullConversation,
+        messages: allMessages.messages
+      }
+    });
   } catch (error) {
     console.error('Error in createMessage:', error);
     res.status(500).json({ message: 'Error creating message', error: error.message });
