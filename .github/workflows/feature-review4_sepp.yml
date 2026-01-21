@@ -48,13 +48,16 @@ jobs:
         working-directory: ${{ env.WEB_DIR }}
         run: npm ci
 
+
+
+        
       - name: Build API (for E2E)
         working-directory: ${{ env.API_DIR }}
         env:
           DATABASE_URL: ${{ env.DATABASE_URL }}
         run: |
           npx prisma generate
-          npx prisma migrate deploy
+          npx prisma db push --accept-data-loss
           npm run build
 
       - name: Install Playwright browsers
