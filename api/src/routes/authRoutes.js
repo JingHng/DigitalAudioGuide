@@ -34,6 +34,7 @@ router.get("/profile", jwtMiddleware.verifyToken, authController.getProfile);
 router.put("/profile", jwtMiddleware.verifyToken, authController.updateProfile);
 router.put("/change-password", jwtMiddleware.verifyToken, authController.changePassword);
 router.put("/change-email", jwtMiddleware.verifyToken, authController.changeEmail);
+router.post("/upload-profile-pic", jwtMiddleware.verifyToken, uploadImage.single('profilePicture'), authController.updateProfilePicture );
 
 module.exports = router;
 

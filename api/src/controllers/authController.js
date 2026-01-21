@@ -742,3 +742,34 @@ exports.resendVerificationEmail = async (req, res) => {
     await prisma.$disconnect();
   }
 };
+
+exports.updateProfilePicture = async (req, res) => {
+  const prisma = new PrismaClient();
+  try {
+    const userId = req.user.userId;
+    const file = req.file;
+
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded." });
+    }
+
+    const profilePictureUrl = `${req.protocol}://${req.get("host")}/images/${
+      file.filename
+    }`;
+
+    // Update the user's profilePictureUrl
+    await prisma.user.update({
+      where: { userId: BigInt(userId.toString()) },
+      data: { profilePictureUrl },
+      select: { userId: true, profilePictureUrl: true, username: true },
+    });
+
+    res.status(200).json({
+      message: "Profile picture updated successfully!",
+      profilePictureUrl,
+    });
+  } catch (err) {
+    console.error("Error uploading profile picture:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
