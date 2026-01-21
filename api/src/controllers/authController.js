@@ -773,3 +773,56 @@ exports.updateProfilePicture = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+exports.changeUsername = async (req, res) => {
+  const prisma = new PrismaClient();
+  try {
+    const userId = res.locals.userId;
+    const { newUsername, password } = req.body;
+
+    if (!newUsername || !password) {
+      return res.status(400).json({ error: "Username is required" });
+    }
+
+    // Validate username (basic validation)
+    if (newUsername.length < 3 || newUsername.length > 50) {
+      return res.status(400).json({ error: "Username must be between 3 and 50 characters" });
+    }
+
+    // Check if username is already taken by another user
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        username: newUsername,
+        userId: { not: BigInt(userId) },
+      },
+    });
+
+    if (existingUser) {
+      return res.status(400).json({ error: "Username is already taken" });
+    }
+
+    // Update username
+    await prisma.user.update({
+      where: { userId: BigInt(userId) },
+      data: {
+        username: newUsername,
+        updatedAt: new Date(),
+      },
+    });
+
+    // Log audit action
+    await logAuditAction(userId, userId, "user", "update", {
+      field: "username",
+      oldValue: user.username,
+      newValue: newUsername,
+    });
+
+    res.status(200).json({ message: "Username updated successfully" });
+
+  } catch (err) {
+    console.error("Update Username Controller Error:", err);
+    res.status(500).json({ error: "Server error while updating username" });
+  } finally {
+    await prisma.$disconnect();
+  }
+};
