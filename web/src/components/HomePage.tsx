@@ -164,7 +164,7 @@ const Homepage: React.FC = () => {
                 <div 
                   key={tour.exhibitionId} 
                   className="tour-card"
-                  onClick={() => navigate(`/exhibitions/${tour.exhibitionId}`)}
+                  onClick={() => navigate(`/exhibitions/${tour.exhibitionId}/tour`)}
                 >
                   <div className="card-image">
                     <img 

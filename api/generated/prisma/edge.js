@@ -107,6 +107,7 @@ exports.Prisma.ExhibitScalarFieldEnum = {
   statusId: 'statusId',
   description: 'description',
   additionalDescription: 'additionalDescription',
+  sequence: 'sequence',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -371,7 +372,7 @@ const config = {
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null,
+    "rootEnvPath": "../../.env",
     "schemaEnvPath": "../../.env"
   },
   "relativePath": "../../prisma",

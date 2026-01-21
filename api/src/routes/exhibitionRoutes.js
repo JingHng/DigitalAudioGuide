@@ -13,6 +13,10 @@ router.get('/', exhibitionsController.getAllExhibitions);
 // This route gets a single exhibition and the list of exhibits inside it
 router.get('/:id', exhibitionsController.getExhibitionById);
 
+// --- TOUR ROUTES (Public) ---
+// Get exhibition with exhibits ordered by sequence for tour experience
+router.get('/:id/tour', exhibitionsController.getExhibitionTour);
+
 
 // --- ADMIN-ONLY ROUTES ---
 // Route to create a new main exhibition
