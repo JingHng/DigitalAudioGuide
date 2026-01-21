@@ -24,8 +24,61 @@ env:
   SUBSCRIPTION_ID: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_2FB091A84E45407EB53EC296B400A658 }}
 
 jobs:
+  e2e:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - run: npm ci
+        working-directory: ${{ env.API_DIR }}
+
+      - run: npm ci
+        working-directory: ${{ env.WEB_DIR }}
+
+      - run: |
+          npx prisma generate
+          npm run build
+        working-directory: ${{ env.API_DIR }}
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+
+      - run: npx playwright install --with-deps
+        working-directory: ${{ env.WEB_DIR }}
+
+      - run: |
+          npm start &
+          sleep 10
+          curl -f http://localhost:5175/health || curl -f http://localhost:5175/ || echo "API server not responding"
+        working-directory: ${{ env.API_DIR }}
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+          PORT: 5175
+          JWT_SECRET_KEY: ${{ env.JWT_SECRET_KEY }}
+          JWT_REFRESH_SECRET: ${{ env.JWT_REFRESH_SECRET }}
+          NODE_ENV: test
+
+      - run: npm run e2e
+        working-directory: ${{ env.WEB_DIR }}
+        env:
+          CI: true
+          VITE_API_TARGET: http://localhost:5175
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: ${{ env.WEB_DIR }}/playwright-report/
+          retention-days: 7
+
   build:
     runs-on: ubuntu-latest
+    needs: e2e
     permissions:
       contents: read
 
@@ -56,7 +109,7 @@ jobs:
           rm -rf "${API_DIR}/public"
           mkdir -p "${API_DIR}/public"
           cp -R "${WEB_DIR}/dist/." "${API_DIR}/public/"
-
+      
       - run: |
           if [ -d "${API_DIR}/src/public" ]; then
             cp -R -u "${API_DIR}/src/public/." "${API_DIR}/public/" || true
@@ -107,6 +160,7 @@ jobs:
           npm ci
           npx prisma generate
           npx prisma migrate deploy
+          node prisma/seed.js
         working-directory: ${{ env.API_DIR }}
         env:
           DATABASE_URL: ${{ env.DATABASE_URL }}
@@ -125,3 +179,5 @@ jobs:
 
       - run: |
           az webapp restart --name ${{ env.WEBAPP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }}
+
+
