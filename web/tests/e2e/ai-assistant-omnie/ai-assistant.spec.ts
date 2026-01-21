@@ -61,29 +61,36 @@ test.describe('AI Assistant (Omnie) - UI Tests (No Quota)', () => {
   // Test 2: New Chat Button and Sidebar Toggle
   // -----------------------------------
   test('should toggle sidebar and allow starting new chat', async ({ page }) => {
-    // Check for New Chat button
-    const newChatButton = page.locator('button:has-text("New Chat")').first();
-    await expect(newChatButton).toBeVisible();
-    
-    // Find the History button by looking for the button with History icon (last button in the header)
-    const historyButton = page.locator('button').filter({ has: page.locator('svg') }).last();
-    await expect(historyButton).toBeVisible();
-    
-    // Click to open sidebar
-    await historyButton.click();
-    
-    // Wait for sidebar animation
-    await page.waitForTimeout(1000);
-    
-    // Check for "+ New Chat" button in sidebar (more reliable than h3)
-    const sidebarNewChat = page.locator('button:has-text("+ New Chat")');
-    await expect(sidebarNewChat).toBeVisible({ timeout: 10000 });
-    
-    // Check for conversations header in sidebar
-    const conversationsHeader = page.locator('h3:has-text("Conversations")');
-    await expect(conversationsHeader).toBeVisible();
-  });
+    //Navigate
+    await page.goto('/admin/assistant');
 
+    await page.waitForLoadState('networkidle');
+
+    //Verify page is ready by checking the main action button
+    const newChatButton = page.getByRole('button', { name: 'New Chat' });
+    await expect(newChatButton).toBeVisible();
+
+    //Click the History button
+    const historyButton = page.getByTestId('history-toggle-button');
+    await expect(historyButton).toBeVisible(); 
+    
+    //Small safety wait for animation frames to settle 
+    await page.waitForTimeout(500); 
+    await historyButton.click({ force: true });
+
+    //Wait for the sidebar content to appear
+    const sidebarHeader = page.getByRole('heading', { name: 'Conversations' });
+    const emptyState = page.getByText('No conversations yet');
+    const loadingState = page.getByText('Loading...');
+
+    //Assert sidebar is visible
+    await expect(sidebarHeader.or(emptyState).or(loadingState).first()).toBeVisible({ timeout: 10000 });
+
+    //Test closing it via New Chat
+    await newChatButton.click();
+    await expect(sidebarHeader).not.toBeVisible();
+  });
+  
   // -----------------------------------
   // Test 3: Quick Action Click Pre-fills Input
   // -----------------------------------

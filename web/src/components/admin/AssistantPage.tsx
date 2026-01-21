@@ -127,6 +127,7 @@ export default function AssistantPage() {
   const startNewConversation = () => {
     setCurrentConversation(null);
     setMessages([]);
+    setSidebarOpen(false); // Close sidebar when starting new chat
   };
 
   const deleteConversation = async (conversationId: string) => {
@@ -198,60 +199,72 @@ export default function AssistantPage() {
         }}
       >
         {/* Main Content Area */}
-        <div style={{ display: 'flex', flex: 1, overflow: 'hidden', position: 'relative' }}>
-          {/* Top Header Bar with New Chat and History buttons - positioned absolutely */}
+        <div style={{ display: 'flex', flex: 1, overflow: 'hidden', position: 'relative', flexDirection: 'column' }}>
+          {/* Integrated New Chat and History buttons - blended into page */}
           <div style={{
-            position: 'absolute',
-            top: '1rem',
-            right: '1.5rem',
             display: 'flex',
-            gap: '0.75rem',
+            justifyContent: 'flex-end',
             alignItems: 'center',
-            zIndex: 20
+            padding: '1rem 1.5rem 0 1.5rem',
+            background: 'transparent',
+            zIndex: 50,
+            position: 'absolute',
+            top: 0,
+            right: 0
           }}>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={startNewConversation}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                padding: '0.5rem 1rem',
-                background: '#3b82f6',
-                color: 'white',
-                border: 'none',
-                borderRadius: '0.5rem',
-                cursor: 'pointer',
-                fontSize: '0.875rem',
-                fontWeight: '500',
-                boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)'
-              }}
-            >
-              <Plus size={18} />
-              <span>New Chat</span>
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '0.5rem',
-                background: 'rgba(255, 255, 255, 0.9)',
-                border: '1px solid rgba(229, 231, 235, 0.5)',
-                borderRadius: '0.5rem',
-                cursor: 'pointer',
-                color: '#6b7280',
-                backdropFilter: 'blur(10px)',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
-              }}
-            >
-              <History size={20} />
-            </motion.button>
+            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+              <motion.button
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={startNewConversation}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  padding: '0.5rem 1rem',
+                  background: 'rgba(59, 130, 246, 0.9)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '0.5rem',
+                  cursor: 'pointer',
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  backdropFilter: 'blur(10px)',
+                  boxShadow: '0 4px 12px rgba(59, 130, 246, 0.25)',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                <Plus size={16} />
+                <span>New Chat</span>
+              </motion.button>
+              
+              <motion.button
+              data-testid="history-toggle-button" 
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '0.5rem',
+                  background: 'rgba(255, 255, 255, 0.8)',
+                  color: '#6b7280',
+                  border: 'none',
+                  borderRadius: '0.5rem',
+                  cursor: 'pointer',
+                  backdropFilter: 'blur(10px)',
+                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                <History size={20} />
+              </motion.button>
+            </div>
           </div>
+
+          {/* Main content wrapper */}
+          <div style={{ display: 'flex', flex: 1, overflow: 'hidden', position: 'relative' }}>
           {/* Animated background elements */}
           <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
             <motion.div
@@ -311,23 +324,6 @@ export default function AssistantPage() {
         }}>
           {sidebarOpen && (
             <>
-              <button
-                onClick={startNewConversation}
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  backgroundColor: '#3b82f6',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '0.5rem',
-                  cursor: 'pointer',
-                  marginBottom: '1rem',
-                  fontWeight: '500'
-                }}
-              >
-                + New Chat
-              </button>
-
               <h3 style={{ fontSize: '0.875rem', fontWeight: '600', color: '#6b7280', marginBottom: '0.5rem' }}>
                 Conversations
               </h3>
@@ -400,7 +396,7 @@ export default function AssistantPage() {
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                padding: '1.5rem',
+                padding: '1rem',
                 textAlign: 'center',
                 overflow: 'hidden'
               }}
@@ -412,8 +408,8 @@ export default function AssistantPage() {
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '0.5rem',
-                  marginBottom: '0.75rem',
-                  padding: '0.4rem 0.875rem',
+                  marginBottom: '0.5rem',
+                  padding: '0.3rem 0.75rem',
                   background: 'linear-gradient(to bottom right, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.1))',
                   borderRadius: '9999px',
                   border: '1px solid rgba(59, 130, 246, 0.5)',
@@ -433,9 +429,9 @@ export default function AssistantPage() {
                     ease: 'easeInOut',
                   }}
                 >
-                  <Sparkles size={14} color="#3b82f6" />
+                  <Sparkles size={12} color="#3b82f6" />
                 </motion.div>
-                <span style={{ fontSize: '0.8rem', fontWeight: '500', color: '#3b82f6' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: '500', color: '#3b82f6' }}>
                   AI-Powered Assistant
                 </span>
               </motion.div>
@@ -443,9 +439,9 @@ export default function AssistantPage() {
               {/* Main Greeting */}
               <motion.h1
                 style={{
-                  fontSize: '2.5rem',
+                  fontSize: '2rem',
                   fontWeight: 'bold',
-                  marginBottom: '0.75rem',
+                  marginBottom: '0.5rem',
                   background: 'linear-gradient(to right, #1f2937, #3b82f6, #1e40af)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
@@ -463,11 +459,11 @@ export default function AssistantPage() {
               {/* Description */}
               <motion.p
                 style={{
-                  fontSize: '1.125rem',
+                  fontSize: '0.95rem',
                   color: '#6b7280',
                   maxWidth: '700px',
-                  marginBottom: '2rem',
-                  lineHeight: '1.6'
+                  marginBottom: '1.5rem',
+                  lineHeight: '1.5'
                 }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -482,9 +478,9 @@ export default function AssistantPage() {
                 style={{
                   display: 'flex',
                   flexWrap: 'wrap',
-                  gap: '0.625rem',
+                  gap: '0.5rem',
                   justifyContent: 'center',
-                  marginBottom: '1.25rem',
+                  marginBottom: '1rem',
                   maxWidth: '600px'
                 }}
                 initial="hidden"
@@ -545,7 +541,7 @@ export default function AssistantPage() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
-                style={{ width: '100%', maxWidth: '48rem', marginTop: '1rem' }}
+                style={{ width: '100%', maxWidth: '48rem', marginTop: '2rem' }}
               >
                 <form onSubmit={sendMessage} style={{ width: '100%' }}>
                   <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-end' }}>
@@ -619,31 +615,162 @@ export default function AssistantPage() {
                 background: 'rgba(255, 255, 255, 0.5)',
                 backdropFilter: 'blur(10px)'
               }}>
-                {messages.map((msg, idx) => (
+                {messages.map((msg, idx) => {
+                  const isUser = msg.senderType === 'user';
+                  // Simple markdown-like formatting
+                  const formatContent = (text: string) => {
+                    return text
+                      .split('\n')
+                      .map((line, i) => {
+                        // Convert **text** to bold and *text* to italic
+                        const parts = line.split(/(\*\*.*?\*\*|\*.*?\*)/g);
+                        return (
+                          <span key={i}>
+                            {parts.map((part, j) => {
+                              if (part.startsWith('**') && part.endsWith('**')) {
+                                return <strong key={j}>{part.slice(2, -2)}</strong>;
+                              } else if (part.startsWith('*') && part.endsWith('*')) {
+                                return <em key={j}>{part.slice(1, -1)}</em>;
+                              }
+                              return <span key={j}>{part}</span>;
+                            })}
+                            {i < text.split('\n').length - 1 && <br />}
+                          </span>
+                        );
+                      });
+                  };
+
+                  return (
+                    <motion.div
+                      key={msg.messageId || idx}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                      style={{
+                        marginBottom: '1rem',
+                        display: 'flex',
+                        gap: '0.5rem',
+                        justifyContent: isUser ? 'flex-end' : 'flex-start',
+                        alignItems: 'flex-start'
+                      }}
+                    >
+                      {/* Profile picture for AI (left side) */}
+                      {!isUser && (
+                        <div style={{
+                          width: '32px',
+                          height: '32px',
+                          borderRadius: '50%',
+                          background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: 'white',
+                          fontWeight: '600',
+                          fontSize: '0.875rem',
+                          flexShrink: 0,
+                          boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)'
+                        }}>
+                          <Sparkles size={16} />
+                        </div>
+                      )}
+                      
+                      <div
+                        style={{
+                          maxWidth: '70%',
+                          padding: '0.75rem 1rem',
+                          borderRadius: '0.75rem',
+                          backgroundColor: isUser ? '#3b82f6' : '#f3f4f6',
+                          color: isUser ? 'white' : '#1f2937'
+                        }}
+                      >
+                        <div style={{ margin: 0 }}>
+                          {formatContent(msg.content)}
+                        </div>
+                      </div>
+
+                      {/* Profile picture for User (right side) */}
+                      {isUser && (
+                        <div style={{
+                          width: '32px',
+                          height: '32px',
+                          borderRadius: '50%',
+                          background: 'linear-gradient(135deg, #10b981, #059669)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: 'white',
+                          fontWeight: '600',
+                          fontSize: '0.875rem',
+                          flexShrink: 0,
+                          boxShadow: '0 2px 8px rgba(16, 185, 129, 0.3)'
+                        }}>
+                          A
+                        </div>
+                      )}
+                    </motion.div>
+                  );
+                })}
+                
+                {/* Loading indicator */}
+                {isLoading && (
                   <motion.div
-                    key={msg.messageId || idx}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
                     style={{
                       marginBottom: '1rem',
                       display: 'flex',
-                      justifyContent: msg.senderType === 'user' ? 'flex-end' : 'flex-start'
+                      gap: '0.5rem',
+                      justifyContent: 'flex-start',
+                      alignItems: 'flex-start'
                     }}
                   >
+                    {/* AI profile picture */}
+                    <div style={{
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '50%',
+                      background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'white',
+                      fontWeight: '600',
+                      fontSize: '0.875rem',
+                      flexShrink: 0,
+                      boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)'
+                    }}>
+                      <Sparkles size={16} />
+                    </div>
+                    
                     <div
                       style={{
                         maxWidth: '70%',
                         padding: '0.75rem 1rem',
                         borderRadius: '0.75rem',
-                        backgroundColor: msg.senderType === 'user' ? '#3b82f6' : '#f3f4f6',
-                        color: msg.senderType === 'user' ? 'white' : '#1f2937'
+                        backgroundColor: '#f3f4f6',
+                        color: '#6b7280',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem'
                       }}
                     >
-                      <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{msg.content}</p>
+                      <motion.div
+                        animate={{
+                          rotate: 360
+                        }}
+                        transition={{
+                          duration: 1,
+                          repeat: Infinity,
+                          ease: 'linear'
+                        }}
+                      >
+                        <Sparkles size={16} color="#3b82f6" />
+                      </motion.div>
+                      <span>Omnie is thinking...</span>
                     </div>
                   </motion.div>
-                ))}
+                )}
+                
                 <div ref={messagesEndRef} />
               </div>
 
@@ -715,6 +842,7 @@ export default function AssistantPage() {
               </form>
             </>
           )}
+        </div>
         </div>
         </div>
       </motion.div>
