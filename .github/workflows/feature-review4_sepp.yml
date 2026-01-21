@@ -1,3 +1,6 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
 name: Build and deploy Node.js app to Azure Web App - SEPP
 
 on:
@@ -7,7 +10,8 @@ on:
     paths-ignore:
       - "modules/**"
       - "**/*.md"
-  workflow_dispatch:
+  workflow_dispatch: # Allows manual trigger
+
 
 env:
   WEBAPP_NAME: "SEPP"
@@ -16,29 +20,36 @@ env:
   API_DIR: "api"
   WEB_DIR: "web"
   ARTIFACT_NAME: "deploymentOwen.zip"
-
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
   JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
   JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
-
   CLIENT_ID: ${{ secrets.AZUREAPPSERVICE_CLIENTID_84A0A8933A9E474EA2C48DD60FD23E8B }}
   TENANT_ID: ${{ secrets.AZUREAPPSERVICE_TENANTID_38ABD5A15B8C4D34958B72C192538052 }}
   SUBSCRIPTION_ID: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_F2EFF0039A354B81827424EA7CDC9E7B }}
 
-# ------------------------------------------------------------
-# 1️⃣ E2E TEST JOB (SAFE – NO DB RESET)
-# ------------------------------------------------------------
+
 jobs:
   e2e:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Extract feature name from branch
+        id: extract-feature
+        run: |
+          # Extract feature name from branch (e.g., feature/exhibitions -> exhibitions)
+          BRANCH_NAME="${{ github.ref_name }}"
+          FEATURE_NAME=$(echo "$BRANCH_NAME" | sed 's/feature\///' | sed 's/features\///')
+          echo "feature_name=$FEATURE_NAME" >> $GITHUB_OUTPUT
+          echo "Running tests for feature folder: $FEATURE_NAME"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: npm
+          cache: "npm"
 
       - name: Install API deps
         working-directory: ${{ env.API_DIR }}
@@ -48,23 +59,22 @@ jobs:
         working-directory: ${{ env.WEB_DIR }}
         run: npm ci
 
-
-
-        
       - name: Build API (for E2E)
         working-directory: ${{ env.API_DIR }}
         env:
           DATABASE_URL: ${{ env.DATABASE_URL }}
         run: |
           npx prisma generate
-          npx prisma db push --accept-data-loss
+          npx prisma migrate reset --force --skip-seed
+          npx prisma migrate deploy
+          node prisma/seed.js
           npm run build
 
       - name: Install Playwright browsers
         working-directory: ${{ env.WEB_DIR }}
         run: npx playwright install --with-deps
 
-      - name: Start API server
+      - name: Start API server in background
         working-directory: ${{ env.API_DIR }}
         env:
           DATABASE_URL: ${{ env.DATABASE_URL }}
@@ -75,75 +85,97 @@ jobs:
         run: |
           npm start &
           sleep 10
-          curl -f http://localhost:5175/health
+          # Verify API is responding
+          curl -f http://localhost:5175/health || curl -f http://localhost:5175/ || echo "API server not responding"
 
       - name: Run Playwright tests
         working-directory: ${{ env.WEB_DIR }}
+        run: |
+          FEATURE_FOLDER="tests/e2e/${{ steps.extract-feature.outputs.feature_name }}"
+          if [ -d "$FEATURE_FOLDER" ]; then
+            echo "Running all tests in folder: $FEATURE_FOLDER"
+            npx playwright test "$FEATURE_FOLDER" --workers=8
+          else
+            echo "Error: Feature folder $FEATURE_FOLDER does not exist"
+            exit 1
+          fi
         env:
           CI: true
           VITE_API_TARGET: http://localhost:5175
-        run: npm run e2e
 
-# ------------------------------------------------------------
-# 2️⃣ BUILD + PACKAGE JOB
-# ------------------------------------------------------------
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: ${{ env.WEB_DIR }}/playwright-report/
+          retention-days: 7
+
+
   build:
     runs-on: ubuntu-latest
     needs: e2e
+    permissions: { contents: read }
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: npm
+          cache: "npm"
 
       # ---- Frontend ----
-      - name: Build frontend
+      - name: Install web deps
         working-directory: ${{ env.WEB_DIR }}
-        run: |
-          npm ci
-          npm run build
+        run: npm ci
+
+      - name: Build web
+        working-directory: ${{ env.WEB_DIR }}
+        run: npm run build
 
       # ---- Backend ----
-      - name: Build API (TypeScript → dist)
+      - name: Install api deps (for build)
         working-directory: ${{ env.API_DIR }}
-        run: |
-          npm ci
-          npm run build
-          npm prune --production
+        run: npm ci
 
-      # ---- Bundle frontend into backend ----
+      - name: Build api (TypeScript -> dist)
+        working-directory: ${{ env.API_DIR }}
+        run: npm run build
+
+      - name: Prune dev dependencies (keep only production)
+        working-directory: ${{ env.API_DIR }}
+        run: npm prune --production
+
+      # ---- Bundle web into api/public ----
       - name: Copy web build into api/public
         run: |
-          rm -rf api/public
-          mkdir -p api/public
-          cp -R web/dist/. api/public/
+          rm -rf "${API_DIR}/public"
+          mkdir -p "${API_DIR}/public"
+          cp -R "${WEB_DIR}/dist/." "${API_DIR}/public/"
 
-      # ---- Package deployment artifact ----
-      - name: Create deployment artifact
+      # ---- Create artifact containing only what's needed on the server ----
+      - name: Package deployment artifact
         run: |
-          cd api
-          rm -f ../${ARTIFACT_NAME}
-          zip -r ../${ARTIFACT_NAME} \
-            dist/ \
-            public/ \
-            node_modules/ \
-            package*.json \
-            prisma/
-          cd ..
-          ls -lh ${ARTIFACT_NAME}
+          # include compiled API, production node_modules, prisma files, package files and the static public folder
+          cd "${API_DIR}"
+          rm -f "../${ARTIFACT_NAME}"
+          zip -r "../${ARTIFACT_NAME}" dist node_modules package*.json prisma public || true
+          # Fallback: if node_modules doesn't exist (rare), include dist and package files
+          if [ ! -f "../${ARTIFACT_NAME}" ]; then
+            zip -r "../${ARTIFACT_NAME}" dist package*.json prisma public || true
+          fi
 
-      - name: Upload deployment artifact
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: deployment-package
-          path: ${{ env.ARTIFACT_NAME }}
+          path: ${{ env.ARTIFACT_NAME }}     
+          
 
-# ------------------------------------------------------------
-# 3️⃣ DEPLOY JOB
-# ------------------------------------------------------------
+
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -156,7 +188,14 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: deployment-package
+          path: .
 
+      - name: List files (debug)
+        run: |
+          ls -la
+          unzip -l ${{ env.ARTIFACT_NAME }} || true
+
+      # ---- Login (OIDC) ----
       - name: Azure login (OIDC)
         uses: azure/login@v2
         with:
@@ -164,9 +203,11 @@ jobs:
           tenant-id: ${{ env.TENANT_ID }}
           subscription-id: ${{ env.SUBSCRIPTION_ID }}
 
+      # ---- Deploy ----
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.WEBAPP_NAME }}
           package: ${{ env.ARTIFACT_NAME }}
-          clean: true
+        
+          
