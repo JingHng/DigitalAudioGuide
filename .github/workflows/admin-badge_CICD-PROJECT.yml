@@ -63,6 +63,13 @@ jobs:
           JWT_REFRESH_SECRET: ${{ env.JWT_REFRESH_SECRET }}
           NODE_ENV: test
 
+      - run: |
+          npm run dev -- --host 127.0.0.1 --port 5173 &
+          npx wait-on http://127.0.0.1:5173
+        working-directory: ${{ env.WEB_DIR }}
+        env:
+          CI: true
+
       - run: npm run e2e
         working-directory: ${{ env.WEB_DIR }}
         env:
@@ -109,7 +116,7 @@ jobs:
           rm -rf "${API_DIR}/public"
           mkdir -p "${API_DIR}/public"
           cp -R "${WEB_DIR}/dist/." "${API_DIR}/public/"
-      
+
       - run: |
           if [ -d "${API_DIR}/src/public" ]; then
             cp -R -u "${API_DIR}/src/public/." "${API_DIR}/public/" || true
@@ -178,4 +185,3 @@ jobs:
 
       - run: |
           az webapp restart --name ${{ env.WEBAPP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }}
-
