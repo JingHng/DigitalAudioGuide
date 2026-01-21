@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import "../css/ExhibitForm.css";
+import { Loader2 } from "lucide-react";
 
 const BACKEND_URL = import.meta.env.VITE_API_TARGET || "";
 const DEFAULT_BADGE_IMAGE_URL = `${BACKEND_URL}/public/images/Badge.jpg`;
@@ -42,9 +43,9 @@ export interface BadgeFormValues {
   name: string;
   description: string;
   style: string;
-  imageUrl: string;           // ✅ create 必须带这个
+  imageUrl: string;
   exhibitId: string;
-  imageFile?: File | null;    // ✅ 用于上传
+  imageFile?: File | null;
 }
 
 interface BadgeFormProps {
@@ -78,12 +79,14 @@ const BadgeForm: React.FC<BadgeFormProps> = ({
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [style, setStyle] = useState("");
-  const [imageUrl, setImageUrl] = useState(""); // ✅ DB path: /images/badge/xxx.png
+  const [imageUrl, setImageUrl] = useState(""); // DB path: /images/badge/xxx.png
   const [exhibitId, setExhibitId] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [error, setError] = useState("");
+  const [styleMode, setStyleMode] = useState<"select" | "custom">("select");
+  const [customStyle, setCustomStyle] = useState("");
 
-  // group exhibits by exhibition (same UX as ExhibitForm)
+  // group exhibits by exhibition
   const exhibitGroups = useMemo(() => {
     const map = new Map<string, { exhibitionTitle: string; items: ExhibitOption[] }>();
 
@@ -109,10 +112,29 @@ const BadgeForm: React.FC<BadgeFormProps> = ({
     // EDIT: always rehydrate
     if (mode === "edit") {
       const v = { ...DEFAULT_VALUES, ...initialValues } as BadgeFormValues;
+
       setName(v.name ?? "");
       setDescription(v.description ?? "");
-      setStyle((v.style ?? "").trim());
-      setImageUrl(v.imageUrl ?? ""); // keep existing DB path for preview
+
+      const initStyle = (v.style ?? "").trim();
+      setStyle(initStyle);
+
+      // Select style or custom
+      const styleLower = initStyle.toLowerCase();
+      const hasInList = styles.some((s) => s.toLowerCase() === styleLower);
+
+      if (initStyle && hasInList) {
+        setStyleMode("select");
+        setCustomStyle("");
+      } else if (initStyle) {
+        setStyleMode("custom");
+        setCustomStyle(initStyle);
+      } else {
+        setStyleMode("select");
+        setCustomStyle("");
+      }
+
+      setImageUrl(v.imageUrl ?? "");
       setExhibitId(v.exhibitId ?? "");
       setImageFile(null);
       setError("");
@@ -127,14 +149,30 @@ const BadgeForm: React.FC<BadgeFormProps> = ({
       setName(v.name ?? "");
       setDescription(v.description ?? "");
       setImageUrl(v.imageUrl ?? "");
-      setStyle(v.style?.trim() || styles[0] || "");
+
+      const initStyle = (v.style?.trim() || styles[0] || "").trim();
+      setStyle(initStyle);
+
+      const styleLower = initStyle.toLowerCase();
+      const hasInList = styles.some((s) => s.toLowerCase() === styleLower);
+
+      if (initStyle && hasInList) {
+        setStyleMode("select");
+        setCustomStyle("");
+      } else if (initStyle) {
+        setStyleMode("custom");
+        setCustomStyle(initStyle);
+      } else {
+        setStyleMode("select");
+        setCustomStyle("");
+      }
+
       setExhibitId(v.exhibitId || exhibits[0]?.exhibitId || "");
       setImageFile(null);
       setError("");
     }
   }, [mode, initialValues, styles, exhibits]);
 
-  // ✅ Preview:
   // - selected file => show file preview
   // - else => show existing stored imageUrl (edit) or default
   const previewSrc = useMemo(() => {
@@ -154,7 +192,6 @@ const BadgeForm: React.FC<BadgeFormProps> = ({
 
     if (!file) {
       setImageFile(null);
-      // create 模式下如果取消选择，imageUrl 也清掉（因为 create 要求必须有）
       if (mode === "create") setImageUrl("");
       return;
     }
@@ -170,9 +207,6 @@ const BadgeForm: React.FC<BadgeFormProps> = ({
     setError("");
     setImageFile(file);
 
-    // ✅ 关键：create 必须在 body 带上 imageUrl
-    // 你说 DB 格式是 "/images/badge/<filename>"
-    // 所以这里自动生成并存起来，不让用户手动输入
     const safeName = file.name.replace(/\\/g, "/").split("/").pop() || file.name;
     setImageUrl(`/images/badge/${safeName}`);
   };
@@ -180,12 +214,12 @@ const BadgeForm: React.FC<BadgeFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (submitting) return;
     if (!name.trim()) return setError("Please enter a badge name.");
     if (!description.trim()) return setError("Please enter a description.");
     if (!style.trim()) return setError("Please select a style.");
     if (!exhibitId) return setError("Please select an exhibit.");
 
-    // ✅ create 必须有 imageUrl + imageFile
     if (mode === "create") {
       if (!imageFile) return setError("Please upload an image.");
       if (!imageUrl.trim()) return setError("Missing imageUrl (auto-generated). Please re-select an image.");
@@ -197,7 +231,7 @@ const BadgeForm: React.FC<BadgeFormProps> = ({
       name: name.trim(),
       description: description.trim(),
       style: style.trim(),
-      imageUrl: imageUrl.trim(), // ✅ 给 create body 用
+      imageUrl: imageUrl.trim(),
       exhibitId,
       imageFile,
     });
@@ -238,13 +272,7 @@ const BadgeForm: React.FC<BadgeFormProps> = ({
       {/* Badge fields */}
       <div className="form-group">
         <label htmlFor="name">Badge Name</label>
-        <input
-          id="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          disabled={submitting}
-          required
-        />
+        <input id="name" value={name} onChange={(e) => setName(e.target.value)} disabled={submitting} required />
       </div>
 
       <div className="form-group">
@@ -259,28 +287,56 @@ const BadgeForm: React.FC<BadgeFormProps> = ({
       </div>
 
       <div className="form-group">
-        <label htmlFor="style">Badge Style</label>
+        <label htmlFor="styleSelect">Badge Style</label>
 
-        <input
-          id="style"
-          className="form-input"
-          value={style}
-          onChange={(e) => setStyle(e.target.value)}
+        <select
+          id="styleSelect"
+          value={styleMode === "select" ? (style || "") : "__custom__"}
+          onChange={(e) => {
+            const v = e.target.value;
+
+            if (v === "__custom__") {
+              setStyleMode("custom");
+              setStyle(customStyle || "");
+            } else {
+              setStyleMode("select");
+              setStyle(v);
+              setCustomStyle("");
+            }
+          }}
           disabled={submitting}
-          placeholder="e.g. cute, funny, cool, vip..."
-          list="badge-style-options"
           required
-        />
+        >
+          <option value="" disabled>
+            -- Select a style --
+          </option>
 
-        <datalist id="badge-style-options">
           {styles.map((s) => (
-            <option key={s} value={s} />
+            <option key={s} value={s}>
+              {s}
+            </option>
           ))}
-        </datalist>
 
-        <p className="form-hint">
-          You can type a new style. Existing styles are shown as suggestions.
-        </p>
+          <option value="__custom__">Custom...</option>
+        </select>
+
+        {styleMode === "custom" && (
+          <input
+            className="form-input"
+            value={customStyle}
+            onChange={(e) => {
+              const v = e.target.value;
+              setCustomStyle(v);
+              setStyle(v);
+            }}
+            disabled={submitting}
+            placeholder="Type a new style..."
+            required
+            style={{ marginTop: "0.5rem" }}
+          />
+        )}
+
+        <p className="form-hint">Select an existing style, or choose Custom... to type a new one.</p>
       </div>
 
       {/* Image Upload */}
@@ -289,24 +345,15 @@ const BadgeForm: React.FC<BadgeFormProps> = ({
 
         <div className="form-group">
           <label htmlFor="badgeImage">Upload Image</label>
-          <input
-            id="badgeImage"
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            disabled={submitting}
-          />
+          <input id="badgeImage" type="file" accept="image/*" onChange={handleFileChange} disabled={submitting} />
 
-          {/* ✅ 仅展示自动生成的 imageUrl，方便你确认 create body 会带上 */}
           {imageUrl ? (
             <p className="form-hint" style={{ marginTop: "0.5rem" }}>
               imageUrl (auto): <code>{imageUrl}</code>
             </p>
           ) : (
             <p className="form-hint" style={{ marginTop: "0.5rem" }}>
-              {mode === "create"
-                ? "Please upload an image (required)."
-                : "Upload a new image to replace the current one (optional)."}
+              {mode === "create" ? "Please upload an image (required)." : "Upload a new image to replace the current one (optional)."}
             </p>
           )}
         </div>
@@ -324,21 +371,21 @@ const BadgeForm: React.FC<BadgeFormProps> = ({
 
       {/* Actions */}
       <div className="form-actions">
-        <button
-          type="button"
-          className="button-secondary"
-          onClick={onCancel}
-          disabled={submitting}
-        >
+        <button type="button" className="button-secondary" onClick={onCancel} disabled={submitting}>
           Cancel
         </button>
 
-        <button
-          type="submit"
-          className="button-primary"
-          disabled={submitting}
-        >
-          {mode === "edit" ? "Save Changes" : "Create Badge"}
+        <button type="submit" className="button-primary" disabled={submitting}>
+          {submitting ? (
+            <>
+              <Loader2 className="animate-spin" size={16} />
+              {mode === "edit" ? "Saving..." : "Creating..."}
+            </>
+          ) : mode === "edit" ? (
+            "Save Changes"
+          ) : (
+            "Create Badge"
+          )}
         </button>
       </div>
     </form>

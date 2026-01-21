@@ -63,7 +63,33 @@ const StyleBadge: FC<StyleBadgeProps> = ({ style }) => {
   return <span className={`status-badge ${styleName}`}>{style || "Unknown"}</span>;
 };
 
-// ✅ upload helper (matches your backend route)
+// pill style placed next to Delete
+const StylePill: FC<StyleBadgeProps> = ({ style }) => {
+  const styleName = (style || "unknown").toLowerCase();
+
+  return (
+    <span
+      className={`style-pill ${styleName}`}
+      style={{
+        marginLeft: "0.75rem",
+        padding: "0.25rem 0.6rem",
+        borderRadius: "999px",
+        fontSize: "0.8rem",
+        fontWeight: 600,
+        border: "1px solid rgba(0,0,0,0.15)",
+        background: "rgba(0,0,0,0.04)",
+        lineHeight: 1.2,
+        alignSelf: "center",
+        whiteSpace: "nowrap",
+      }}
+      title={`Style: ${style || "Unknown"}`}
+    >
+      {style || "Unknown"}
+    </span>
+  );
+};
+
+// upload helper
 const uploadBadgeImage = async (badgeId: string, file: File) => {
   const formData = new FormData();
   formData.append("image", file); // uploadImage.single("image")
@@ -87,6 +113,14 @@ const BadgeManagement: React.FC = () => {
 
   const [styleFilter, setStyleFilter] = useState("all");
   const [searchText, setSearchText] = useState("");
+
+  // prevent double submit + show loading on Save/Create
+  const [submitting, setSubmitting] = useState(false);
+
+  // create initial values (for exhibition -> first exhibit auto select)
+  const [createInitialValues, setCreateInitialValues] = useState<
+    Partial<BadgeFormValues> | undefined
+  >(undefined);
 
   const fetchBadgeData = useCallback(async () => {
     try {
@@ -198,13 +232,27 @@ const BadgeManagement: React.FC = () => {
     return groups;
   }, [filteredBadges]);
 
-  const handleOpenCreateBadgeModal = () => {
+  // allow passing exhibitionId to auto-select first exhibit
+  const handleOpenCreateBadgeModal = (exhibitionId?: string) => {
     setEditingBadge(null);
+
+    // Default: no initial values
+    let initial: Partial<BadgeFormValues> | undefined = undefined;
+
+    if (exhibitionId) {
+      const firstExhibit = exhibitOptions.find((ex) => ex.exhibitionId === exhibitionId);
+      if (firstExhibit) {
+        initial = { exhibitId: firstExhibit.exhibitId };
+      }
+    }
+
+    setCreateInitialValues(initial);
     setIsBadgeModalOpen(true);
   };
 
   const handleOpenEditBadgeModal = (badge: BadgeDTO) => {
     setEditingBadge(badge);
+    setCreateInitialValues(undefined); // keep clean
     setIsBadgeModalOpen(true);
   };
 
@@ -225,18 +273,21 @@ const BadgeManagement: React.FC = () => {
     }
   };
 
-  // ✅ FIX: create body MUST include imageUrl
+  // submitting lock + spinner
   const handleSubmitBadgeForm = async (values: BadgeFormValues) => {
+    if (submitting) return;
+
     try {
+      setSubmitting(true);
       setError("");
 
       if (editingBadge) {
-        // UPDATE (keep your old behavior: still send imageUrl; safe for your backend)
+        // UPDATE
         await apiClient.put(`/badges/${editingBadge.badgeId}`, {
           name: values.name,
           description: values.description,
           style: values.style,
-          imageUrl: values.imageUrl, // keep
+          imageUrl: values.imageUrl,
           exhibitId: values.exhibitId,
         });
 
@@ -244,7 +295,7 @@ const BadgeManagement: React.FC = () => {
           await uploadBadgeImage(editingBadge.badgeId, values.imageFile);
         }
       } else {
-        // CREATE (your backend requires imageUrl)
+        // CREATE
         if (!values.imageUrl || !values.imageUrl.trim()) {
           throw new Error("imageUrl is required for create (auto-generated from file).");
         }
@@ -253,7 +304,7 @@ const BadgeManagement: React.FC = () => {
           name: values.name,
           description: values.description,
           style: values.style,
-          imageUrl: values.imageUrl, // ✅ REQUIRED
+          imageUrl: values.imageUrl,
           exhibitId: values.exhibitId,
         });
 
@@ -265,17 +316,19 @@ const BadgeManagement: React.FC = () => {
           throw new Error("Create badge succeeded but badgeId is missing in response.");
         }
 
-        // upload file after create
         if (values.imageFile) {
           await uploadBadgeImage(String(createdBadgeId), values.imageFile);
         }
       }
 
       setIsBadgeModalOpen(false);
+      setCreateInitialValues(undefined);
       handleSave();
     } catch (err: any) {
       console.error(err);
       setError(err?.response?.data?.message || err?.message || "Failed to save badge.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -325,7 +378,7 @@ const BadgeManagement: React.FC = () => {
           </div>
         </div>
 
-        <button className="button-primary" onClick={handleOpenCreateBadgeModal}>
+        <button className="button-primary" onClick={() => handleOpenCreateBadgeModal()}>
           <PlusCircle size={18} />
           Create New Badge
         </button>
@@ -346,7 +399,11 @@ const BadgeManagement: React.FC = () => {
                 </div>
 
                 <div className="exhibition-group-actions">
-                  <button className="action-button create" onClick={handleOpenCreateBadgeModal}>
+                  {/* exhibition scoped create */}
+                  <button
+                    className="action-button create"
+                    onClick={() => handleOpenCreateBadgeModal(group.exhibitionId)}
+                  >
                     <PlusCircle size={16} /> Add Badge
                   </button>
                 </div>
@@ -370,17 +427,16 @@ const BadgeManagement: React.FC = () => {
                           {badge.description || "No description"}
                         </p>
 
-                        <div style={{ marginTop: "0.5rem", marginBottom: "1rem" }}>
-                          <StyleBadge style={badge.style} />
-                        </div>
-
-                        <div className="exhibit-card-actions">
+                        <div className="exhibit-card-actions" style={{ display: "flex", alignItems: "center" }}>
                           <button className="action-button edit" onClick={() => handleOpenEditBadgeModal(badge)}>
                             <Edit size={16} /> Edit
                           </button>
                           <button className="action-button delete" onClick={() => handleDeleteBadge(badge)}>
                             <Trash2 size={16} /> Delete
                           </button>
+
+                          {/* style on the right of delete, but not like button */}
+                          <StylePill style={badge.style} />
                         </div>
                       </div>
                     </div>
@@ -410,11 +466,11 @@ const BadgeManagement: React.FC = () => {
                   imageUrl: editingBadge.imageUrl || "",
                   exhibitId: editingBadge.exhibit?.exhibitId || "",
                 }
-              : undefined
+              : createInitialValues
           }
           onCancel={() => setIsBadgeModalOpen(false)}
           onSubmit={handleSubmitBadgeForm}
-          submitting={false}
+          submitting={submitting}
         />
       </Modal>
     </div>
