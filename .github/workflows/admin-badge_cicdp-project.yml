@@ -1,4 +1,4 @@
-name: Deploy monorepo (api + web) to Azure App Service
+name: Deploy badge (api + web) to Azure App Service
 
 on:
   push:
@@ -42,6 +42,11 @@ jobs:
       - run: npm run build
         working-directory: ${{ env.WEB_DIR }}
 
+      - run: |
+          rm -rf "${API_DIR}/public"
+          mkdir -p "${API_DIR}/public"
+          cp -R "${WEB_DIR}/dist/." "${API_DIR}/public/"
+
       - run: npm ci
         working-directory: ${{ env.API_DIR }}
 
@@ -72,7 +77,6 @@ jobs:
       - run: |
           npm ci
           npx prisma generate
-          npx prisma migrate deploy
         working-directory: ${{ env.API_DIR }}
         env:
           DATABASE_URL: ${{ env.DATABASE_URL }}
