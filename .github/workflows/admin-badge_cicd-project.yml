@@ -1,4 +1,4 @@
-name: Deploy monorepo (api + web) to Azure App Service
+name: Deploy badge (api + web) to Azure App Service
 
 on:
   push:
