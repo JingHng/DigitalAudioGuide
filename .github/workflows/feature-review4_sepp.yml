@@ -81,7 +81,7 @@ jobs:
 
       - name: Run Playwright tests
         working-directory: ${{ env.WEB_DIR }}
-        run: npm run e2e
+        run: npx playwright test tests/e2e/review4/review.spec.ts
         env:
           CI: true
           VITE_API_TARGET: http://localhost:5175
