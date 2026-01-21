@@ -17989,6 +17989,7 @@ export namespace Prisma {
     username: string | null
     email: string | null
     passwordHash: string | null
+    profilePictureUrl: string | null
     emailVerified: boolean | null
     statusId: number | null
     lastLoginAt: Date | null
@@ -18001,6 +18002,7 @@ export namespace Prisma {
     username: string | null
     email: string | null
     passwordHash: string | null
+    profilePictureUrl: string | null
     emailVerified: boolean | null
     statusId: number | null
     lastLoginAt: Date | null
@@ -18013,6 +18015,7 @@ export namespace Prisma {
     username: number
     email: number
     passwordHash: number
+    profilePictureUrl: number
     emailVerified: number
     statusId: number
     lastLoginAt: number
@@ -18037,6 +18040,7 @@ export namespace Prisma {
     username?: true
     email?: true
     passwordHash?: true
+    profilePictureUrl?: true
     emailVerified?: true
     statusId?: true
     lastLoginAt?: true
@@ -18049,6 +18053,7 @@ export namespace Prisma {
     username?: true
     email?: true
     passwordHash?: true
+    profilePictureUrl?: true
     emailVerified?: true
     statusId?: true
     lastLoginAt?: true
@@ -18061,6 +18066,7 @@ export namespace Prisma {
     username?: true
     email?: true
     passwordHash?: true
+    profilePictureUrl?: true
     emailVerified?: true
     statusId?: true
     lastLoginAt?: true
@@ -18160,6 +18166,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl: string | null
     emailVerified: boolean | null
     statusId: number | null
     lastLoginAt: Date | null
@@ -18191,6 +18198,7 @@ export namespace Prisma {
     username?: boolean
     email?: boolean
     passwordHash?: boolean
+    profilePictureUrl?: boolean
     emailVerified?: boolean
     statusId?: boolean
     lastLoginAt?: boolean
@@ -18216,6 +18224,7 @@ export namespace Prisma {
     username?: boolean
     email?: boolean
     passwordHash?: boolean
+    profilePictureUrl?: boolean
     emailVerified?: boolean
     statusId?: boolean
     lastLoginAt?: boolean
@@ -18229,6 +18238,7 @@ export namespace Prisma {
     username?: boolean
     email?: boolean
     passwordHash?: boolean
+    profilePictureUrl?: boolean
     emailVerified?: boolean
     statusId?: boolean
     lastLoginAt?: boolean
@@ -18276,6 +18286,7 @@ export namespace Prisma {
       username: string
       email: string
       passwordHash: string
+      profilePictureUrl: string | null
       emailVerified: boolean | null
       statusId: number | null
       lastLoginAt: Date | null
@@ -18690,6 +18701,7 @@ export namespace Prisma {
     readonly username: FieldRef<"User", 'String'>
     readonly email: FieldRef<"User", 'String'>
     readonly passwordHash: FieldRef<"User", 'String'>
+    readonly profilePictureUrl: FieldRef<"User", 'String'>
     readonly emailVerified: FieldRef<"User", 'Boolean'>
     readonly statusId: FieldRef<"User", 'Int'>
     readonly lastLoginAt: FieldRef<"User", 'DateTime'>
@@ -29195,6 +29207,7 @@ export namespace Prisma {
     username: 'username',
     email: 'email',
     passwordHash: 'passwordHash',
+    profilePictureUrl: 'profilePictureUrl',
     emailVerified: 'emailVerified',
     statusId: 'statusId',
     lastLoginAt: 'lastLoginAt',
@@ -30408,6 +30421,7 @@ export namespace Prisma {
     username?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
     passwordHash?: StringFilter<"User"> | string
+    profilePictureUrl?: StringNullableFilter<"User"> | string | null
     emailVerified?: BoolNullableFilter<"User"> | boolean | null
     statusId?: IntNullableFilter<"User"> | number | null
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
@@ -30432,6 +30446,7 @@ export namespace Prisma {
     username?: SortOrder
     email?: SortOrder
     passwordHash?: SortOrder
+    profilePictureUrl?: SortOrderInput | SortOrder
     emailVerified?: SortOrderInput | SortOrder
     statusId?: SortOrderInput | SortOrder
     lastLoginAt?: SortOrderInput | SortOrder
@@ -30459,6 +30474,7 @@ export namespace Prisma {
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     passwordHash?: StringFilter<"User"> | string
+    profilePictureUrl?: StringNullableFilter<"User"> | string | null
     emailVerified?: BoolNullableFilter<"User"> | boolean | null
     statusId?: IntNullableFilter<"User"> | number | null
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
@@ -30483,6 +30499,7 @@ export namespace Prisma {
     username?: SortOrder
     email?: SortOrder
     passwordHash?: SortOrder
+    profilePictureUrl?: SortOrderInput | SortOrder
     emailVerified?: SortOrderInput | SortOrder
     statusId?: SortOrderInput | SortOrder
     lastLoginAt?: SortOrderInput | SortOrder
@@ -30503,6 +30520,7 @@ export namespace Prisma {
     username?: StringWithAggregatesFilter<"User"> | string
     email?: StringWithAggregatesFilter<"User"> | string
     passwordHash?: StringWithAggregatesFilter<"User"> | string
+    profilePictureUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
     emailVerified?: BoolNullableWithAggregatesFilter<"User"> | boolean | null
     statusId?: IntNullableWithAggregatesFilter<"User"> | number | null
     lastLoginAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
@@ -32027,6 +32045,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -32050,6 +32069,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     statusId?: number | null
     lastLoginAt?: Date | string | null
@@ -32073,6 +32093,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32096,6 +32117,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32119,6 +32141,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     statusId?: number | null
     lastLoginAt?: Date | string | null
@@ -32131,6 +32154,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32142,6 +32166,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -33790,6 +33815,7 @@ export namespace Prisma {
     username?: SortOrder
     email?: SortOrder
     passwordHash?: SortOrder
+    profilePictureUrl?: SortOrder
     emailVerified?: SortOrder
     statusId?: SortOrder
     lastLoginAt?: SortOrder
@@ -33807,6 +33833,7 @@ export namespace Prisma {
     username?: SortOrder
     email?: SortOrder
     passwordHash?: SortOrder
+    profilePictureUrl?: SortOrder
     emailVerified?: SortOrder
     statusId?: SortOrder
     lastLoginAt?: SortOrder
@@ -33819,6 +33846,7 @@ export namespace Prisma {
     username?: SortOrder
     email?: SortOrder
     passwordHash?: SortOrder
+    profilePictureUrl?: SortOrder
     emailVerified?: SortOrder
     statusId?: SortOrder
     lastLoginAt?: SortOrder
@@ -37433,6 +37461,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -37455,6 +37484,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     statusId?: number | null
     lastLoginAt?: Date | string | null
@@ -37527,6 +37557,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -37549,6 +37580,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -37608,6 +37640,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -37630,6 +37663,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     statusId?: number | null
     lastLoginAt?: Date | string | null
@@ -37711,6 +37745,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -37733,6 +37768,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38335,6 +38371,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -38357,6 +38394,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     statusId?: number | null
     lastLoginAt?: Date | string | null
@@ -38395,6 +38433,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38417,6 +38456,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38543,6 +38583,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -38565,6 +38606,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -38745,6 +38787,7 @@ export namespace Prisma {
     username?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
     passwordHash?: StringFilter<"User"> | string
+    profilePictureUrl?: StringNullableFilter<"User"> | string | null
     emailVerified?: BoolNullableFilter<"User"> | boolean | null
     statusId?: IntNullableFilter<"User"> | number | null
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
@@ -38842,6 +38885,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -38864,6 +38908,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     statusId?: number | null
     lastLoginAt?: Date | string | null
@@ -38963,6 +39008,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38985,6 +39031,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39627,6 +39674,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -39649,6 +39697,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     statusId?: number | null
     lastLoginAt?: Date | string | null
@@ -39715,6 +39764,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39737,6 +39787,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39759,6 +39810,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -39781,6 +39833,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     statusId?: number | null
     lastLoginAt?: Date | string | null
@@ -39808,6 +39861,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -39830,6 +39884,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     statusId?: number | null
     lastLoginAt?: Date | string | null
@@ -39868,6 +39923,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39890,6 +39946,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39923,6 +39980,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39945,6 +40003,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -39967,6 +40026,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -39989,6 +40049,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     statusId?: number | null
     lastLoginAt?: Date | string | null
@@ -40027,6 +40088,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -40049,6 +40111,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -40071,6 +40134,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -40093,6 +40157,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     statusId?: number | null
     lastLoginAt?: Date | string | null
@@ -40131,6 +40196,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -40153,6 +40219,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -40318,6 +40385,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -40340,6 +40408,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     statusId?: number | null
     lastLoginAt?: Date | string | null
@@ -40411,6 +40480,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -40433,6 +40503,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -40499,6 +40570,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -40521,6 +40593,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     statusId?: number | null
     lastLoginAt?: Date | string | null
@@ -40611,6 +40684,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -40633,6 +40707,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -41326,6 +41401,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -41457,6 +41533,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -41479,6 +41556,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -41501,6 +41579,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
