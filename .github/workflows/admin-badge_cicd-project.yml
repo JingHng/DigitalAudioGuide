@@ -72,7 +72,6 @@ jobs:
       - run: |
           npm ci
           npx prisma generate
-          npx prisma migrate deploy
         working-directory: ${{ env.API_DIR }}
         env:
           DATABASE_URL: ${{ env.DATABASE_URL }}
@@ -91,3 +90,4 @@ jobs:
 
       - run: |
           az webapp restart --name ${{ env.WEBAPP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }}
+
