@@ -362,6 +362,7 @@ exports.getProfile = async (req, res) => {
         userId: true,
         username: true,
         email: true,
+        profilePictureUrl: true,
         createdAt: true,
         roles: {
           include: {
@@ -382,6 +383,7 @@ exports.getProfile = async (req, res) => {
       userId: user.userId.toString(),
       username: user.username,
       email: user.email,
+      profilePictureUrl: user.profilePictureUrl,
       firstName: user.firstName,
       lastName: user.lastName,
       createdAt: user.createdAt,
@@ -753,7 +755,7 @@ exports.updateProfilePicture = async (req, res) => {
       return res.status(400).json({ message: "No file uploaded." });
     }
 
-    const profilePictureUrl = `${req.protocol}://${req.get("host")}/images/${
+    const profilePictureUrl = `${req.protocol}://${req.get("host")}/public/images/${
       file.filename
     }`;
 
@@ -787,6 +789,15 @@ exports.changeUsername = async (req, res) => {
     // Validate username (basic validation)
     if (newUsername.length < 3 || newUsername.length > 50) {
       return res.status(400).json({ error: "Username must be between 3 and 50 characters" });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { userId: BigInt(userId) },
+      select: { username: true },
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
     }
 
     // Check if username is already taken by another user

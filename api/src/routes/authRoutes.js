@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const authController = require("../controllers/authController");
 const jwtMiddleware = require("../middleware/jwtMiddleware");
+const { uploadImage } = require('../middleware/fileUploads');
 
 // Login route
 router.post(

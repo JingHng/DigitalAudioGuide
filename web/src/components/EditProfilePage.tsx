@@ -27,6 +27,7 @@ const EditProfilePage: React.FC = () => {
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [currentPassword, setCurrentPassword] = useState("");
   const [originalEmail, setOriginalEmail] = useState<string>("");
+  const [originalUsername, setOriginalUsername] = useState<string>("");
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -39,6 +40,7 @@ const EditProfilePage: React.FC = () => {
         const response = await apiClient.get("/auth/profile");
         setProfile(response.data.user);
         setOriginalEmail(response.data.user.email);
+        setOriginalUsername(response.data.user.username);
       } catch (error) {
         console.error("Error fetching user profile:", error);
       } finally {
@@ -121,8 +123,8 @@ const EditProfilePage: React.FC = () => {
   };
 
   // Determine what changed
-  const usernameChanged = profile.username !== user?.username;
-  const emailChanged = profile.email !== user?.email;
+  const usernameChanged = profile.username !== originalUsername;
+  const emailChanged = profile.email !== originalEmail
   const hasChanges = usernameChanged || emailChanged;
 
   const handleSaveProfile = async (e: React.FormEvent) => {
@@ -139,7 +141,8 @@ const EditProfilePage: React.FC = () => {
 
       updates.push(
         apiClient.put("/auth/change-username", {
-          username: profile.username,
+          newUsername: profile.username,
+          password: currentPassword,
         })
       );
     }
@@ -192,8 +195,6 @@ const EditProfilePage: React.FC = () => {
     }
   };
 
-  const isEmailChanged = profile.email !== originalEmail;
-
   return (
     <div className="profile-page-container">
       <div className="profile-details-container">
@@ -244,7 +245,7 @@ const EditProfilePage: React.FC = () => {
 
           <div
             className="form-group email-password-group"
-            style={{ display: isEmailChanged ? "block" : "none" }}
+            style={{ display: hasChanges ? "block" : "none" }}
           >
             <label>Password</label>
             <input
@@ -254,7 +255,7 @@ const EditProfilePage: React.FC = () => {
             />
 
             <label className="password-subtitle">
-              (required to change email)
+              (required to update profile)
             </label>
             <div className="forgot-password-link">
               <Link to="/reset-password">Forgot password?</Link>
