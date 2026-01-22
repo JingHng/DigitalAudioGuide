@@ -1,0 +1,178 @@
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: #4b5563;
+}
+
+.login-redirect-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+}
+
+.login-redirect-container h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #1a202c;
+}
+
+.login-redirect-container p {
+  font-size: 1.125rem;
+  color: #4a5568;
+  margin-bottom: 1.5rem;
+}
+
+.login-redirect-link {
+  font-weight: 500;
+  color: #111827;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.login-redirect-link:hover {
+  color: #374151;
+}
+
+.profile-page-container {
+  display: flex;
+  flex-direction: column;   
+  justify-content: center; 
+  align-items: center;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.profile-details-container {
+    text-align: center;
+    margin-top: 4rem;
+    margin-bottom: 2rem;
+}
+
+.profile-avatar {
+    width: 270px;
+    height: 270px;
+    border-radius: 50%;
+    border: 4px solid #e2e8f0;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: -3rem;  
+}
+
+.profile-details-container .username-container {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.profile-details-container .email-container {
+  font-size: 1rem;
+  color: #6B7280;
+}
+
+.profile-details-container .role-container {
+  color: #4B5563;
+}
+
+.email-password-group {
+  width: 100%;
+  min-height: 80px; 
+}
+
+.email-password-group label {
+  text-align: center;
+}
+
+.email-password-group .password-subtitle {
+  display: block;
+  font-size: 0.875rem; 
+  color: #6B7280;
+}
+
+.forgot-password-link {
+  margin-top: 4px;
+}
+
+.forgot-password-anchor {
+  font-size: 0.875rem; 
+  color: #2563eb; 
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.forgot-password-anchor:hover {
+  color: #1d4ed8;
+}
+
+.back-to-profile-link {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 1rem;
+  color: #2563eb;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.badges-container {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.badges-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.no-badges {
+  color: #777;
+  font-size: 0.95rem;
+}
+
+.badges-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 1rem;
+  justify-items: center;
+}
+
+.badge-card {
+  background: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #eee;
+  box-shadow: 0px 2px 4px rgba(0,0,0,0.1);
+  width: 90px;
+}
+
+.badge-image {
+  width: 100%;
+  height: 70px;
+  object-fit: contain;
+}
+
+.badge-name {
+  font-size: 0.8rem;
+  margin-top: 5px;
+  font-weight: 500;
+}
+
+.favorite-diploma-tab {
+  margin-top: 3rem;
+  text-align: center;
+}
+.favorite-diploma-tab h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}

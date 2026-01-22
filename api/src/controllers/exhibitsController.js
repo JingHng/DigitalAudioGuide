@@ -72,80 +72,81 @@ exports.getExhibitById = async (req, res) => {
 
 exports.createExhibit = async (req, res) => {
   try {
-    const { title, description, additionalDescription, exhibitionId } = req.body;
+    const { title, description, additionalDescription, exhibitionId, ttsText, language } = req.body;
     const files = req.files;
-    const primaryImage = files && files.primaryImage ? files.primaryImage[0] : null;
-    const additionalImages = files && files.additionalImages ? files.additionalImages : [];
+    const primaryImage = files?.primaryImage ? files.primaryImage[0] : null;
     const adminUserId = req.user?.userId;
 
     if (!title || !exhibitionId) {
-      return res.status(400).json({ error: "Exhibit title and an exhibition selection are required." });
+      return res.status(400).json({ error: "Title and Exhibition ID are required." });
     }
 
-    // Validate additional images count
-    if (additionalImages.length > 4) {
-      return res.status(400).json({ error: "Maximum of 4 additional images allowed." });
-    }
-
-    const qrBaseUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/exhibit/`;
-
-    // Prepare images JSON for stored procedure
-    let imagesJson = null;
-    if (primaryImage || additionalImages.length > 0) {
-      const imagesList = [];
-      
-      // Add primary image first
-      if (primaryImage) {
-        imagesList.push({
-          file_url: `/images/${primaryImage.filename}`,
-          title: primaryImage.originalname,
-          is_primary: true,
-        });
-      }
-      
-      // Add additional images
-      additionalImages.forEach(file => {
-        imagesList.push({
-          file_url: `/images/${file.filename}`,
-          title: file.originalname,
-          is_primary: false,
-        });
-      });
-      
-      imagesJson = JSON.stringify(imagesList);
-    }
-
-    // Use $queryRaw to call the procedure and get the INOUT parameter back
-    const result = await prisma.$queryRaw`CALL sp_create_exhibit(${title}, ${description || ''}, ${BigInt(exhibitionId)}, ${additionalDescription || ''}, ${imagesJson}::jsonb, ${qrBaseUrl}, NULL::bigint);`;
-    
-    // The INOUT parameter is returned in the result set
-    const newExhibitId = result[0].p_new_exhibit_id;
-
-    if (!newExhibitId) {
-      throw new Error("Exhibit creation failed in database, no ID returned.");
-    }
-    
-    await logAuditAction(
-      adminUserId, null, "exhibit", "create",
-      { 
-        exhibitId: newExhibitId.toString(), 
-        title, 
-        exhibitionId, 
-        images_uploaded: (primaryImage ? 1 : 0) + additionalImages.length,
-        primary_image: primaryImage ? "uploaded" : "none",
-        additional_images: additionalImages.length,
-        additional_description: additionalDescription ? "added" : "none"
+    // 1. Calculate the next sequence number (Max + 1 logic)
+    const lastExhibit = await prisma.exhibit.findFirst({
+      where: { 
+        exhibitionId: BigInt(exhibitionId),
+        statusId: 1 
       },
-      { ip_address: req.ip, user_agent: req.get("User-Agent") }
+      orderBy: { sequence: 'desc' },
+      select: { sequence: true }
+    });
+    const nextSequence = lastExhibit ? (lastExhibit.sequence + 1) : 1;
+
+    // 2. Create the Exhibit using standard Prisma 'create'
+    const newExhibit = await prisma.exhibit.create({
+      data: {
+        title,
+        description: description || '',
+        additionalDescription: additionalDescription || '',
+        exhibitionId: BigInt(exhibitionId),
+        sequence: nextSequence,
+        statusId: 1, // Active
+        // Create the primary image record if a file exists
+        images: primaryImage ? {
+          create: {
+            fileUrl: `/images/${primaryImage.filename}`,
+            title: primaryImage.originalname,
+            isPrimary: true
+          }
+        } : undefined,
+        // Generate the initial QR Code record
+        qrCodes: {
+          create: {
+            qrUrl: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/exhibit/temp-id`, 
+          }
+        }
+      }
+    });
+
+    // 3. Update the QR Code URL with the actual ID
+    const finalQrUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/exhibit/${newExhibit.exhibitId}`;
+    await prisma.qRCode.updateMany({
+      where: { exhibitId: newExhibit.exhibitId },
+      data: { qrUrl: finalQrUrl }
+    });
+
+    // 4. Handle TTS if provided 
+    if (ttsText && language) {
+      await internalAudioProcessor(newExhibit.exhibitId, ttsText, language, adminUserId, req);
+    }
+
+    // 5. Audit Log
+    await logAuditAction(adminUserId, null, "exhibit", "create", 
+      { exhibitId: newExhibit.exhibitId.toString(), title }, 
+      { ip_address: req.ip }
     );
 
-    res.status(201).json({ message: "Exhibit created successfully", exhibitId: newExhibitId });
+    res.status(201).json({ 
+      message: "Exhibit created successfully", 
+      exhibitId: newExhibit.exhibitId.toString(),
+      sequence: nextSequence 
+    });
+
   } catch (err) {
     console.error("Error in createExhibit:", err);
     res.status(500).json({ error: "Failed to create exhibit", details: err.message });
   }
 };
-
 
 // Update an existing exhibit
 exports.updateExhibit = async (req, res) => {

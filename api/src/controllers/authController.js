@@ -362,6 +362,7 @@ exports.getProfile = async (req, res) => {
         userId: true,
         username: true,
         email: true,
+        profilePictureUrl: true,
         createdAt: true,
         roles: {
           include: {
@@ -382,6 +383,7 @@ exports.getProfile = async (req, res) => {
       userId: user.userId.toString(),
       username: user.username,
       email: user.email,
+      profilePictureUrl: user.profilePictureUrl,
       firstName: user.firstName,
       lastName: user.lastName,
       createdAt: user.createdAt,
@@ -738,6 +740,99 @@ exports.resendVerificationEmail = async (req, res) => {
   } catch (err) {
     console.error("Resend Verification Email Controller Error:", err);
     res.status(500).json({ error: "Server error during verification email resend" });
+  } finally {
+    await prisma.$disconnect();
+  }
+};
+
+exports.updateProfilePicture = async (req, res) => {
+  const prisma = new PrismaClient();
+  try {
+    const userId = req.user.userId;
+    const file = req.file;
+
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded." });
+    }
+
+    const profilePictureUrl = `${req.protocol}://${req.get("host")}/public/images/${
+      file.filename
+    }`;
+
+    // Update the user's profilePictureUrl
+    await prisma.user.update({
+      where: { userId: BigInt(userId.toString()) },
+      data: { profilePictureUrl },
+      select: { userId: true, profilePictureUrl: true, username: true },
+    });
+
+    res.status(200).json({
+      message: "Profile picture updated successfully!",
+      profilePictureUrl,
+    });
+  } catch (err) {
+    console.error("Error uploading profile picture:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+exports.changeUsername = async (req, res) => {
+  const prisma = new PrismaClient();
+  try {
+    const userId = res.locals.userId;
+    const { newUsername, password } = req.body;
+
+    if (!newUsername || !password) {
+      return res.status(400).json({ error: "Username is required" });
+    }
+
+    // Validate username (basic validation)
+    if (newUsername.length < 3 || newUsername.length > 50) {
+      return res.status(400).json({ error: "Username must be between 3 and 50 characters" });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { userId: BigInt(userId) },
+      select: { username: true },
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Check if username is already taken by another user
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        username: newUsername,
+        userId: { not: BigInt(userId) },
+      },
+    });
+
+    if (existingUser) {
+      return res.status(400).json({ error: "Username is already taken" });
+    }
+
+    // Update username
+    await prisma.user.update({
+      where: { userId: BigInt(userId) },
+      data: {
+        username: newUsername,
+        updatedAt: new Date(),
+      },
+    });
+
+    // Log audit action
+    await logAuditAction(userId, userId, "user", "update", {
+      field: "username",
+      oldValue: user.username,
+      newValue: newUsername,
+    });
+
+    res.status(200).json({ message: "Username updated successfully" });
+
+  } catch (err) {
+    console.error("Update Username Controller Error:", err);
+    res.status(500).json({ error: "Server error while updating username" });
   } finally {
     await prisma.$disconnect();
   }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { ArrowRight, Loader2, Camera, Sparkles } from 'lucide-react';
+import { ArrowRight, Loader2, Camera, Sparkles, PlayCircle } from 'lucide-react';
 import apiClient from '../utils/apiClient';
 
 const BACKEND_URL = import.meta.env.VITE_API_TARGET || '';
@@ -52,8 +52,22 @@ const ExhibitionDetailsPage: React.FC = () => {
 
     // Use apiClient which handles authentication headers
     apiClient.get(`/exhibitions/${id}`)
-      .then((res) => {
-        setExhibition(res.data);
+      .then(async (res) => {
+        const data = res.data as Exhibition;
+        // For each exhibit, fetch its review stats and attach averageRating
+        try {
+          const exhibits = Array.isArray(data.exhibits) ? data.exhibits : [];
+          const statsPromises = exhibits.map((ex) => apiClient.get(`/reviews/exhibit/${ex.exhibitId}/stats`).then(r => r.data?.data).catch(() => null));
+          const stats = await Promise.all(statsPromises);
+          const exhibitsWithRatings = exhibits.map((ex, idx) => {
+            const s = stats[idx];
+            const avg = s && typeof s.average_rating === 'number' ? Number(s.average_rating) : 0;
+            return { ...ex, averageRating: Number(avg.toFixed(1)) };
+          });
+          setExhibition({ ...data, exhibits: exhibitsWithRatings });
+        } catch (err) {
+          setExhibition(data);
+        }
       })
       .catch((err: any) => {
         // Only log error if it's not a 401 (which might be expected for public endpoints)
@@ -96,6 +110,13 @@ const ExhibitionDetailsPage: React.FC = () => {
           </div>
           <div className="exhibition-actions">
             <button 
+              onClick={() => navigate(`/exhibitions/${id}/tour`)}
+              className="start-tour-btn-main"
+            >
+              <PlayCircle size={20} />
+              <span>Start Tour</span>
+            </button>
+            <button 
               onClick={() => navigate(`/exhibitions/${id}/ar-photobooth`)}
               className="ar-photobooth-btn"
             >
@@ -132,6 +153,14 @@ const ExhibitionDetailsPage: React.FC = () => {
                     <div className="exhibit-card-content">
                       <h3>{exhibit.title}</h3>
                       <p className="exhibit-description">{exhibit.description}</p>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 }}>
+                        <div style={{ color: '#f5b301', fontSize: 18 }}>
+                          {Array.from({ length: 5 }).map((_, i) => (
+                            <span key={i} style={{ color: (exhibit as any).averageRating && i < (exhibit as any).averageRating ? '#FFD700' : '#ccc', fontSize: '1.1em' }}>★</span>
+                          ))}
+                        </div>
+                        <div style={{ color: '#555', fontSize: '0.95em' }}>{(exhibit as any).averageRating ? (exhibit as any).averageRating.toFixed ? (exhibit as any).averageRating.toFixed(1) : String((exhibit as any).averageRating) : '—'} / 5</div>
+                      </div>
                       <div className="exhibit-learn-more-btn">
                         <span>Learn More</span>
                         <ArrowRight size={16} />

@@ -3,31 +3,29 @@ import { useEffect } from "react";
 
 // --- Context & Utilities ---
 import { AuthProvider } from "./contexts/AuthContext";
-// import { ensureLanguagePersistence } from "./utils/languageUtils";
 import Navbar from "./components/Navbar.tsx";
 import Homepage from "./components/HomePage.tsx";
 
-// --- COMMENTED OUT: Auth & User Components ---
+// --- Auth & User Components ---
 import LoginPage from "./components/LoginPage";
 import RegisterPage from "./routes/RegisterPage";
 import ForgotPasswordPage from "./components/ForgotPasswordPage";
 import ResetPasswordPage from "./components/ResetPasswordPage";
 import EmailVerificationPage from "./routes/EmailVerificationPage";
-// import UserDashboard from "./components/UserDashboard";
 import ScanPage from "./components/ScanPage.tsx";
 import UserBadgePage from "./routes/userBadgePage.tsx";
 
-// --- MODIFIED/NEW IMPORTS FOR EXHIBITIONS --- (KEEP ALL)
+// --- EXHIBITIONS & TOURS ---
 import AllExhibitions from "./components/ExhibitionsPage.tsx";
 import ExhibitionDetails from "./components/ExhibitionDetailsPage.tsx"; 
 import ExhibitDetails from "./components/ExhibitDetails.tsx";
 import ARPhotobooth from "./components/ARPhotobooth.tsx";
-
-// --- COMMENTED OUT: Other Public/Protected Components ---
-// import ReviewPage from "./components/reviewPage/ReviewPage";
-import ProtectedRoute, { AdminRoute } from "./components/ProtectedRoute";
+import TourView from "./components/TourView.tsx"; 
+import TourSummary from "./components/TourSummary.tsx"; 
+import ReviewsPage from "./pages/ReviewsPage"; 
 
 // --- Admin Components ---
+import ProtectedRoute, { AdminRoute } from "./components/ProtectedRoute";
 import AdminDashboard from "./components/admin/AdminDashboard";
 import ExhibitsPage from "./components/admin/ExhibitsPage";
 import BadgesPage from "./components/admin/BadgesPage";
@@ -39,18 +37,13 @@ import AudioManagement from "./components/admin/AudioManagement";
 import SettingsPage from "./components/admin/SettingsPage";
 import AssistantPage from "./components/admin/AssistantPage";
 
-import NotFoundPage from "./components/NotFoundPage.tsx"; // KEEP: Good practice for * route
-
-// --- COMMENTED OUT: Loaders/Providers ---
-// import GoogleTranslateLoader from "./components/GoogleTranslateLoader";
+import NotFoundPage from "./components/NotFoundPage.tsx";
+import ProfilePage from "./components/ProfilePage.tsx";
+import EditProfilePage from "./components/EditProfilePage.tsx";
 
 function App() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
-
-  useEffect(() => {
-    // ensureLanguagePersistence();
-  }, []);
 
   return (
     <AuthProvider>
@@ -74,33 +67,34 @@ function App() {
       ) : (
         <div className="page-content">
           <Routes>
-            {/* --- Public Visitor Routes (Enabled) --- */}
             <Route path="/" element={<Homepage />} />
 
-            {/* --- NEW/MODIFIED Public Exhibition Routes (Enabled) --- */}
-            { <Route path="/exhibitions" element={<AllExhibitions />} /> }
-            { <Route path="/exhibitions/:id" element={<ExhibitionDetails />} /> }
-            { <Route path="/exhibitions/:id/ar-photobooth" element={<ARPhotobooth />} /> }
-            { <Route path="/exhibit/:id" element={<ExhibitDetails />} /> }
+            {/* --- Public Exhibition & Tour Routes --- */}
+            <Route path="/exhibitions" element={<AllExhibitions />} />
+            <Route path="/exhibitions/:id" element={<ExhibitionDetails />} />
+            <Route path="/exhibitions/:id/tour" element={<TourView />} />
+            <Route path="/exhibitions/:id/tour/summary" element={<TourSummary />} />
+            <Route path="/exhibitions/:id/ar-photobooth" element={<ARPhotobooth />} />
+            <Route path="/exhibit/:id" element={<ExhibitDetails />} />
+            
+            {/* TOUR PROGRESSION */}
+            <Route path="/exhibitions/:exhibitionId/exhibit/:id" element={<ExhibitDetails />} />
 
-            {/* --- Other Public/Auth Routes --- */}
+            {/* --- REVIEWS (From Development - Owen Part) --- */}
+            <Route path="/reviews" element={<ReviewsPage />} />
+            <Route path="/exhibits/:exhibitId/reviews" element={<ReviewsPage />} />
+
+            {/* --- Auth Routes --- */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/verify-email" element={<EmailVerificationPage />} />
-
-            {
-              // <Route path="/unauthorized" element={<UnauthorizedPage />} />
-              <Route path="/scan" element={<ScanPage />} />
-              // <Route path="/reviews" element={<ReviewPage />} />
-              // <Route path="/exhibits/:exhibitId/reviews" element={<ReviewPage />} />
-              // <Route path="/dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} />
-            }
-
+            <Route path="/scan" element={<ScanPage />} />
             <Route path="/user-badge" element={<UserBadgePage />} />
+            <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+            <Route path="/edit-profile" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
 
-            {/* Catch-all route is kept */}
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </div>

@@ -671,6 +671,7 @@
   align-items: center;
   gap: 1rem;
   margin-top: auto;
+  margin-bottom: 1rem;
 }
 
 .tour-type {
@@ -680,6 +681,28 @@
   color: #3b82f6;
   font-size: 0.875rem;
   font-weight: 500;
+}
+
+.start-tour-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
+}
+
+.start-tour-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(135deg, #764ba2, #667eea);
 }
 
 /* No Tours State */

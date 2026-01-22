@@ -31,6 +31,7 @@ model Exhibit {
   statusId              Int?        @map("status_id")
   description           String?
   additionalDescription String?     @map("additional_description")
+  sequence              Int?        @map("sequence")
   createdAt             DateTime?   @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt             DateTime?   @default(now()) @map("updated_at") @db.Timestamptz(6)
   audio                 Audio[]
@@ -41,8 +42,10 @@ model Exhibit {
   images                Image[]
   qrCodes               QRCode[]
 
+  @@unique([exhibitionId, sequence], map: "unique_exhibition_sequence")
   @@index([title], map: "idx_exhibit_title")
   @@index([createdAt], map: "idx_exhibit_created_at")
+  @@index([exhibitionId, sequence], map: "idx_exhibition_sequence")
   @@map("exhibit")
 }
 
@@ -244,6 +247,7 @@ model User {
   username                String                   @unique @db.VarChar(100)
   email                   String                   @unique @db.VarChar(100)
   passwordHash            String                   @map("password_hash") @db.VarChar(72)
+  profilePictureUrl String?   @map("profile_picture_url") @db.VarChar(255)
   emailVerified           Boolean?                 @default(false) @map("email_verified")
   statusId                Int?                     @map("status_id")
   lastLoginAt             DateTime?                @map("last_login_at") @db.Timestamptz(6)
