@@ -9,6 +9,7 @@ This directory contains end-to-end tests using Playwright.
 - `login.spec.ts` - Tests for login page functionality and basic login flows
 - `auth-login-logout.spec.ts` - Comprehensive tests for login and logout flows for both regular users and admins
 - `exhibitions.spec.ts` - Tests for exhibitions page functionality
+- `profile-page.spec.ts` - Tests for profile page functionality
 
 ## Running Tests
 
