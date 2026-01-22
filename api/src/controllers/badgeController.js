@@ -288,3 +288,73 @@ exports.deleteBadge = async (req, res) => {
     return res.status(500).json({ message: "Error deleting badge" });
   }
 };
+
+/**
+ * ADMIN: GET /api/badges/stats/exhibitions
+ * Returns exhibitions for filter dropdown
+ */
+exports.getExhibitionOptionsForStats = async (req, res) => {
+  try {
+    const exhibitions = await BadgeModel.getExhibitionOptionsForStats();
+    return res.status(200).json(serializeBigInt(exhibitions));
+  } catch (error) {
+    console.error("Error fetching exhibition options:", error);
+    return res.status(500).json({ message: "Error fetching exhibition options" });
+  }
+};
+
+/**
+ * ADMIN: GET /api/badges/stats/dashboard?range=7d|30d|90d|1y&exhibitionId=all|<id>
+ * Returns KPI + top/bottom + style breakdown + timeline
+ */
+exports.getBadgeStatsDashboard = async (req, res) => {
+  try {
+    const range = (req.query.range || "30d").toString();
+    const exhibitionIdRaw = (req.query.exhibitionId || "all").toString();
+
+    // ---- range -> from/to + interval ----
+    const now = new Date();
+    const end = now;
+
+    const rangeToDays = (r) => {
+      if (r === "7d") return 7;
+      if (r === "30d") return 30;
+      if (r === "90d") return 90;
+      if (r === "1y") return 365;
+      return 30; // default
+    };
+
+    const days = rangeToDays(range);
+    const start = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
+
+    const interval = range === "1y" ? "week" : "day";
+
+    // ---- exhibitionId parse ----
+    const exhibitionId =
+      exhibitionIdRaw === "all" ? "all" : BigInt(exhibitionIdRaw);
+
+    const dashboard = await BadgeModel.getBadgeStatsDashboard({
+      from: start,
+      to: end,
+      interval,          // "day" | "week"
+      exhibitionId,      // "all" | BigInt
+      range              // "7d" | "30d" | "90d" | "1y"
+    });
+
+    return res.status(200).json(
+      serializeBigInt({
+        filters: {
+          range,
+          interval,
+          exhibitionId: exhibitionIdRaw,
+          from: start.toISOString(),
+          to: end.toISOString(),
+        },
+        ...dashboard,
+      })
+    );
+  } catch (error) {
+    console.error("Error building badge stats dashboard:", error);
+    return res.status(500).json({ message: "Error building badge stats dashboard" });
+  }
+};
