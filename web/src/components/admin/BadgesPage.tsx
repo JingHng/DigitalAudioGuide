@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import AdminLayout from "./AdminLayout";
 import BadgeManagement from "./ManageBadges";
 import "../../css/AdminComponents.css";
-import "../../css/AdminExhibits.css";
+import "../../css/AdminBadge.css";
 
 const BadgesPage: React.FC = () => {
   const breadcrumbs = [
