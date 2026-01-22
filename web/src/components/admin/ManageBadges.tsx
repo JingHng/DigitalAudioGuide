@@ -3,7 +3,7 @@ import apiClient from "../../utils/apiClient";
 import { Edit, Trash2, PlusCircle, Loader2 } from "lucide-react";
 import Modal from "./Modal";
 import BadgeForm, { BadgeFormValues, ExhibitOption } from "./BadgeForm";
-import "../css/ManageExhibits.css";
+import "../css/ManageBadge.css";
 
 const BACKEND_URL = import.meta.env.VITE_API_TARGET || "";
 const DEFAULT_IMAGE_URL = `${BACKEND_URL}/public/images/Badge.jpg`;
@@ -58,10 +58,6 @@ interface ExhibitionBadgeGroup {
 interface StyleBadgeProps {
   style?: string | null;
 }
-const StyleBadge: FC<StyleBadgeProps> = ({ style }) => {
-  const styleName = (style || "unknown").toLowerCase();
-  return <span className={`status-badge ${styleName}`}>{style || "Unknown"}</span>;
-};
 
 // pill style placed next to Delete
 const StylePill: FC<StyleBadgeProps> = ({ style }) => {
