@@ -17606,6 +17606,7 @@ export namespace Prisma {
     username: string | null
     email: string | null
     passwordHash: string | null
+    profilePictureUrl: string | null
     emailVerified: boolean | null
     statusId: number | null
     lastLoginAt: Date | null
@@ -17618,6 +17619,7 @@ export namespace Prisma {
     username: string | null
     email: string | null
     passwordHash: string | null
+    profilePictureUrl: string | null
     emailVerified: boolean | null
     statusId: number | null
     lastLoginAt: Date | null
@@ -17630,6 +17632,7 @@ export namespace Prisma {
     username: number
     email: number
     passwordHash: number
+    profilePictureUrl: number
     emailVerified: number
     statusId: number
     lastLoginAt: number
@@ -17654,6 +17657,7 @@ export namespace Prisma {
     username?: true
     email?: true
     passwordHash?: true
+    profilePictureUrl?: true
     emailVerified?: true
     statusId?: true
     lastLoginAt?: true
@@ -17666,6 +17670,7 @@ export namespace Prisma {
     username?: true
     email?: true
     passwordHash?: true
+    profilePictureUrl?: true
     emailVerified?: true
     statusId?: true
     lastLoginAt?: true
@@ -17678,6 +17683,7 @@ export namespace Prisma {
     username?: true
     email?: true
     passwordHash?: true
+    profilePictureUrl?: true
     emailVerified?: true
     statusId?: true
     lastLoginAt?: true
@@ -17777,6 +17783,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl: string | null
     emailVerified: boolean | null
     statusId: number | null
     lastLoginAt: Date | null
@@ -17808,6 +17815,7 @@ export namespace Prisma {
     username?: boolean
     email?: boolean
     passwordHash?: boolean
+    profilePictureUrl?: boolean
     emailVerified?: boolean
     statusId?: boolean
     lastLoginAt?: boolean
@@ -17832,6 +17840,7 @@ export namespace Prisma {
     username?: boolean
     email?: boolean
     passwordHash?: boolean
+    profilePictureUrl?: boolean
     emailVerified?: boolean
     statusId?: boolean
     lastLoginAt?: boolean
@@ -17845,6 +17854,7 @@ export namespace Prisma {
     username?: boolean
     email?: boolean
     passwordHash?: boolean
+    profilePictureUrl?: boolean
     emailVerified?: boolean
     statusId?: boolean
     lastLoginAt?: boolean
@@ -17890,6 +17900,7 @@ export namespace Prisma {
       username: string
       email: string
       passwordHash: string
+      profilePictureUrl: string | null
       emailVerified: boolean | null
       statusId: number | null
       lastLoginAt: Date | null
@@ -18303,6 +18314,7 @@ export namespace Prisma {
     readonly username: FieldRef<"User", 'String'>
     readonly email: FieldRef<"User", 'String'>
     readonly passwordHash: FieldRef<"User", 'String'>
+    readonly profilePictureUrl: FieldRef<"User", 'String'>
     readonly emailVerified: FieldRef<"User", 'Boolean'>
     readonly statusId: FieldRef<"User", 'Int'>
     readonly lastLoginAt: FieldRef<"User", 'DateTime'>
@@ -25813,6 +25825,7 @@ export namespace Prisma {
     username: 'username',
     email: 'email',
     passwordHash: 'passwordHash',
+    profilePictureUrl: 'profilePictureUrl',
     emailVerified: 'emailVerified',
     statusId: 'statusId',
     lastLoginAt: 'lastLoginAt',
@@ -26991,6 +27004,7 @@ export namespace Prisma {
     username?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
     passwordHash?: StringFilter<"User"> | string
+    profilePictureUrl?: StringNullableFilter<"User"> | string | null
     emailVerified?: BoolNullableFilter<"User"> | boolean | null
     statusId?: IntNullableFilter<"User"> | number | null
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
@@ -27014,6 +27028,7 @@ export namespace Prisma {
     username?: SortOrder
     email?: SortOrder
     passwordHash?: SortOrder
+    profilePictureUrl?: SortOrderInput | SortOrder
     emailVerified?: SortOrderInput | SortOrder
     statusId?: SortOrderInput | SortOrder
     lastLoginAt?: SortOrderInput | SortOrder
@@ -27040,6 +27055,7 @@ export namespace Prisma {
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     passwordHash?: StringFilter<"User"> | string
+    profilePictureUrl?: StringNullableFilter<"User"> | string | null
     emailVerified?: BoolNullableFilter<"User"> | boolean | null
     statusId?: IntNullableFilter<"User"> | number | null
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
@@ -27063,6 +27079,7 @@ export namespace Prisma {
     username?: SortOrder
     email?: SortOrder
     passwordHash?: SortOrder
+    profilePictureUrl?: SortOrderInput | SortOrder
     emailVerified?: SortOrderInput | SortOrder
     statusId?: SortOrderInput | SortOrder
     lastLoginAt?: SortOrderInput | SortOrder
@@ -27083,6 +27100,7 @@ export namespace Prisma {
     username?: StringWithAggregatesFilter<"User"> | string
     email?: StringWithAggregatesFilter<"User"> | string
     passwordHash?: StringWithAggregatesFilter<"User"> | string
+    profilePictureUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
     emailVerified?: BoolNullableWithAggregatesFilter<"User"> | boolean | null
     statusId?: IntNullableWithAggregatesFilter<"User"> | number | null
     lastLoginAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
@@ -28418,6 +28436,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -28440,6 +28459,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     statusId?: number | null
     lastLoginAt?: Date | string | null
@@ -28462,6 +28482,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -28484,6 +28505,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -28506,6 +28528,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     statusId?: number | null
     lastLoginAt?: Date | string | null
@@ -28518,6 +28541,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -28529,6 +28553,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -29998,6 +30023,7 @@ export namespace Prisma {
     username?: SortOrder
     email?: SortOrder
     passwordHash?: SortOrder
+    profilePictureUrl?: SortOrder
     emailVerified?: SortOrder
     statusId?: SortOrder
     lastLoginAt?: SortOrder
@@ -30015,6 +30041,7 @@ export namespace Prisma {
     username?: SortOrder
     email?: SortOrder
     passwordHash?: SortOrder
+    profilePictureUrl?: SortOrder
     emailVerified?: SortOrder
     statusId?: SortOrder
     lastLoginAt?: SortOrder
@@ -30027,6 +30054,7 @@ export namespace Prisma {
     username?: SortOrder
     email?: SortOrder
     passwordHash?: SortOrder
+    profilePictureUrl?: SortOrder
     emailVerified?: SortOrder
     statusId?: SortOrder
     lastLoginAt?: SortOrder
@@ -33245,6 +33273,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -33266,6 +33295,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     statusId?: number | null
     lastLoginAt?: Date | string | null
@@ -33337,6 +33367,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -33358,6 +33389,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -33416,6 +33448,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -33437,6 +33470,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     statusId?: number | null
     lastLoginAt?: Date | string | null
@@ -33517,6 +33551,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -33538,6 +33573,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -34131,6 +34167,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -34152,6 +34189,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     statusId?: number | null
     lastLoginAt?: Date | string | null
@@ -34189,6 +34227,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -34210,6 +34249,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -34335,6 +34375,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -34356,6 +34397,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -34479,6 +34521,7 @@ export namespace Prisma {
     username?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
     passwordHash?: StringFilter<"User"> | string
+    profilePictureUrl?: StringNullableFilter<"User"> | string | null
     emailVerified?: BoolNullableFilter<"User"> | boolean | null
     statusId?: IntNullableFilter<"User"> | number | null
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
@@ -34519,6 +34562,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -34540,6 +34584,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     statusId?: number | null
     lastLoginAt?: Date | string | null
@@ -34638,6 +34683,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -34659,6 +34705,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -35250,6 +35297,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -35271,6 +35319,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     statusId?: number | null
     lastLoginAt?: Date | string | null
@@ -35336,6 +35385,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -35357,6 +35407,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -35378,6 +35429,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -35399,6 +35451,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     statusId?: number | null
     lastLoginAt?: Date | string | null
@@ -35425,6 +35478,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -35446,6 +35500,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     statusId?: number | null
     lastLoginAt?: Date | string | null
@@ -35483,6 +35538,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -35504,6 +35560,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -35536,6 +35593,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -35557,6 +35615,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -35578,6 +35637,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -35599,6 +35659,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     statusId?: number | null
     lastLoginAt?: Date | string | null
@@ -35636,6 +35697,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -35657,6 +35719,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -35678,6 +35741,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -35699,6 +35763,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     statusId?: number | null
     lastLoginAt?: Date | string | null
@@ -35736,6 +35801,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -35757,6 +35823,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -35919,6 +35986,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -35940,6 +36008,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     statusId?: number | null
     lastLoginAt?: Date | string | null
@@ -36008,6 +36077,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -36029,6 +36099,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -36043,6 +36114,397 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     subtitles?: SubtitleUncheckedUpdateManyWithoutUserNestedInput
     roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type MessageCreateWithoutSenderTypeInput = {
+    messageId?: string
+    content: string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    conversation: ConversationCreateNestedOneWithoutMessagesInput
+    status: StatusCreateNestedOneWithoutMessagesInput
+  }
+
+  export type MessageUncheckedCreateWithoutSenderTypeInput = {
+    messageId?: string
+    conversationId: string
+    content: string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    statusId: number
+    createdAt?: Date | string
+  }
+
+  export type MessageCreateOrConnectWithoutSenderTypeInput = {
+    where: MessageWhereUniqueInput
+    create: XOR<MessageCreateWithoutSenderTypeInput, MessageUncheckedCreateWithoutSenderTypeInput>
+  }
+
+  export type MessageCreateManySenderTypeInputEnvelope = {
+    data: MessageCreateManySenderTypeInput | MessageCreateManySenderTypeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type MessageUpsertWithWhereUniqueWithoutSenderTypeInput = {
+    where: MessageWhereUniqueInput
+    update: XOR<MessageUpdateWithoutSenderTypeInput, MessageUncheckedUpdateWithoutSenderTypeInput>
+    create: XOR<MessageCreateWithoutSenderTypeInput, MessageUncheckedCreateWithoutSenderTypeInput>
+  }
+
+  export type MessageUpdateWithWhereUniqueWithoutSenderTypeInput = {
+    where: MessageWhereUniqueInput
+    data: XOR<MessageUpdateWithoutSenderTypeInput, MessageUncheckedUpdateWithoutSenderTypeInput>
+  }
+
+  export type MessageUpdateManyWithWhereWithoutSenderTypeInput = {
+    where: MessageScalarWhereInput
+    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyWithoutSenderTypeInput>
+  }
+
+  export type UserCreateWithoutConversationsInput = {
+    userId?: bigint | number
+    username: string
+    email: string
+    passwordHash: string
+    profilePictureUrl?: string | null
+    emailVerified?: boolean | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
+    adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
+    targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
+    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    subtitles?: SubtitleCreateNestedManyWithoutUserInput
+    status?: StatusCreateNestedOneWithoutUsersInput
+    userBadges?: UserBadgeCreateNestedManyWithoutUserInput
+    roles?: UserRoleCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutConversationsInput = {
+    userId?: bigint | number
+    username: string
+    email: string
+    passwordHash: string
+    profilePictureUrl?: string | null
+    emailVerified?: boolean | null
+    statusId?: number | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
+    adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
+    targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    subtitles?: SubtitleUncheckedCreateNestedManyWithoutUserInput
+    userBadges?: UserBadgeUncheckedCreateNestedManyWithoutUserInput
+    roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutConversationsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutConversationsInput, UserUncheckedCreateWithoutConversationsInput>
+  }
+
+  export type StatusCreateWithoutConversationsInput = {
+    statusName: string
+    exhibits?: ExhibitCreateNestedManyWithoutStatusInput
+    exhibitions?: ExhibitionCreateNestedManyWithoutStatusInput
+    languages?: LanguageCreateNestedManyWithoutStatusInput
+    users?: UserCreateNestedManyWithoutStatusInput
+    messages?: MessageCreateNestedManyWithoutStatusInput
+  }
+
+  export type StatusUncheckedCreateWithoutConversationsInput = {
+    statusId?: number
+    statusName: string
+    exhibits?: ExhibitUncheckedCreateNestedManyWithoutStatusInput
+    exhibitions?: ExhibitionUncheckedCreateNestedManyWithoutStatusInput
+    languages?: LanguageUncheckedCreateNestedManyWithoutStatusInput
+    users?: UserUncheckedCreateNestedManyWithoutStatusInput
+    messages?: MessageUncheckedCreateNestedManyWithoutStatusInput
+  }
+
+  export type StatusCreateOrConnectWithoutConversationsInput = {
+    where: StatusWhereUniqueInput
+    create: XOR<StatusCreateWithoutConversationsInput, StatusUncheckedCreateWithoutConversationsInput>
+  }
+
+  export type MessageCreateWithoutConversationInput = {
+    messageId?: string
+    content: string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    senderType: SenderTypeCreateNestedOneWithoutMessagesInput
+    status: StatusCreateNestedOneWithoutMessagesInput
+  }
+
+  export type MessageUncheckedCreateWithoutConversationInput = {
+    messageId?: string
+    senderTypeId: number
+    content: string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    statusId: number
+    createdAt?: Date | string
+  }
+
+  export type MessageCreateOrConnectWithoutConversationInput = {
+    where: MessageWhereUniqueInput
+    create: XOR<MessageCreateWithoutConversationInput, MessageUncheckedCreateWithoutConversationInput>
+  }
+
+  export type MessageCreateManyConversationInputEnvelope = {
+    data: MessageCreateManyConversationInput | MessageCreateManyConversationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithoutConversationsInput = {
+    update: XOR<UserUpdateWithoutConversationsInput, UserUncheckedUpdateWithoutConversationsInput>
+    create: XOR<UserCreateWithoutConversationsInput, UserUncheckedCreateWithoutConversationsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutConversationsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutConversationsInput, UserUncheckedUpdateWithoutConversationsInput>
+  }
+
+  export type UserUpdateWithoutConversationsInput = {
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
+    adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
+    targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    subtitles?: SubtitleUpdateManyWithoutUserNestedInput
+    status?: StatusUpdateOneWithoutUsersNestedInput
+    userBadges?: UserBadgeUpdateManyWithoutUserNestedInput
+    roles?: UserRoleUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutConversationsInput = {
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    statusId?: NullableIntFieldUpdateOperationsInput | number | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
+    adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
+    targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    subtitles?: SubtitleUncheckedUpdateManyWithoutUserNestedInput
+    userBadges?: UserBadgeUncheckedUpdateManyWithoutUserNestedInput
+    roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type StatusUpsertWithoutConversationsInput = {
+    update: XOR<StatusUpdateWithoutConversationsInput, StatusUncheckedUpdateWithoutConversationsInput>
+    create: XOR<StatusCreateWithoutConversationsInput, StatusUncheckedCreateWithoutConversationsInput>
+    where?: StatusWhereInput
+  }
+
+  export type StatusUpdateToOneWithWhereWithoutConversationsInput = {
+    where?: StatusWhereInput
+    data: XOR<StatusUpdateWithoutConversationsInput, StatusUncheckedUpdateWithoutConversationsInput>
+  }
+
+  export type StatusUpdateWithoutConversationsInput = {
+    statusName?: StringFieldUpdateOperationsInput | string
+    exhibits?: ExhibitUpdateManyWithoutStatusNestedInput
+    exhibitions?: ExhibitionUpdateManyWithoutStatusNestedInput
+    languages?: LanguageUpdateManyWithoutStatusNestedInput
+    users?: UserUpdateManyWithoutStatusNestedInput
+    messages?: MessageUpdateManyWithoutStatusNestedInput
+  }
+
+  export type StatusUncheckedUpdateWithoutConversationsInput = {
+    statusId?: IntFieldUpdateOperationsInput | number
+    statusName?: StringFieldUpdateOperationsInput | string
+    exhibits?: ExhibitUncheckedUpdateManyWithoutStatusNestedInput
+    exhibitions?: ExhibitionUncheckedUpdateManyWithoutStatusNestedInput
+    languages?: LanguageUncheckedUpdateManyWithoutStatusNestedInput
+    users?: UserUncheckedUpdateManyWithoutStatusNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutStatusNestedInput
+  }
+
+  export type MessageUpsertWithWhereUniqueWithoutConversationInput = {
+    where: MessageWhereUniqueInput
+    update: XOR<MessageUpdateWithoutConversationInput, MessageUncheckedUpdateWithoutConversationInput>
+    create: XOR<MessageCreateWithoutConversationInput, MessageUncheckedCreateWithoutConversationInput>
+  }
+
+  export type MessageUpdateWithWhereUniqueWithoutConversationInput = {
+    where: MessageWhereUniqueInput
+    data: XOR<MessageUpdateWithoutConversationInput, MessageUncheckedUpdateWithoutConversationInput>
+  }
+
+  export type MessageUpdateManyWithWhereWithoutConversationInput = {
+    where: MessageScalarWhereInput
+    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyWithoutConversationInput>
+  }
+
+  export type SenderTypeCreateWithoutMessagesInput = {
+    senderType: string
+  }
+
+  export type SenderTypeUncheckedCreateWithoutMessagesInput = {
+    senderTypeId?: number
+    senderType: string
+  }
+
+  export type SenderTypeCreateOrConnectWithoutMessagesInput = {
+    where: SenderTypeWhereUniqueInput
+    create: XOR<SenderTypeCreateWithoutMessagesInput, SenderTypeUncheckedCreateWithoutMessagesInput>
+  }
+
+  export type ConversationCreateWithoutMessagesInput = {
+    conversationId?: string
+    title?: string | null
+    createdAt?: Date | string
+    modifiedAt?: Date | string
+    user: UserCreateNestedOneWithoutConversationsInput
+    status: StatusCreateNestedOneWithoutConversationsInput
+  }
+
+  export type ConversationUncheckedCreateWithoutMessagesInput = {
+    conversationId?: string
+    userId: bigint | number
+    title?: string | null
+    statusId: number
+    createdAt?: Date | string
+    modifiedAt?: Date | string
+  }
+
+  export type ConversationCreateOrConnectWithoutMessagesInput = {
+    where: ConversationWhereUniqueInput
+    create: XOR<ConversationCreateWithoutMessagesInput, ConversationUncheckedCreateWithoutMessagesInput>
+  }
+
+  export type StatusCreateWithoutMessagesInput = {
+    statusName: string
+    exhibits?: ExhibitCreateNestedManyWithoutStatusInput
+    exhibitions?: ExhibitionCreateNestedManyWithoutStatusInput
+    languages?: LanguageCreateNestedManyWithoutStatusInput
+    users?: UserCreateNestedManyWithoutStatusInput
+    conversations?: ConversationCreateNestedManyWithoutStatusInput
+  }
+
+  export type StatusUncheckedCreateWithoutMessagesInput = {
+    statusId?: number
+    statusName: string
+    exhibits?: ExhibitUncheckedCreateNestedManyWithoutStatusInput
+    exhibitions?: ExhibitionUncheckedCreateNestedManyWithoutStatusInput
+    languages?: LanguageUncheckedCreateNestedManyWithoutStatusInput
+    users?: UserUncheckedCreateNestedManyWithoutStatusInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutStatusInput
+  }
+
+  export type StatusCreateOrConnectWithoutMessagesInput = {
+    where: StatusWhereUniqueInput
+    create: XOR<StatusCreateWithoutMessagesInput, StatusUncheckedCreateWithoutMessagesInput>
+  }
+
+  export type SenderTypeUpsertWithoutMessagesInput = {
+    update: XOR<SenderTypeUpdateWithoutMessagesInput, SenderTypeUncheckedUpdateWithoutMessagesInput>
+    create: XOR<SenderTypeCreateWithoutMessagesInput, SenderTypeUncheckedCreateWithoutMessagesInput>
+    where?: SenderTypeWhereInput
+  }
+
+  export type SenderTypeUpdateToOneWithWhereWithoutMessagesInput = {
+    where?: SenderTypeWhereInput
+    data: XOR<SenderTypeUpdateWithoutMessagesInput, SenderTypeUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type SenderTypeUpdateWithoutMessagesInput = {
+    senderType?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type SenderTypeUncheckedUpdateWithoutMessagesInput = {
+    senderTypeId?: IntFieldUpdateOperationsInput | number
+    senderType?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ConversationUpsertWithoutMessagesInput = {
+    update: XOR<ConversationUpdateWithoutMessagesInput, ConversationUncheckedUpdateWithoutMessagesInput>
+    create: XOR<ConversationCreateWithoutMessagesInput, ConversationUncheckedCreateWithoutMessagesInput>
+    where?: ConversationWhereInput
+  }
+
+  export type ConversationUpdateToOneWithWhereWithoutMessagesInput = {
+    where?: ConversationWhereInput
+    data: XOR<ConversationUpdateWithoutMessagesInput, ConversationUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type ConversationUpdateWithoutMessagesInput = {
+    conversationId?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    modifiedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutConversationsNestedInput
+    status?: StatusUpdateOneRequiredWithoutConversationsNestedInput
+  }
+
+  export type ConversationUncheckedUpdateWithoutMessagesInput = {
+    conversationId?: StringFieldUpdateOperationsInput | string
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    statusId?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    modifiedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StatusUpsertWithoutMessagesInput = {
+    update: XOR<StatusUpdateWithoutMessagesInput, StatusUncheckedUpdateWithoutMessagesInput>
+    create: XOR<StatusCreateWithoutMessagesInput, StatusUncheckedCreateWithoutMessagesInput>
+    where?: StatusWhereInput
+  }
+
+  export type StatusUpdateToOneWithWhereWithoutMessagesInput = {
+    where?: StatusWhereInput
+    data: XOR<StatusUpdateWithoutMessagesInput, StatusUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type StatusUpdateWithoutMessagesInput = {
+    statusName?: StringFieldUpdateOperationsInput | string
+    exhibits?: ExhibitUpdateManyWithoutStatusNestedInput
+    exhibitions?: ExhibitionUpdateManyWithoutStatusNestedInput
+    languages?: LanguageUpdateManyWithoutStatusNestedInput
+    users?: UserUpdateManyWithoutStatusNestedInput
+    conversations?: ConversationUpdateManyWithoutStatusNestedInput
+  }
+
+  export type StatusUncheckedUpdateWithoutMessagesInput = {
+    statusId?: IntFieldUpdateOperationsInput | number
+    statusName?: StringFieldUpdateOperationsInput | string
+    exhibits?: ExhibitUncheckedUpdateManyWithoutStatusNestedInput
+    exhibitions?: ExhibitionUncheckedUpdateManyWithoutStatusNestedInput
+    languages?: LanguageUncheckedUpdateManyWithoutStatusNestedInput
+    users?: UserUncheckedUpdateManyWithoutStatusNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutStatusNestedInput
   }
 
   export type ExhibitCreateManyExhibitionInput = {
@@ -36539,6 +37001,7 @@ export namespace Prisma {
     username: string
     email: string
     passwordHash: string
+    profilePictureUrl?: string | null
     emailVerified?: boolean | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
@@ -36653,6 +37116,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -36674,6 +37138,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -36695,6 +37160,7 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null

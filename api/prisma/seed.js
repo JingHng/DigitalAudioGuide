@@ -124,6 +124,7 @@ async function seed() {
         user_id BIGSERIAL PRIMARY KEY,
         username VARCHAR(100) UNIQUE NOT NULL,
         email VARCHAR(100) UNIQUE NOT NULL,
+        profile_picture_url VARCHAR(255) NULL,
         password_hash VARCHAR(72) NOT NULL,
         email_verified BOOLEAN DEFAULT FALSE,
         status_id INTEGER REFERENCES status(status_id) ON DELETE SET NULL,

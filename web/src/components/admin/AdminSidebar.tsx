@@ -14,7 +14,7 @@ import {
   ChevronRight,
   Settings,
   Bot,
-  Eye
+  Award
 } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -56,6 +56,10 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
   const handleAddExhibit = () => {
     navigate('/admin/exhibits#add-collection');
+  };
+
+  const handleAddBadge = () => {
+    navigate('/admin/badges#add-badge');
   };
 
   const handleAddAudio = () => {
@@ -125,6 +129,14 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
       path: '/admin/exhibits',
       hasAddButton: true,
       addAction: handleAddExhibit
+    },
+    {
+      id: 'badges',
+      label: 'Badges',
+      icon: <Award size={20} />,
+      path: '/admin/badges',
+      hasAddButton: true,
+      addAction: handleAddBadge
     },
     {
       id: 'audio',
