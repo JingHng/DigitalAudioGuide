@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import "../css/ExhibitForm.css";
+import "../css/BadgeForm.css";
 import { Loader2 } from "lucide-react";
 
 const BACKEND_URL = import.meta.env.VITE_API_TARGET || "";
