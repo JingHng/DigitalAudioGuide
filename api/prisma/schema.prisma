@@ -32,6 +32,8 @@ model Exhibit {
   description           String?
   additionalDescription String?     @map("additional_description")
   sequence              Int?        @map("sequence")
+  isArEnabled           Boolean     @default(false) @map("is_ar_enabled")
+  arExperienceUrl       String?     @map("ar_experience_url") @db.VarChar(2048)
   createdAt             DateTime?   @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt             DateTime?   @default(now()) @map("updated_at") @db.Timestamptz(6)
   audio                 Audio[]

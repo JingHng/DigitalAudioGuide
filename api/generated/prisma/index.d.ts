@@ -4530,6 +4530,8 @@ export namespace Prisma {
     description: string | null
     additionalDescription: string | null
     sequence: number | null
+    isArEnabled: boolean | null
+    arExperienceUrl: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -4543,6 +4545,8 @@ export namespace Prisma {
     description: string | null
     additionalDescription: string | null
     sequence: number | null
+    isArEnabled: boolean | null
+    arExperienceUrl: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -4556,6 +4560,8 @@ export namespace Prisma {
     description: number
     additionalDescription: number
     sequence: number
+    isArEnabled: number
+    arExperienceUrl: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -4587,6 +4593,8 @@ export namespace Prisma {
     description?: true
     additionalDescription?: true
     sequence?: true
+    isArEnabled?: true
+    arExperienceUrl?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -4600,6 +4608,8 @@ export namespace Prisma {
     description?: true
     additionalDescription?: true
     sequence?: true
+    isArEnabled?: true
+    arExperienceUrl?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -4613,6 +4623,8 @@ export namespace Prisma {
     description?: true
     additionalDescription?: true
     sequence?: true
+    isArEnabled?: true
+    arExperienceUrl?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -4713,6 +4725,8 @@ export namespace Prisma {
     description: string | null
     additionalDescription: string | null
     sequence: number | null
+    isArEnabled: boolean
+    arExperienceUrl: string | null
     createdAt: Date | null
     updatedAt: Date | null
     _count: ExhibitCountAggregateOutputType | null
@@ -4745,6 +4759,8 @@ export namespace Prisma {
     description?: boolean
     additionalDescription?: boolean
     sequence?: boolean
+    isArEnabled?: boolean
+    arExperienceUrl?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     audio?: boolean | Exhibit$audioArgs<ExtArgs>
@@ -4766,6 +4782,8 @@ export namespace Prisma {
     description?: boolean
     additionalDescription?: boolean
     sequence?: boolean
+    isArEnabled?: boolean
+    arExperienceUrl?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     badge?: boolean | Exhibit$badgeArgs<ExtArgs>
@@ -4782,6 +4800,8 @@ export namespace Prisma {
     description?: boolean
     additionalDescription?: boolean
     sequence?: boolean
+    isArEnabled?: boolean
+    arExperienceUrl?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
@@ -4822,6 +4842,8 @@ export namespace Prisma {
       description: string | null
       additionalDescription: string | null
       sequence: number | null
+      isArEnabled: boolean
+      arExperienceUrl: string | null
       createdAt: Date | null
       updatedAt: Date | null
     }, ExtArgs["result"]["exhibit"]>
@@ -5232,6 +5254,8 @@ export namespace Prisma {
     readonly description: FieldRef<"Exhibit", 'String'>
     readonly additionalDescription: FieldRef<"Exhibit", 'String'>
     readonly sequence: FieldRef<"Exhibit", 'Int'>
+    readonly isArEnabled: FieldRef<"Exhibit", 'Boolean'>
+    readonly arExperienceUrl: FieldRef<"Exhibit", 'String'>
     readonly createdAt: FieldRef<"Exhibit", 'DateTime'>
     readonly updatedAt: FieldRef<"Exhibit", 'DateTime'>
   }
@@ -29055,6 +29079,8 @@ export namespace Prisma {
     description: 'description',
     additionalDescription: 'additionalDescription',
     sequence: 'sequence',
+    isArEnabled: 'isArEnabled',
+    arExperienceUrl: 'arExperienceUrl',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -29548,6 +29574,8 @@ export namespace Prisma {
     description?: StringNullableFilter<"Exhibit"> | string | null
     additionalDescription?: StringNullableFilter<"Exhibit"> | string | null
     sequence?: IntNullableFilter<"Exhibit"> | number | null
+    isArEnabled?: BoolFilter<"Exhibit"> | boolean
+    arExperienceUrl?: StringNullableFilter<"Exhibit"> | string | null
     createdAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
     audio?: AudioListRelationFilter
@@ -29568,6 +29596,8 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     additionalDescription?: SortOrderInput | SortOrder
     sequence?: SortOrderInput | SortOrder
+    isArEnabled?: SortOrder
+    arExperienceUrl?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrderInput | SortOrder
     audio?: AudioOrderByRelationAggregateInput
@@ -29592,6 +29622,8 @@ export namespace Prisma {
     description?: StringNullableFilter<"Exhibit"> | string | null
     additionalDescription?: StringNullableFilter<"Exhibit"> | string | null
     sequence?: IntNullableFilter<"Exhibit"> | number | null
+    isArEnabled?: BoolFilter<"Exhibit"> | boolean
+    arExperienceUrl?: StringNullableFilter<"Exhibit"> | string | null
     createdAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
     audio?: AudioListRelationFilter
@@ -29612,6 +29644,8 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     additionalDescription?: SortOrderInput | SortOrder
     sequence?: SortOrderInput | SortOrder
+    isArEnabled?: SortOrder
+    arExperienceUrl?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrderInput | SortOrder
     _count?: ExhibitCountOrderByAggregateInput
@@ -29633,6 +29667,8 @@ export namespace Prisma {
     description?: StringNullableWithAggregatesFilter<"Exhibit"> | string | null
     additionalDescription?: StringNullableWithAggregatesFilter<"Exhibit"> | string | null
     sequence?: IntNullableWithAggregatesFilter<"Exhibit"> | number | null
+    isArEnabled?: BoolWithAggregatesFilter<"Exhibit"> | boolean
+    arExperienceUrl?: StringNullableWithAggregatesFilter<"Exhibit"> | string | null
     createdAt?: DateTimeNullableWithAggregatesFilter<"Exhibit"> | Date | string | null
     updatedAt?: DateTimeNullableWithAggregatesFilter<"Exhibit"> | Date | string | null
   }
@@ -31195,6 +31231,8 @@ export namespace Prisma {
     description?: string | null
     additionalDescription?: string | null
     sequence?: number | null
+    isArEnabled?: boolean
+    arExperienceUrl?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioCreateNestedManyWithoutExhibitInput
@@ -31215,6 +31253,8 @@ export namespace Prisma {
     description?: string | null
     additionalDescription?: string | null
     sequence?: number | null
+    isArEnabled?: boolean
+    arExperienceUrl?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
@@ -31229,6 +31269,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     sequence?: NullableIntFieldUpdateOperationsInput | number | null
+    isArEnabled?: BoolFieldUpdateOperationsInput | boolean
+    arExperienceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUpdateManyWithoutExhibitNestedInput
@@ -31249,6 +31291,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     sequence?: NullableIntFieldUpdateOperationsInput | number | null
+    isArEnabled?: BoolFieldUpdateOperationsInput | boolean
+    arExperienceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
@@ -31266,6 +31310,8 @@ export namespace Prisma {
     description?: string | null
     additionalDescription?: string | null
     sequence?: number | null
+    isArEnabled?: boolean
+    arExperienceUrl?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
   }
@@ -31276,6 +31322,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     sequence?: NullableIntFieldUpdateOperationsInput | number | null
+    isArEnabled?: BoolFieldUpdateOperationsInput | boolean
+    arExperienceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -31289,6 +31337,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     sequence?: NullableIntFieldUpdateOperationsInput | number | null
+    isArEnabled?: BoolFieldUpdateOperationsInput | boolean
+    arExperienceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -32957,6 +33007,11 @@ export namespace Prisma {
     not?: NestedBigIntNullableFilter<$PrismaModel> | bigint | number | null
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type AudioListRelationFilter = {
     every?: AudioWhereInput
     some?: AudioWhereInput
@@ -33011,6 +33066,8 @@ export namespace Prisma {
     description?: SortOrder
     additionalDescription?: SortOrder
     sequence?: SortOrder
+    isArEnabled?: SortOrder
+    arExperienceUrl?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -33032,6 +33089,8 @@ export namespace Prisma {
     description?: SortOrder
     additionalDescription?: SortOrder
     sequence?: SortOrder
+    isArEnabled?: SortOrder
+    arExperienceUrl?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -33045,6 +33104,8 @@ export namespace Prisma {
     description?: SortOrder
     additionalDescription?: SortOrder
     sequence?: SortOrder
+    isArEnabled?: SortOrder
+    arExperienceUrl?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -33071,6 +33132,14 @@ export namespace Prisma {
     _sum?: NestedBigIntNullableFilter<$PrismaModel>
     _min?: NestedBigIntNullableFilter<$PrismaModel>
     _max?: NestedBigIntNullableFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -34485,6 +34554,10 @@ export namespace Prisma {
     connectOrCreate?: QRCodeCreateOrConnectWithoutExhibitInput | QRCodeCreateOrConnectWithoutExhibitInput[]
     createMany?: QRCodeCreateManyExhibitInputEnvelope
     connect?: QRCodeWhereUniqueInput | QRCodeWhereUniqueInput[]
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
   }
 
   export type AudioUpdateManyWithoutExhibitNestedInput = {
@@ -36454,6 +36527,11 @@ export namespace Prisma {
     not?: NestedBigIntNullableFilter<$PrismaModel> | bigint | number | null
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type NestedBigIntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
     in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
@@ -36468,6 +36546,14 @@ export namespace Prisma {
     _sum?: NestedBigIntNullableFilter<$PrismaModel>
     _min?: NestedBigIntNullableFilter<$PrismaModel>
     _max?: NestedBigIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -36599,6 +36685,8 @@ export namespace Prisma {
     description?: string | null
     additionalDescription?: string | null
     sequence?: number | null
+    isArEnabled?: boolean
+    arExperienceUrl?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioCreateNestedManyWithoutExhibitInput
@@ -36617,6 +36705,8 @@ export namespace Prisma {
     description?: string | null
     additionalDescription?: string | null
     sequence?: number | null
+    isArEnabled?: boolean
+    arExperienceUrl?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
@@ -36719,6 +36809,8 @@ export namespace Prisma {
     description?: StringNullableFilter<"Exhibit"> | string | null
     additionalDescription?: StringNullableFilter<"Exhibit"> | string | null
     sequence?: IntNullableFilter<"Exhibit"> | number | null
+    isArEnabled?: BoolFilter<"Exhibit"> | boolean
+    arExperienceUrl?: StringNullableFilter<"Exhibit"> | string | null
     createdAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Exhibit"> | Date | string | null
   }
@@ -37178,6 +37270,8 @@ export namespace Prisma {
     description?: string | null
     additionalDescription?: string | null
     sequence?: number | null
+    isArEnabled?: boolean
+    arExperienceUrl?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     badge?: BadgeCreateNestedOneWithoutExhibitInput
@@ -37197,6 +37291,8 @@ export namespace Prisma {
     description?: string | null
     additionalDescription?: string | null
     sequence?: number | null
+    isArEnabled?: boolean
+    arExperienceUrl?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     feedbacks?: FeedbackUncheckedCreateNestedManyWithoutExhibitInput
@@ -37310,6 +37406,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     sequence?: NullableIntFieldUpdateOperationsInput | number | null
+    isArEnabled?: BoolFieldUpdateOperationsInput | boolean
+    arExperienceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     badge?: BadgeUpdateOneWithoutExhibitNestedInput
@@ -37329,6 +37427,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     sequence?: NullableIntFieldUpdateOperationsInput | number | null
+    isArEnabled?: BoolFieldUpdateOperationsInput | boolean
+    arExperienceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     feedbacks?: FeedbackUncheckedUpdateManyWithoutExhibitNestedInput
@@ -37604,6 +37704,8 @@ export namespace Prisma {
     description?: string | null
     additionalDescription?: string | null
     sequence?: number | null
+    isArEnabled?: boolean
+    arExperienceUrl?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioCreateNestedManyWithoutExhibitInput
@@ -37623,6 +37725,8 @@ export namespace Prisma {
     description?: string | null
     additionalDescription?: string | null
     sequence?: number | null
+    isArEnabled?: boolean
+    arExperienceUrl?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
@@ -37703,6 +37807,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     sequence?: NullableIntFieldUpdateOperationsInput | number | null
+    isArEnabled?: BoolFieldUpdateOperationsInput | boolean
+    arExperienceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUpdateManyWithoutExhibitNestedInput
@@ -37722,6 +37828,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     sequence?: NullableIntFieldUpdateOperationsInput | number | null
+    isArEnabled?: BoolFieldUpdateOperationsInput | boolean
+    arExperienceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
@@ -37792,6 +37900,8 @@ export namespace Prisma {
     description?: string | null
     additionalDescription?: string | null
     sequence?: number | null
+    isArEnabled?: boolean
+    arExperienceUrl?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioCreateNestedManyWithoutExhibitInput
@@ -37811,6 +37921,8 @@ export namespace Prisma {
     description?: string | null
     additionalDescription?: string | null
     sequence?: number | null
+    isArEnabled?: boolean
+    arExperienceUrl?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
@@ -37865,6 +37977,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     sequence?: NullableIntFieldUpdateOperationsInput | number | null
+    isArEnabled?: BoolFieldUpdateOperationsInput | boolean
+    arExperienceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUpdateManyWithoutExhibitNestedInput
@@ -37884,6 +37998,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     sequence?: NullableIntFieldUpdateOperationsInput | number | null
+    isArEnabled?: BoolFieldUpdateOperationsInput | boolean
+    arExperienceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
@@ -37928,6 +38044,8 @@ export namespace Prisma {
     description?: string | null
     additionalDescription?: string | null
     sequence?: number | null
+    isArEnabled?: boolean
+    arExperienceUrl?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioCreateNestedManyWithoutExhibitInput
@@ -37947,6 +38065,8 @@ export namespace Prisma {
     description?: string | null
     additionalDescription?: string | null
     sequence?: number | null
+    isArEnabled?: boolean
+    arExperienceUrl?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
@@ -37976,6 +38096,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     sequence?: NullableIntFieldUpdateOperationsInput | number | null
+    isArEnabled?: BoolFieldUpdateOperationsInput | boolean
+    arExperienceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUpdateManyWithoutExhibitNestedInput
@@ -37995,6 +38117,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     sequence?: NullableIntFieldUpdateOperationsInput | number | null
+    isArEnabled?: BoolFieldUpdateOperationsInput | boolean
+    arExperienceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
@@ -38480,6 +38604,8 @@ export namespace Prisma {
     description?: string | null
     additionalDescription?: string | null
     sequence?: number | null
+    isArEnabled?: boolean
+    arExperienceUrl?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioCreateNestedManyWithoutExhibitInput
@@ -38498,6 +38624,8 @@ export namespace Prisma {
     description?: string | null
     additionalDescription?: string | null
     sequence?: number | null
+    isArEnabled?: boolean
+    arExperienceUrl?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
@@ -40243,6 +40371,8 @@ export namespace Prisma {
     description?: string | null
     additionalDescription?: string | null
     sequence?: number | null
+    isArEnabled?: boolean
+    arExperienceUrl?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioCreateNestedManyWithoutExhibitInput
@@ -40261,6 +40391,8 @@ export namespace Prisma {
     description?: string | null
     additionalDescription?: string | null
     sequence?: number | null
+    isArEnabled?: boolean
+    arExperienceUrl?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioUncheckedCreateNestedManyWithoutExhibitInput
@@ -40311,6 +40443,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     sequence?: NullableIntFieldUpdateOperationsInput | number | null
+    isArEnabled?: BoolFieldUpdateOperationsInput | boolean
+    arExperienceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUpdateManyWithoutExhibitNestedInput
@@ -40329,6 +40463,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     sequence?: NullableIntFieldUpdateOperationsInput | number | null
+    isArEnabled?: BoolFieldUpdateOperationsInput | boolean
+    arExperienceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
@@ -40919,6 +41055,8 @@ export namespace Prisma {
     description?: string | null
     additionalDescription?: string | null
     sequence?: number | null
+    isArEnabled?: boolean
+    arExperienceUrl?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
   }
@@ -40940,6 +41078,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     sequence?: NullableIntFieldUpdateOperationsInput | number | null
+    isArEnabled?: BoolFieldUpdateOperationsInput | boolean
+    arExperienceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUpdateManyWithoutExhibitNestedInput
@@ -40958,6 +41098,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     sequence?: NullableIntFieldUpdateOperationsInput | number | null
+    isArEnabled?: BoolFieldUpdateOperationsInput | boolean
+    arExperienceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
@@ -40974,6 +41116,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     sequence?: NullableIntFieldUpdateOperationsInput | number | null
+    isArEnabled?: BoolFieldUpdateOperationsInput | boolean
+    arExperienceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -41375,6 +41519,8 @@ export namespace Prisma {
     description?: string | null
     additionalDescription?: string | null
     sequence?: number | null
+    isArEnabled?: boolean
+    arExperienceUrl?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
   }
@@ -41431,6 +41577,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     sequence?: NullableIntFieldUpdateOperationsInput | number | null
+    isArEnabled?: BoolFieldUpdateOperationsInput | boolean
+    arExperienceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUpdateManyWithoutExhibitNestedInput
@@ -41449,6 +41597,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     sequence?: NullableIntFieldUpdateOperationsInput | number | null
+    isArEnabled?: BoolFieldUpdateOperationsInput | boolean
+    arExperienceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUncheckedUpdateManyWithoutExhibitNestedInput
@@ -41465,6 +41615,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     additionalDescription?: NullableStringFieldUpdateOperationsInput | string | null
     sequence?: NullableIntFieldUpdateOperationsInput | number | null
+    isArEnabled?: BoolFieldUpdateOperationsInput | boolean
+    arExperienceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
