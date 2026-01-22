@@ -316,6 +316,7 @@ async function seed() {
         exhibit_id BIGINT REFERENCES exhibit(exhibit_id) ON DELETE CASCADE,
         rating INTEGER CHECK (rating >= 1 AND rating <= 5),
         description TEXT,
+        is_hidden BOOLEAN DEFAULT FALSE,
         created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
       );

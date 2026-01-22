@@ -14,7 +14,8 @@ import {
   ChevronRight,
   Settings,
   Bot,
-  Award
+  Award,
+  Eye
 } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -146,6 +147,13 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
       hasAddButton: true,
       addAction: handleAddAudio
     }
+     ,
+     {
+       id: 'reviews',
+       label: 'Reviews',
+       icon: <Eye size={20} />,
+       path: '/admin/reviews'
+     }
   ];
 
   const bottomMenuItems: MenuItem[] = [

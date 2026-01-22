@@ -7,7 +7,7 @@ class ReviewModel {
   // Get all reviews with pagination and filtering
   static async getAllReviews(filters, pagination, sorting) {
     try {
-      const { exhibit_id, user_id, min_rating, max_rating } = filters;
+      const { exhibit_id, user_id, min_rating, max_rating, search } = filters;
       const { skip, take } = pagination;
       const { sort_by, sort_order } = sorting;
 
@@ -40,6 +40,16 @@ class ReviewModel {
         paramIndex++;
       }
 
+      if (search && search.trim() !== '') {
+        whereConditions.push(`(
+          LOWER(u.username) LIKE $${paramIndex} OR
+          LOWER(e.title) LIKE $${paramIndex} OR
+          LOWER(f.description) LIKE $${paramIndex}
+        )`);
+        params.push(`%${search.toLowerCase()}%`);
+        paramIndex++;
+      }
+
       const whereClause = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : '';
 
       // Build ORDER BY clause
@@ -51,31 +61,31 @@ class ReviewModel {
       const orderField = fieldMap[sort_by] || 'f.created_at';
       const orderDirection = sort_order === 'asc' ? 'ASC' : 'DESC';
 
-      // Get reviews with user, exhibit and exhibition data
+      // Always join user (u) and exhibit (e) for search to work
+      const baseFrom = `FROM feedback f
+        LEFT JOIN "user" u ON f.user_id = u.user_id
+        LEFT JOIN exhibit e ON f.exhibit_id = e.exhibit_id
+        LEFT JOIN exhibitions ex ON e.exhibition_id = ex.exhibition_id`;
+
       const reviewsQuery = `
         SELECT 
           f.feedback_id, f.user_id, f.exhibit_id, f.rating, f.description, f.created_at, f.updated_at,
           u.username, u.email,
           e.title as exhibit_title, e.description as exhibit_description,
           ex.title as exhibition_title
-        FROM feedback f
-        LEFT JOIN "user" u ON f.user_id = u.user_id
-        LEFT JOIN exhibit e ON f.exhibit_id = e.exhibit_id
-        LEFT JOIN exhibitions ex ON e.exhibition_id = ex.exhibition_id
+        ${baseFrom}
         ${whereClause}
         ORDER BY ${orderField} ${orderDirection}
         LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
       `;
-      
       params.push(take, skip);
 
       // Get total count
       const countQuery = `
         SELECT COUNT(*) as total
-        FROM feedback f
+        ${baseFrom}
         ${whereClause}
       `;
-      
       const countParams = params.slice(0, -2); // Remove LIMIT and OFFSET params
 
       const [reviews, countResult] = await Promise.all([
