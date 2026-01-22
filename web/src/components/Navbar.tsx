@@ -184,10 +184,12 @@ const Navbar: React.FC = () => {
               </button>
               {isUserDropdownOpen && (
                 <div className="user-dropdown mobile-user-dropdown">
+                  <a href="/profile" className="dropdown-item">
                   <div className="user-info">
                     <span className="username">{user?.username}</span>
                     <span className="user-roles">{user?.roles?.join(", ") || "No roles"}</span>
                   </div>
+                  </a>
                   <div className="dropdown-divider"></div>
                   <a href="/dashboard" className="dropdown-item">
                     <User size={16} />
@@ -272,10 +274,12 @@ const Navbar: React.FC = () => {
               </button>
               {isUserDropdownOpen && (
                 <div className="user-dropdown desktop-user-dropdown">
+                  <a href="/profile" className="dropdown-item">
                   <div className="user-info">
                     <span className="username">{user?.username}</span>
                     <span className="user-roles">{user?.roles?.join(", ") || "No roles"}</span>
                   </div>
+                  </a>
                   <div className="dropdown-divider"></div>
                   <a href="/dashboard" className="dropdown-item">
                     <User size={16} />

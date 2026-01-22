@@ -37,6 +37,8 @@ import SettingsPage from "./components/admin/SettingsPage";
 import AssistantPage from "./components/admin/AssistantPage";
 
 import NotFoundPage from "./components/NotFoundPage.tsx";
+import ProfilePage from "./components/ProfilePage.tsx";
+import EditProfilePage from "./components/EditProfilePage.tsx";
 
 function App() {
   const location = useLocation();
@@ -88,6 +90,8 @@ function App() {
             <Route path="/verify-email" element={<EmailVerificationPage />} />
             <Route path="/scan" element={<ScanPage />} />
             <Route path="/user-badge" element={<UserBadgePage />} />
+            <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+            <Route path="/edit-profile" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
 
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
