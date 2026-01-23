@@ -97,9 +97,11 @@ exports.assignBadgesToUser = async (req, res) => {
     if (existing) {
       return res.json(
         serializeBigInt({
+          isNew: false,
           message: "Badge already claimed",
           badgeId,
           imageUrl: badge.imageUrl,
+          name: badge.name,
         })
       );
     }
@@ -108,11 +110,14 @@ exports.assignBadgesToUser = async (req, res) => {
 
     return res.json(
       serializeBigInt({
+        isNew: true,
         message: "Badge claimed successfully",
         badgeId,
         imageUrl: badge.imageUrl,
+        name: badge.name,
       })
     );
+
   } catch (error) {
     console.error("Error claiming badge:", error);
     return res.status(500).json({ error: "Internal Server Error" });

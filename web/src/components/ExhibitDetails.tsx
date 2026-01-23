@@ -11,6 +11,8 @@ import "../styles/SmartExhibit.css";
 import { useAuth } from "../contexts/AuthContext";
 import { fetchExhibitRating, fetchExhibitReviews, submitExhibitReview } from "../utils/api";
 
+import EarnBadgeModal from "./earnBadgeModal";
+
 const BACKEND_URL = import.meta.env.VITE_API_TARGET || "";
 const DEFAULT_IMAGE_URL = `${BACKEND_URL}/public/images/Map.jpg`;
 
@@ -40,6 +42,10 @@ const ExhibitDetails: React.FC = () => {
   const [reviewError, setReviewError] = useState<string | null>(null);
   const [reviewSuccess, setReviewSuccess] = useState<string | null>(null);
   const [reviewsExpanded, setReviewsExpanded] = useState<boolean>(false);
+
+  // Badge State
+  const [newBadge, setNewBadge] = useState<{ name?: string; imageUrl?: string } | null>(null);
+  const claimedRef = useRef(false);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -113,6 +119,32 @@ const ExhibitDetails: React.FC = () => {
     loadReviews();
   }, [id, reviewPage]);
 
+  // Badge Claiming Logic
+  useEffect(() => {
+    if (!id) return;
+    if (!user) return;  // only logged-in users can claim badges
+    if (claimedRef.current) return;  // prevent multiple claims
+    claimedRef.current = true;
+
+    const claimBadge = async () => {
+      try {
+        const res = await apiClient.post(`/badges/assignBadges/${id}`);
+
+        if (res.data?.isNew) {
+          setNewBadge({
+            name: res.data.name,
+            imageUrl: res.data.imageUrl,
+          });
+        }
+      } catch (err) {
+        console.error("claim badge failed", err);
+      }
+    };
+
+    claimBadge();
+  }, [id, user]);
+
+
   const handleReviewSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!id || !user) return;
@@ -136,6 +168,18 @@ const ExhibitDetails: React.FC = () => {
 
   return (
     <div className="exhibit-page-wrapper">
+      {/* --- EARN BADGE MODAL --- */}
+      <EarnBadgeModal
+        isOpen={!!newBadge}
+        onClose={() => setNewBadge(null)}
+        exhibitTitle={exhibit?.title || "New Badge"}
+        badgeImageUrl={
+          newBadge?.imageUrl
+            ? `${BACKEND_URL}/public/images/${newBadge.imageUrl.split("/images/")[1]}`
+            : undefined
+        }
+      />
+
       <audio ref={audioRef} onTimeUpdate={handleTimeUpdate} onPlay={() => setIsPlaying(true)} onPause={() => setIsPlaying(false)} onLoadedMetadata={() => setDuration(audioRef.current?.duration || 0)} />
 
       <nav className="exhibit-nav">
