@@ -1,3 +1,5 @@
+# .github/workflows/feature_tour_deployment.yml
+
 name: Jing Hng Individual Deployment - features/tour
 
 on:
@@ -8,6 +10,11 @@ on:
       - "modules/**"
       - "**/*.md"
   workflow_dispatch: # Allows manual trigger
+
+# Prevents multiple pushes to the same branch from colliding in the DB
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   WEBAPP_NAME: "JingHngIndividualDeployment"
@@ -36,6 +43,13 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
+
+      - name: Extract feature name
+        id: extract-feature
+        run: |
+          BRANCH_NAME="${{ github.ref_name }}"
+          FEATURE_NAME=$(echo "$BRANCH_NAME" | sed 's/^features\///;s/^feature\///')
+          echo "feature_name=$FEATURE_NAME" >> $GITHUB_OUTPUT
 
       - name: Install API deps
         working-directory: ${{ env.API_DIR }}
@@ -71,15 +85,22 @@ jobs:
         run: |
           npm start &
           sleep 10
-          # Verify API is responding
           curl -f http://localhost:5175/health || curl -f http://localhost:5175/ || echo "API server not responding"
 
-      - name: Run Playwright tests
+      - name: Run Playwright tests for branch
         working-directory: ${{ env.WEB_DIR }}
-        run: npm run e2e
         env:
           CI: true
           VITE_API_TARGET: http://localhost:5175
+        run: |
+          FEATURE_FOLDER="tests/e2e/${{ steps.extract-feature.outputs.feature_name }}"
+          if [ -d "$FEATURE_FOLDER" ]; then
+            echo "🚀 Running E2E tests specifically for: $FEATURE_FOLDER"
+            npx playwright test "$FEATURE_FOLDER" --workers=8
+          else
+            echo "⚠️ Folder $FEATURE_FOLDER not found. Running default tests."
+            npm run e2e
+          fi
 
       - name: Upload Playwright report
         if: always()
@@ -104,7 +125,6 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
 
-      # ---- Frontend ----
       - name: Install web deps
         working-directory: ${{ env.WEB_DIR }}
         run: npm ci
@@ -113,7 +133,6 @@ jobs:
         working-directory: ${{ env.WEB_DIR }}
         run: npm run build
 
-      # ---- Backend ----
       - name: Install api deps (for build)
         working-directory: ${{ env.API_DIR }}
         run: npm ci
@@ -126,7 +145,6 @@ jobs:
         working-directory: ${{ env.API_DIR }}
         run: npm prune --production
 
-      # ---- Bundle web into api/public ----
       - name: Copy web build into api/public
         run: |
           echo "📁 Copying frontend build to API public folder"
@@ -138,7 +156,6 @@ jobs:
           echo "📄 Checking index.html exists:"
           cat "${API_DIR}/public/index.html" | head -20
 
-      # ---- DEBUG and Copy API Static Assets (Images & Audios) ----
       - name: Debug and Copy API Static Assets
         run: |
           echo "==============================================="
@@ -149,9 +166,7 @@ jobs:
           echo "==============================================="
           echo "2. COPY: Moving API source assets to final public"
           echo "==============================================="
-          # This copies contents from api/src/public/ to api/public/
           cp -R -u -v "${API_DIR}/src/public/." "${API_DIR}/public/" || true
-          echo "✅ API static assets copy attempted."
           
           echo "==============================================="
           echo "3. DEBUG: Checking Final Public Folder (api/public)"
@@ -159,51 +174,26 @@ jobs:
           ls -laR "${API_DIR}/public/"
           echo "==============================================="
 
-      # ---- Prepare for production deployment ----
       - name: Prepare production API
         run: |
           cd "${API_DIR}"
           echo "🧹 Preparing production build"
-          # Install ONLY production dependencies
           npm ci --production --ignore-scripts
-          # Remove unnecessary files for deployment
           rm -rf tests/ *.log coverage/ .git/ .github/ || true
-          # Clean node_modules of unnecessary files
           find node_modules -name "*.md" -delete || true
           find node_modules -name "*.ts" -delete || true
           find node_modules -name "test" -type d -exec rm -rf {} + || true
           find node_modules -name "tests" -type d -exec rm -rf {} + || true
-          echo "✅ Production preparation complete"
-          echo "📊 Final API directory size:"
           du -sh . || true
 
-      # ---- Create clean deployment artifact ----
       - name: Package deployment artifact
         run: |
           cd "${API_DIR}"
           rm -f "../${ARTIFACT_NAME}"
-          echo "📦 Creating deployment package"
-          echo "📋 Verifying public folder before packaging:"
-          ls -la public/ || echo "WARNING: public folder not found!"
-          
-          # Package production-ready files including node_modules
           zip -r "../${ARTIFACT_NAME}" \
-            node_modules/ \
-            package*.json \
-            prisma/ \
-            public/ \
-            src/ \
-            *.js \
-            web.config \
-            generated/ \
-            .deployment \
-            -x "*.log" "*.test.js" "coverage/*" "node_modules/*/test/*" "node_modules/*/tests/*" \
-            || true
-          
-          echo "✅ Deployment package created"
+            node_modules/ package*.json prisma/ public/ src/ *.js web.config generated/ .deployment \
+            -x "*.log" "*.test.js" "coverage/*" "node_modules/*/test/*" "node_modules/*/tests/*"
           cd ..
-          ls -lh "${ARTIFACT_NAME}"
-          echo "📋 Verifying deployment package contents:"
           unzip -l "${ARTIFACT_NAME}" | grep -E "(package.json|app.js|server.js)" | head -10
 
       - name: Upload artifact
@@ -227,12 +217,6 @@ jobs:
           name: deployment-package
           path: .
 
-      - name: List files (debug)
-        run: |
-          ls -la
-          unzip -l ${{ env.ARTIFACT_NAME }} || true
-
-      # ---- Login (OIDC) ----
       - name: Azure login (OIDC)
         uses: azure/login@v2
         with:
@@ -240,16 +224,13 @@ jobs:
           tenant-id: ${{ env.TENANT_ID }}
           subscription-id: ${{ env.SUBSCRIPTION_ID }}
 
-      # ---- Deploy ----
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.WEBAPP_NAME }}
           package: ${{ env.ARTIFACT_NAME }}
-          clean: true  
+          clean: true
 
       - name: Restart Azure Web App
         run: |
-          echo "🔍 Restarting: ${{ env.WEBAPP_NAME }} in ${{ env.RESOURCE_GROUP }}"
           az webapp restart --name ${{ env.WEBAPP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }}
-          echo "✅ App restarted successfully"
