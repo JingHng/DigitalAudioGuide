@@ -1,192 +1,144 @@
 /* LoginPage.css */
 
-/* Container for the whole page */
-.login-page-container {
+.aesthetic-auth-container.no-scroll {
+  /* Use fixed to prevent scrolling, but let it sit below the Navbar */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  
   display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: #f9fafb; /* Light background */
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-/* Wrapper around the form */
-.form-wrapper {
+  align-items: center;     
+  justify-content: center;    
   background-color: #ffffff;
-  padding: 40px 30px;
-  border-radius: 10px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  width: 100%;
+  font-family: 'Inter', sans-serif;
+  
+  /* Lower this so it doesn't cover the Navbar (usually Navbar is 1000+) */
+  z-index: 500; 
+  
+  /* Removes scrollbar */
+  overflow: hidden;
+}
+
+/* Add this to ensure the card feels centered relative to the remaining space */
+.auth-card {
+  width: 90%;
   max-width: 400px;
-  box-sizing: border-box;
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 32px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.06);
+  border: 1px solid #f1f3f4;
+  
+  /* Push it down slightly so it looks optically centered under the Nav */
+  margin-top: 60px; 
 }
 
-/* Form title */
-.form-title {
+/* Ensure your Navbar has a high z-index in NavBar.css */
+/* If your navbar still disappears, go to NavBar.css 
+   and ensure .aesthetic-navbar has: 
+   z-index: 1100 !important; 
+*/
+
+.auth-header {
   text-align: center;
-  font-size: 24px;
-  color: #1f2937;
-  margin-bottom: 25px;
-  font-weight: 600;
+  margin-bottom: 30px;
 }
 
-/* Individual form groups */
-.form-group {
-  margin-bottom: 20px;
+.auth-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #202124;
+  margin-bottom: 6px;
+  letter-spacing: -0.02em;
+}
+
+.auth-subtitle {
+  color: #5f6368;
+  font-size: 0.9rem;
+}
+
+.auth-form {
   display: flex;
   flex-direction: column;
+  gap: 18px;
 }
 
-/* Labels */
-.form-group label {
-  font-size: 14px;
-  color: #374151;
-  margin-bottom: 5px;
+.input-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.input-field-group label {
+  font-size: 0.8rem;
   font-weight: 500;
+  color: #5f6368;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-left: 4px;
 }
 
-/* Input fields */
-.form-input {
-  padding: 10px 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 14px;
+.input-field-group input {
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid #e8eaed;
+  background: #f8f9fa;
+  font-size: 1rem;
+  transition: all 0.2s;
   outline: none;
-  transition: all 0.2s ease;
 }
 
-.form-input:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+.input-field-group input:focus {
+  background: #fff;
+  border-color: #202124;
+  box-shadow: 0 0 0 3px rgba(32, 33, 36, 0.03);
 }
 
-/* Password input wrapper */
-.password-input-wrapper {
+.password-wrapper {
   position: relative;
   display: flex;
   align-items: center;
 }
 
-.password-toggle-btn {
+.password-wrapper input { width: 100%; padding-right: 45px; }
+
+.eye-toggle {
   position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: transparent;
+  right: 14px;
+  background: none;
   border: none;
+  color: #9aa0a6;
   cursor: pointer;
-  color: #6b7280;
-  padding: 4px;
+  display: flex;
+}
+
+.auth-meta { text-align: right; }
+.auth-meta a { font-size: 0.8rem; color: #5f6368; text-decoration: none; }
+
+.auth-submit-btn {
+  background: #202124;
+  color: white;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
   display: flex;
   align-items: center;
-}
-
-/* Submit button */
-.submit-button {
-  width: 100%;
-  padding: 12px 0;
-  background-color: #3b82f6;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.submit-button:hover:not(:disabled) {
-  background-color: #2563eb;
-}
-
-.submit-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* Error message */
-.login-error-message {
-  color: #dc2626;
-  font-size: 13px;
-  margin-bottom: 10px;
-}
-
-/* Alternative actions below form */
-.alternative-actions {
-  margin-top: 20px;
-  text-align: center;
-  font-size: 13px;
-  color: #6b7280;
-}
-
-.alternative-actions a {
-  color: #3b82f6;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.alternative-actions a:hover {
-  text-decoration: underline;
-}
-
-/* Email verification section */
-.email-verification-section {
-  margin-top: 20px;
-  padding: 15px;
-  background-color: #f0f9ff;
-  border: 1px solid #bfdbfe;
-  border-radius: 8px;
-}
-
-.email-verification-section h4 {
-  margin: 0 0 10px 0;
-  color: #1e40af;
-  font-size: 14px;
-}
-
-.email-verification-section p {
-  margin: 0 0 15px 0;
-  font-size: 13px;
-  color: #64748b;
-}
-
-.email-verification-section form {
-  display: flex;
+  justify-content: center;
   gap: 8px;
-  align-items: center;
+  margin-top: 10px;
 }
 
-.email-verification-section input {
-  flex: 1;
-  padding: 6px 10px;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  font-size: 13px;
-  outline: none;
+.auth-footer-text {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 0.85rem;
+  color: #5f6368;
 }
 
-.email-verification-section input:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-}
-
-.email-verification-section button {
-  padding: 6px 12px;
-  background-color: #3b82f6;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.email-verification-section button:hover:not(:disabled) {
-  background-color: #2563eb;
-}
-
-.email-verification-section button:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
+.auth-footer-text a { color: #202124; font-weight: 600; text-decoration: none; }

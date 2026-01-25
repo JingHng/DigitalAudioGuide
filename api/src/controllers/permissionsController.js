@@ -1,8 +1,5 @@
-const { PrismaClient } = require('../../generated/prisma');
+const prisma = require('../db/prisma');
 const { logUserAction } = require('./auditLogsController');
-
-
-const prisma = new PrismaClient();
 
 // Get all permissions with pagination, filtering, and sorting
 const getAllPermissions = async (req, res) => {

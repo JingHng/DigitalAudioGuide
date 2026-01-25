@@ -314,8 +314,32 @@ exports.Prisma.UserBadgeScalarFieldEnum = {
 exports.Prisma.SettingsScalarFieldEnum = {
   key: 'key',
   value: 'value',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SenderTypeScalarFieldEnum = {
+  senderTypeId: 'senderTypeId',
+  senderType: 'senderType'
+};
+
+exports.Prisma.ConversationScalarFieldEnum = {
+  conversationId: 'conversationId',
+  userId: 'userId',
+  title: 'title',
+  statusId: 'statusId',
+  createdAt: 'createdAt',
+  modifiedAt: 'modifiedAt'
+};
+
+exports.Prisma.MessageScalarFieldEnum = {
+  messageId: 'messageId',
+  conversationId: 'conversationId',
+  senderTypeId: 'senderTypeId',
+  content: 'content',
+  metadata: 'metadata',
+  statusId: 'statusId',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SenderTypeScalarFieldEnum = {
@@ -395,7 +419,11 @@ exports.Prisma.ModelName = {
   EmailVerificationToken: 'EmailVerificationToken',
   Badge: 'Badge',
   UserBadge: 'UserBadge',
+<<<<<<< HEAD
   settings: 'settings',
+=======
+  Settings: 'Settings',
+>>>>>>> 71fad44e85c3db34ba7a839aa117e9f25cfd4ae0
   SenderType: 'SenderType',
   Conversation: 'Conversation',
   Message: 'Message'

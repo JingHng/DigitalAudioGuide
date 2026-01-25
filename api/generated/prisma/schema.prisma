@@ -20,6 +20,9 @@ model Exhibition {
   status       Status?   @relation(fields: [statusId], references: [statusId], onUpdate: NoAction)
   images       Image[]
 
+  @@index([statusId], map: "idx_exhibitions_status")
+  @@index([createdAt], map: "idx_exhibitions_created_at")
+  @@index([title], map: "idx_exhibitions_title")
   @@map("exhibitions")
 }
 
@@ -43,9 +46,13 @@ model Exhibit {
   qrCodes               QRCode[]
 
   @@unique([exhibitionId, sequence], map: "unique_exhibition_sequence")
+  @@index([exhibitionId], map: "idx_exhibit_exhibition_id")
+  @@index([statusId], map: "idx_exhibit_status")
+  @@index([badgeId], map: "idx_exhibit_badge_id")
+  @@index([sequence], map: "idx_exhibit_sequence")
   @@index([title], map: "idx_exhibit_title")
   @@index([createdAt], map: "idx_exhibit_created_at")
-  @@index([exhibitionId, sequence], map: "idx_exhibition_sequence")
+  @@index([exhibitionId, sequence], map: "idx_exhibit_exhibition_sequence")
   @@map("exhibit")
 }
 
@@ -364,11 +371,13 @@ model UserBadge {
   @@map("user_badge")
 }
 
-model settings {
-  key        String    @id
-  value      Json
-  created_at DateTime? @default(now()) @db.Timestamptz(6)
-  updated_at DateTime? @default(now()) @db.Timestamptz(6)
+model Settings {
+  key       String    @id
+  value     Json
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  @@map("settings")
 }
 
 model SenderType {
