@@ -1,6 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import apiClient from '../utils/apiClient';
 import { useAuth } from '../contexts/AuthContext';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  Star, 
+  MessageSquare, 
+  Filter, 
+  ChevronLeft, 
+  ChevronRight, 
+  User, 
+  Layout, 
+  Landmark, 
+  Clock, 
+  Lock, 
+  Loader2 
+} from 'lucide-react';
+import '../css/UserReviews.css';
 
 const ReviewsPage: React.FC = () => {
   const [reviews, setReviews] = useState<any[]>([]);
@@ -21,23 +36,26 @@ const ReviewsPage: React.FC = () => {
       params.append('page', String(p));
       params.append('limit', String(perPage));
       if (user && user.userId) params.append('user_id', String(user.userId));
+      
       if (ratingFilter) {
-        // Request exact rating matches by setting both min and max to the same value
         params.append('min_rating', String(ratingFilter));
         params.append('max_rating', String(ratingFilter));
       }
+      
       const res = await apiClient.get(`/reviews?${params.toString()}`);
       const data = res.data?.data;
       let fetched = data?.reviews || [];
+      
+      // Frontend filter for comments if backend doesn't support it
       if (showOnlyWithComments) {
         fetched = fetched.filter((r: any) => r.comment && String(r.comment).trim().length > 0);
       }
+      
       setReviews(fetched);
       setPage(data?.pagination?.current_page || p);
       setTotalPages(data?.pagination?.total_pages || 1);
     } catch (err: any) {
-      console.error('Failed to load reviews', err);
-      setError(err?.response?.data?.error || err.message || 'Failed to load reviews');
+      setError(err?.response?.data?.error || 'Failed to load reviews');
     } finally {
       setLoading(false);
     }
@@ -45,137 +63,148 @@ const ReviewsPage: React.FC = () => {
 
   useEffect(() => {
     if (!user) return;
-    // Reset to first page when filters change
-    setPage(1);
     fetchReviews(1);
   }, [user, ratingFilter, showOnlyWithComments]);
 
-  // If user is not logged in, block viewing the reviews
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900 py-16">
-        <div className="max-w-2xl mx-auto px-4 text-center">
-          <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-amber-50 dark:bg-amber-900/20 text-4xl mb-6">🛑</div>
-          <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-2">You can only view reviews if you are logined</h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">Please sign in to access your reviews and manage them.</p>
-          <div className="flex items-center justify-center gap-4">
-            <a href="/" className="px-4 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700">Browse Products</a>
-            <a href="/login" className="px-4 py-2 rounded-md bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-700 text-sm font-medium">Sign In</a>
+      <div className="auth-lock-container">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }} 
+          animate={{ opacity: 1, scale: 1 }} 
+          className="auth-lock-card"
+        >
+          <div className="lock-icon-wrapper">
+             <Lock size={40} color="#f59e0b" />
           </div>
-        </div>
+          <h2>Authentication Required</h2>
+          <p>Please sign in to access and manage exhibit reviews.</p>
+          <div className="auth-lock-actions">
+            <a href="/login" className="btn-primary-ref">Sign In Now</a>
+            <a href="/" className="btn-secondary-ref">Back to Home</a>
+          </div>
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="container" style={{ padding: 24 }}>
-      <h1>Reviews</h1>
-      {loading && <p>Loading...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {!loading && !error && (
-        <>
-          {!user && (
-            <div style={{ padding: 20, background: '#fff8e6', borderRadius: 6, marginBottom: 12 }}>
-              Please log in to view your reviews.
-            </div>
-          )}
-          <div style={{ display: 'flex', gap: 16, alignItems: 'center', marginBottom: 12, flexWrap: 'wrap' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 0, background: '#f3f4f8', borderRadius: 24, boxShadow: '0 1px 4px #eee', overflow: 'hidden' }}>
-              <button
-                onClick={() => { setRatingFilter(null); setPage(1); }}
-                style={{
-                  padding: '8px 18px',
-                  background: ratingFilter === null ? '#007bff' : 'transparent',
-                  color: ratingFilter === null ? '#fff' : '#444',
-                  border: 'none',
-                  fontWeight: 500,
-                  fontSize: '1em',
-                  cursor: 'pointer',
-                  transition: 'background 0.2s',
-                  borderRadius: '24px 0 0 24px',
-                  outline: 'none',
-                }}
-              >All</button>
-              {[1,2,3,4,5].map((r, i) => (
-                <button
-                  key={r}
-                  onClick={() => { setRatingFilter(r); setPage(1); }}
-                  style={{
-                    padding: '8px 18px',
-                    background: ratingFilter === r ? '#007bff' : 'transparent',
-                    color: ratingFilter === r ? '#fff' : '#444',
-                    border: 'none',
-                    fontWeight: 500,
-                    fontSize: '1em',
-                    cursor: 'pointer',
-                    transition: 'background 0.2s',
-                    borderRadius: i === 4 ? '0 24px 24px 0' : '0',
-                    outline: 'none',
-                  }}
-                >{r}★</button>
-              ))}
-            </div>
+    <div className="reviews-master-container">
+      <header className="reviews-header">
+        <div className="header-title-group">
+          <h1>Visitor Feedback</h1>
+          <p>Monitor ratings and comments left by visitors across all exhibits.</p>
+        </div>
+      </header>
 
-            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-              <span style={{ fontWeight: 500 }}>Show Only Reviews With Comments/Description</span>
-              <label style={{ position: 'relative', display: 'inline-block', width: 44, height: 24 }}>
-                <input
-                  type="checkbox"
-                  checked={showOnlyWithComments}
-                  onChange={e => { setShowOnlyWithComments(e.target.checked); setPage(1); }}
-                  style={{ opacity: 0, width: 0, height: 0 }}
-                />
-                <span style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  background: showOnlyWithComments ? '#007bff' : '#ccc',
-                  borderRadius: 24,
-                  transition: 'background 0.2s',
-                  display: 'block',
-                }}></span>
-                <span style={{
-                  position: 'absolute',
-                  left: showOnlyWithComments ? 22 : 2,
-                  top: 2,
-                  width: 20,
-                  height: 20,
-                  background: '#fff',
-                  borderRadius: '50%',
-                  boxShadow: '0 1px 4px #aaa',
-                  transition: 'left 0.2s',
-                  display: 'block',
-                }}></span>
-              </label>
-            </div>
-          </div>
-          <ul style={{ listStyle: 'none', padding: 0 }}>
-            {reviews.map((r) => (
-              <li key={r.feedback_id} style={{ background: '#fff', padding: 12, marginBottom: 12, borderRadius: 6, boxShadow: '0 1px 4px #eee' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div>
-                    <strong>{r.user?.username || `User ${r.user_id}`}</strong>
-                    <div style={{ fontSize: 12, color: '#666' }}>{r.exhibit?.title || `Exhibit ${r.exhibit_id}`}</div>
-                    <div style={{ fontSize: 12, color: '#666' }}>Exhibition: {r.exhibition?.title || '—'}</div>
-                  </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ color: '#f5b301', fontSize: 18 }}>{'★'.repeat(Math.max(0, Math.min(5, r.rating || 0)))}</div>
-                    <div style={{ fontSize: 12, color: '#999' }}>{r.created_at ? new Date(r.created_at).toLocaleString() : ''}</div>
-                  </div>
-                </div>
-                {r.comment && <p style={{ marginTop: 8 }}>{r.comment}</p>}
-              </li>
+      {/* FILTERS BAR */}
+      <section className="filters-bar-card">
+        <div className="filter-group">
+          <label className="filter-label"><Filter size={14} /> Rating Filter</label>
+          <div className="rating-pill-container">
+            <button 
+              className={`pill ${ratingFilter === null ? 'active' : ''}`} 
+              onClick={() => { setRatingFilter(null); setPage(1); }}
+            >All</button>
+            {[1, 2, 3, 4, 5].map((r) => (
+              <button 
+                key={r} 
+                className={`pill ${ratingFilter === r ? 'active' : ''}`} 
+                onClick={() => { setRatingFilter(r); setPage(1); }}
+              >
+                {r} <Star size={12} fill={ratingFilter === r ? "white" : "currentColor"} />
+              </button>
             ))}
-          </ul>
-
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 12, marginTop: 12 }}>
-            <button onClick={() => fetchReviews(Math.max(1, page - 1))} disabled={page <= 1}>Prev</button>
-            <span>Page {page} of {totalPages}</span>
-            <button onClick={() => fetchReviews(Math.min(totalPages, page + 1))} disabled={page >= totalPages}>Next</button>
           </div>
-        </>
+        </div>
+
+        <div className="filter-group toggle-group">
+          <span className="filter-label"><MessageSquare size={14} /> Only with comments</span>
+          <label className="smart-switch">
+            <input 
+              type="checkbox" 
+              checked={showOnlyWithComments} 
+              onChange={e => { setShowOnlyWithComments(e.target.checked); setPage(1); }} 
+            />
+            <span className="slider"></span>
+          </label>
+        </div>
+      </section>
+
+      {/* REVIEWS LIST */}
+      <div className="reviews-list-wrapper">
+        {loading ? (
+          <div className="loading-state-ref">
+            <Loader2 className="animate-spin" size={32} />
+            <p>Fetching latest reviews...</p>
+          </div>
+        ) : error ? (
+          <div className="error-state-ref">{error}</div>
+        ) : reviews.length === 0 ? (
+          <div className="empty-state-ref">No reviews found matching your criteria.</div>
+        ) : (
+          <motion.div layout className="reviews-grid">
+            <AnimatePresence mode='popLayout'>
+              {reviews.map((r) => (
+                <motion.div 
+                  key={r.feedback_id}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="review-card-item"
+                >
+                  <div className="card-top">
+                    <div className="user-info">
+                      <div className="user-avatar">
+                        <User size={16} />
+                      </div>
+                      <div>
+                        <span className="username">{r.user?.username || `User ${r.user_id}`}</span>
+                        <div className="timestamp">
+                          <Clock size={10} /> {r.created_at ? new Date(r.created_at).toLocaleDateString() : 'Recently'}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="rating-badge">
+                      {[...Array(5)].map((_, i) => (
+                        <Star 
+                          key={i} 
+                          size={14} 
+                          fill={i < (r.rating || 0) ? "#f5b301" : "none"} 
+                          stroke={i < (r.rating || 0) ? "#f5b301" : "#cbd5e1"} 
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="card-meta">
+                    <div className="meta-item"><Layout size={12} /> {r.exhibit?.title || 'Exhibit'}</div>
+                    <div className="meta-item"><Landmark size={12} /> {r.exhibition?.title || 'General'}</div>
+                  </div>
+
+                  {r.comment && (
+                    <div className="comment-bubble">
+                      <p>{r.comment}</p>
+                    </div>
+                  )}
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        )}
+      </div>
+
+      {/* PAGINATION */}
+      {!loading && reviews.length > 0 && (
+        <footer className="pagination-footer">
+          <button className="page-btn" onClick={() => fetchReviews(page - 1)} disabled={page <= 1}>
+            <ChevronLeft size={18} />
+          </button>
+          <span className="page-info">Page <strong>{page}</strong> of {totalPages}</span>
+          <button className="page-btn" onClick={() => fetchReviews(page + 1)} disabled={page >= totalPages}>
+            <ChevronRight size={18} />
+          </button>
+        </footer>
       )}
     </div>
   );
