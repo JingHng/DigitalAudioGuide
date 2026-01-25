@@ -1107,7 +1107,8 @@ await client.query(`
     // Insert settings
     await client.query(`
       INSERT INTO settings (key, value) VALUES
-      ('inactivityThresholdDays', '"7"');
+      ('inactivityThresholdDays', '"7"')
+      ON CONFLICT (key) DO NOTHING;
     `);
 
     // Insert audit logs (first 10 from seed data, then add more if needed)

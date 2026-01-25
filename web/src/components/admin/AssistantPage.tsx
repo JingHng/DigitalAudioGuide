@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import AdminLayout from './AdminLayout';
-import { Sparkles, Menu, X, Plus, History } from 'lucide-react';
+import { Sparkles, X, Plus, History, Settings } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import '../css/AIAssistant.css';
 
 const API_BASE = '/api/assistant';
 
@@ -42,7 +44,16 @@ export default function AssistantPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingConversations, setLoadingConversations] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [settingsModalOpen, setSettingsModalOpen] = useState(false);
+  const [apiKey, setApiKey] = useState('');
+  const [maskedKey, setMaskedKey] = useState<string | null>(null);
+  const [hasKey, setHasKey] = useState(false);
+  const [savingKey, setSavingKey] = useState(false);
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -53,6 +64,15 @@ export default function AssistantPage() {
 
   useEffect(() => {
     fetchConversations();
+    fetchApiKeyStatus();
+    
+    // Check if there's a conversationId in the URL query params
+    const conversationId = searchParams.get('conversationId');
+    if (conversationId) {
+      loadConversation(conversationId);
+      // Clear the query param after loading
+      setSearchParams({});
+    }
   }, []);
 
   useEffect(() => {
@@ -86,9 +106,19 @@ export default function AssistantPage() {
       });
       setCurrentConversation(response.data.conversation);
       setMessages(response.data.conversation.messages || []);
+      setSidebarOpen(false);
     } catch (error) {
       console.error('Error loading conversation:', error);
     }
+  };
+
+  const startNewConversation = () => {
+    setCurrentConversation(null);
+    setMessages([]);
+    setInputMessage('');
+    setSidebarOpen(false);
+    // Focus back on input
+    setTimeout(() => textareaRef.current?.focus(), 100);
   };
 
   const sendMessage = async (e: React.FormEvent) => {
@@ -96,6 +126,18 @@ export default function AssistantPage() {
     if (!inputMessage.trim() || isLoading) return;
 
     const messageContent = inputMessage.trim();
+    
+    // Optimistic Update: Show the user message immediately
+    const tempUserMsg: Message = {
+        messageId: Date.now().toString(),
+        conversationId: currentConversation?.conversationId || '',
+        senderTypeId: 1,
+        senderType: 'user',
+        content: messageContent,
+        createdAt: new Date().toISOString()
+    };
+    setMessages(prev => [...prev, tempUserMsg]);
+    
     setInputMessage('');
     setIsLoading(true);
 
@@ -105,7 +147,7 @@ export default function AssistantPage() {
         `${API_BASE}/chat`,
         {
           content: messageContent,
-          conversationId: currentConversation?.conversationId
+          conversationId: currentConversation?.conversationId || null
         },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -119,18 +161,14 @@ export default function AssistantPage() {
       }
     } catch (error) {
       console.error('Error sending message:', error);
+      alert("Failed to send message. Please check your API key.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const startNewConversation = () => {
-    setCurrentConversation(null);
-    setMessages([]);
-    setSidebarOpen(false); // Close sidebar when starting new chat
-  };
-
   const deleteConversation = async (conversationId: string) => {
+    if(!confirm("Delete this conversation?")) return;
     try {
       const token = localStorage.getItem('token');
       await axios.delete(`${API_BASE}/conversations/${conversationId}`, {
@@ -145,706 +183,269 @@ export default function AssistantPage() {
     }
   };
 
+  const fetchApiKeyStatus = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('/api/settings/gemini-api-key', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setHasKey(response.data.data.hasKey);
+      setMaskedKey(response.data.data.maskedKey);
+    } catch (error) {
+      console.error('Error fetching API key status:', error);
+    }
+  };
+
+  const handleSaveApiKey = async () => {
+    if (!apiKey.trim()) return;
+    setSavingKey(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.put(
+        '/api/settings/gemini-api-key',
+        { apiKey: apiKey.trim() },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setHasKey(true);
+      setMaskedKey(response.data.data.maskedKey);
+      setApiKey('');
+      setSettingsModalOpen(false);
+      alert('API key saved successfully!');
+    } catch (error: any) {
+      alert(error.response?.data?.message || 'Failed to save API key');
+    } finally {
+      setSavingKey(false);
+    }
+  };
+
+  const handleDeleteApiKey = async () => {
+    if (!confirm('Are you sure you want to delete the API key?')) return;
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete('/api/settings/gemini-api-key', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setHasKey(false);
+      setMaskedKey(null);
+      setApiKey('');
+      alert('API key deleted successfully!');
+    } catch (error) {
+      alert('Failed to delete API key');
+    }
+  };
+
+  // Content Formatter (Markdown Lite)
+  const formatContent = (text: string) => {
+    return text.split('\n').map((line, i) => {
+      const parts = line.split(/(\*\*.*?\*\*|\*.*?\*)/g);
+      return (
+        <span key={i}>
+          {parts.map((part, j) => {
+            if (part.startsWith('**') && part.endsWith('**')) return <strong key={j}>{part.slice(2, -2)}</strong>;
+            if (part.startsWith('*') && part.endsWith('*')) return <em key={j}>{part.slice(1, -1)}</em>;
+            return <span key={j}>{part}</span>;
+          })}
+          {i < text.split('\n').length - 1 && <br />}
+        </span>
+      );
+    });
+  };
+
   // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        duration: 0.6,
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-      },
-    },
-  };
-
-  const buttonVariants = {
-    initial: { scale: 1 },
-    hover: {
-      scale: 1.05,
-      y: -2,
-      boxShadow: '0 10px 25px rgba(59, 130, 246, 0.15)',
-      transition: {
-        type: 'spring' as const,
-        stiffness: 400,
-        damping: 10,
-      },
-    },
-    tap: { scale: 0.95 },
-  };
+  const containerVariants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.4 } } };
 
   return (
     <AdminLayout currentPath="/admin/assistant">
-      <motion.div
-        className="min-h-full w-full overflow-hidden relative"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          height: 'calc(100vh - 120px)',
-          position: 'relative',
-          overflow: 'hidden'
-        }}
-      >
-        {/* Main Content Area */}
-        <div style={{ display: 'flex', flex: 1, overflow: 'hidden', position: 'relative', flexDirection: 'column' }}>
-          {/* Integrated New Chat and History buttons - blended into page */}
-          <div style={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            alignItems: 'center',
-            padding: '1rem 1.5rem 0 1.5rem',
-            background: 'transparent',
-            zIndex: 50,
-            position: 'absolute',
-            top: 0,
-            right: 0
-          }}>
-            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-              <motion.button
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={startNewConversation}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  padding: '0.5rem 1rem',
-                  background: 'rgba(59, 130, 246, 0.9)',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '0.5rem',
-                  cursor: 'pointer',
-                  fontSize: '0.875rem',
-                  fontWeight: '500',
-                  backdropFilter: 'blur(10px)',
-                  boxShadow: '0 4px 12px rgba(59, 130, 246, 0.25)',
-                  transition: 'all 0.3s ease'
-                }}
-              >
-                <Plus size={16} />
-                <span>New Chat</span>
-              </motion.button>
-              
-              <motion.button
-              data-testid="history-toggle-button" 
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setSidebarOpen(!sidebarOpen)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: '0.5rem',
-                  background: 'rgba(255, 255, 255, 0.8)',
-                  color: '#6b7280',
-                  border: 'none',
-                  borderRadius: '0.5rem',
-                  cursor: 'pointer',
-                  backdropFilter: 'blur(10px)',
-                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-                  transition: 'all 0.3s ease'
-                }}
-              >
-                <History size={20} />
-              </motion.button>
+      <motion.div className="ai-assistant-container" variants={containerVariants} initial="hidden" animate="visible">
+        
+        <div className="ai-content-wrapper">
+          {/* Header */}
+          <div className="ai-top-actions">
+            <div className="ai-toolbar-title">
+              <Sparkles size={18} className="text-blue-500" />
+              <span>Omnie Assistant</span>
+            </div>
+            <div className="ai-action-buttons">
+               <button onClick={() => setSettingsModalOpen(true)} className="ai-btn-settings"><Settings size={16} /> API Settings</button>
+               <button onClick={startNewConversation} className="ai-btn-new-chat"><Plus size={16} /> New Chat</button>
+               <button onClick={() => navigate('/admin/assistant/history')} className="ai-btn-history"><History size={18} /></button>
             </div>
           </div>
 
-          {/* Main content wrapper */}
-          <div style={{ display: 'flex', flex: 1, overflow: 'hidden', position: 'relative' }}>
-          {/* Animated background elements */}
-          <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
-            <motion.div
-              style={{
-                position: 'absolute',
-                top: '-10%',
-                right: '-5%',
-                width: '400px',
-                height: '400px',
-                background: 'radial-gradient(circle, rgba(59,130,246,0.2) 0%, transparent 70%)',
-                borderRadius: '50%',
-              }}
-              animate={{
-                y: [-10, 10, -10],
-                rotate: [-2, 2, -2],
-              }}
-              transition={{
-                duration: 6,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
-            />
-            <motion.div
-              style={{
-                position: 'absolute',
-                bottom: '-15%',
-                left: '-8%',
-                width: '500px',
-                height: '500px',
-                background: 'radial-gradient(circle, rgba(139,92,246,0.2) 0%, transparent 70%)',
-                borderRadius: '50%',
-              }}
-              animate={{
-                y: [-10, 10, -10],
-                rotate: [-2, 2, -2],
-              }}
-              transition={{
-                duration: 6,
-                repeat: Infinity,
-                ease: 'easeInOut',
-                delay: 3,
-              }}
-            />
-          </div>
+          <div className="ai-main-flex-wrapper">
+            <div className="ai-background">
+              <motion.div className="ai-bg-orb-1" animate={{ y: [-10, 10, -10] }} transition={{ duration: 6, repeat: Infinity }} />
+              <motion.div className="ai-bg-orb-2" animate={{ y: [10, -10, 10] }} transition={{ duration: 6, repeat: Infinity }} />
+            </div>
 
-          {/* Sidebar */}
-          <div style={{
-            width: sidebarOpen ? '280px' : '0',
-            borderRight: sidebarOpen ? '1px solid rgba(229,231,235,1)' : 'none',
-            padding: sidebarOpen ? '1rem' : '0',
-            overflowY: 'auto',
-            overflowX: 'hidden',
-          backgroundColor: 'white',
-          position: 'relative',
-          zIndex: 10,
-          transition: 'all 0.3s ease-in-out'
-        }}>
-          {sidebarOpen && (
-            <>
-              <h3 style={{ fontSize: '0.875rem', fontWeight: '600', color: '#6b7280', marginBottom: '0.5rem' }}>
-                Conversations
-              </h3>
-
-              {loadingConversations ? (
-                <p style={{ textAlign: 'center', color: '#9ca3af', fontSize: '0.875rem' }}>Loading...</p>
-              ) : conversations.length === 0 ? (
-                <p style={{ textAlign: 'center', color: '#9ca3af', fontSize: '0.875rem' }}>No conversations yet</p>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                  {conversations.map((conv) => (
-                    <div
-                      key={conv.conversationId}
-                      style={{
-                        padding: '0.75rem',
-                        backgroundColor: currentConversation?.conversationId === conv.conversationId ? '#dbeafe' : 'white',
-                        borderRadius: '0.5rem',
-                        cursor: 'pointer',
-                        border: '1px solid #e5e7eb',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center'
-                      }}
-                      onClick={() => loadConversation(conv.conversationId)}
-                    >
-                      <div style={{ flex: 1, overflow: 'hidden' }}>
-                        <p style={{
-                          fontSize: '0.875rem',
-                          fontWeight: '500',
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis'
-                        }}>
-                          {conv.title || 'Untitled'}
-                        </p>
+            {/* Sidebar */}
+            <div className={`ai-sidebar ${sidebarOpen ? '' : 'closed'}`}>
+                <h3 className="ai-sidebar-title">Recent Conversations</h3>
+                {loadingConversations ? <p className="p-4 text-sm text-gray-400">Loading...</p> : (
+                  <div className="ai-conversation-list">
+                    {conversations.map((conv) => (
+                      <div key={conv.conversationId} className={`ai-conversation-item ${currentConversation?.conversationId === conv.conversationId ? 'active' : ''}`} onClick={() => loadConversation(conv.conversationId)}>
+                        <p className="ai-conversation-title">{conv.title || 'Untitled'}</p>
+                        <button onClick={(e) => { e.stopPropagation(); deleteConversation(conv.conversationId); }} className="ai-conversation-delete">×</button>
                       </div>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          deleteConversation(conv.conversationId);
-                        }}
-                        style={{
-                          padding: '0.25rem',
-                          backgroundColor: 'transparent',
-                          border: 'none',
-                          color: '#ef4444',
-                          cursor: 'pointer',
-                          fontSize: '1.25rem'
-                        }}
-                        title="Delete conversation"
-                      >
-                        ×
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </>
-          )}
-        </div>
-
-        {/* Main Content Area */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 10 }}>
-          {messages.length === 0 ? (
-            /* Welcome Screen */
-            <motion.div
-              style={{
-                flex: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '1rem',
-                textAlign: 'center',
-                overflow: 'hidden'
-              }}
-              variants={itemVariants}
-            >
-              {/* AI Badge */}
-              <motion.div
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  marginBottom: '0.5rem',
-                  padding: '0.3rem 0.75rem',
-                  background: 'linear-gradient(to bottom right, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.1))',
-                  borderRadius: '9999px',
-                  border: '1px solid rgba(59, 130, 246, 0.5)',
-                  backdropFilter: 'blur(10px)'
-                }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <motion.div
-                  animate={{
-                    scale: [1, 1.2, 1],
-                    rotate: [0, 180, 360],
-                  }}
-                  transition={{
-                    duration: 4,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  }}
-                >
-                  <Sparkles size={12} color="#3b82f6" />
-                </motion.div>
-                <span style={{ fontSize: '0.75rem', fontWeight: '500', color: '#3b82f6' }}>
-                  AI-Powered Assistant
-                </span>
-              </motion.div>
-
-              {/* Main Greeting */}
-              <motion.h1
-                style={{
-                  fontSize: '2rem',
-                  fontWeight: 'bold',
-                  marginBottom: '0.5rem',
-                  background: 'linear-gradient(to right, #1f2937, #3b82f6, #1e40af)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                  lineHeight: '1.2'
-                }}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
-                {getGreeting()} <br />
-                how can I help you today?
-              </motion.h1>
-
-              {/* Description */}
-              <motion.p
-                style={{
-                  fontSize: '0.95rem',
-                  color: '#6b7280',
-                  maxWidth: '700px',
-                  marginBottom: '1.5rem',
-                  lineHeight: '1.5'
-                }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-              >
-                Omnie is your intelligent AI companion for the Digital Audio Guide System. <br />
-                Get instant insights, manage data, and streamline administrative tasks with natural language conversations.
-              </motion.p>
-
-              {/* Quick Actions */}
-              <motion.div
-                style={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  gap: '0.5rem',
-                  justifyContent: 'center',
-                  marginBottom: '1rem',
-                  maxWidth: '600px'
-                }}
-                initial="hidden"
-                animate="visible"
-                variants={{
-                  hidden: {},
-                  visible: {
-                    transition: {
-                      staggerChildren: 0.1,
-                    },
-                  },
-                }}
-              >
-                {quickActions.map((action, idx) => (
-                  <motion.div
-                    key={idx}
-                    variants={{
-                      hidden: { opacity: 0, y: 20, scale: 0.8 },
-                      visible: {
-                        opacity: 1,
-                        y: 0,
-                        scale: 1,
-                        transition: {
-                          type: 'spring',
-                          stiffness: 300,
-                          damping: 20,
-                        },
-                      },
-                    }}
-                  >
-                    <motion.button
-                      variants={buttonVariants}
-                      initial="initial"
-                      whileHover="hover"
-                      whileTap="tap"
-                      onClick={() => setInputMessage(action.text)}
-                      style={{
-                        padding: '0.5rem 1rem',
-                        fontSize: '0.875rem',
-                        background: 'white',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '0.5rem',
-                        cursor: 'pointer',
-                        color: '#374151',
-                        fontWeight: '500',
-                        backdropFilter: 'blur(10px)'
-                      }}
-                    >
-                      <span style={{ marginRight: '0.5rem' }}>{action.emoji}</span>
-                      {action.label}
-                    </motion.button>
-                  </motion.div>
-                ))}
-              </motion.div>
-
-              {/* Input Form - Inside Welcome Screen */}
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                style={{ width: '100%', maxWidth: '48rem', marginTop: '2rem' }}
-              >
-                <form onSubmit={sendMessage} style={{ width: '100%' }}>
-                  <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-end' }}>
-                    <textarea
-                      value={inputMessage}
-                      onChange={(e) => setInputMessage(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' && !e.shiftKey) {
-                          e.preventDefault();
-                          sendMessage(e);
-                        }
-                      }}
-                      placeholder="Ask Anything..."
-                      disabled={isLoading}
-                      rows={2}
-                      style={{
-                        flex: 1,
-                        padding: '0.75rem 1rem',
-                        border: '1px solid rgba(209, 213, 219, 0.5)',
-                        borderRadius: '0.75rem',
-                        fontSize: '0.95rem',
-                        outline: 'none',
-                        resize: 'none',
-                        fontFamily: 'inherit',
-                        background: 'rgba(255, 255, 255, 0.8)',
-                        backdropFilter: 'blur(10px)'
-                      }}
-                    />
-                    <motion.button
-                      type="submit"
-                      disabled={isLoading || !inputMessage.trim()}
-                      whileHover={!isLoading && inputMessage.trim() ? { scale: 1.05, y: -2 } : {}}
-                      whileTap={!isLoading && inputMessage.trim() ? { scale: 0.95 } : {}}
-                      style={{
-                        padding: '0.75rem 2rem',
-                        background: isLoading || !inputMessage.trim() 
-                          ? '#9ca3af' 
-                          : 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '0.75rem',
-                        cursor: isLoading || !inputMessage.trim() ? 'not-allowed' : 'pointer',
-                        fontWeight: '600',
-                        fontSize: '1rem',
-                        minWidth: '100px',
-                        whiteSpace: 'nowrap',
-                        boxShadow: isLoading || !inputMessage.trim() ? 'none' : '0 4px 12px rgba(59, 130, 246, 0.4)'
-                      }}
-                    >
-                      {isLoading ? 'Sending...' : 'Send'}
-                    </motion.button>
+                    ))}
                   </div>
-                  <div style={{
-                    marginTop: '0.5rem',
-                    fontSize: '0.75rem',
-                    color: '#6b7280',
-                    textAlign: 'right'
-                  }}>
-                    Press <strong>Enter</strong> to send, <strong>Shift + Enter</strong> for new line
-                  </div>
-                </form>
-              </motion.div>
-            </motion.div>
-          ) : (
-            /* Messages Display with Input Form */
-            <>
-              <div style={{
-                flex: 1,
-                overflowY: 'auto',
-                padding: '1rem',
-                background: 'rgba(255, 255, 255, 0.5)',
-                backdropFilter: 'blur(10px)'
-              }}>
-                {messages.map((msg, idx) => {
-                  const isUser = msg.senderType === 'user';
-                  // Simple markdown-like formatting
-                  const formatContent = (text: string) => {
-                    return text
-                      .split('\n')
-                      .map((line, i) => {
-                        // Convert **text** to bold and *text* to italic
-                        const parts = line.split(/(\*\*.*?\*\*|\*.*?\*)/g);
-                        return (
-                          <span key={i}>
-                            {parts.map((part, j) => {
-                              if (part.startsWith('**') && part.endsWith('**')) {
-                                return <strong key={j}>{part.slice(2, -2)}</strong>;
-                              } else if (part.startsWith('*') && part.endsWith('*')) {
-                                return <em key={j}>{part.slice(1, -1)}</em>;
-                              }
-                              return <span key={j}>{part}</span>;
-                            })}
-                            {i < text.split('\n').length - 1 && <br />}
-                          </span>
-                        );
-                      });
-                  };
-
-                  return (
-                    <motion.div
-                      key={msg.messageId || idx}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3 }}
-                      style={{
-                        marginBottom: '1rem',
-                        display: 'flex',
-                        gap: '0.5rem',
-                        justifyContent: isUser ? 'flex-end' : 'flex-start',
-                        alignItems: 'flex-start'
-                      }}
-                    >
-                      {/* Profile picture for AI (left side) */}
-                      {!isUser && (
-                        <div style={{
-                          width: '32px',
-                          height: '32px',
-                          borderRadius: '50%',
-                          background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          color: 'white',
-                          fontWeight: '600',
-                          fontSize: '0.875rem',
-                          flexShrink: 0,
-                          boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)'
-                        }}>
-                          <Sparkles size={16} />
-                        </div>
-                      )}
-                      
-                      <div
-                        style={{
-                          maxWidth: '70%',
-                          padding: '0.75rem 1rem',
-                          borderRadius: '0.75rem',
-                          backgroundColor: isUser ? '#3b82f6' : '#f3f4f6',
-                          color: isUser ? 'white' : '#1f2937'
-                        }}
-                      >
-                        <div style={{ margin: 0 }}>
-                          {formatContent(msg.content)}
-                        </div>
-                      </div>
-
-                      {/* Profile picture for User (right side) */}
-                      {isUser && (
-                        <div style={{
-                          width: '32px',
-                          height: '32px',
-                          borderRadius: '50%',
-                          background: 'linear-gradient(135deg, #10b981, #059669)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          color: 'white',
-                          fontWeight: '600',
-                          fontSize: '0.875rem',
-                          flexShrink: 0,
-                          boxShadow: '0 2px 8px rgba(16, 185, 129, 0.3)'
-                        }}>
-                          A
-                        </div>
-                      )}
-                    </motion.div>
-                  );
-                })}
-                
-                {/* Loading indicator */}
-                {isLoading && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    style={{
-                      marginBottom: '1rem',
-                      display: 'flex',
-                      gap: '0.5rem',
-                      justifyContent: 'flex-start',
-                      alignItems: 'flex-start'
-                    }}
-                  >
-                    {/* AI profile picture */}
-                    <div style={{
-                      width: '32px',
-                      height: '32px',
-                      borderRadius: '50%',
-                      background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: 'white',
-                      fontWeight: '600',
-                      fontSize: '0.875rem',
-                      flexShrink: 0,
-                      boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)'
-                    }}>
-                      <Sparkles size={16} />
-                    </div>
-                    
-                    <div
-                      style={{
-                        maxWidth: '70%',
-                        padding: '0.75rem 1rem',
-                        borderRadius: '0.75rem',
-                        backgroundColor: '#f3f4f6',
-                        color: '#6b7280',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.5rem'
-                      }}
-                    >
-                      <motion.div
-                        animate={{
-                          rotate: 360
-                        }}
-                        transition={{
-                          duration: 1,
-                          repeat: Infinity,
-                          ease: 'linear'
-                        }}
-                      >
-                        <Sparkles size={16} color="#3b82f6" />
-                      </motion.div>
-                      <span>Omnie is thinking...</span>
-                    </div>
-                  </motion.div>
                 )}
-                
-                <div ref={messagesEndRef} />
-              </div>
+            </div>
 
-              {/* Input Form - In Chat View */}
-              <form onSubmit={sendMessage} style={{
-                padding: '1rem',
-                background: 'rgba(255, 255, 255, 0.95)',
-                backdropFilter: 'blur(10px)',
-                borderTop: '1px solid rgba(229,231,235,0.5)'
-              }}>
-                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-end' }}>
-                  <textarea
-                    value={inputMessage}
-                    onChange={(e) => setInputMessage(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        sendMessage(e);
-                      }
-                    }}
-                    placeholder="Ask Anything..."
-                    disabled={isLoading}
-                    rows={2}
-                    style={{
-                      flex: 1,
-                      padding: '0.75rem 1rem',
-                      border: '1px solid rgba(209, 213, 219, 0.5)',
-                      borderRadius: '0.75rem',
-                      fontSize: '0.95rem',
-                      outline: 'none',
-                      resize: 'none',
-                      fontFamily: 'inherit',
-                      background: 'rgba(255, 255, 255, 0.8)',
-                      backdropFilter: 'blur(10px)'
-                    }}
-                  />
-                  <motion.button
-                    type="submit"
-                    disabled={isLoading || !inputMessage.trim()}
-                    whileHover={!isLoading && inputMessage.trim() ? { scale: 1.05, y: -2 } : {}}
-                    whileTap={!isLoading && inputMessage.trim() ? { scale: 0.95 } : {}}
-                    style={{
-                      padding: '0.75rem 2rem',
-                      background: isLoading || !inputMessage.trim() 
-                        ? '#9ca3af' 
-                        : 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '0.75rem',
-                      cursor: isLoading || !inputMessage.trim() ? 'not-allowed' : 'pointer',
-                      fontWeight: '600',
-                      fontSize: '1rem',
-                      minWidth: '100px',
-                      whiteSpace: 'nowrap',
-                      boxShadow: isLoading || !inputMessage.trim() ? 'none' : '0 4px 12px rgba(59, 130, 246, 0.4)'
-                    }}
-                  >
-                    {isLoading ? 'Sending...' : 'Send'}
-                  </motion.button>
+            {/* Main Chat Area */}
+            <div className="ai-main-content">
+              {messages.length === 0 ? (
+                <div className="ai-welcome-screen">
+                  <div className="ai-badge">
+                    <Sparkles size={12} color="#3b82f6" />
+                    <span className="ai-badge-text">AI-Powered Assistant</span>
+                  </div>
+                  <h1 className="ai-greeting">{getGreeting()} <br /> how can I help you?</h1>
+                  <p className="ai-description">Omnie's your intelligent AI companion for the Digital Audio Guide System.
+                  <br />Get instant insights, manage data, and streamline administrative tasks with natural language conversations.</p>
+                  
+                  <div className="ai-quick-actions">
+                    {quickActions.map((action, idx) => (
+                      <button key={idx} onClick={() => setInputMessage(action.text)} className="ai-quick-action-btn">
+                        <span>{action.emoji}</span> {action.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="ai-input-form-wrapper">
+                    <form onSubmit={sendMessage} className="ai-input-form">
+                      <div className="ai-input-container">
+                        <textarea ref={textareaRef} value={inputMessage} onChange={(e) => setInputMessage(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(e); } }} placeholder="Ask Anything..." disabled={isLoading} rows={2} className="ai-textarea" />
+                        <button type="submit" disabled={isLoading || !inputMessage.trim()} className={`ai-send-btn ${isLoading || !inputMessage.trim() ? 'disabled' : 'active'}`}>
+                          {isLoading ? '...' : 'Send'}
+                        </button>
+                      </div>
+                    </form>
+                  </div>
                 </div>
-                <div style={{
-                  marginTop: '0.5rem',
-                  fontSize: '0.75rem',
-                  color: '#6b7280',
-                  textAlign: 'right'
-                }}>
-                  Press <strong>Enter</strong> to send, <strong>Shift + Enter</strong> for new line
-                </div>
-              </form>
-            </>
+              ) : (
+                <>
+                  <div className="ai-messages-container">
+                    {messages.map((msg, idx) => (
+                      <div key={msg.messageId || idx} className={`ai-message ${msg.senderType === 'user' ? 'user' : 'assistant'}`}>
+                        {msg.senderType !== 'user' && (
+                          <div className="ai-message-avatar assistant"><Sparkles size={18} /></div>
+                        )}
+                        <div className="ai-message-bubble">
+                          <div className="ai-message-content">{formatContent(msg.content)}</div>
+                        </div>
+                      </div>
+                    ))}
+                    {isLoading && (
+                      <div className="ai-message assistant">
+                        <div className="ai-message-avatar assistant"><Sparkles size={18} /></div>
+                        <div className="ai-loading-bubble">Omnie is thinking...</div>
+                      </div>
+                    )}
+                    <div ref={messagesEndRef} />
+                  </div>
+
+                  <form onSubmit={sendMessage} className="ai-chat-input-form">
+                    <div className="ai-input-container">
+                      <textarea value={inputMessage} onChange={(e) => setInputMessage(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(e); } }} placeholder="Ask Anything..." disabled={isLoading} rows={1} className="ai-textarea" />
+                      <button type="submit" disabled={isLoading || !inputMessage.trim()} className={`ai-send-btn ${isLoading || !inputMessage.trim() ? 'disabled' : 'active'}`}>Send</button>
+                    </div>
+                  </form>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Settings Modal */}
+       {settingsModalOpen && (
+  <div className="ai-modal-overlay" onClick={() => setSettingsModalOpen(false)}>
+    <motion.div 
+      initial={{ y: 20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      onClick={(e) => e.stopPropagation()} 
+      className="ai-modal-content"
+    >
+      {/* Header Section */}
+      <div className="ai-modal-header">
+        <div className="ai-modal-header-text">
+          <h2 className="ai-modal-title">API Configuration</h2>
+          <p className="ai-modal-subtitle">
+            Connect your AI Assistant to Google Gemini to enable advanced AI insights and natural language processing.
+          </p>
+        </div>
+        <button className="ai-modal-close" onClick={() => setSettingsModalOpen(false)}>
+          <X size={20} />
+        </button>
+      </div>
+
+      <div className="ai-modal-body">
+        {/* Connection Status Section */}
+        <div className="ai-status-section">
+          <div className="ai-section-label">Connection Status</div>
+          {hasKey ? (
+            <div className="ai-status-card success">
+              <div className="ai-status-indicator"></div>
+              <div className="ai-status-details">
+                <span className="ai-status-text">Current API: </span>
+                <code className="ai-key-preview">"{maskedKey}"</code>
+              </div>
+            </div>
+          ) : (
+            <div className="ai-status-card warning">
+              <div className="ai-status-indicator"></div>
+              <span className="ai-status-text">No active connection found</span>
+            </div>
           )}
         </div>
+
+        {/* Form Section */}
+        <div className="ai-form-group">
+          <div className="ai-label-wrapper">
+            <label htmlFor="apiKeyInput">API Key</label>
+            <a 
+              href="https://aistudio.google.com/app/apikey" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="ai-label-link"
+            >
+              Get a key from Google AI Studio
+            </a>
+          </div>
+          <input 
+            id="apiKeyInput"
+            type="password" 
+            value={apiKey} 
+            onChange={(e) => setApiKey(e.target.value)} 
+            placeholder="Key in Your API Key Here..." 
+            className="ai-form-input" 
+          />
         </div>
+
+        {/* Actions Section */}
+        <div className="ai-modal-actions">
+          <button 
+            onClick={handleSaveApiKey} 
+            disabled={savingKey || !apiKey.trim()} 
+            className="ai-btn-save"
+          >
+            {savingKey ? 'Verifying...' : 'Save Configuration'}
+          </button>
+          
         </div>
+
+        {/* Footer Security Section */}
+        <div className="ai-modal-footer">
+          <div className="ai-security-lock">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <span>End-to-end encrypted storage</span>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  </div>
+)}
       </motion.div>
     </AdminLayout>
   );

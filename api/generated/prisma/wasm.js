@@ -172,9 +172,9 @@ exports.Prisma.FeedbackScalarFieldEnum = {
   exhibitId: 'exhibitId',
   rating: 'rating',
   description: 'description',
+  isHidden: 'isHidden',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  isHidden: 'isHidden'
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.ImageScalarFieldEnum = {
@@ -299,6 +299,7 @@ exports.Prisma.BadgeScalarFieldEnum = {
   badgeId: 'badgeId',
   name: 'name',
   description: 'description',
+  style: 'style',
   imageUrl: 'imageUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -313,8 +314,32 @@ exports.Prisma.UserBadgeScalarFieldEnum = {
 exports.Prisma.SettingsScalarFieldEnum = {
   key: 'key',
   value: 'value',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SenderTypeScalarFieldEnum = {
+  senderTypeId: 'senderTypeId',
+  senderType: 'senderType'
+};
+
+exports.Prisma.ConversationScalarFieldEnum = {
+  conversationId: 'conversationId',
+  userId: 'userId',
+  title: 'title',
+  statusId: 'statusId',
+  createdAt: 'createdAt',
+  modifiedAt: 'modifiedAt'
+};
+
+exports.Prisma.MessageScalarFieldEnum = {
+  messageId: 'messageId',
+  conversationId: 'conversationId',
+  senderTypeId: 'senderTypeId',
+  content: 'content',
+  metadata: 'metadata',
+  statusId: 'statusId',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -370,7 +395,10 @@ exports.Prisma.ModelName = {
   EmailVerificationToken: 'EmailVerificationToken',
   Badge: 'Badge',
   UserBadge: 'UserBadge',
-  settings: 'settings'
+  Settings: 'Settings',
+  SenderType: 'SenderType',
+  Conversation: 'Conversation',
+  Message: 'Message'
 };
 
 /**

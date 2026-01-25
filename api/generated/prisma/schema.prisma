@@ -96,6 +96,7 @@ model Feedback {
   exhibitId   BigInt?   @map("exhibit_id")
   rating      Int?
   description String?
+  isHidden    Boolean   @default(false) @map("is_hidden")
   createdAt   DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt   DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
   exhibit     Exhibit?  @relation(fields: [exhibitId], references: [exhibitId], onDelete: Cascade, onUpdate: NoAction)
@@ -363,11 +364,13 @@ model UserBadge {
   @@map("user_badge")
 }
 
-model settings {
-  key        String    @id
-  value      Json
-  created_at DateTime? @default(now()) @db.Timestamptz(6)
-  updated_at DateTime? @default(now()) @db.Timestamptz(6)
+model Settings {
+  key       String    @id
+  value     Json
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  @@map("settings")
 }
 
 model SenderType {
