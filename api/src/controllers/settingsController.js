@@ -4,7 +4,7 @@
  * Handles application-wide settings, including system settings like inactivity threshold.
  */
 
-const { PrismaClient } = require('../../generated/prisma');
+const prisma = require('../db/prisma');
 const logger = require('../utils/logger');
 const { logAuditAction } = require('./auditLogsController');
 const crypto = require('crypto');
@@ -42,7 +42,6 @@ function decrypt(text) {
 
 // Create a table for settings if it doesn't exist
 async function ensureSettingsTable() {
-  const prisma = new PrismaClient();
   try {
     // Check if the settings table exists by querying it
     await prisma.$queryRaw`
@@ -58,14 +57,11 @@ async function ensureSettingsTable() {
   } catch (error) {
     logger.error(`Error ensuring settings table exists: ${error.message}`);
     throw error;
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
 // Initialize default settings if they don't exist
 async function initializeDefaultSettings() {
-  const prisma = new PrismaClient();
   try {
     // Check if inactivityThresholdDays exists
     const inactivitySetting = await prisma.$queryRaw`
@@ -84,14 +80,11 @@ async function initializeDefaultSettings() {
   } catch (error) {
     logger.error(`Error initializing default settings: ${error.message}`);
     throw error;
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
 // GET /api/settings/system
 exports.getSystemSettings = async (req, res) => {
-  const prisma = new PrismaClient();
   try {
     // Ensure settings table exists
     await ensureSettingsTable();
@@ -121,14 +114,11 @@ exports.getSystemSettings = async (req, res) => {
   } catch (err) {
     logger.error(`Error retrieving system settings: ${err.message}`);
     res.status(500).json({ error: 'Server error while retrieving system settings' });
-  } finally {
-    await prisma.$disconnect();
   }
 };
 
 // PUT /api/settings/system
 exports.updateSystemSettings = async (req, res) => {
-  const prisma = new PrismaClient();
   try {
     const { inactivityThresholdDays } = req.body;
     
@@ -175,9 +165,7 @@ exports.updateSystemSettings = async (req, res) => {
   } catch (err) {
   logger.error(`Error updating system settings: ${err.stack || err}`);
   res.status(500).json({ error: 'Server error while updating system settings' });
-} finally {
-    await prisma.$disconnect();
-  }
+}
 };
 
 // Initialize settings when this module is loaded
@@ -196,7 +184,6 @@ exports.updateSystemSettings = async (req, res) => {
  * Get the Gemini API key (masked for security)
  */
 exports.getGeminiApiKey = async (req, res) => {
-  const prisma = new PrismaClient();
   try {
     const setting = await prisma.settings.findUnique({
       where: { key: 'gemini_api_key' },
@@ -233,8 +220,6 @@ exports.getGeminiApiKey = async (req, res) => {
       message: 'Error retrieving API key',
       error: error.message,
     });
-  } finally {
-    await prisma.$disconnect();
   }
 };
 
@@ -243,7 +228,6 @@ exports.getGeminiApiKey = async (req, res) => {
  * Update the Gemini API key
  */
 exports.updateGeminiApiKey = async (req, res) => {
-  const prisma = new PrismaClient();
   try {
     const { apiKey } = req.body;
 
@@ -298,8 +282,6 @@ exports.updateGeminiApiKey = async (req, res) => {
       message: 'Error updating API key',
       error: error.message,
     });
-  } finally {
-    await prisma.$disconnect();
   }
 };
 
@@ -308,7 +290,6 @@ exports.updateGeminiApiKey = async (req, res) => {
  * Delete the Gemini API key
  */
 exports.deleteGeminiApiKey = async (req, res) => {
-  const prisma = new PrismaClient();
   try {
     await prisma.settings.delete({
       where: { key: 'gemini_api_key' },
@@ -334,7 +315,5 @@ exports.deleteGeminiApiKey = async (req, res) => {
       message: 'Error deleting API key',
       error: error.message,
     });
-  } finally {
-    await prisma.$disconnect();
   }
 };
