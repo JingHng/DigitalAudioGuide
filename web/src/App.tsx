@@ -36,6 +36,7 @@ import AudioAnalyticsPage from "./components/admin/AudioAnalyticsPage";
 import AudioManagement from "./components/admin/AudioManagement";
 import SettingsPage from "./components/admin/SettingsPage";
 import AssistantPage from "./components/admin/AssistantPage";
+import AssistantHistoryPage from "./components/admin/AssistantHistoryPage";
 import AdminReviewsPage from "./components/admin/AdminReviewsPage";
 
 import NotFoundPage from "./components/NotFoundPage.tsx";
@@ -55,6 +56,7 @@ function App() {
         <Routes>
           <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
           <Route path="/admin/assistant" element={<AdminRoute><AssistantPage /></AdminRoute>} />
+          <Route path="/admin/assistant/history" element={<AdminRoute><AssistantHistoryPage /></AdminRoute>} />
           <Route path="/admin/exhibits" element={<AdminRoute><ExhibitsPage /></AdminRoute>} />
           <Route path="/admin/badges" element={<AdminRoute><BadgesPage /></AdminRoute>} />
           <Route path="/admin/audio" element={<AdminRoute><AudioManagement /></AdminRoute>} />
