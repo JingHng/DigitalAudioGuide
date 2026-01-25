@@ -23,6 +23,10 @@ router.post('/', ReviewController.createReview);
 router.put('/:id', ReviewController.updateReview);
 
 // DELETE /api/reviews/:id - Delete a specific review
+
+// PATCH /api/reviews/:id/toggle-hidden - Toggle is_hidden for a review
+router.patch('/:id/toggle-hidden', ReviewController.toggleReviewHidden);
+
 router.delete('/:id', ReviewController.deleteReview);
 
 module.exports = router;

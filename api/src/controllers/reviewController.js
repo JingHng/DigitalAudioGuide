@@ -1,6 +1,24 @@
 const ReviewModel = require('../models/reviewModel');
 
 class ReviewController {
+  // PATCH /api/reviews/:id/toggle-hidden - Toggle is_hidden for a review
+  static async toggleReviewHidden(req, res) {
+    try {
+      const { id } = req.params;
+      const updated = await ReviewModel.toggleReviewHidden(id);
+      res.json({
+        success: true,
+        data: updated,
+        message: `Review is now ${updated.is_hidden ? 'HIDDEN' : 'SHOWN'}`
+      });
+    } catch (error) {
+      console.error('Error toggling review hidden:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to toggle review hidden',
+      });
+    }
+  }
   
   // GET /api/reviews - Get all reviews with pagination and filtering
   static async getAllReviews(req, res) {

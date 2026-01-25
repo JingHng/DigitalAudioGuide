@@ -19,7 +19,7 @@ interface Review {
   rating: number;
   comment: string;
   created_at: string;
-  status?: string; // Optional, fallback to 'shown' if missing
+  is_hidden?: boolean; // Backend field
 }
 
 interface ReviewFormData {
@@ -73,19 +73,28 @@ const AdminReviewsPage: React.FC = () => {
         sort_order: sortOrder,
       });
       const response = await apiClient.get(`/reviews?${params}`);
-      // Ensure all reviews have a status (default to 'shown')
+      // Map is_hidden from backend to is_hidden in frontend
       const reviewsArr = response.data.data.reviews;
-      const reviewsWithStatus = reviewsArr.map((r: any) => ({
+      const reviewsWithHidden = reviewsArr.map((r: any) => ({
         ...r,
-        status: r.status || 'shown',
+        is_hidden: r.is_hidden ?? r.isHidden ?? false,
       }));
-      setReviews(reviewsWithStatus);
+      setReviews(reviewsWithHidden);
       setTotalPages(response.data.data.pagination.total_pages);
       setTotalReviews(response.data.data.pagination.total_count);
     } catch (err) {
       setError("Failed to fetch reviews");
     } finally {
       setLoading(false);
+    }
+  };
+  // Toggle is_hidden for a review
+  const handleToggleHidden = async (review: Review) => {
+    try {
+      await apiClient.patch(`/reviews/${review.feedback_id}/toggle-hidden`);
+      fetchReviews();
+    } catch (err) {
+      alert("Failed to toggle review hidden status.");
     }
   };
 
@@ -273,19 +282,19 @@ const AdminReviewsPage: React.FC = () => {
                     <td>{review.comment}</td>
                     <td>{new Date(review.created_at).toLocaleString()}</td>
                     <td>
-                      <span className={`admin-table-status ${review.status}`}>
-                        {review.status === "hidden" ? "Hidden" : "Shown"}
+                      <span className={`admin-table-status ${review.is_hidden ? "hidden" : "shown"}`}>
+                        {review.is_hidden ? "Hidden" : "Shown"}
                       </span>
                     </td>
                     <td>
-                      {review.status === "hidden" && (
-                        <button
-                          className="admin-table-action-btn reactivate"
-                          onClick={() => handleReactivateReview(review.feedback_id)}
-                        >
-                          <RotateCcw size={14} /> Show
-                        </button>
-                      )}
+                      <button
+                        className={`admin-table-action-btn ${review.is_hidden ? "reactivate" : "hide"}`}
+                        onClick={() => handleToggleHidden(review)}
+                        title={review.is_hidden ? "Show review" : "Hide review"}
+                      >
+                        {review.is_hidden ? <RotateCcw size={14} /> : <EyeOff size={14} />}
+                        {review.is_hidden ? " Show" : " Hide"}
+                      </button>
                     </td>
                   </tr>
                 ))}

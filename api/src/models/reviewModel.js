@@ -3,6 +3,49 @@ const { PrismaClient } = require('../../generated/prisma');
 const prisma = new PrismaClient();
 
 class ReviewModel {
+  // Toggle isHidden for a review
+  static async toggleReviewHidden(reviewId) {
+    try {
+      // Get current value
+      const review = await prisma.feedback.findUnique({
+        where: { feedbackId: BigInt(reviewId) },
+      });
+      if (!review) throw new Error('Review not found');
+      const newIsHidden = !(review.isHidden ?? review.is_hidden);
+      const updated = await prisma.feedback.update({
+        where: { feedbackId: BigInt(reviewId) },
+        data: { isHidden: newIsHidden, updatedAt: new Date() },
+        include: {
+          user: { select: { userId: true, username: true, email: true } },
+          exhibit: { select: { exhibitId: true, title: true, description: true } },
+        },
+      });
+      // Transform the response
+      return {
+        feedback_id: Number(updated.feedbackId),
+        user_id: Number(updated.userId),
+        exhibit_id: Number(updated.exhibitId),
+        rating: updated.rating,
+        comment: updated.description,
+        created_at: updated.createdAt,
+        updated_at: updated.updatedAt,
+        is_hidden: updated.isHidden,
+        user: {
+          user_id: Number(updated.user.userId),
+          username: updated.user.username,
+          email: updated.user.email,
+        },
+        exhibit: {
+          exhibit_id: Number(updated.exhibit.exhibitId),
+          title: updated.exhibit.title,
+          description: updated.exhibit.description,
+        },
+      };
+    } catch (error) {
+      console.error('Error in ReviewModel.toggleReviewHidden:', error);
+      throw error;
+    }
+  }
   
   // Get all reviews with pagination and filtering
   static async getAllReviews(filters, pagination, sorting) {
