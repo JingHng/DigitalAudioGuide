@@ -37,9 +37,9 @@ test.describe('Profile Page', () => {
     // Login as admin
     await page.goto('/login');
     
-    await page.fill('input[placeholder="Enter your username"]', TEST_USER.username);
-    await page.fill('input[placeholder="Enter your password"]', TEST_USER.password);
-    await page.click('button:has-text("Login")');
+    await page.fill('input[placeholder="Your username"]', TEST_USER.username);
+    await page.fill('input[placeholder="••••••••"]', TEST_USER.password);
+    await page.click('button:has-text("Sign In")');
     
     // Wait for redirect to admin dashboard
     await page.waitForURL('http://localhost:5173/admin/dashboard', { timeout: 15000 });

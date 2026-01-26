@@ -14,12 +14,12 @@ let adminExhibitionsCacheTime = null;
 const ADMIN_CACHE_DURATION = 2 * 60 * 1000; // 2 minutes for admin (shorter for fresher data)
 
 // Helper to clear cache when data changes
-function clearExhibitionsCache() {
+exports.clearExhibitionsCache = function clearExhibitionsCache() {
   exhibitionsCache = null;
   exhibitionsCacheTime = null;
   adminExhibitionsCache = null;
   adminExhibitionsCacheTime = null;
-}
+};
 
 /**
  * @route   GET /api/exhibitions
@@ -173,7 +173,7 @@ exports.createExhibition = async (req, res) => {
     );
 
     // Clear cache after modification
-    clearExhibitionsCache();
+    exports.clearExhibitionsCache();
 
     // Return the ID as a string to avoid BigInt serialization issues
     res.status(201).json({ 
@@ -256,7 +256,7 @@ exports.updateExhibition = async (req, res) => {
     );
 
     // Clear cache after modification
-    clearExhibitionsCache();
+    exports.clearExhibitionsCache();
 
     res.status(200).json(updatedExhibition);
   } catch (err) {
@@ -312,7 +312,7 @@ exports.deleteExhibition = async (req, res) => {
     );
 
     // Clear cache after modification
-    clearExhibitionsCache();
+    exports.clearExhibitionsCache();
 
     res.status(200).json({ message: "Exhibition and its exhibits were marked as inactive." });
   } catch (err) {
@@ -442,7 +442,7 @@ exports.reactivateExhibition = async (req, res) => {
     );
 
     // Clear cache after modification
-    clearExhibitionsCache();
+    exports.clearExhibitionsCache();
 
     res.status(200).json({ message: "Exhibition and its exhibits were reactivated." });
   } catch (err) {
@@ -869,6 +869,9 @@ exports.updateExhibitSequence = async (req, res) => {
       { ip_address: req.ip, user_agent: req.get("User-Agent") }
     );
 
+    // Clear cache after reordering
+    exports.clearExhibitionsCache();
+
     res.status(200).json({ 
       message: "Exhibit sequence updated successfully.",
       exhibit: result.updatedExhibit 
@@ -964,6 +967,9 @@ exports.batchUpdateExhibitSequences = async (req, res) => {
       },
       { ip_address: req.ip, user_agent: req.get("User-Agent") }
     );
+
+    // Clear cache after reordering
+    exports.clearExhibitionsCache();
 
     res.status(200).json({ 
       message: `Successfully reordered ${updatedExhibits.length} exhibits.`,

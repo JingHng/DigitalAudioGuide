@@ -27,7 +27,8 @@ test.describe('Exhibits Admin CRUD Tests', () => {
         const exhibitions = await exhibitionsResponse.json();
         
         if (exhibitions.length > 0) {
-            exhibitionId = exhibitions[0].exhibitionId;
+            exhibitionId = exhibitions[0].exhibitionId.toString();
+            console.log('Using exhibitionId:', exhibitionId);
         }
     });
 
@@ -70,9 +71,15 @@ test.describe('Exhibits Admin CRUD Tests', () => {
             multipart: {
                 title: uniqueExhibitTitle,
                 description: 'Test exhibit for E2E testing',
-                exhibitionId: exhibitionId.toString()
+                exhibitionId: exhibitionId.toString(),
+                additionalDescription: ''
             }
         });
+
+        if (response.status() !== 201) {
+            const errorBody = await response.json();
+            console.error('Error creating exhibit:', errorBody);
+        }
 
         expect(response.status()).toBe(201);
         const body = await response.json();
