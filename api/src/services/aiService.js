@@ -278,17 +278,17 @@ async function executeFunction(funcCall, context = null) {
         }
         break;
 
-      case 'get_all_reviews':
+case 'get_all_reviews':
+  const sortByField = args.sortBy === 'created_at' ? 'createdAt' : (args.sortBy || 'createdAt');
         const reviews = await prisma.feedback.findMany({
           where: args.search ? {
-            review_text: { contains: args.search, mode: 'insensitive' }
+            description: { contains: args.search, mode: 'insensitive' }
           } : undefined,
           include: {
             user: {
               select: {
                 username: true,
-                firstName: true,
-                lastName: true
+                
               }
             },
             exhibit: {
@@ -299,17 +299,22 @@ async function executeFunction(funcCall, context = null) {
           },
           take: args.pageSize || 10,
           skip: ((args.page || 1) - 1) * (args.pageSize || 10),
-          orderBy: args.sortBy ? { [args.sortBy]: args.order || 'desc' } : { created_at: 'desc' }
-        });
+          orderBy: { [sortByField]: args.order || 'desc' }  
+              });
         
         const reviewCount = await prisma.feedback.count({
           where: args.search ? {
-            review_text: { contains: args.search, mode: 'insensitive' }
+            description: { contains: args.search, mode: 'insensitive' }
           } : undefined
         });
         
         result = {
-          reviews,
+          reviews: reviews.map(r => ({
+            ...r,
+            feedbackId: r.feedbackId.toString(),
+            userId: r.userId ? r.userId.toString() : null,
+            exhibitId: r.exhibitId ? r.exhibitId.toString() : null
+          })),
           totalCount: reviewCount,
           page: args.page || 1,
           pageSize: args.pageSize || 10

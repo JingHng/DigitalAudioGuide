@@ -206,7 +206,7 @@ async function getDisplayCommonLanguagesUsed({ limit = 10 } = {}) {
     const languageCounts = {};
     users.forEach(user => {
       if (user.language) {
-        const langName = user.language.languageName || 'Unknown';
+        const langName = user.language.title || 'Unknown';
         languageCounts[langName] = (languageCounts[langName] || 0) + 1;
       }
     });
@@ -313,14 +313,14 @@ async function getScansPerExhibitStats({ exhibitId = null } = {}) {
     const exhibits = await prisma.exhibit.findMany({
       where: exhibitId ? { exhibitId: BigInt(exhibitId) } : undefined,
       include: {
-        qrCode: true,
+        qrCodes: true,
       },
     });
 
     const stats = exhibits.map(exhibit => ({
       exhibitId: exhibit.exhibitId.toString(),
       exhibitTitle: exhibit.title,
-      scanCount: exhibit.qrCode.length > 0 ? Math.floor(Math.random() * 1000) + 100 : 0,
+      scanCount: exhibit.qrCodes.length > 0 ? Math.floor(Math.random() * 1000) + 100 : 0,
     }));
 
     return {
