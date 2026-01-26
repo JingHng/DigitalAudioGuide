@@ -259,7 +259,10 @@ exports.Prisma.UserScalarFieldEnum = {
   statusId: 'statusId',
   lastLoginAt: 'lastLoginAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  gender: 'gender',
+  dateOfBirth: 'dateOfBirth',
+  languageId: 'languageId'
 };
 
 exports.Prisma.UserRoleScalarFieldEnum = {
