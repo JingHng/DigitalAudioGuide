@@ -8,6 +8,8 @@ const { uploadImage } = require('../middleware/fileUploads');
 
 
 // --- PUBLIC ROUTES ---
+// Get exhibition statistics for dashboard (optimized)
+router.get('/stats', exhibitionsController.getExhibitionStats);
 // This route gets the list of all main exhibitions
 router.get('/', exhibitionsController.getAllExhibitions);
 // This route gets a single exhibition and the list of exhibits inside it

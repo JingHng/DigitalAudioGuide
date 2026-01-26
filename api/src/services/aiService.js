@@ -2,6 +2,7 @@ const { GoogleGenAI, HarmCategory, HarmBlockThreshold } = require('@google/genai
 const { tools } = require('../utils/assistantTools');
 const { PrismaClient } = require('../../generated/prisma');
 const prisma = new PrismaClient();
+const crypto = require('crypto');
 
 // Import all the model functions
 const {
@@ -20,8 +21,42 @@ const { getPaginatedAuditLogs } = require('../models/auditLogModel');
 const { getPaginatedEventLogs } = require('../models/eventLogModel');
 const { getAllUsers } = require('../models/userModel');
 
-// Initialize the AI model
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
+// Encryption/Decryption for API keys
+const ENCRYPTION_KEY = process.env.SETTINGS_ENCRYPTION_KEY || 'default-key-change-in-production-must-be-32-chars!!';
+const ALGORITHM = 'aes-256-cbc';
+
+function decrypt(text) {
+  const parts = text.split(':');
+  const iv = Buffer.from(parts[0], 'hex');
+  const encryptedText = parts[1];
+  const key = Buffer.from(ENCRYPTION_KEY.slice(0, 32), 'utf-8');
+  const decipher = crypto.createDecipheriv(ALGORITHM, key, iv);
+  let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
+  decrypted += decipher.final('utf8');
+  return decrypted;
+}
+
+// Function to get API key from database or environment
+async function getGeminiApiKey() {
+  try {
+    const setting = await prisma.settings.findUnique({
+      where: { key: 'gemini_api_key' },
+    });
+    
+    if (setting && setting.value) {
+      // Decrypt and return database key
+      return decrypt(setting.value);
+    }
+  } catch (error) {
+    console.error('Error fetching API key from database:', error);
+  }
+  
+  // Fallback to environment variable
+  return process.env.GEMINI_API_KEY || '';
+}
+
+// Initialize the AI model (will be updated with actual key when needed)
+let ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 
 // Model configuration - using gemini-2.5-flash 
 const MODEL_NAME = 'gemini-2.5-flash';
@@ -387,6 +422,12 @@ async function executeFallbackQuery(userMessage) {
  */
 async function generateAIResponse(userMessage, conversationHistory = []) {
   try {
+    // Get the latest API key from database or environment
+    const apiKey = await getGeminiApiKey();
+    
+    // Re-initialize AI with current API key
+    ai = new GoogleGenAI({ apiKey });
+    
     // Create execution context for tracking function calls
     const context = new FunctionExecutionContext();
 
@@ -565,6 +606,12 @@ The AI quota typically resets at midnight UTC. Until then, please use the exact 
  */
 async function generateConversationTitle(firstMessage) {
   try {
+    // Get the latest API key from database or environment
+    const apiKey = await getGeminiApiKey();
+    
+    // Re-initialize AI with current API key
+    ai = new GoogleGenAI({ apiKey });
+    
     const prompt = `Generate a short, descriptive title (max 6 words) for a conversation that starts with: "${firstMessage}"\n\nTitle:`;
 
     const response = await ai.models.generateContent({

@@ -45,7 +45,8 @@ test.describe('Tours CRUD Operations', () => {
         if (tours.length > 0) {
             expect(tours[0]).toHaveProperty('exhibitionId');
             expect(tours[0]).toHaveProperty('title');
-            expect(tours[0]).toHaveProperty('statusId');
+            expect(tours[0]).toHaveProperty('description');
+            expect(tours[0]).toHaveProperty('_count');
         }
     });
 

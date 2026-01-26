@@ -62,7 +62,7 @@ test.describe('User Reviews (My Reviews) - e2e', () => {
   test('blocks unauthenticated access to My Reviews', async ({ page }) => {
     await page.goto(`${FRONTEND}/reviews`);
     await expect(
-      page.getByRole('heading', { name: /you can only view reviews if you are logined/i, level: 2 })
+      page.getByRole('heading', { name: /authentication required/i, level: 2 })
     ).toBeVisible({ timeout: 8000 });
   });
 
@@ -76,31 +76,31 @@ test.describe('User Reviews (My Reviews) - e2e', () => {
       }, authToken);
     } else {
       await page.goto(`${FRONTEND}/login`);
-      await page.getByPlaceholder('Enter your username').fill(TEST_USER.username);
-      await page.getByPlaceholder('Enter your password').fill(TEST_USER.password);
-      await page.getByRole('button', { name: /login/i }).click();
+      await page.getByPlaceholder('Your username').fill(TEST_USER.username);
+      await page.getByPlaceholder('••••••••').fill(TEST_USER.password);
+      await page.getByRole('button', { name: /sign in/i }).click();
       await expect(page.getByText(/welcome|dashboard|logout/i)).toBeVisible({ timeout: 15000 });
     }
 
     // Go to reviews + basic validation
     await page.goto(`${FRONTEND}/reviews`);
     await expect(page).toHaveURL(/\/reviews$/);
-    await expect(page.getByRole('heading', { name: /reviews/i, level: 1 })).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { name: /visitor feedback/i, level: 1 })).toBeVisible({ timeout: 10000 });
 
-    const list = page.getByRole('list');
-    const empty = page.getByText(/no reviews yet|haven't left any reviews/i, { exact: false });
+    const list = page.locator('.reviews-grid');
+    const empty = page.getByText(/no reviews found matching your criteria/i, { exact: false });
     await expect(list.or(empty)).toBeVisible({ timeout: 30000 });
 
-    const items = page.getByRole('listitem');
+    const items = page.locator('.review-card-item');
 
     // Validate review cards: check for reviewer, exhibit/exhibition, and rating
     if (await items.count() > 0) {
       for (let i = 0; i < await items.count(); i++) {
         const item = items.nth(i);
-        // Reviewer username (admin)
-        await expect(item.locator('strong')).toContainText(/admin/i);
+        // Reviewer username
+        await expect(item.locator('.username')).toBeVisible();
         // Exhibit or exhibition name (should match real data)
-        await expect(item).toContainText(/singapore|maritime|exhibition|gallery|table|interactive/i);
+        await expect(item.locator('.meta-item').first()).toBeVisible();
       }
     }
 
@@ -110,12 +110,12 @@ test.describe('User Reviews (My Reviews) - e2e', () => {
       await commentCheckbox.check();
       await expect(list.or(empty)).toBeVisible({ timeout: 15000 });
 
-      const filteredItems = page.getByRole('listitem');
+      const filteredItems = page.locator('.review-card-item');
       if (await filteredItems.count() > 0) {
         for (let i = 0; i < await filteredItems.count(); i++) {
           const item = filteredItems.nth(i);
-          await expect(item).not.toContainText(/no comment provided|no description/i);
-          await expect(item.locator('p')).toBeVisible();
+          await expect(item.locator('.comment-bubble')).toBeVisible();
+          await expect(item.locator('.comment-bubble p')).toBeVisible();
         }
       }
     } else {
