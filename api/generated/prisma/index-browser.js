@@ -419,14 +419,7 @@ exports.Prisma.ModelName = {
   EmailVerificationToken: 'EmailVerificationToken',
   Badge: 'Badge',
   UserBadge: 'UserBadge',
-<<<<<<< HEAD
-  settings: 'settings',
-=======
-  Settings: 'Settings',
->>>>>>> 71fad44e85c3db34ba7a839aa117e9f25cfd4ae0
-  SenderType: 'SenderType',
-  Conversation: 'Conversation',
-  Message: 'Message'
+  settings: 'settings'
 };
 
 /**

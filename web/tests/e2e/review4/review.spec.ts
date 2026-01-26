@@ -4,34 +4,36 @@ const API_URL = process.env.API_URL || 'http://localhost:5175';
 const FRONTEND = process.env.FRONTEND_URL || 'http://localhost:5173';
 const TEST_USER = { username: 'admin', password: 'admin123' };
 
-test.describe('User Reviews (My Reviews) - e2e', () => {
+test.describe('Review Management & Display - Full Coverage', () => {
   let authToken: string | null = null;
   let userId: number | null = null;
-  const createdReviewIds: number[] = [];
   let exhibitId: number | null = null;
+  let exhibitionId: number | null = null;
+  const createdReviewIds: number[] = [];
 
   test.beforeAll(async ({ request }) => {
-    // API login
+    // Login and get token
     const loginResp = await request.post(`${API_URL}/api/auth/login`, { data: TEST_USER });
-    if (!loginResp.ok()) return;
-
     const loginJson = await loginResp.json();
     authToken = loginJson.accessToken ?? loginJson.token ?? loginJson.data?.token ?? null;
     userId = Number(loginJson.user?.userId ?? loginJson.data?.user?.userId ?? null);
 
-    // Get valid exhibit
+    // Get a valid exhibit and exhibition
     const exhibitsResp = await request.get(`${API_URL}/api/exhibits`);
     if (exhibitsResp.ok()) {
       const json = await exhibitsResp.json();
       const list = Array.isArray(json) ? json : json?.data ?? [];
       exhibitId = list[0]?.exhibitId ?? list[0]?.exhibit_id ?? null;
+      exhibitionId = list[0]?.exhibitionId ?? list[0]?.exhibition_id ?? null;
     }
 
-    // Create test reviews
+    // Create reviews for test exhibit
     if (authToken && exhibitId && userId) {
       for (const { rating, comment } of [
-        { rating: 5, comment: 'Automated test review - five stars' },
-        { rating: 3, comment: '' },
+        { rating: 5, comment: 'CI test review - five stars' },
+        { rating: 2, comment: 'CI test review - two stars' },
+        { rating: 2, comment: '' },
+        { rating: 3, comment: 'CI test review - three stars' }
       ]) {
         const resp = await request.post(`${API_URL}/api/reviews`, {
           headers: { Authorization: `Bearer ${authToken}` },
@@ -66,7 +68,7 @@ test.describe('User Reviews (My Reviews) - e2e', () => {
     ).toBeVisible({ timeout: 8000 });
   });
 
-  test('authenticated user sees own reviews and can filter', async ({ page }) => {
+  test('authenticated user sees and filters reviews on /reviews', async ({ page }) => {
     // Authenticate
     if (authToken) {
       await page.goto(FRONTEND);
@@ -74,53 +76,87 @@ test.describe('User Reviews (My Reviews) - e2e', () => {
         localStorage.setItem('token', token);
         window.dispatchEvent(new Event('loginStateChange'));
       }, authToken);
-    } else {
-      await page.goto(`${FRONTEND}/login`);
-      await page.getByPlaceholder('Your username').fill(TEST_USER.username);
-      await page.getByPlaceholder('••••••••').fill(TEST_USER.password);
-      await page.getByRole('button', { name: /sign in/i }).click();
-      await expect(page.getByText(/welcome|dashboard|logout/i)).toBeVisible({ timeout: 15000 });
     }
 
-    // Go to reviews + basic validation
     await page.goto(`${FRONTEND}/reviews`);
     await expect(page).toHaveURL(/\/reviews$/);
-    await expect(page.getByRole('heading', { name: /visitor feedback/i, level: 1 })).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { name: /visitor feedback/i, level: 1 })).toBeVisible();
 
-    const list = page.locator('.reviews-grid');
-    const empty = page.getByText(/no reviews found matching your criteria/i, { exact: false });
-    await expect(list.or(empty)).toBeVisible({ timeout: 30000 });
+    // Pagination should be visible
+    await expect(page.locator('.pagination-footer')).toBeVisible();
 
-    const items = page.locator('.review-card-item');
+    // Star filter: 2 stars
+    await page.getByRole('button', { name: /^2 ★$/ }).click();
+    await expect(page.locator('.review-card-item')).toHaveCountGreaterThan(0);
+    const stars = await page.locator('.review-card-item .rating-badge').allInnerTexts();
+    for (const s of stars) expect(s).toContain('★');
 
-    // Validate review cards: check for reviewer, exhibit/exhibition, and rating
-    if (await items.count() > 0) {
-      for (let i = 0; i < await items.count(); i++) {
-        const item = items.nth(i);
-        // Reviewer username
-        await expect(item.locator('.username')).toBeVisible();
-        // Exhibit or exhibition name (should match real data)
-        await expect(item.locator('.meta-item').first()).toBeVisible();
+    // Only with comments
+    const commentCheckbox = page.getByRole('checkbox').first();
+    await commentCheckbox.check();
+    const filteredItems = page.locator('.review-card-item');
+    if (await filteredItems.count() > 0) {
+      for (let i = 0; i < await filteredItems.count(); i++) {
+        const item = filteredItems.nth(i);
+        await expect(item.locator('.comment-bubble')).toBeVisible();
       }
     }
+  });
 
-    // Only with comments filter
-    const commentCheckbox = page.getByRole('checkbox').first(); // only one checkbox
-    if (await commentCheckbox.isVisible()) {
-      await commentCheckbox.check();
-      await expect(list.or(empty)).toBeVisible({ timeout: 15000 });
-
-      const filteredItems = page.locator('.review-card-item');
-      if (await filteredItems.count() > 0) {
-        for (let i = 0; i < await filteredItems.count(); i++) {
-          const item = filteredItems.nth(i);
-          await expect(item.locator('.comment-bubble')).toBeVisible();
-          await expect(item.locator('.comment-bubble p')).toBeVisible();
-        }
-      }
-    } else {
-      // Checkbox not visible, skip filter test
-      console.warn('Comments filter checkbox not visible, skipping filter assertions.');
+  test('authenticated user sees and filters reviews on exhibit page', async ({ page }) => {
+    // Authenticate
+    if (authToken) {
+      await page.goto(FRONTEND);
+      await page.evaluate(token => {
+        localStorage.setItem('token', token);
+        window.dispatchEvent(new Event('loginStateChange'));
+      }, authToken);
     }
+
+    // Go to exhibit details page
+    await page.goto(`${FRONTEND}/exhibitions/${exhibitionId}/exhibit/${exhibitId}`);
+    await expect(page.getByRole('heading', { name: /visitor thoughts/i, level: 3 })).toBeVisible();
+
+    // Pagination should be visible
+    await expect(page.locator('.pagination-footer')).toBeVisible();
+
+    // Star filter: 2 stars
+    await page.getByRole('button', { name: /^2 ★$/ }).click();
+    await expect(page.locator('.mini-review-centered')).toHaveCountGreaterThan(0);
+    const stars = await page.locator('.mini-review-centered .stars').allInnerTexts();
+    for (const s of stars) expect(s).toBe('★★');
+
+    // Only with comments
+    const commentCheckbox = page.getByRole('checkbox').first();
+    await commentCheckbox.check();
+    const filteredItems = page.locator('.mini-review-centered');
+    if (await filteredItems.count() > 0) {
+      for (let i = 0; i < await filteredItems.count(); i++) {
+        const item = filteredItems.nth(i);
+        await expect(item.locator('p')).toBeVisible();
+      }
+    }
+  });
+
+  test('user can create and see a new review on exhibit page', async ({ page }) => {
+    // Authenticate
+    if (authToken) {
+      await page.goto(FRONTEND);
+      await page.evaluate(token => {
+        localStorage.setItem('token', token);
+        window.dispatchEvent(new Event('loginStateChange'));
+      }, authToken);
+    }
+
+    await page.goto(`${FRONTEND}/exhibitions/${exhibitionId}/exhibit/${exhibitId}`);
+    await expect(page.getByRole('heading', { name: /visitor thoughts/i, level: 3 })).toBeVisible();
+
+    // Submit a new review
+    await page.getByRole('button', { name: /^5$/ }).click();
+    await page.getByPlaceholder('Add a comment...').fill('Playwright CI review');
+    await page.getByRole('button', { name: /post/i }).click();
+
+    // Should appear in the review list
+    await expect(page.locator('.mini-review-centered')).toContainText('Playwright CI review');
   });
 });

@@ -9,6 +9,8 @@ import {
 import "./css/ExhibitDetails.css";
 import { useAuth } from "../contexts/AuthContext";
 import { fetchExhibitRating, fetchExhibitReviews, submitExhibitReview } from "../utils/api";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import "../css/UserReviews.css";
 
 const BACKEND_URL = import.meta.env.VITE_API_TARGET || "";
 const DEFAULT_IMAGE_URL = `${BACKEND_URL}/public/images/Map.jpg`;
@@ -37,6 +39,12 @@ const ExhibitDetails: React.FC = () => {
   const [userRating, setUserRating] = useState<number>(0);
   const [userDescription, setUserDescription] = useState<string>('');
   const [submitting, setSubmitting] = useState(false);
+  // Pagination and filter state for exhibit reviews
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [perPage] = useState(3);
+  const [ratingFilter, setRatingFilter] = useState<number | null>(null);
+  const [showOnlyWithComments, setShowOnlyWithComments] = useState<boolean>(false);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -95,11 +103,36 @@ const ExhibitDetails: React.FC = () => {
   }, [currentAudio, activeWordIndex]);
 
   // 5. Load Ratings and Reviews
+  // Fetch reviews for the current page
+  const fetchReviews = async (p = 1) => {
+    if (!id) return;
+    const opts: any = { page: p, limit: 3 };
+    if (ratingFilter) {
+      opts.rating = ratingFilter;
+    }
+    if (showOnlyWithComments) {
+      opts.sortByComment = true;
+    }
+    const res = await fetchExhibitReviews(id, opts);
+    let fetched = res?.reviews || [];
+    // Frontend filter for comments if backend doesn't support it
+    if (showOnlyWithComments) {
+      fetched = fetched.filter((r: any) => r.comment && String(r.comment).trim().length > 0);
+    }
+    // Frontend filter for rating if backend doesn't support it
+    if (ratingFilter) {
+      fetched = fetched.filter((r: any) => r.rating === ratingFilter);
+    }
+    setReviews(fetched);
+    setPage(res?.pagination?.current_page || p);
+    setTotalPages(res?.pagination?.total_pages || 1);
+  };
+
   useEffect(() => {
     if (!id) return;
     fetchExhibitRating(id).then(res => setRating(Number(res) || 0));
-    fetchExhibitReviews(id, { page: 1, limit: 10 }).then(res => res?.reviews && setReviews(res.reviews));
-  }, [id]);
+    fetchReviews(1);
+  }, [id, ratingFilter, showOnlyWithComments]);
 
   const handleReviewSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,8 +141,7 @@ const ExhibitDetails: React.FC = () => {
     try {
       await submitExhibitReview(id, userRating, userDescription || null, user.userId);
       setUserRating(0); setUserDescription('');
-      const freshReviews = await fetchExhibitReviews(id, { page: 1, limit: 10 });
-      if (freshReviews?.reviews) setReviews(freshReviews.reviews);
+      await fetchReviews(1);
       const avg = await fetchExhibitRating(id); setRating(Number(avg) || 0);
     } catch (err) { console.error(err); }
     finally { setSubmitting(false); }
@@ -199,7 +231,40 @@ const ExhibitDetails: React.FC = () => {
         {/* CENTERED REVIEWS AREA */}
         <div className="lower-content-area centered">
           <h3>Visitor Thoughts</h3>
-          
+
+          {/* FILTERS BAR */}
+          <section className="filters-bar-card" style={{marginBottom: 16}}>
+            <div className="filter-group">
+              <label className="filter-label">Rating Filter</label>
+              <div className="rating-pill-container">
+                <button 
+                  className={`pill ${ratingFilter === null ? 'active' : ''}`} 
+                  onClick={() => { setRatingFilter(null); setPage(1); }}
+                >All</button>
+                {[1, 2, 3, 4, 5].map((r) => (
+                  <button 
+                    key={r} 
+                    className={`pill ${ratingFilter === r ? 'active' : ''}`} 
+                    onClick={() => { setRatingFilter(r); setPage(1); }}
+                  >
+                    {r} ★
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="filter-group toggle-group">
+              <span className="filter-label">Only with comments</span>
+              <label className="smart-switch">
+                <input 
+                  type="checkbox" 
+                  checked={showOnlyWithComments} 
+                  onChange={e => { setShowOnlyWithComments(e.target.checked); setPage(1); }} 
+                />
+                <span className="slider"></span>
+              </label>
+            </div>
+          </section>
+
           {user ? (
             <form className="clean-input-form centralized-form" onSubmit={handleReviewSubmit}>
               <div className="star-input">
@@ -216,6 +281,40 @@ const ExhibitDetails: React.FC = () => {
               <button onClick={() => navigate('/login')} className="login-link-btn">Login</button>
             </div>
           )}
+
+          {/* PAGINATION UI (below submit, above reviews) */}
+          <footer className="pagination-footer">
+            <button className="page-btn" onClick={() => fetchReviews(1)} disabled={page === 1} title="First Page">
+              <ChevronLeft size={14} style={{ marginRight: -4 }} />
+              <ChevronLeft size={14} />
+            </button>
+            <button className="page-btn" onClick={() => fetchReviews(page - 1)} disabled={page <= 1} title="Previous Page">
+              <ChevronLeft size={18} />
+            </button>
+            {page > 3 && <span className="page-info">...</span>}
+            {Array.from({ length: totalPages }, (_, i) => i + 1)
+              .filter(num => num === 1 || num === totalPages || Math.abs(num - page) <= 2)
+              .map(num => (
+                <button
+                  key={num}
+                  className={`page-btn${num === page ? ' active' : ''}`}
+                  onClick={() => fetchReviews(num)}
+                  disabled={num === page}
+                  aria-current={num === page ? 'page' : undefined}
+                >
+                  {num}
+                </button>
+              ))}
+            {page < totalPages - 2 && <span className="page-info">...</span>}
+            <button className="page-btn" onClick={() => fetchReviews(page + 1)} disabled={page >= totalPages} title="Next Page">
+              <ChevronRight size={18} />
+            </button>
+            <button className="page-btn" onClick={() => fetchReviews(totalPages)} disabled={page === totalPages} title="Last Page">
+              <ChevronRight size={14} />
+              <ChevronRight size={14} style={{ marginLeft: -4 }} />
+            </button>
+            <span className="page-info">Page <strong>{page}</strong> of {totalPages}</span>
+          </footer>
 
           <div className="reviews-stack-central">
             {reviews.length > 0 ? (
