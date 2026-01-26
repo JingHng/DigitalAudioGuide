@@ -157,18 +157,18 @@ const ExhibitDetails: React.FC = () => {
   return (
     <div className="aesthetic-page">
     <div className="exhibit-page-wrapper">
-      {/* --- EARN BADGE MODAL --- */}
-      <EarnBadgeModal
-        isOpen={!!newBadge}
-        onClose={() => setNewBadge(null)}
-        exhibitTitle={exhibit?.title || "New Badge"}
-        badgeImageUrl={
-          newBadge?.imageUrl
-            ? `${BACKEND_URL}/public/images/${newBadge.imageUrl.split("/images/")[1]}`
-            : undefined
-        }
-      />
-</div>
+        {/* --- EARN BADGE MODAL --- */}
+        <EarnBadgeModal
+          isOpen={!!newBadge}
+          onClose={() => setNewBadge(null)}
+          exhibitTitle={exhibit?.title || "New Badge"}
+          badgeImageUrl={
+            newBadge?.imageUrl
+              ? `${BACKEND_URL}/public/images/${newBadge.imageUrl.split("/images/")[1]}`
+              : undefined
+          }
+        />
+    </div>
       <audio ref={audioRef} onTimeUpdate={handleTimeUpdate} onPlay={() => setIsPlaying(true)} onPause={() => setIsPlaying(false)} onLoadedMetadata={() => setDuration(audioRef.current?.duration || 0)} />
 
       <nav className="aesthetic-nav">
