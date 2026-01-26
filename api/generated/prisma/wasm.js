@@ -174,6 +174,7 @@ exports.Prisma.FeedbackScalarFieldEnum = {
   exhibitId: 'exhibitId',
   rating: 'rating',
   description: 'description',
+  isHidden: 'isHidden',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -315,8 +316,8 @@ exports.Prisma.UserBadgeScalarFieldEnum = {
 exports.Prisma.SettingsScalarFieldEnum = {
   key: 'key',
   value: 'value',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SenderTypeScalarFieldEnum = {
@@ -396,7 +397,7 @@ exports.Prisma.ModelName = {
   EmailVerificationToken: 'EmailVerificationToken',
   Badge: 'Badge',
   UserBadge: 'UserBadge',
-  settings: 'settings',
+  Settings: 'Settings',
   SenderType: 'SenderType',
   Conversation: 'Conversation',
   Message: 'Message'

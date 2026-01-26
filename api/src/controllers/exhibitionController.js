@@ -1,8 +1,25 @@
 
-const { PrismaClient } = require('../../generated/prisma');
-const prisma = new PrismaClient();
+const prisma = require('../db/prisma');
 
 const { logAuditAction } = require("./auditLogsController");
+
+// Simple in-memory cache for exhibitions list (public endpoint)
+let exhibitionsCache = null;
+let exhibitionsCacheTime = null;
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
+// Admin cache
+let adminExhibitionsCache = null;
+let adminExhibitionsCacheTime = null;
+const ADMIN_CACHE_DURATION = 2 * 60 * 1000; // 2 minutes for admin (shorter for fresher data)
+
+// Helper to clear cache when data changes
+exports.clearExhibitionsCache = function clearExhibitionsCache() {
+  exhibitionsCache = null;
+  exhibitionsCacheTime = null;
+  adminExhibitionsCache = null;
+  adminExhibitionsCacheTime = null;
+};
 
 /**
  * @route   GET /api/exhibitions
@@ -11,16 +28,36 @@ const { logAuditAction } = require("./auditLogsController");
  */
 exports.getAllExhibitions = async (req, res) => {
   try {
+    // Check cache first
+    const now = Date.now();
+    if (exhibitionsCache && exhibitionsCacheTime && (now - exhibitionsCacheTime < CACHE_DURATION)) {
+      return res.status(200).json(exhibitionsCache);
+    }
+
     const exhibitions = await prisma.exhibition.findMany({
       where: { statusId: 1 },
-      include: {
-        _count: { select: { exhibits: { where: { statusId: 1 } } } }, // Also count only active exhibits
-        images: { where: { isPrimary: true }, take: 1 },
+      select: {
+        exhibitionId: true,
+        title: true,
+        description: true,
+        _count: { select: { exhibits: { where: { statusId: 1 } } } },
+        images: { 
+          where: { isPrimary: true }, 
+          take: 1,
+          select: {
+            imageId: true,
+            fileUrl: true,
+            isPrimary: true
+          }
+        },
       },
-      orderBy: { title: 'asc' 
-
-      },
+      orderBy: { title: 'asc' },
     });
+    
+    // Update cache
+    exhibitionsCache = exhibitions;
+    exhibitionsCacheTime = now;
+    
     res.status(200).json(exhibitions);
   } catch (err) {
     console.error("Error fetching exhibitions:", err);
@@ -135,6 +172,9 @@ exports.createExhibition = async (req, res) => {
       { ip_address: req.ip, user_agent: req.get("User-Agent") }
     );
 
+    // Clear cache after modification
+    exports.clearExhibitionsCache();
+
     // Return the ID as a string to avoid BigInt serialization issues
     res.status(201).json({ 
       message: "Exhibition created successfully", 
@@ -215,6 +255,9 @@ exports.updateExhibition = async (req, res) => {
       { ip_address: req.ip, user_agent: req.get("User-Agent") }
     );
 
+    // Clear cache after modification
+    exports.clearExhibitionsCache();
+
     res.status(200).json(updatedExhibition);
   } catch (err) {
     console.error("Error updating exhibition:", err);
@@ -268,6 +311,9 @@ exports.deleteExhibition = async (req, res) => {
       { ip_address: req.ip, user_agent: req.get("User-Agent") }
     );
 
+    // Clear cache after modification
+    exports.clearExhibitionsCache();
+
     res.status(200).json({ message: "Exhibition and its exhibits were marked as inactive." });
   } catch (err) {
     console.error("Error deactivating exhibition:", err);
@@ -281,18 +327,23 @@ exports.deleteExhibition = async (req, res) => {
 
 /**
  * @route   GET /api/exhibitions/admin/all
- * @desc    Get all exhibitions with their nested exhibits for the admin panel
+ * @desc    Get all exhibitions with their nested exhibits for the admin panel (OPTIMIZED)
  * @access  Private (Admin)
  */
 exports.getAllExhibitionsWithExhibits = async (req, res) => {
  try {
+    // Check cache first
+    const now = Date.now();
+    if (adminExhibitionsCache && adminExhibitionsCacheTime && (now - adminExhibitionsCacheTime < ADMIN_CACHE_DURATION)) {
+      return res.status(200).json(adminExhibitionsCache);
+    }
+
+    // Optimized query - fetch only necessary fields
     const exhibitionsWithExhibits = await prisma.exhibition.findMany({
-      // The select block is where we make the changes
       select: {
         exhibitionId: true,
         title: true,
         description: true,
-        // *** ADD THIS: Include the status of the parent exhibition ***
         status: {
           select: {
             statusId: true,
@@ -304,9 +355,7 @@ exports.getAllExhibitionsWithExhibits = async (req, res) => {
             exhibitId: true,
             title: true,
             description: true,
-            additionalDescription: true,
             sequence: true,
-            // *** ADD THIS: Include the status of the nested exhibit ***
             status: {
               select: {
                 statusId: true,
@@ -314,14 +363,22 @@ exports.getAllExhibitionsWithExhibits = async (req, res) => {
               }
             },
             _count: {
-              select: { images: true, audio: true },
+              select: { 
+                images: true, 
+                audio: true 
+              },
             },
+            // Only fetch primary image for performance
             images: {
+              where: {
+                isPrimary: true
+              },
+              take: 1,
               select: {
                 imageId: true,
                 fileUrl: true,
-                title: true,
                 isPrimary: true,
+                title: true,
               },
             },
           },
@@ -334,6 +391,11 @@ exports.getAllExhibitionsWithExhibits = async (req, res) => {
         title: 'asc',
       },
     });
+
+    // Update cache
+    adminExhibitionsCache = exhibitionsWithExhibits;
+    adminExhibitionsCacheTime = now;
+
     res.status(200).json(exhibitionsWithExhibits);
   } catch (err) {
     console.error("Error fetching exhibitions for admin:", err); 
@@ -378,6 +440,9 @@ exports.reactivateExhibition = async (req, res) => {
       },
       { ip_address: req.ip, user_agent: req.get("User-Agent") }
     );
+
+    // Clear cache after modification
+    exports.clearExhibitionsCache();
 
     res.status(200).json({ message: "Exhibition and its exhibits were reactivated." });
   } catch (err) {
@@ -766,44 +831,57 @@ exports.updateExhibitSequence = async (req, res) => {
       return res.status(400).json({ error: 'Sequence number is required.' });
     }
 
-    const exhibit = await prisma.exhibit.findUnique({
-      where: { exhibitId: exhibitId },
-      select: { exhibitId: true, title: true, exhibitionId: true, sequence: true },
+    // Use a transaction for better performance and consistency
+    const result = await prisma.$transaction(async (tx) => {
+      const exhibit = await tx.exhibit.findUnique({
+        where: { exhibitId: exhibitId },
+        select: { exhibitId: true, title: true, exhibitionId: true, sequence: true },
+      });
+
+      if (!exhibit) {
+        throw new Error('Exhibit not found');
+      }
+
+      // Update the sequence
+      const updatedExhibit = await tx.exhibit.update({
+        where: { exhibitId: exhibitId },
+        data: { sequence: parseInt(sequence) },
+        select: {
+          exhibitId: true,
+          title: true,
+          sequence: true,
+          exhibitionId: true,
+        },
+      });
+
+      return { exhibit, updatedExhibit };
     });
 
-    if (!exhibit) {
-      return res.status(404).json({ message: "Exhibit not found." });
-    }
-
-    // Update the sequence
-    const updatedExhibit = await prisma.exhibit.update({
-      where: { exhibitId: exhibitId },
-      data: { sequence: parseInt(sequence) },
-      select: {
-        exhibitId: true,
-        title: true,
-        sequence: true,
-        exhibitionId: true,
-      },
-    });
-
+    // Log audit action outside transaction for better performance
     await logAuditAction(
       adminUserId, null, "exhibit", "update_sequence", 
       {
         exhibitId: exhibitId.toString(),
-        title: exhibit.title,
-        oldSequence: exhibit.sequence,
+        title: result.exhibit.title,
+        oldSequence: result.exhibit.sequence,
         newSequence: sequence,
       },
       { ip_address: req.ip, user_agent: req.get("User-Agent") }
     );
 
+    // Clear cache after reordering
+    exports.clearExhibitionsCache();
+
     res.status(200).json({ 
       message: "Exhibit sequence updated successfully.",
-      exhibit: updatedExhibit 
+      exhibit: result.updatedExhibit 
     });
   } catch (err) {
     console.error("Error updating exhibit sequence:", err);
+    
+    if (err.message === 'Exhibit not found') {
+      return res.status(404).json({ message: "Exhibit not found." });
+    }
     
     // Handle unique constraint violation
     if (err.code === 'P2002') {
@@ -813,5 +891,143 @@ exports.updateExhibitSequence = async (req, res) => {
     }
     
     res.status(500).json({ message: "Failed to update exhibit sequence" });
+  }
+};
+
+/**
+ * @route   PUT /api/exhibitions/:exhibitionId/exhibits/reorder
+ * @desc    Batch update exhibit sequences for an entire exhibition (OPTIMIZED)
+ * @access  Admin only
+ */
+exports.batchUpdateExhibitSequences = async (req, res) => {
+  try {
+    const exhibitionId = BigInt(req.params.exhibitionId);
+    const { exhibits } = req.body; // Array of { exhibitId, sequence }
+    const adminUserId = req.user?.userId;
+
+    if (!Array.isArray(exhibits) || exhibits.length === 0) {
+      return res.status(400).json({ error: 'Exhibits array is required.' });
+    }
+
+    // Validate all exhibits belong to the same exhibition and data is valid
+    for (const item of exhibits) {
+      if (!item.exhibitId || item.sequence === undefined || item.sequence === null) {
+        return res.status(400).json({ 
+          error: 'Each exhibit must have exhibitId and sequence.' 
+        });
+      }
+    }
+
+    // Two-step raw SQL approach to avoid unique constraint issues
+    // Step 1: Set all to negative values (fast, no conflicts)
+    const exhibitIds = exhibits.map(item => `'${item.exhibitId}'`).join(', ');
+    
+    await prisma.$executeRawUnsafe(`
+      UPDATE exhibit 
+      SET sequence = -sequence - 1000
+      WHERE exhibit_id::text IN (${exhibitIds})
+      AND exhibition_id = ${exhibitionId}
+    `);
+
+    // Step 2: Update to final values using CASE statement
+    const caseStatements = exhibits.map(item => 
+      `WHEN '${item.exhibitId}' THEN ${parseInt(item.sequence)}`
+    ).join(' ');
+
+    await prisma.$executeRawUnsafe(`
+      UPDATE exhibit 
+      SET sequence = CASE exhibit_id::text 
+        ${caseStatements}
+      END
+      WHERE exhibit_id::text IN (${exhibitIds})
+      AND exhibition_id = ${exhibitionId}
+    `);
+
+    // Fetch updated exhibits for response
+    const updatedExhibits = await prisma.exhibit.findMany({
+      where: {
+        exhibitId: { in: exhibits.map(e => BigInt(e.exhibitId)) },
+        exhibitionId: exhibitionId,
+      },
+      select: {
+        exhibitId: true,
+        title: true,
+        sequence: true,
+      },
+      orderBy: { sequence: 'asc' }
+    });
+
+    // Log audit action
+    await logAuditAction(
+      adminUserId, null, "exhibition", "batch_reorder_exhibits", 
+      {
+        exhibitionId: exhibitionId.toString(),
+        exhibitsCount: exhibits.length,
+        updates: exhibits.map(e => ({ id: e.exhibitId.toString(), seq: e.sequence })),
+      },
+      { ip_address: req.ip, user_agent: req.get("User-Agent") }
+    );
+
+    // Clear cache after reordering
+    exports.clearExhibitionsCache();
+
+    res.status(200).json({ 
+      message: `Successfully reordered ${updatedExhibits.length} exhibits.`,
+      exhibits: updatedExhibits 
+    });
+  } catch (err) {
+    console.error("Error batch updating exhibit sequences:", err);
+    
+    // Handle unique constraint violation
+    if (err.code === 'P2002') {
+      return res.status(400).json({ 
+        message: "Duplicate sequence numbers detected. Each exhibit must have a unique sequence." 
+      });
+    }
+    
+    res.status(500).json({ message: "Failed to update exhibit sequences" });
+  }
+};
+
+/**
+ * @route   GET /api/exhibitions/stats
+ * @desc    Get exhibition statistics for dashboard (optimized - returns only what's needed)
+ * @access  Public
+ */
+exports.getExhibitionStats = async (req, res) => {
+  try {
+    // Get total count of active exhibitions
+    const totalExhibitions = await prisma.exhibition.count({
+      where: { statusId: 1 }
+    });
+
+    // Get top 6 exhibitions for dashboard display (ordered by most recently created)
+    const topExhibitions = await prisma.exhibition.findMany({
+      where: { statusId: 1 },
+      select: {
+        exhibitionId: true,
+        title: true,
+        createdAt: true,
+        _count: {
+          select: {
+            exhibits: { where: { statusId: 1 } }
+          }
+        }
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 6
+    });
+
+    res.status(200).json({
+      totalExhibitions,
+      recentExhibitions: topExhibitions.map(ex => ({
+        id: ex.exhibitionId,
+        name: ex.title,
+        exhibitCount: ex._count.exhibits
+      }))
+    });
+  } catch (err) {
+    console.error("Error fetching exhibition stats:", err);
+    res.status(500).json({ message: "Error fetching exhibition statistics" });
   }
 };

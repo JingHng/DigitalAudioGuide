@@ -12,6 +12,7 @@ class ReviewController {
         user_id,
         min_rating,
         max_rating,
+        search = '',
         sort_by = 'created_at',
         sort_order = 'desc'
       } = req.query;
@@ -19,7 +20,7 @@ class ReviewController {
       const skip = (parseInt(page) - 1) * parseInt(limit);
       const take = parseInt(limit);
 
-      const filters = { exhibit_id, user_id, min_rating, max_rating };
+      const filters = { exhibit_id, user_id, min_rating, max_rating, search };
       const pagination = { skip, take };
       const sorting = { sort_by, sort_order };
 
