@@ -29,8 +29,8 @@ test.describe('Tours Admin UI - Comprehensive Tests', () => {
         
         // Check filter buttons exist
         await expect(page.getByRole('button', { name: 'All Tours', exact: true })).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Active', exact: true })).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Inactive', exact: true })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Active Tours', exact: true })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Inactive Tours', exact: true })).toBeVisible();
     });
 
     test('should open new tour modal with correct form fields', async ({ page }) => {
@@ -100,11 +100,11 @@ test.describe('Tours Admin UI - Comprehensive Tests', () => {
         await page.waitForSelector('.manage-exhibits-container', { timeout: 20000 });
         
         // Click Active filter - use exact match
-        await page.getByRole('button', { name: 'Active', exact: true }).click();
+        await page.getByRole('button', { name: 'Active Tours', exact: true }).click();
         await page.waitForTimeout(500); // Wait for filter to apply
         
         // Check filter button is active
-        const activeFilterBtn = page.getByRole('button', { name: 'Active', exact: true });
+        const activeFilterBtn = page.getByRole('button', { name: 'Active Tours', exact: true });
         await expect(activeFilterBtn).toHaveClass(/active/);
         
         // All visible tours should not have 'tour-inactive' class
@@ -117,11 +117,11 @@ test.describe('Tours Admin UI - Comprehensive Tests', () => {
         await page.waitForSelector('.manage-exhibits-container', { timeout: 20000 });
         
         // Click Inactive filter - use exact match
-        await page.getByRole('button', { name: 'Inactive', exact: true }).click();
+        await page.getByRole('button', { name: 'Inactive Tours', exact: true }).click();
         await page.waitForTimeout(500); // Wait for filter to apply
         
         // Check filter button is active
-        const inactiveFilterBtn = page.getByRole('button', { name: 'Inactive', exact: true });
+        const inactiveFilterBtn = page.getByRole('button', { name: 'Inactive Tours', exact: true });
         await expect(inactiveFilterBtn).toHaveClass(/active/);
     });
 

@@ -81,42 +81,61 @@ exports.createExhibit = async (req, res) => {
       return res.status(400).json({ error: "Title and Exhibition ID are required." });
     }
 
-    // 1. Calculate the next sequence number (Max + 1 logic)
-    const lastExhibit = await prisma.exhibit.findFirst({
-      where: { 
-        exhibitionId: BigInt(exhibitionId),
-        statusId: 1 
-      },
-      orderBy: { sequence: 'desc' },
-      select: { sequence: true }
-    });
-    const nextSequence = lastExhibit ? (lastExhibit.sequence + 1) : 1;
+    // Retry logic to handle race conditions with parallel test runs
+    let retries = 3;
+    let newExhibit;
+    
+    while (retries > 0) {
+      try {
+        // Use a transaction to prevent race conditions with sequence calculation
+        newExhibit = await prisma.$transaction(async (tx) => {
+          // 1. Calculate the next sequence number within transaction
+          const lastExhibit = await tx.exhibit.findFirst({
+            where: { 
+              exhibitionId: BigInt(exhibitionId)
+            },
+            orderBy: { sequence: 'desc' },
+            select: { sequence: true }
+          });
+          const nextSequence = lastExhibit ? (lastExhibit.sequence + 1) : 1;
 
-    // 2. Create the Exhibit using standard Prisma 'create'
-    const newExhibit = await prisma.exhibit.create({
-      data: {
-        title,
-        description: description || '',
-        additionalDescription: additionalDescription || '',
-        exhibitionId: BigInt(exhibitionId),
-        sequence: nextSequence,
-        statusId: 1, // Active
-        // Create the primary image record if a file exists
-        images: primaryImage ? {
-          create: {
-            fileUrl: `/images/${primaryImage.filename}`,
-            title: primaryImage.originalname,
-            isPrimary: true
-          }
-        } : undefined,
-        // Generate the initial QR Code record
-        qrCodes: {
-          create: {
-            qrUrl: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/exhibit/temp-id`, 
-          }
+          // 2. Create the Exhibit within the same transaction
+          return await tx.exhibit.create({
+            data: {
+              title,
+              description: description || '',
+              additionalDescription: additionalDescription || '',
+              exhibitionId: BigInt(exhibitionId),
+              sequence: nextSequence,
+              statusId: 1, // Active
+              // Create the primary image record if a file exists
+              images: primaryImage ? {
+                create: {
+                  fileUrl: `/images/${primaryImage.filename}`,
+                  title: primaryImage.originalname,
+                  isPrimary: true
+                }
+              } : undefined,
+              // Generate the initial QR Code record
+              qrCodes: {
+                create: {
+                  qrUrl: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/exhibit/temp-id`, 
+                }
+              }
+            }
+          });
+        });
+        break; // Success, exit retry loop
+      } catch (err) {
+        if (err.code === 'P2002' && retries > 1) {
+          // Unique constraint violation, retry after a small delay
+          retries--;
+          await new Promise(resolve => setTimeout(resolve, 50 * (4 - retries))); // Exponential backoff
+          continue;
         }
+        throw err; // Re-throw if not a unique constraint error or no retries left
       }
-    });
+    }
 
     // 3. Update the QR Code URL with the actual ID
     const finalQrUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/exhibit/${newExhibit.exhibitId}`;
@@ -139,7 +158,7 @@ exports.createExhibit = async (req, res) => {
     res.status(201).json({ 
       message: "Exhibit created successfully", 
       exhibitId: newExhibit.exhibitId.toString(),
-      sequence: nextSequence 
+      sequence: newExhibit.sequence 
     });
 
   } catch (err) {
