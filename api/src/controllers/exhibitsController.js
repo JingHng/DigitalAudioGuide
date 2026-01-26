@@ -5,6 +5,7 @@ const fs = require("fs");
 const axios = require("axios");
 const qr = require("qr-image");
 const { logUserAction, logAuditAction } = require("./auditLogsController");
+const { clearExhibitionsCache } = require("./exhibitionController");
 
 let prisma;
 
@@ -155,6 +156,9 @@ exports.createExhibit = async (req, res) => {
       { ip_address: req.ip }
     );
 
+    // 6. Clear exhibitions cache
+    clearExhibitionsCache();
+
     res.status(201).json({ 
       message: "Exhibit created successfully", 
       exhibitId: newExhibit.exhibitId.toString(),
@@ -214,6 +218,9 @@ exports.updateExhibit = async (req, res) => {
       }
     );
 
+    // Clear exhibitions cache
+    clearExhibitionsCache();
+
     res.status(200).json({
         exhibitId: updatedExhibit.exhibitId,
         title: updatedExhibit.title,
@@ -249,6 +256,9 @@ exports.deleteExhibit = async (req, res) => {
       { exhibitId: exhibitToDeactivate.exhibitId.toString(), title: exhibitToDeactivate.title },
       { ip_address: req.ip, user_agent: req.get("User-Agent") }
     );
+
+    // Clear exhibitions cache
+    clearExhibitionsCache();
 
     res.status(200).json({ message: "Exhibit was marked as inactive." });
   } catch (err) {
