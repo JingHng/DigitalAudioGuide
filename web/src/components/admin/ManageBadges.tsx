@@ -101,6 +101,7 @@ const uploadBadgeImage = async (badgeId: string, file: File) => {
 const BadgeManagement: React.FC = () => {
   const [badges, setBadges] = useState<BadgeDTO[]>([]);
   const [styles, setStyles] = useState<string[]>([]);
+  const [exhibits, setExhibits] = useState<ExhibitLite[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -123,16 +124,18 @@ const BadgeManagement: React.FC = () => {
       setLoading(true);
       setError("");
 
-      const [badgeRes, styleRes] = await Promise.all([
+      const [badgeRes, styleRes, exhibitRes] = await Promise.all([
         apiClient.get("/badges/allBadges"),
         apiClient.get("/badges/styles"),
+        apiClient.get("/exhibits"),
       ]);
 
       setBadges(badgeRes.data || []);
       setStyles(styleRes.data || []);
+      setExhibits(exhibitRes.data || []);
     } catch (err) {
       console.error(err);
-      setError("Failed to fetch badges.");
+      setError("Failed to fetch badges or exhibits.");
     } finally {
       setLoading(false);
     }
@@ -158,30 +161,19 @@ const BadgeManagement: React.FC = () => {
     return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
 
-  // Exhibit options from relations
+  // Exhibit options from all exhibits
   const exhibitOptions: ExhibitOption[] = useMemo(() => {
-    const map = new Map<string, ExhibitOption>();
-
-    for (const b of badges) {
-      const ex = b.exhibit;
-      if (!ex) continue;
-
-      const exId = ex.exhibitId;
-      const exTitle = (ex.title || "Untitled Exhibit").toString();
-      const exhibitionId = ex.exhibition?.exhibitionId || "unknown";
-      const exhibitionTitle = ex.exhibition?.title || "Unknown Exhibition";
-
-      if (!map.has(exId)) {
-        map.set(exId, { exhibitId: exId, exhibitTitle: exTitle, exhibitionId, exhibitionTitle });
-      }
-    }
-
-    return Array.from(map.values()).sort((a, b) => {
+    return (exhibits || []).map((ex) => ({
+      exhibitId: ex.exhibitId,
+      exhibitTitle: (ex.title || "Untitled Exhibit").toString(),
+      exhibitionId: ex.exhibition?.exhibitionId || "unknown",
+      exhibitionTitle: ex.exhibition?.title || "Unknown Exhibition",
+    })).sort((a, b) => {
       const byExh = a.exhibitionTitle.localeCompare(b.exhibitionTitle);
       if (byExh !== 0) return byExh;
       return a.exhibitTitle.localeCompare(b.exhibitTitle);
     });
-  }, [badges]);
+  }, [exhibits]);
 
   const normalizedSearch = searchText.trim().toLowerCase();
 
