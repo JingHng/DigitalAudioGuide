@@ -162,7 +162,7 @@ exports.createExhibit = async (req, res) => {
               exhibitionId: BigInt(exhibitionId),
               sequence: nextSequence,
               statusId: 1, // Active
-              isArEnabled: Boolean(isArEnabled),
+              isArEnabled: isArEnabled === 'true' || isArEnabled === true,
               arExperienceUrl: isArEnabled ? arExperienceUrl : null,
 
               // Bind existing badge if provided
