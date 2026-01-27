@@ -56,14 +56,14 @@ jobs:
         id: dburl
         shell: bash
         run: |
-          # Prefer DATABASE_URL_TEST if it exists; otherwise fallback to DATABASE_URL.
-          DB_URL="${{ secrets.DATABASE_URL_TEST }}"
+          # Prefer DATABASE_URL_RUYI if it exists; otherwise fallback to DATABASE_URL.
+          DB_URL="${{ secrets.DATABASE_URL_RUYI }}"
           if [ -z "$DB_URL" ]; then
             DB_URL="${{ secrets.DATABASE_URL }}"
           fi
 
           if [ -z "$DB_URL" ]; then
-            echo "No database URL found. Set DATABASE_URL_TEST or DATABASE_URL in GitHub Secrets."
+            echo "No database URL found. Set DATABASE_URL_RUYI or DATABASE_URL in GitHub Secrets."
             exit 1
           fi
 
