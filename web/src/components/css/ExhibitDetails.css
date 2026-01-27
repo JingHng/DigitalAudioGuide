@@ -136,3 +136,85 @@
   .media-hero-box { height: 350px; }
   .guide-box { height: 450px; }
 }
+
+/* .ar-actions-row {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin: 32px 0;
+}
+
+.ar-btn {
+  padding: 14px 22px;
+  border-radius: 999px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ar-btn.primary {
+  background: black;
+  color: white;
+}
+
+.ar-btn.secondary {
+  background: #f2f2f2;
+  color: black;
+}
+
+.ar-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+} */
+
+.ar-actions-row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 40px 0;
+  flex-wrap: wrap;
+}
+
+.ar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 18px 30px;
+  border-radius: 999px;
+
+  font-size: 1.05rem;
+  font-weight: 600;
+  text-decoration: none;
+
+  transition: 
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+/* Icon sizing */
+.ar-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+/* BLUE – AR Experience */
+.ar-btn.ar-primary {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  color: white;
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.35);
+}
+
+/* PURPLE – Photobooth */
+.ar-btn.ar-secondary {
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  color: white;
+  box-shadow: 0 10px 30px rgba(124, 58, 237, 0.35);
+}
+
+/* Hover = subtle lift */
+.ar-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.2);
+}
