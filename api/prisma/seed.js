@@ -126,6 +126,9 @@ async function seed() {
         user_id BIGSERIAL PRIMARY KEY,
         username VARCHAR(100) UNIQUE NOT NULL,
         email VARCHAR(100) UNIQUE NOT NULL,
+        gender VARCHAR(20),          
+        date_of_birth DATE,        
+        language_id BIGINT REFERENCES language(language_id),   
         profile_picture_url VARCHAR(255) NULL,
         password_hash VARCHAR(72) NOT NULL,
         email_verified BOOLEAN DEFAULT FALSE,
@@ -781,6 +784,21 @@ async function seed() {
       ('verify_email', 'Verify user email addresses');
     `);
 
+    // Insert languages BEFORE users (users reference language_id)
+    await client.query(`
+      INSERT INTO language (title, lang_code, is_default, status_id) VALUES
+      ('English', 'en', true, 1),
+      ('Spanish', 'es', false, 1),
+      ('French', 'fr', false, 1),
+      ('German', 'de', false, 1),
+      ('Italian', 'it', false, 1),
+      ('Portuguese', 'pt', false, 1),
+      ('Chinese (Simplified)', 'zh-CN', false, 1),
+      ('Japanese', 'ja', false, 1),
+      ('Korean', 'ko', false, 1),
+      ('Arabic', 'ar', false, 1);
+    `);
+
     // Insert admin user first
     // Admin password: admin123
     // Generate hash for admin123 password
@@ -790,9 +808,9 @@ async function seed() {
     const userHash = await bcrypt.hash('User123$%', 12);
     
     await client.query(`
-      INSERT INTO "user" (username, email, password_hash, email_verified, status_id, last_login_at) VALUES
-      ($1, $2, $3, true, 1, CURRENT_TIMESTAMP - INTERVAL '2 hours'),
-      ($4, $5, $6, true, 1, CURRENT_TIMESTAMP - INTERVAL '1 day')
+      INSERT INTO "user" (username, email, password_hash, email_verified, status_id, last_login_at, gender, date_of_birth, language_id) VALUES
+      ($1, $2, $3, true, 1, CURRENT_TIMESTAMP - INTERVAL '2 hours', 'Male', '1980-01-01', 1),
+      ($4, $5, $6, true, 1, CURRENT_TIMESTAMP - INTERVAL '1 day', 'Female', '1985-01-01', 1)
     `, ['admin', 'admin@audiomuseum.com', adminHash, 'moderator', 'moderator@audiomuseum.com', moderatorHash]);
 
     // Generate 100+ users with varying registration dates for trend analysis
@@ -857,6 +875,10 @@ async function seed() {
       const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
       const username = `${firstName.toLowerCase()}_${lastName.toLowerCase()}_${i}`;
       const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${i}@example.com`;
+      const genders = ['Male', 'Female', 'Non-binary'];
+      const randomGender = genders[Math.floor(Math.random() * genders.length)];
+      const randomDOB = `19${Math.floor(Math.random() * 40 + 60)}-01-01`;
+      const languageId = 1; 
 
       // Distribute registrations over past 12 months with higher activity in recent months
       const daysAgo = Math.floor(Math.random() * 365);
@@ -876,8 +898,7 @@ async function seed() {
           )} days'`
         : "NULL";
 
-      users.push(`('${username}', '${email}', '${userHash}', ${emailVerified}, ${statusId}, ${lastLoginAt}, ${createdAt})`);
-      usernames.push(username);
+      users.push(`('${username}', '${email}', '${userHash}', ${emailVerified}, ${statusId}, ${lastLoginAt}, '${randomGender}', '${randomDOB}', ${languageId}, ${createdAt})`);      usernames.push(username);
       emails.push(email);
     }
 
@@ -885,10 +906,20 @@ async function seed() {
     const batchSize = 50;
     for (let i = 0; i < users.length; i += batchSize) {
       const batch = users.slice(i, i + batchSize);
-      await client.query(`
-        INSERT INTO "user" (username, email, password_hash, email_verified, status_id, last_login_at, created_at) VALUES
-        ${batch.join(", ")};
-      `);
+    await client.query(`
+  INSERT INTO "user" (
+    username, 
+    email, 
+    password_hash, 
+    email_verified, 
+    status_id, 
+    last_login_at, 
+    gender, 
+    date_of_birth,
+    language_id,    -- Add this!
+    created_at
+  ) VALUES ${batch.join(", ")};
+`);
     }
 
     console.log(
@@ -935,21 +966,6 @@ async function seed() {
       WHERE permission_name IN (
           'read_exhibit', 'read_audio', 'read_image'
       );
-    `);
-
-    // Insert languages
-    await client.query(`
-      INSERT INTO language (title, lang_code, is_default, status_id) VALUES
-      ('English', 'en', true, 1),
-      ('Spanish', 'es', false, 1),
-      ('French', 'fr', false, 1),
-      ('German', 'de', false, 1),
-      ('Italian', 'it', false, 1),
-      ('Portuguese', 'pt', false, 1),
-      ('Chinese (Simplified)', 'zh-CN', false, 1),
-      ('Japanese', 'ja', false, 1),
-      ('Korean', 'ko', false, 1),
-      ('Arabic', 'ar', false, 1);
     `);
 
     // Insert exhibitions (matching seed data IDs 6 and 7)

@@ -3047,11 +3047,13 @@ export namespace Prisma {
   export type LanguageCountOutputType = {
     audio: number
     subtitles: number
+    users: number
   }
 
   export type LanguageCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     audio?: boolean | LanguageCountOutputTypeCountAudioArgs
     subtitles?: boolean | LanguageCountOutputTypeCountSubtitlesArgs
+    users?: boolean | LanguageCountOutputTypeCountUsersArgs
   }
 
   // Custom InputTypes
@@ -3077,6 +3079,13 @@ export namespace Prisma {
    */
   export type LanguageCountOutputTypeCountSubtitlesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SubtitleWhereInput
+  }
+
+  /**
+   * LanguageCountOutputType without action
+   */
+  export type LanguageCountOutputTypeCountUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserWhereInput
   }
 
 
@@ -11165,6 +11174,7 @@ export namespace Prisma {
     audio?: boolean | Language$audioArgs<ExtArgs>
     status?: boolean | Language$statusArgs<ExtArgs>
     subtitles?: boolean | Language$subtitlesArgs<ExtArgs>
+    users?: boolean | Language$usersArgs<ExtArgs>
     _count?: boolean | LanguageCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["language"]>
 
@@ -11193,6 +11203,7 @@ export namespace Prisma {
     audio?: boolean | Language$audioArgs<ExtArgs>
     status?: boolean | Language$statusArgs<ExtArgs>
     subtitles?: boolean | Language$subtitlesArgs<ExtArgs>
+    users?: boolean | Language$usersArgs<ExtArgs>
     _count?: boolean | LanguageCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type LanguageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -11205,6 +11216,7 @@ export namespace Prisma {
       audio: Prisma.$AudioPayload<ExtArgs>[]
       status: Prisma.$StatusPayload<ExtArgs> | null
       subtitles: Prisma.$SubtitlePayload<ExtArgs>[]
+      users: Prisma.$UserPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       languageId: bigint
@@ -11581,6 +11593,7 @@ export namespace Prisma {
     audio<T extends Language$audioArgs<ExtArgs> = {}>(args?: Subset<T, Language$audioArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AudioPayload<ExtArgs>, T, "findMany"> | Null>
     status<T extends Language$statusArgs<ExtArgs> = {}>(args?: Subset<T, Language$statusArgs<ExtArgs>>): Prisma__StatusClient<$Result.GetResult<Prisma.$StatusPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     subtitles<T extends Language$subtitlesArgs<ExtArgs> = {}>(args?: Subset<T, Language$subtitlesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SubtitlePayload<ExtArgs>, T, "findMany"> | Null>
+    users<T extends Language$usersArgs<ExtArgs> = {}>(args?: Subset<T, Language$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11987,6 +12000,26 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: SubtitleScalarFieldEnum | SubtitleScalarFieldEnum[]
+  }
+
+  /**
+   * Language.users
+   */
+  export type Language$usersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    cursor?: UserWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
   }
 
   /**
@@ -18013,11 +18046,13 @@ export namespace Prisma {
   export type UserAvgAggregateOutputType = {
     userId: number | null
     statusId: number | null
+    languageId: number | null
   }
 
   export type UserSumAggregateOutputType = {
     userId: bigint | null
     statusId: number | null
+    languageId: bigint | null
   }
 
   export type UserMinAggregateOutputType = {
@@ -18031,6 +18066,9 @@ export namespace Prisma {
     lastLoginAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
+    gender: string | null
+    dateOfBirth: Date | null
+    languageId: bigint | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -18044,6 +18082,9 @@ export namespace Prisma {
     lastLoginAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
+    gender: string | null
+    dateOfBirth: Date | null
+    languageId: bigint | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -18057,6 +18098,9 @@ export namespace Prisma {
     lastLoginAt: number
     createdAt: number
     updatedAt: number
+    gender: number
+    dateOfBirth: number
+    languageId: number
     _all: number
   }
 
@@ -18064,11 +18108,13 @@ export namespace Prisma {
   export type UserAvgAggregateInputType = {
     userId?: true
     statusId?: true
+    languageId?: true
   }
 
   export type UserSumAggregateInputType = {
     userId?: true
     statusId?: true
+    languageId?: true
   }
 
   export type UserMinAggregateInputType = {
@@ -18082,6 +18128,9 @@ export namespace Prisma {
     lastLoginAt?: true
     createdAt?: true
     updatedAt?: true
+    gender?: true
+    dateOfBirth?: true
+    languageId?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -18095,6 +18144,9 @@ export namespace Prisma {
     lastLoginAt?: true
     createdAt?: true
     updatedAt?: true
+    gender?: true
+    dateOfBirth?: true
+    languageId?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -18108,6 +18160,9 @@ export namespace Prisma {
     lastLoginAt?: true
     createdAt?: true
     updatedAt?: true
+    gender?: true
+    dateOfBirth?: true
+    languageId?: true
     _all?: true
   }
 
@@ -18208,6 +18263,9 @@ export namespace Prisma {
     lastLoginAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
+    gender: string | null
+    dateOfBirth: Date | null
+    languageId: bigint | null
     _count: UserCountAggregateOutputType | null
     _avg: UserAvgAggregateOutputType | null
     _sum: UserSumAggregateOutputType | null
@@ -18240,6 +18298,10 @@ export namespace Prisma {
     lastLoginAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    gender?: boolean
+    dateOfBirth?: boolean
+    languageId?: boolean
+    language?: boolean | User$languageArgs<ExtArgs>
     playbackLogs?: boolean | User$playbackLogsArgs<ExtArgs>
     adminAudits?: boolean | User$adminAuditsArgs<ExtArgs>
     targetAudits?: boolean | User$targetAuditsArgs<ExtArgs>
@@ -18266,6 +18328,10 @@ export namespace Prisma {
     lastLoginAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    gender?: boolean
+    dateOfBirth?: boolean
+    languageId?: boolean
+    language?: boolean | User$languageArgs<ExtArgs>
     status?: boolean | User$statusArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -18280,9 +18346,13 @@ export namespace Prisma {
     lastLoginAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    gender?: boolean
+    dateOfBirth?: boolean
+    languageId?: boolean
   }
 
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    language?: boolean | User$languageArgs<ExtArgs>
     playbackLogs?: boolean | User$playbackLogsArgs<ExtArgs>
     adminAudits?: boolean | User$adminAuditsArgs<ExtArgs>
     targetAudits?: boolean | User$targetAuditsArgs<ExtArgs>
@@ -18298,12 +18368,14 @@ export namespace Prisma {
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    language?: boolean | User$languageArgs<ExtArgs>
     status?: boolean | User$statusArgs<ExtArgs>
   }
 
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {
+      language: Prisma.$LanguagePayload<ExtArgs> | null
       playbackLogs: Prisma.$AudioPlaybackLogPayload<ExtArgs>[]
       adminAudits: Prisma.$AuditLogPayload<ExtArgs>[]
       targetAudits: Prisma.$AuditLogPayload<ExtArgs>[]
@@ -18328,6 +18400,9 @@ export namespace Prisma {
       lastLoginAt: Date | null
       createdAt: Date | null
       updatedAt: Date | null
+      gender: string | null
+      dateOfBirth: Date | null
+      languageId: bigint | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -18692,6 +18767,7 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    language<T extends User$languageArgs<ExtArgs> = {}>(args?: Subset<T, User$languageArgs<ExtArgs>>): Prisma__LanguageClient<$Result.GetResult<Prisma.$LanguagePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     playbackLogs<T extends User$playbackLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$playbackLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AudioPlaybackLogPayload<ExtArgs>, T, "findMany"> | Null>
     adminAudits<T extends User$adminAuditsArgs<ExtArgs> = {}>(args?: Subset<T, User$adminAuditsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany"> | Null>
     targetAudits<T extends User$targetAuditsArgs<ExtArgs> = {}>(args?: Subset<T, User$targetAuditsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany"> | Null>
@@ -18743,6 +18819,9 @@ export namespace Prisma {
     readonly lastLoginAt: FieldRef<"User", 'DateTime'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
+    readonly gender: FieldRef<"User", 'String'>
+    readonly dateOfBirth: FieldRef<"User", 'DateTime'>
+    readonly languageId: FieldRef<"User", 'BigInt'>
   }
     
 
@@ -19058,6 +19137,21 @@ export namespace Prisma {
      * Filter which Users to delete
      */
     where?: UserWhereInput
+  }
+
+  /**
+   * User.language
+   */
+  export type User$languageArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Language
+     */
+    select?: LanguageSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LanguageInclude<ExtArgs> | null
+    where?: LanguageWhereInput
   }
 
   /**
@@ -29251,7 +29345,10 @@ export namespace Prisma {
     statusId: 'statusId',
     lastLoginAt: 'lastLoginAt',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    gender: 'gender',
+    dateOfBirth: 'dateOfBirth',
+    languageId: 'languageId'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -30068,6 +30165,7 @@ export namespace Prisma {
     audio?: AudioListRelationFilter
     status?: XOR<StatusNullableRelationFilter, StatusWhereInput> | null
     subtitles?: SubtitleListRelationFilter
+    users?: UserListRelationFilter
   }
 
   export type LanguageOrderByWithRelationInput = {
@@ -30081,6 +30179,7 @@ export namespace Prisma {
     audio?: AudioOrderByRelationAggregateInput
     status?: StatusOrderByWithRelationInput
     subtitles?: SubtitleOrderByRelationAggregateInput
+    users?: UserOrderByRelationAggregateInput
   }
 
   export type LanguageWhereUniqueInput = Prisma.AtLeast<{
@@ -30097,6 +30196,7 @@ export namespace Prisma {
     audio?: AudioListRelationFilter
     status?: XOR<StatusNullableRelationFilter, StatusWhereInput> | null
     subtitles?: SubtitleListRelationFilter
+    users?: UserListRelationFilter
   }, "languageId" | "code">
 
   export type LanguageOrderByWithAggregationInput = {
@@ -30481,6 +30581,10 @@ export namespace Prisma {
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeNullableFilter<"User"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    gender?: StringNullableFilter<"User"> | string | null
+    dateOfBirth?: DateTimeNullableFilter<"User"> | Date | string | null
+    languageId?: BigIntNullableFilter<"User"> | bigint | number | null
+    language?: XOR<LanguageNullableRelationFilter, LanguageWhereInput> | null
     playbackLogs?: AudioPlaybackLogListRelationFilter
     adminAudits?: AuditLogListRelationFilter
     targetAudits?: AuditLogListRelationFilter
@@ -30506,6 +30610,10 @@ export namespace Prisma {
     lastLoginAt?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrderInput | SortOrder
+    gender?: SortOrderInput | SortOrder
+    dateOfBirth?: SortOrderInput | SortOrder
+    languageId?: SortOrderInput | SortOrder
+    language?: LanguageOrderByWithRelationInput
     playbackLogs?: AudioPlaybackLogOrderByRelationAggregateInput
     adminAudits?: AuditLogOrderByRelationAggregateInput
     targetAudits?: AuditLogOrderByRelationAggregateInput
@@ -30534,6 +30642,10 @@ export namespace Prisma {
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeNullableFilter<"User"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    gender?: StringNullableFilter<"User"> | string | null
+    dateOfBirth?: DateTimeNullableFilter<"User"> | Date | string | null
+    languageId?: BigIntNullableFilter<"User"> | bigint | number | null
+    language?: XOR<LanguageNullableRelationFilter, LanguageWhereInput> | null
     playbackLogs?: AudioPlaybackLogListRelationFilter
     adminAudits?: AuditLogListRelationFilter
     targetAudits?: AuditLogListRelationFilter
@@ -30559,6 +30671,9 @@ export namespace Prisma {
     lastLoginAt?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrderInput | SortOrder
+    gender?: SortOrderInput | SortOrder
+    dateOfBirth?: SortOrderInput | SortOrder
+    languageId?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _avg?: UserAvgOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
@@ -30580,6 +30695,9 @@ export namespace Prisma {
     lastLoginAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     createdAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     updatedAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    gender?: StringNullableWithAggregatesFilter<"User"> | string | null
+    dateOfBirth?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    languageId?: BigIntNullableWithAggregatesFilter<"User"> | bigint | number | null
   }
 
   export type UserRoleWhereInput = {
@@ -31732,6 +31850,7 @@ export namespace Prisma {
     audio?: AudioCreateNestedManyWithoutLanguageInput
     status?: StatusCreateNestedOneWithoutLanguagesInput
     subtitles?: SubtitleCreateNestedManyWithoutLanguageInput
+    users?: UserCreateNestedManyWithoutLanguageInput
   }
 
   export type LanguageUncheckedCreateInput = {
@@ -31744,6 +31863,7 @@ export namespace Prisma {
     updatedAt?: Date | string | null
     audio?: AudioUncheckedCreateNestedManyWithoutLanguageInput
     subtitles?: SubtitleUncheckedCreateNestedManyWithoutLanguageInput
+    users?: UserUncheckedCreateNestedManyWithoutLanguageInput
   }
 
   export type LanguageUpdateInput = {
@@ -31756,6 +31876,7 @@ export namespace Prisma {
     audio?: AudioUpdateManyWithoutLanguageNestedInput
     status?: StatusUpdateOneWithoutLanguagesNestedInput
     subtitles?: SubtitleUpdateManyWithoutLanguageNestedInput
+    users?: UserUpdateManyWithoutLanguageNestedInput
   }
 
   export type LanguageUncheckedUpdateInput = {
@@ -31768,6 +31889,7 @@ export namespace Prisma {
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUncheckedUpdateManyWithoutLanguageNestedInput
     subtitles?: SubtitleUncheckedUpdateManyWithoutLanguageNestedInput
+    users?: UserUncheckedUpdateManyWithoutLanguageNestedInput
   }
 
   export type LanguageCreateManyInput = {
@@ -32125,6 +32247,9 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    language?: LanguageCreateNestedOneWithoutUsersInput
     playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
@@ -32150,6 +32275,9 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    languageId?: bigint | number | null
     playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
@@ -32173,6 +32301,9 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    language?: LanguageUpdateOneWithoutUsersNestedInput
     playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
@@ -32198,6 +32329,9 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languageId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
@@ -32222,6 +32356,9 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    languageId?: bigint | number | null
   }
 
   export type UserUpdateManyMutationInput = {
@@ -32234,6 +32371,8 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -32247,6 +32386,9 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languageId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   }
 
   export type UserRoleCreateInput = {
@@ -33486,6 +33628,16 @@ export namespace Prisma {
     exhibitId?: SortOrder
   }
 
+  export type UserListRelationFilter = {
+    every?: UserWhereInput
+    some?: UserWhereInput
+    none?: UserWhereInput
+  }
+
+  export type UserOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type LanguageCountOrderByAggregateInput = {
     languageId?: SortOrder
     statusId?: SortOrder
@@ -33720,12 +33872,6 @@ export namespace Prisma {
     none?: LanguageWhereInput
   }
 
-  export type UserListRelationFilter = {
-    every?: UserWhereInput
-    some?: UserWhereInput
-    none?: UserWhereInput
-  }
-
   export type ConversationListRelationFilter = {
     every?: ConversationWhereInput
     some?: ConversationWhereInput
@@ -33743,10 +33889,6 @@ export namespace Prisma {
   }
 
   export type LanguageOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type UserOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -33931,11 +34073,15 @@ export namespace Prisma {
     lastLoginAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    gender?: SortOrder
+    dateOfBirth?: SortOrder
+    languageId?: SortOrder
   }
 
   export type UserAvgOrderByAggregateInput = {
     userId?: SortOrder
     statusId?: SortOrder
+    languageId?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -33949,6 +34095,9 @@ export namespace Prisma {
     lastLoginAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    gender?: SortOrder
+    dateOfBirth?: SortOrder
+    languageId?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -33962,11 +34111,15 @@ export namespace Prisma {
     lastLoginAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    gender?: SortOrder
+    dateOfBirth?: SortOrder
+    languageId?: SortOrder
   }
 
   export type UserSumOrderByAggregateInput = {
     userId?: SortOrder
     statusId?: SortOrder
+    languageId?: SortOrder
   }
 
   export type UserRoleUserIdRoleIdCompoundUniqueInput = {
@@ -35013,6 +35166,13 @@ export namespace Prisma {
     connect?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
   }
 
+  export type UserCreateNestedManyWithoutLanguageInput = {
+    create?: XOR<UserCreateWithoutLanguageInput, UserUncheckedCreateWithoutLanguageInput> | UserCreateWithoutLanguageInput[] | UserUncheckedCreateWithoutLanguageInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutLanguageInput | UserCreateOrConnectWithoutLanguageInput[]
+    createMany?: UserCreateManyLanguageInputEnvelope
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
   export type AudioUncheckedCreateNestedManyWithoutLanguageInput = {
     create?: XOR<AudioCreateWithoutLanguageInput, AudioUncheckedCreateWithoutLanguageInput> | AudioCreateWithoutLanguageInput[] | AudioUncheckedCreateWithoutLanguageInput[]
     connectOrCreate?: AudioCreateOrConnectWithoutLanguageInput | AudioCreateOrConnectWithoutLanguageInput[]
@@ -35025,6 +35185,13 @@ export namespace Prisma {
     connectOrCreate?: SubtitleCreateOrConnectWithoutLanguageInput | SubtitleCreateOrConnectWithoutLanguageInput[]
     createMany?: SubtitleCreateManyLanguageInputEnvelope
     connect?: SubtitleWhereUniqueInput | SubtitleWhereUniqueInput[]
+  }
+
+  export type UserUncheckedCreateNestedManyWithoutLanguageInput = {
+    create?: XOR<UserCreateWithoutLanguageInput, UserUncheckedCreateWithoutLanguageInput> | UserCreateWithoutLanguageInput[] | UserUncheckedCreateWithoutLanguageInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutLanguageInput | UserCreateOrConnectWithoutLanguageInput[]
+    createMany?: UserCreateManyLanguageInputEnvelope
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
   export type AudioUpdateManyWithoutLanguageNestedInput = {
@@ -35065,6 +35232,20 @@ export namespace Prisma {
     deleteMany?: SubtitleScalarWhereInput | SubtitleScalarWhereInput[]
   }
 
+  export type UserUpdateManyWithoutLanguageNestedInput = {
+    create?: XOR<UserCreateWithoutLanguageInput, UserUncheckedCreateWithoutLanguageInput> | UserCreateWithoutLanguageInput[] | UserUncheckedCreateWithoutLanguageInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutLanguageInput | UserCreateOrConnectWithoutLanguageInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutLanguageInput | UserUpsertWithWhereUniqueWithoutLanguageInput[]
+    createMany?: UserCreateManyLanguageInputEnvelope
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutLanguageInput | UserUpdateWithWhereUniqueWithoutLanguageInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutLanguageInput | UserUpdateManyWithWhereWithoutLanguageInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
   export type AudioUncheckedUpdateManyWithoutLanguageNestedInput = {
     create?: XOR<AudioCreateWithoutLanguageInput, AudioUncheckedCreateWithoutLanguageInput> | AudioCreateWithoutLanguageInput[] | AudioUncheckedCreateWithoutLanguageInput[]
     connectOrCreate?: AudioCreateOrConnectWithoutLanguageInput | AudioCreateOrConnectWithoutLanguageInput[]
@@ -35091,6 +35272,20 @@ export namespace Prisma {
     update?: SubtitleUpdateWithWhereUniqueWithoutLanguageInput | SubtitleUpdateWithWhereUniqueWithoutLanguageInput[]
     updateMany?: SubtitleUpdateManyWithWhereWithoutLanguageInput | SubtitleUpdateManyWithWhereWithoutLanguageInput[]
     deleteMany?: SubtitleScalarWhereInput | SubtitleScalarWhereInput[]
+  }
+
+  export type UserUncheckedUpdateManyWithoutLanguageNestedInput = {
+    create?: XOR<UserCreateWithoutLanguageInput, UserUncheckedCreateWithoutLanguageInput> | UserCreateWithoutLanguageInput[] | UserUncheckedCreateWithoutLanguageInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutLanguageInput | UserCreateOrConnectWithoutLanguageInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutLanguageInput | UserUpsertWithWhereUniqueWithoutLanguageInput[]
+    createMany?: UserCreateManyLanguageInputEnvelope
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutLanguageInput | UserUpdateWithWhereUniqueWithoutLanguageInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutLanguageInput | UserUpdateManyWithWhereWithoutLanguageInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
   export type RolePermissionCreateNestedManyWithoutPermissionInput = {
@@ -35561,6 +35756,12 @@ export namespace Prisma {
     update?: XOR<XOR<LanguageUpdateToOneWithWhereWithoutSubtitlesInput, LanguageUpdateWithoutSubtitlesInput>, LanguageUncheckedUpdateWithoutSubtitlesInput>
   }
 
+  export type LanguageCreateNestedOneWithoutUsersInput = {
+    create?: XOR<LanguageCreateWithoutUsersInput, LanguageUncheckedCreateWithoutUsersInput>
+    connectOrCreate?: LanguageCreateOrConnectWithoutUsersInput
+    connect?: LanguageWhereUniqueInput
+  }
+
   export type AudioPlaybackLogCreateNestedManyWithoutUserInput = {
     create?: XOR<AudioPlaybackLogCreateWithoutUserInput, AudioPlaybackLogUncheckedCreateWithoutUserInput> | AudioPlaybackLogCreateWithoutUserInput[] | AudioPlaybackLogUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AudioPlaybackLogCreateOrConnectWithoutUserInput | AudioPlaybackLogCreateOrConnectWithoutUserInput[]
@@ -35719,6 +35920,16 @@ export namespace Prisma {
     connectOrCreate?: ConversationCreateOrConnectWithoutUserInput | ConversationCreateOrConnectWithoutUserInput[]
     createMany?: ConversationCreateManyUserInputEnvelope
     connect?: ConversationWhereUniqueInput | ConversationWhereUniqueInput[]
+  }
+
+  export type LanguageUpdateOneWithoutUsersNestedInput = {
+    create?: XOR<LanguageCreateWithoutUsersInput, LanguageUncheckedCreateWithoutUsersInput>
+    connectOrCreate?: LanguageCreateOrConnectWithoutUsersInput
+    upsert?: LanguageUpsertWithoutUsersInput
+    disconnect?: LanguageWhereInput | boolean
+    delete?: LanguageWhereInput | boolean
+    connect?: LanguageWhereUniqueInput
+    update?: XOR<XOR<LanguageUpdateToOneWithWhereWithoutUsersInput, LanguageUpdateWithoutUsersInput>, LanguageUncheckedUpdateWithoutUsersInput>
   }
 
   export type AudioPlaybackLogUpdateManyWithoutUserNestedInput = {
@@ -37375,6 +37586,7 @@ export namespace Prisma {
     updatedAt?: Date | string | null
     status?: StatusCreateNestedOneWithoutLanguagesInput
     subtitles?: SubtitleCreateNestedManyWithoutLanguageInput
+    users?: UserCreateNestedManyWithoutLanguageInput
   }
 
   export type LanguageUncheckedCreateWithoutAudioInput = {
@@ -37386,6 +37598,7 @@ export namespace Prisma {
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     subtitles?: SubtitleUncheckedCreateNestedManyWithoutLanguageInput
+    users?: UserUncheckedCreateNestedManyWithoutLanguageInput
   }
 
   export type LanguageCreateOrConnectWithoutAudioInput = {
@@ -37517,6 +37730,7 @@ export namespace Prisma {
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StatusUpdateOneWithoutLanguagesNestedInput
     subtitles?: SubtitleUpdateManyWithoutLanguageNestedInput
+    users?: UserUpdateManyWithoutLanguageNestedInput
   }
 
   export type LanguageUncheckedUpdateWithoutAudioInput = {
@@ -37528,6 +37742,7 @@ export namespace Prisma {
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     subtitles?: SubtitleUncheckedUpdateManyWithoutLanguageNestedInput
+    users?: UserUncheckedUpdateManyWithoutLanguageNestedInput
   }
 
   export type AudioPlaybackLogUpsertWithWhereUniqueWithoutAudioInput = {
@@ -37627,6 +37842,9 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    language?: LanguageCreateNestedOneWithoutUsersInput
     adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
@@ -37651,6 +37869,9 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    languageId?: bigint | number | null
     adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
@@ -37723,6 +37944,9 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    language?: LanguageUpdateOneWithoutUsersNestedInput
     adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
@@ -37747,6 +37971,9 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languageId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -37810,6 +38037,9 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    language?: LanguageCreateNestedOneWithoutUsersInput
     playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
@@ -37834,6 +38064,9 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    languageId?: bigint | number | null
     playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
@@ -37919,6 +38152,9 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    language?: LanguageUpdateOneWithoutUsersNestedInput
     playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
@@ -37943,6 +38179,9 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languageId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
@@ -38272,6 +38511,68 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type UserCreateWithoutLanguageInput = {
+    userId?: bigint | number
+    username: string
+    email: string
+    passwordHash: string
+    profilePictureUrl?: string | null
+    emailVerified?: boolean | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
+    adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
+    targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
+    feedbacks?: FeedbackCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    subtitles?: SubtitleCreateNestedManyWithoutUserInput
+    status?: StatusCreateNestedOneWithoutUsersInput
+    userBadges?: UserBadgeCreateNestedManyWithoutUserInput
+    roles?: UserRoleCreateNestedManyWithoutUserInput
+    conversations?: ConversationCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutLanguageInput = {
+    userId?: bigint | number
+    username: string
+    email: string
+    passwordHash: string
+    profilePictureUrl?: string | null
+    emailVerified?: boolean | null
+    statusId?: number | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
+    adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
+    targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+    feedbacks?: FeedbackUncheckedCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    subtitles?: SubtitleUncheckedCreateNestedManyWithoutUserInput
+    userBadges?: UserBadgeUncheckedCreateNestedManyWithoutUserInput
+    roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    conversations?: ConversationUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutLanguageInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutLanguageInput, UserUncheckedCreateWithoutLanguageInput>
+  }
+
+  export type UserCreateManyLanguageInputEnvelope = {
+    data: UserCreateManyLanguageInput | UserCreateManyLanguageInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AudioUpsertWithWhereUniqueWithoutLanguageInput = {
     where: AudioWhereUniqueInput
     update: XOR<AudioUpdateWithoutLanguageInput, AudioUncheckedUpdateWithoutLanguageInput>
@@ -38332,6 +38633,41 @@ export namespace Prisma {
   export type SubtitleUpdateManyWithWhereWithoutLanguageInput = {
     where: SubtitleScalarWhereInput
     data: XOR<SubtitleUpdateManyMutationInput, SubtitleUncheckedUpdateManyWithoutLanguageInput>
+  }
+
+  export type UserUpsertWithWhereUniqueWithoutLanguageInput = {
+    where: UserWhereUniqueInput
+    update: XOR<UserUpdateWithoutLanguageInput, UserUncheckedUpdateWithoutLanguageInput>
+    create: XOR<UserCreateWithoutLanguageInput, UserUncheckedCreateWithoutLanguageInput>
+  }
+
+  export type UserUpdateWithWhereUniqueWithoutLanguageInput = {
+    where: UserWhereUniqueInput
+    data: XOR<UserUpdateWithoutLanguageInput, UserUncheckedUpdateWithoutLanguageInput>
+  }
+
+  export type UserUpdateManyWithWhereWithoutLanguageInput = {
+    where: UserScalarWhereInput
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutLanguageInput>
+  }
+
+  export type UserScalarWhereInput = {
+    AND?: UserScalarWhereInput | UserScalarWhereInput[]
+    OR?: UserScalarWhereInput[]
+    NOT?: UserScalarWhereInput | UserScalarWhereInput[]
+    userId?: BigIntFilter<"User"> | bigint | number
+    username?: StringFilter<"User"> | string
+    email?: StringFilter<"User"> | string
+    passwordHash?: StringFilter<"User"> | string
+    profilePictureUrl?: StringNullableFilter<"User"> | string | null
+    emailVerified?: BoolNullableFilter<"User"> | boolean | null
+    statusId?: IntNullableFilter<"User"> | number | null
+    lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    createdAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    gender?: StringNullableFilter<"User"> | string | null
+    dateOfBirth?: DateTimeNullableFilter<"User"> | Date | string | null
+    languageId?: BigIntNullableFilter<"User"> | bigint | number | null
   }
 
   export type RolePermissionCreateWithoutPermissionInput = {
@@ -38561,6 +38897,9 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    language?: LanguageCreateNestedOneWithoutUsersInput
     playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
@@ -38585,6 +38924,9 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    languageId?: bigint | number | null
     playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
@@ -38623,6 +38965,9 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    language?: LanguageUpdateOneWithoutUsersNestedInput
     playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
@@ -38647,6 +38992,9 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languageId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
@@ -38744,6 +39092,7 @@ export namespace Prisma {
     updatedAt?: Date | string | null
     audio?: AudioCreateNestedManyWithoutLanguageInput
     subtitles?: SubtitleCreateNestedManyWithoutLanguageInput
+    users?: UserCreateNestedManyWithoutLanguageInput
   }
 
   export type LanguageUncheckedCreateWithoutStatusInput = {
@@ -38755,6 +39104,7 @@ export namespace Prisma {
     updatedAt?: Date | string | null
     audio?: AudioUncheckedCreateNestedManyWithoutLanguageInput
     subtitles?: SubtitleUncheckedCreateNestedManyWithoutLanguageInput
+    users?: UserUncheckedCreateNestedManyWithoutLanguageInput
   }
 
   export type LanguageCreateOrConnectWithoutStatusInput = {
@@ -38777,6 +39127,9 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    language?: LanguageCreateNestedOneWithoutUsersInput
     playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
@@ -38800,6 +39153,9 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    languageId?: bigint | number | null
     playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
@@ -38968,22 +39324,6 @@ export namespace Prisma {
     data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutStatusInput>
   }
 
-  export type UserScalarWhereInput = {
-    AND?: UserScalarWhereInput | UserScalarWhereInput[]
-    OR?: UserScalarWhereInput[]
-    NOT?: UserScalarWhereInput | UserScalarWhereInput[]
-    userId?: BigIntFilter<"User"> | bigint | number
-    username?: StringFilter<"User"> | string
-    email?: StringFilter<"User"> | string
-    passwordHash?: StringFilter<"User"> | string
-    profilePictureUrl?: StringNullableFilter<"User"> | string | null
-    emailVerified?: BoolNullableFilter<"User"> | boolean | null
-    statusId?: IntNullableFilter<"User"> | number | null
-    lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
-    createdAt?: DateTimeNullableFilter<"User"> | Date | string | null
-    updatedAt?: DateTimeNullableFilter<"User"> | Date | string | null
-  }
-
   export type ConversationUpsertWithWhereUniqueWithoutStatusInput = {
     where: ConversationWhereUniqueInput
     update: XOR<ConversationUpdateWithoutStatusInput, ConversationUncheckedUpdateWithoutStatusInput>
@@ -39079,6 +39419,9 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    language?: LanguageCreateNestedOneWithoutUsersInput
     playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
@@ -39103,6 +39446,9 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    languageId?: bigint | number | null
     playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
@@ -39129,6 +39475,7 @@ export namespace Prisma {
     updatedAt?: Date | string | null
     audio?: AudioCreateNestedManyWithoutLanguageInput
     status?: StatusCreateNestedOneWithoutLanguagesInput
+    users?: UserCreateNestedManyWithoutLanguageInput
   }
 
   export type LanguageUncheckedCreateWithoutSubtitlesInput = {
@@ -39140,6 +39487,7 @@ export namespace Prisma {
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     audio?: AudioUncheckedCreateNestedManyWithoutLanguageInput
+    users?: UserUncheckedCreateNestedManyWithoutLanguageInput
   }
 
   export type LanguageCreateOrConnectWithoutSubtitlesInput = {
@@ -39202,6 +39550,9 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    language?: LanguageUpdateOneWithoutUsersNestedInput
     playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
@@ -39226,6 +39577,9 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languageId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
@@ -39258,6 +39612,7 @@ export namespace Prisma {
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUpdateManyWithoutLanguageNestedInput
     status?: StatusUpdateOneWithoutLanguagesNestedInput
+    users?: UserUpdateManyWithoutLanguageNestedInput
   }
 
   export type LanguageUncheckedUpdateWithoutSubtitlesInput = {
@@ -39269,6 +39624,36 @@ export namespace Prisma {
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUncheckedUpdateManyWithoutLanguageNestedInput
+    users?: UserUncheckedUpdateManyWithoutLanguageNestedInput
+  }
+
+  export type LanguageCreateWithoutUsersInput = {
+    languageId?: bigint | number
+    title: string
+    code: string
+    isDefault?: boolean | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    audio?: AudioCreateNestedManyWithoutLanguageInput
+    status?: StatusCreateNestedOneWithoutLanguagesInput
+    subtitles?: SubtitleCreateNestedManyWithoutLanguageInput
+  }
+
+  export type LanguageUncheckedCreateWithoutUsersInput = {
+    languageId?: bigint | number
+    statusId?: number | null
+    title: string
+    code: string
+    isDefault?: boolean | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    audio?: AudioUncheckedCreateNestedManyWithoutLanguageInput
+    subtitles?: SubtitleUncheckedCreateNestedManyWithoutLanguageInput
+  }
+
+  export type LanguageCreateOrConnectWithoutUsersInput = {
+    where: LanguageWhereUniqueInput
+    create: XOR<LanguageCreateWithoutUsersInput, LanguageUncheckedCreateWithoutUsersInput>
   }
 
   export type AudioPlaybackLogCreateWithoutUserInput = {
@@ -39578,6 +39963,41 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type LanguageUpsertWithoutUsersInput = {
+    update: XOR<LanguageUpdateWithoutUsersInput, LanguageUncheckedUpdateWithoutUsersInput>
+    create: XOR<LanguageCreateWithoutUsersInput, LanguageUncheckedCreateWithoutUsersInput>
+    where?: LanguageWhereInput
+  }
+
+  export type LanguageUpdateToOneWithWhereWithoutUsersInput = {
+    where?: LanguageWhereInput
+    data: XOR<LanguageUpdateWithoutUsersInput, LanguageUncheckedUpdateWithoutUsersInput>
+  }
+
+  export type LanguageUpdateWithoutUsersInput = {
+    languageId?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    isDefault?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    audio?: AudioUpdateManyWithoutLanguageNestedInput
+    status?: StatusUpdateOneWithoutLanguagesNestedInput
+    subtitles?: SubtitleUpdateManyWithoutLanguageNestedInput
+  }
+
+  export type LanguageUncheckedUpdateWithoutUsersInput = {
+    languageId?: BigIntFieldUpdateOperationsInput | bigint | number
+    statusId?: NullableIntFieldUpdateOperationsInput | number | null
+    title?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    isDefault?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    audio?: AudioUncheckedUpdateManyWithoutLanguageNestedInput
+    subtitles?: SubtitleUncheckedUpdateManyWithoutLanguageNestedInput
+  }
+
   export type AudioPlaybackLogUpsertWithWhereUniqueWithoutUserInput = {
     where: AudioPlaybackLogWhereUniqueInput
     update: XOR<AudioPlaybackLogUpdateWithoutUserInput, AudioPlaybackLogUncheckedUpdateWithoutUserInput>
@@ -39870,6 +40290,9 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    language?: LanguageCreateNestedOneWithoutUsersInput
     playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
@@ -39894,6 +40317,9 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    languageId?: bigint | number | null
     playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
@@ -39960,6 +40386,9 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    language?: LanguageUpdateOneWithoutUsersNestedInput
     playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
@@ -39984,6 +40413,9 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languageId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
@@ -40006,6 +40438,9 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    language?: LanguageCreateNestedOneWithoutUsersInput
     playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
     targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
@@ -40030,6 +40465,9 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    languageId?: bigint | number | null
     playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
     targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
@@ -40057,6 +40495,9 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    language?: LanguageCreateNestedOneWithoutUsersInput
     playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
@@ -40081,6 +40522,9 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    languageId?: bigint | number | null
     playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
@@ -40119,6 +40563,9 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    language?: LanguageUpdateOneWithoutUsersNestedInput
     playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
     targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
@@ -40143,6 +40590,9 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languageId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
     targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -40176,6 +40626,9 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    language?: LanguageUpdateOneWithoutUsersNestedInput
     playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
@@ -40200,6 +40653,9 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languageId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -40222,6 +40678,9 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    language?: LanguageCreateNestedOneWithoutUsersInput
     playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
@@ -40246,6 +40705,9 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    languageId?: bigint | number | null
     playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
@@ -40284,6 +40746,9 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    language?: LanguageUpdateOneWithoutUsersNestedInput
     playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
@@ -40308,6 +40773,9 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languageId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
@@ -40330,6 +40798,9 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    language?: LanguageCreateNestedOneWithoutUsersInput
     playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
@@ -40354,6 +40825,9 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    languageId?: bigint | number | null
     playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
@@ -40392,6 +40866,9 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    language?: LanguageUpdateOneWithoutUsersNestedInput
     playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
@@ -40416,6 +40893,9 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languageId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
@@ -40589,6 +41069,9 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    language?: LanguageCreateNestedOneWithoutUsersInput
     playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
@@ -40613,6 +41096,9 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    languageId?: bigint | number | null
     playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
@@ -40684,6 +41170,9 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    language?: LanguageUpdateOneWithoutUsersNestedInput
     playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
@@ -40708,6 +41197,9 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languageId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
@@ -40774,6 +41266,9 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    language?: LanguageCreateNestedOneWithoutUsersInput
     playbackLogs?: AudioPlaybackLogCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogCreateNestedManyWithoutTargetUserInput
@@ -40798,6 +41293,9 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    languageId?: bigint | number | null
     playbackLogs?: AudioPlaybackLogUncheckedCreateNestedManyWithoutUserInput
     adminAudits?: AuditLogUncheckedCreateNestedManyWithoutAdminUserInput
     targetAudits?: AuditLogUncheckedCreateNestedManyWithoutTargetUserInput
@@ -40888,6 +41386,9 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    language?: LanguageUpdateOneWithoutUsersNestedInput
     playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
@@ -40912,6 +41413,9 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languageId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
@@ -41466,6 +41970,21 @@ export namespace Prisma {
     updatedAt?: Date | string | null
   }
 
+  export type UserCreateManyLanguageInput = {
+    userId?: bigint | number
+    username: string
+    email: string
+    passwordHash: string
+    profilePictureUrl?: string | null
+    emailVerified?: boolean | null
+    statusId?: number | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+  }
+
   export type AudioUpdateWithoutLanguageInput = {
     fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     title?: NullableStringFieldUpdateOperationsInput | string | null
@@ -41524,6 +42043,73 @@ export namespace Prisma {
     createdBy?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type UserUpdateWithoutLanguageInput = {
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
+    adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
+    targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
+    feedbacks?: FeedbackUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    subtitles?: SubtitleUpdateManyWithoutUserNestedInput
+    status?: StatusUpdateOneWithoutUsersNestedInput
+    userBadges?: UserBadgeUpdateManyWithoutUserNestedInput
+    roles?: UserRoleUpdateManyWithoutUserNestedInput
+    conversations?: ConversationUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutLanguageInput = {
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    statusId?: NullableIntFieldUpdateOperationsInput | number | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
+    adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
+    targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+    feedbacks?: FeedbackUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    subtitles?: SubtitleUncheckedUpdateManyWithoutUserNestedInput
+    userBadges?: UserBadgeUncheckedUpdateManyWithoutUserNestedInput
+    roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    conversations?: ConversationUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateManyWithoutLanguageInput = {
+    userId?: BigIntFieldUpdateOperationsInput | bigint | number
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    statusId?: NullableIntFieldUpdateOperationsInput | number | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type RolePermissionCreateManyPermissionInput = {
@@ -41619,6 +42205,9 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
+    gender?: string | null
+    dateOfBirth?: Date | string | null
+    languageId?: bigint | number | null
   }
 
   export type ConversationCreateManyStatusInput = {
@@ -41725,6 +42314,7 @@ export namespace Prisma {
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUpdateManyWithoutLanguageNestedInput
     subtitles?: SubtitleUpdateManyWithoutLanguageNestedInput
+    users?: UserUpdateManyWithoutLanguageNestedInput
   }
 
   export type LanguageUncheckedUpdateWithoutStatusInput = {
@@ -41736,6 +42326,7 @@ export namespace Prisma {
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     audio?: AudioUncheckedUpdateManyWithoutLanguageNestedInput
     subtitles?: SubtitleUncheckedUpdateManyWithoutLanguageNestedInput
+    users?: UserUncheckedUpdateManyWithoutLanguageNestedInput
   }
 
   export type LanguageUncheckedUpdateManyWithoutStatusInput = {
@@ -41757,6 +42348,9 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    language?: LanguageUpdateOneWithoutUsersNestedInput
     playbackLogs?: AudioPlaybackLogUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUpdateManyWithoutTargetUserNestedInput
@@ -41780,6 +42374,9 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languageId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     playbackLogs?: AudioPlaybackLogUncheckedUpdateManyWithoutUserNestedInput
     adminAudits?: AuditLogUncheckedUpdateManyWithoutAdminUserNestedInput
     targetAudits?: AuditLogUncheckedUpdateManyWithoutTargetUserNestedInput
@@ -41803,6 +42400,9 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    languageId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   }
 
   export type ConversationUpdateWithoutStatusInput = {

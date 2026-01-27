@@ -163,6 +163,7 @@ model Language {
   audio      Audio[]
   status     Status?    @relation(fields: [statusId], references: [statusId], onUpdate: NoAction)
   subtitles  Subtitle[]
+  users         User[]
 
   @@index([statusId], map: "idx_language_status")
   @@index([code], map: "idx_language_code")
@@ -263,6 +264,10 @@ model User {
   lastLoginAt             DateTime?                @map("last_login_at") @db.Timestamptz(6)
   createdAt               DateTime?                @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt               DateTime?                @default(now()) @map("updated_at") @db.Timestamptz(6)
+  gender                  String?   @db.VarChar(10)
+  dateOfBirth             DateTime? @map("date_of_birth") @db.Date
+  languageId              BigInt?   @map("language_id")
+  language                Language? @relation(fields: [languageId], references: [languageId])
   playbackLogs            AudioPlaybackLog[]
   adminAudits             AuditLog[]               @relation("AdminUserAudits")
   targetAudits            AuditLog[]               @relation("TargetUserAudits")
