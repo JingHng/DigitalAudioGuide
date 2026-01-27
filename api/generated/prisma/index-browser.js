@@ -140,6 +140,8 @@ exports.Prisma.ExhibitScalarFieldEnum = {
   description: 'description',
   additionalDescription: 'additionalDescription',
   sequence: 'sequence',
+  isArEnabled: 'isArEnabled',
+  arExperienceUrl: 'arExperienceUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
