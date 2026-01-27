@@ -18,6 +18,34 @@ if (process.env.NODE_ENV === "production") {
   prisma = global.__prisma;
 }
 
+async function normalizeBadgeId(badgeIdRaw) {
+  if (badgeIdRaw === undefined) return undefined; // Representing "no change"
+  if (badgeIdRaw === null) return null;          // Representing "remove badge"
+  const s = String(badgeIdRaw).trim();
+  if (s === "" || s.toLowerCase() === "none") return null;
+  return BigInt(s);
+}
+
+async function validateAndDetachBadgeFromOthers(tx, badgeId, currentExhibitId = null) {
+  if (badgeId === null || badgeId === undefined) return;
+
+  // 1) badge must exist
+  const badge = await tx.badge.findUnique({
+    where: { badgeId },
+    select: { badgeId: true, name: true },
+  });
+  if (!badge) throw new Error("Badge not found");
+
+  // 2) detach from other exhibits
+  await tx.exhibit.updateMany({
+    where: {
+      badgeId: badgeId,
+      ...(currentExhibitId ? { exhibitId: { not: currentExhibitId } } : {}),
+    },
+    data: { badgeId: null },
+  });
+}
+
 // Get all exhibits
 exports.getExhibits = async (req, res) => {
   try {
@@ -83,6 +111,7 @@ exports.createExhibit = async (req, res) => {
       exhibitionId,
       ttsText,
       language,
+      badgeId,
       isArEnabled,
       arExperienceUrl,
     } = req.body;
@@ -105,20 +134,24 @@ exports.createExhibit = async (req, res) => {
     // Retry logic to handle race conditions with parallel test runs
     let retries = 3;
     let newExhibit;
-    
+
     while (retries > 0) {
       try {
         // Use a transaction to prevent race conditions with sequence calculation
         newExhibit = await prisma.$transaction(async (tx) => {
           // 1. Calculate the next sequence number within transaction
           const lastExhibit = await tx.exhibit.findFirst({
-            where: { 
-              exhibitionId: BigInt(exhibitionId)
-            },
-            orderBy: { sequence: 'desc' },
-            select: { sequence: true }
+            where: { exhibitionId: BigInt(exhibitionId) },
+            orderBy: { sequence: "desc" },
+            select: { sequence: true },
           });
           const nextSequence = lastExhibit ? (lastExhibit.sequence + 1) : 1;
+
+          // Badge - normalize + ensure unique usage
+          const normalizedBadgeId = await normalizeBadgeId(badgeId);
+          if (normalizedBadgeId) {
+            await validateAndDetachBadgeFromOthers(tx, normalizedBadgeId, null);
+          }
 
           // 2. Create the Exhibit within the same transaction
           return await tx.exhibit.create({
@@ -130,7 +163,11 @@ exports.createExhibit = async (req, res) => {
               sequence: nextSequence,
               statusId: 1, // Active
               isArEnabled: Boolean(isArEnabled),
-        arExperienceUrl: isArEnabled ? arExperienceUrl : null,
+              arExperienceUrl: isArEnabled ? arExperienceUrl : null,
+
+              // Bind existing badge if provided
+              ...(normalizedBadgeId ? { badgeId: normalizedBadgeId } : {}),
+
         // Create the primary image record if a file exists
               images: primaryImage
           ? {
@@ -141,18 +178,20 @@ exports.createExhibit = async (req, res) => {
               },
                   }
                 : undefined,
+
               // Generate the initial QR Code record
               qrCodes: {
                 create: {
                   qrUrl: `${process.env.FRONTEND_URL || "http://localhost:5173"}/exhibit/temp-id`,
-                },
-              },
-            },
+                }
+              }
+            }
           });
         });
+
         break; // Success, exit retry loop
       } catch (err) {
-        if (err.code === 'P2002' && retries > 1) {
+        if (err.code === "P2002" && retries > 1) {
           // Unique constraint violation, retry after a small delay
           retries--;
           await new Promise(resolve => setTimeout(resolve, 50 * (4 - retries))); // Exponential backoff
@@ -181,13 +220,13 @@ exports.createExhibit = async (req, res) => {
     }
 
     // 5. Audit Log
-    await logAuditAction(
-      adminUserId,
-      null,
-      "exhibit",
-      "create",
-      { exhibitId: newExhibit.exhibitId.toString(), title },
-      { ip_address: req.ip },
+    await logAuditAction(adminUserId, null, "exhibit", "create",
+      {
+        exhibitId: newExhibit.exhibitId.toString(),
+        title,
+        badgeId: newExhibit.badgeId ? newExhibit.badgeId.toString() : null
+      },
+      { ip_address: req.ip }
     );
 
     // 6. Clear exhibitions cache
@@ -196,7 +235,8 @@ exports.createExhibit = async (req, res) => {
     res.status(201).json({
       message: "Exhibit created successfully",
       exhibitId: newExhibit.exhibitId.toString(),
-      sequence: newExhibit.sequence 
+      sequence: newExhibit.sequence,
+      badgeId: newExhibit.badgeId ? newExhibit.badgeId.toString() : null
     });
   } catch (err) {
     console.error("Error in createExhibit:", err);
@@ -214,6 +254,7 @@ exports.updateExhibit = async (req, res) => {
       title,
       description,
       additionalDescription,
+      badgeId,
       isArEnabled,
       arExperienceUrl,
     } = req.body;
@@ -265,10 +306,23 @@ exports.updateExhibit = async (req, res) => {
     }
 
     // STEP 3: Update exhibit
-    const updatedExhibit = await prisma.exhibit.update({
-      where: { exhibitId },
-      data: updateData,
-    });
+const updatedExhibit = await prisma.$transaction(async (tx) => {
+  // Handle badge binding/unbinding
+  if (badgeId !== undefined) {
+    const normalizedBadgeId = await normalizeBadgeId(badgeId);
+
+    if (normalizedBadgeId !== undefined && normalizedBadgeId !== null) {
+      await validateAndDetachBadgeFromOthers(tx, normalizedBadgeId, exhibitId);
+    }
+
+    // Only set badgeId if it was provided in body
+    updateData.badgeId = normalizedBadgeId;
+  }
+  return await tx.exhibit.update({
+    where: { exhibitId },
+    data: updateData,
+  });
+});
 
     // STEP 4: Create the audit log.
     const changes = {};
@@ -317,6 +371,12 @@ exports.updateExhibit = async (req, res) => {
       };
     }
 
+    if (badgeId !== undefined && updatedExhibit.badgeId !== originalExhibit.badgeId) {
+  changes.badgeId = {
+    from: originalExhibit.badgeId,
+    to: updatedExhibit.badgeId,
+  };
+}
     await logAuditAction(
       adminUserId,
       null,
@@ -336,18 +396,20 @@ exports.updateExhibit = async (req, res) => {
     clearExhibitionsCache();
 
     res.status(200).json({
-      exhibitId: updatedExhibit.exhibitId.toString(),
-      title: updatedExhibit.title,
-      description: updatedExhibit.description,
-      additionalDescription: updatedExhibit.additionalDescription,
-      isArEnabled: updatedExhibit.isArEnabled,
-      arExperienceUrl: updatedExhibit.arExperienceUrl,
-      createdAt: updatedExhibit.createdAt,
-      updatedAt: updatedExhibit.updatedAt,
+        exhibitId: updatedExhibit.exhibitId,
+        title: updatedExhibit.title,
+        description: updatedExhibit.description,
+        additionalDescription: updatedExhibit.additionalDescription,
+        badgeId: updatedExhibit.badgeId ? updatedExhibit.badgeId.toString() : null,
+        isArEnabled: updatedExhibit.isArEnabled,
+        arExperienceUrl: updatedExhibit.arExperienceUrl,
+
+        createdAt: updatedExhibit.createdAt,
+        updatedAt: updatedExhibit.updatedAt
     });
   } catch (err) {
     console.error("Error in updateExhibit:", err);
-    res.status(500).json({ error: "Failed to update exhibit" });
+    res.status(500).json({ error: "Failed to update exhibit", details: err.message });
   }
 };
 

@@ -1,17 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import apiClient from "../../utils/apiClient";
-import {
-  Loader2,
-  Info,
-  Languages,
-  Mic,
-  ImageIcon,
-  Plus,
-  CheckCircle2,
-  Sparkles,
-} from "lucide-react";
-import "../css/ExhibitForm.css";
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import apiClient from '../../utils/apiClient';
+import { Loader2, Info, Languages, Mic, ImageIcon, Plus, CheckCircle2, Sparkles, Award } from 'lucide-react';
+import '../css/ExhibitForm.css';
 
 const BACKEND_URL = import.meta.env.VITE_API_TARGET || "";
 const DEFAULT_IMAGE_URL = `${BACKEND_URL}/public/images/Exhibit.jpg`;
@@ -28,11 +19,7 @@ const getImageUrl = (fileUrl: string | null): string => {
   return DEFAULT_IMAGE_URL;
 };
 
-interface ExhibitImage {
-  imageId: string;
-  fileUrl: string;
-  isPrimary: boolean;
-}
+interface ExhibitImage { imageId: string; fileUrl: string; isPrimary: boolean; }
 interface ExhibitToEdit {
   exhibitId: string;
   title: string;
@@ -40,14 +27,15 @@ interface ExhibitToEdit {
   additionalDescription: string;
   exhibitionId: string;
   images: ExhibitImage[];
-  isArEnabled: boolean;
-  arExperienceUrl: string | null;
+  badgeId?: string | null;
 }
-interface Language {
-  languageId: string;
-  title: string;
-  code: string;
-  status?: { statusName: string } | null;
+interface Language { languageId: string; title: string; code: string; status?: { statusName: string; } | null; }
+
+// Badge option type
+interface BadgeOption {
+  badgeId: string;
+  name: string;
+  style?: string | null;
 }
 
 const ExhibitForm: React.FC<{
@@ -56,10 +44,10 @@ const ExhibitForm: React.FC<{
   onClose: () => void;
   preselectedExhibitionId?: string | null;
 }> = ({ exhibitToEdit, onSave, onClose, preselectedExhibitionId }) => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [additionalDescription, setAdditionalDescription] = useState("");
-  const [exhibitionId, setExhibitionId] = useState("");
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [additionalDescription, setAdditionalDescription] = useState('');
+  const [exhibitionId, setExhibitionId] = useState('');
   const [images, setImages] = useState<ExhibitImage[]>([]);
   const [primaryImageFile, setPrimaryImageFile] = useState<File | null>(null);
   const [ttsText, setTtsText] = useState("");
@@ -73,6 +61,10 @@ const ExhibitForm: React.FC<{
   const [isArEnabled, setIsArEnabled] = useState(false);
   const [arExperienceUrl, setArExperienceUrl] = useState("");
 
+  // Badge states
+  const [badges, setBadges] = useState<BadgeOption[]>([]);
+  const [selectedBadgeId, setSelectedBadgeId] = useState<string>('none'); // "none" = no badge
+
   useEffect(() => {
     apiClient
       .get("/exhibitions")
@@ -84,6 +76,41 @@ const ExhibitForm: React.FC<{
     });
   }, []);
 
+  // helper: fetch badge options for dropdown
+  const fetchBadges = async (exId: string) => {
+    if (!exId) {
+      setBadges([]);
+      setSelectedBadgeId('none');
+      return;
+    }
+
+    try {
+      // Preferred API: /badges/options?exhibitionId=xxx
+      const res = await apiClient.get('/badges/options', { params: { exhibitionId: exId } });
+      const list = Array.isArray(res.data) ? res.data : [];
+      setBadges(list.map((b: any) => ({
+        badgeId: String(b.badgeId),
+        name: b.name ?? `Badge #${b.badgeId}`,
+        style: b.style ?? null,
+      })));
+    } catch (err) {
+      // Fallback: use /badges/allBadges then filter by exhibitionId
+      try {
+        const res2 = await apiClient.get('/badges/allBadges');
+        const all = Array.isArray(res2.data) ? res2.data : [];
+        const filtered = all.filter((b: any) => String(b?.exhibit?.exhibition?.exhibitionId) === String(exId));
+        setBadges(filtered.map((b: any) => ({
+          badgeId: String(b.badgeId),
+          name: b.name ?? `Badge #${b.badgeId}`,
+          style: b.style ?? null,
+        })));
+      } catch (err2) {
+        console.error('Error fetching badges:', err2);
+        setBadges([]);
+      }
+    }
+  };
+
   useEffect(() => {
     if (exhibitToEdit) {
       setTitle(exhibitToEdit.title || "");
@@ -93,10 +120,26 @@ const ExhibitForm: React.FC<{
       setImages(exhibitToEdit.images || []);
       setIsArEnabled(exhibitToEdit.isArEnabled);
       setArExperienceUrl(exhibitToEdit.arExperienceUrl || "");
+
+      // preload selected badge for edit
+      if (exhibitToEdit.badgeId) {
+        setSelectedBadgeId(String(exhibitToEdit.badgeId));
+      } else {
+        setSelectedBadgeId('none');
+      }
     } else if (preselectedExhibitionId) {
       setExhibitionId(preselectedExhibitionId);
     }
   }, [exhibitToEdit, preselectedExhibitionId]);
+
+  // whenever exhibitionId changes, refresh badges
+  useEffect(() => {
+    if (!exhibitionId) return;
+    fetchBadges(exhibitionId);
+    // if creating new exhibit, default to none
+    if (!exhibitToEdit) setSelectedBadgeId('none');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [exhibitionId]);
 
   const handleTranslate = async () => {
     const lang = languages.find((l) => l.languageId === selectedLanguageId);
@@ -121,49 +164,62 @@ const ExhibitForm: React.FC<{
     setLoading(true);
     try {
       let currentId = exhibitToEdit?.exhibitId;
+
+      // normalize badgeId: "none" => "none" (backend converts to null), "" => "none"
+      const badgeValue = selectedBadgeId && selectedBadgeId !== '' ? selectedBadgeId : 'none';
+
       if (exhibitToEdit) {
+        // send badgeId
+        // If you want "not change badge unless user touched", you'd need extra state.
+        // Here we always send what's currently selected (simple + predictable).
         await apiClient.put(`/exhibits/${currentId}`, {
           title,
           description,
           additionalDescription,
           exhibitionId,
-          isArEnabled,
-          arExperienceUrl,
+          badgeId: badgeValue, // "none" or an id
         });
+
         if (primaryImageFile) {
           const fd = new FormData();
-          fd.append("images", primaryImageFile);
-          fd.append("isPrimary", "true");
+          fd.append('images', primaryImageFile);
+          fd.append('isPrimary', 'true');
           await apiClient.post(`/exhibits/${currentId}/image`, fd);
         }
       } else {
+        // create: FormData include badgeId (optional)
         const fd = new FormData();
-        fd.append("title", title);
-        fd.append("description", description);
-        fd.append("additionalDescription", additionalDescription);
-        fd.append("exhibitionId", exhibitionId);
-        fd.append("isArEnabled", String(isArEnabled));
-        if (isArEnabled && arExperienceUrl) {
-          fd.append("arExperienceUrl", arExperienceUrl);
-        }
-        if (primaryImageFile) fd.append("primaryImage", primaryImageFile);
-        const res = await apiClient.post("/exhibits", fd);
+        fd.append('title', title);
+        fd.append('description', description);
+        fd.append('additionalDescription', additionalDescription);
+        fd.append('exhibitionId', exhibitionId);
+
+        // only append if user selected (send "none" too if you want explicit clear)
+        fd.append('badgeId', badgeValue); // backend: "none" => null
+
+        if (primaryImageFile) fd.append('primaryImage', primaryImageFile);
+
+        const res = await apiClient.post('/exhibits', fd);
         currentId = res.data.exhibitId;
       }
       const langName = languages.find(
         (l) => l.languageId === selectedLanguageId,
       )?.title;
+
+      const langName = languages.find(l => l.languageId === selectedLanguageId)?.title;
       if (ttsText.trim() && currentId && langName) {
         await apiClient.post(`/exhibits/${currentId}/tts`, {
           text: ttsText,
           language: langName,
         });
       }
+
       onSave();
       onClose();
     } catch (err) {
       console.error(err);
-    } finally {
+    }
+    finally {
       setLoading(false);
     }
   };
@@ -175,6 +231,7 @@ const ExhibitForm: React.FC<{
       className="exhibit-form-wrapper"
     >
       <form onSubmit={handleSubmit} className="exhibit-internal-form">
+
         {/* BASIC INFO */}
         <div className="form-section-card">
           <div className="exhibit-section-header">
@@ -195,6 +252,9 @@ const ExhibitForm: React.FC<{
                   {ex.title}
                 </option>
               ))}
+              {availableExhibitions.map(ex => (
+                <option key={ex.exhibitionId} value={ex.exhibitionId}>{ex.title}</option>
+              ))}
             </select>
           </div>
 
@@ -211,12 +271,39 @@ const ExhibitForm: React.FC<{
 
           <div className="exhibit-input-field">
             <label>Brief Description</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={3}
-              placeholder="A short overview for visitors..."
-            />
+            <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} placeholder="A short overview for visitors..." />
+          </div>
+
+          {/* BADGE ASSIGNING */}
+          <div className="exhibit-input-field">
+            <label>
+              Badge
+            </label>
+            <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+              <select
+                value={selectedBadgeId}
+                onChange={(e) => setSelectedBadgeId(e.target.value)}
+                disabled={!exhibitionId}
+              >
+                <option value="none">No Badge</option>
+                {badges.map(b => (
+                  <option key={b.badgeId} value={b.badgeId}>
+                    {b.name}{b.style ? ` (${b.style})` : ''}
+                  </option>
+                ))}
+              </select>
+
+              <div style={{ opacity: 0.65, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Award size={16} />
+                <small>{exhibitionId ? `${badges.length} badges available` : 'Select a tour first'}</small>
+              </div>
+            </div>
+
+            <div style={{ marginTop: 6, opacity: 0.7 }}>
+              <small>
+                Tip: One badge can only belong to one exhibit. Selecting it here will detach it from other exhibits automatically.
+              </small>
+            </div>
           </div>
         </div>
 
@@ -241,6 +328,11 @@ const ExhibitForm: React.FC<{
                   }
                   alt="Preview"
                   className="main-preview-img"
+              {(images.filter(img => img.isPrimary).length > 0 || primaryImageFile) ? (
+                <img
+                  src={primaryImageFile ? URL.createObjectURL(primaryImageFile) : getImageUrl(images.find(img => img.isPrimary)?.fileUrl || null)}
+                  alt="Preview"
+                  className="main-preview-img"
                 />
               ) : (
                 <div className="image-placeholder">
@@ -258,6 +350,13 @@ const ExhibitForm: React.FC<{
                 onChange={(e) =>
                   e.target.files && setPrimaryImageFile(e.target.files[0])
                 }
+                className="hidden-file-input"
+              />
+              <input
+                type="file"
+                id="exhibit-upload"
+                accept="image/*"
+                onChange={(e) => e.target.files && setPrimaryImageFile(e.target.files[0])}
                 className="hidden-file-input"
               />
               <label htmlFor="exhibit-upload" className="custom-file-label">
@@ -439,3 +538,4 @@ const ExhibitForm: React.FC<{
 };
 
 export default ExhibitForm;
+

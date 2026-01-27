@@ -94,4 +94,20 @@ router.delete(
   badgeController.deleteBadge
 );
 
+// Admin badge statistics dashboard
+router.get(
+  "/stats/dashboard",
+  jwtMiddleware.verifyToken,
+  checkPermission("read_exhibit"),
+  badgeController.getBadgeStatsDashboard
+);
+
+// Admin exhibition dropdown options for filtering
+router.get(
+  "/stats/exhibitions",
+  jwtMiddleware.verifyToken,
+  checkPermission("read_exhibit"),
+  badgeController.getExhibitionOptionsForStats
+);
+
 module.exports = router;
