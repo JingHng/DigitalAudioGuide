@@ -228,6 +228,139 @@ class BadgeModel {
     return true;
   }
 
+    /* ============================================================
+     ADMIN STATS – BADGE STATISTICS DASHBOARD
+     ============================================================ */
+
+  /**
+   * Exhibition dropdown options for stats filter
+   */
+  static async getExhibitionOptionsForStats() {
+    return prisma.exhibition.findMany({
+      select: { exhibitionId: true, title: true },
+      orderBy: { title: "asc" },
+    });
+  }
+
+  /**
+   * Core dashboard stats:
+   * - KPIs
+   * - Top/Bottom badges (includes 0 earned)
+   * - Earned by style (pie/bar)
+   * - Timeline (day/week)
+   *
+   * IMPORTANT: Your DB design is Exhibit holds badgeId FK
+   * So SQL join is: exhibit.badge_id = badge.badge_id
+   */
+  static async getBadgeStatsDashboard({ from, to, range, interval, exhibitionId }) {
+    // 1) badge filter by exhibition
+    const badgeWhere =
+      exhibitionId === "all"
+        ? {}
+        : { exhibit: { exhibition: { exhibitionId: exhibitionId } } };
+
+    // all badges under this exhibition filter
+    const allBadges = await prisma.badge.findMany({
+      where: badgeWhere,
+      select: { badgeId: true, name: true, style: true },
+    });
+
+    // 2) userBadge filter: time + (optional) exhibition via badge -> exhibit -> exhibition
+    const userBadgeWhere =
+      exhibitionId === "all"
+        ? { createdAt: { gte: from, lte: to } }
+        : {
+            createdAt: { gte: from, lte: to },
+            badge: { exhibit: { exhibition: { exhibitionId: exhibitionId } } },
+          };
+
+    // KPIs
+    const totalBadges = allBadges.length;
+    const totalEarned = await prisma.userBadge.count({ where: userBadgeWhere });
+
+    const usersEarnedGroups = await prisma.userBadge.groupBy({
+      by: ["userId"],
+      where: userBadgeWhere,
+    });
+    const usersEarned = usersEarnedGroups.length;
+
+    const days = range === "7d" ? 7 : range === "30d" ? 30 : range === "90d" ? 90 : 365;
+    const avgEarnsPerDay = days > 0 ? Number((totalEarned / days).toFixed(2)) : 0;
+
+    // Earned grouped by badgeId (only badges earned >= 1)
+    const earnedGrouped = await prisma.userBadge.groupBy({
+      by: ["badgeId"],
+      where: userBadgeWhere,
+      _count: { badgeId: true },
+    });
+
+    const earnedMap = new Map(
+      earnedGrouped.map((g) => [g.badgeId.toString(), g._count.badgeId])
+    );
+
+    // Include 0 earned badges by merging with allBadges
+    const badgesWithEarned = allBadges.map((b) => ({
+      badgeId: b.badgeId.toString(),
+      name: b.name ?? "(Unnamed)",
+      style: (typeof b.style === "string" && b.style.trim().length > 0) ? b.style.trim() : "unknown",
+      earned: earnedMap.get(b.badgeId.toString()) ?? 0,
+    }));
+
+    const topBadges = [...badgesWithEarned]
+      .sort((a, b) => b.earned - a.earned)
+      .slice(0, 10);
+
+    const bottomBadges = [...badgesWithEarned]
+      .sort((a, b) => a.earned - b.earned)
+      .slice(0, 10);
+
+    // Earned by style (pie/bar)
+    const styleMap = new Map();
+    for (const b of badgesWithEarned) {
+      styleMap.set(b.style, (styleMap.get(b.style) ?? 0) + b.earned);
+    }
+    const earnedByStyle = [...styleMap.entries()]
+      .map(([style, earned]) => ({ style, earned }))
+      .sort((a, b) => b.earned - a.earned);
+
+    // Timeline (raw SQL) – day/week
+    const truncateUnit = interval === "week" ? "week" : "day";
+
+    // IMPORTANT JOIN: exhibit holds badge_id FK
+    // Tables based on @@map: badge, exhibit, user_badge
+    let sql = `
+      SELECT
+        to_char(date_trunc('${truncateUnit}', ub.created_at), 'YYYY-MM-DD') AS date,
+        COUNT(*)::int AS earned
+      FROM user_badge ub
+      JOIN badge b ON b.badge_id = ub.badge_id
+      JOIN exhibit e ON e.badge_id = b.badge_id
+      WHERE ub.created_at BETWEEN $1 AND $2
+    `;
+    const params = [from, to];
+
+    if (exhibitionId !== "all") {
+      sql += ` AND e.exhibition_id = $3 `;
+      params.push(exhibitionId);
+    }
+
+    sql += `
+      GROUP BY 1
+      ORDER BY 1;
+    `;
+
+    const timeline = await prisma.$queryRawUnsafe(sql, ...params);
+
+    return {
+      kpis: { totalBadges, totalEarned, usersEarned, avgEarnsPerDay },
+      topBadges,
+      bottomBadges,
+      earnedByStyle,
+      timeline,
+    };
+  }
+
+
   /* ============================================================
      USER – CLAIMING BADGES
      ============================================================ */

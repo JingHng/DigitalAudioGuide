@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2026-01-26 22:29:04"}
 {"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2026-01-26 22:29:04"}
 {"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2026-01-26 22:29:33"}
@@ -20,3 +21,9 @@
 {"level":"error","message":"Failed to initialize settings module: \nInvalid `prisma.$queryRaw()` invocation:\n\n\nCan't reach database server at `ep-polished-mountain-adh5qv6r-pooler.c-2.us-east-1.aws.neon.tech:5432`\n\nPlease make sure your database server is running at `ep-polished-mountain-adh5qv6r-pooler.c-2.us-east-1.aws.neon.tech:5432`.","service":"user-inactivity-service","timestamp":"2026-01-27 23:41:51"}
 {"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2026-01-28 01:12:38"}
 {"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2026-01-28 01:12:38"}
+=======
+{"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2026-01-27 15:52:16"}
+{"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2026-01-27 15:52:17"}
+{"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2026-01-27 16:16:51"}
+{"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2026-01-27 16:16:51"}
+>>>>>>> 525100f4cc81887fbebb8bdb6f573b209e141b6b
