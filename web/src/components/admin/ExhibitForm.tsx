@@ -310,7 +310,7 @@ const ExhibitForm: React.FC<{
             />
           </div>
 
-          {/* BADGE ASSIGNING */}
+          {/* BADGE ASSIGNING
           <div className="exhibit-input-field">
             <label>Badge</label>
             <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
@@ -351,7 +351,7 @@ const ExhibitForm: React.FC<{
                 will detach it from other exhibits automatically.
               </small>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* MEDIA SECTION */}
