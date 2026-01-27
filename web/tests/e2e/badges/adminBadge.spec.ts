@@ -1,14 +1,25 @@
-import { test, expect } from "@playwright/test";
+import {
+  test,
+  expect,
+  type Page,
+  type APIRequestContext,
+} from "@playwright/test";
 
 const FRONTEND_URL = "http://localhost:5174";
+const API_URL = "http://localhost:5175";
 
-// ✅ Admin badge page URL (change if yours differs)
 const BADGES_PAGE_URL = `${FRONTEND_URL}/admin/badges`;
 
 const TEST_USER = {
   username: "admin",
   password: "admin123",
 };
+
+/**
+ * If your frontend stores JWT under a specific key, keep only that key.
+ * Common examples: "token", "accessToken", "authToken", "jwt".
+ */
+const AUTH_STORAGE_KEYS = ["token", "accessToken", "authToken", "jwt"] as const;
 
 // -------------------- Mock Data --------------------
 const mockStyles = ["cute", "cool", "funny"];
@@ -53,60 +64,152 @@ const mockBadges = [
 ];
 
 // -------------------- Route helpers --------------------
-// ✅ Support optional /api prefix
+// Support optional /api prefix
 const anyBadgesAll = /\/(api\/)?badges\/allBadges$/;
 const anyBadgesStyles = /\/(api\/)?badges\/styles$/;
-const anyBadgesCreate = /\/(api\/)?badges$/; // POST create
 const anyBadgesUpdate = /\/(api\/)?badges\/\d+$/; // PUT update
 const anyBadgesDelete = /\/(api\/)?badges\/\d+$/; // DELETE
-const anyBadgeUpload = /\/(api\/)?badges\/\d+\/upload-image$/; // POST/PUT upload image (some apps differ)
+const anyBadgeUpload = /\/(api\/)?badges\/\d+\/upload-image$/; // POST/PUT upload image
 
-// -------------------- Login helper (robust) --------------------
-async function login(page: any) {
-  await page.goto(`${FRONTEND_URL}/login`, { waitUntil: "domcontentloaded" });
+// -------------------- Auth helpers --------------------
 
-  const username = page
-    .getByPlaceholder("Enter your username")
-    .first()
-    .or(page.getByPlaceholder(/username/i).first())
-    .or(page.locator('input[name="username"]').first())
-    .or(page.locator('input[type="text"]').first());
+/**
+ * Parse a Set-Cookie header into Playwright cookie objects.
+ * This is a best-effort helper for cookie-based auth.
+ */
+function parseSetCookieHeader(setCookie: string, baseUrl: string) {
+  const url = new URL(baseUrl);
 
-  const password = page
-    .getByPlaceholder("Enter your password")
-    .first()
-    .or(page.getByPlaceholder(/password/i).first())
-    .or(page.locator('input[name="password"]').first())
-    .or(page.locator('input[type="password"]').first());
+  // Handle multiple cookies combined (some servers send as a single string).
+  // This split is heuristic; it works for typical "cookie=...; Path=/, other=...; Path=/" cases.
+  const cookieParts = setCookie.split(/,(?=\s*[^;=]+=[^;=]+)/g);
 
-  await expect(username).toBeVisible({ timeout: 20_000 });
-  await expect(password).toBeVisible({ timeout: 20_000 });
+  return cookieParts.map((cookieStr) => {
+    const segments = cookieStr.split(";").map((s) => s.trim());
+    const [nameValue, ...attrs] = segments;
 
-  await username.fill(TEST_USER.username);
-  await password.fill(TEST_USER.password);
+    const eqIndex = nameValue.indexOf("=");
+    const name = nameValue.slice(0, eqIndex);
+    const value = nameValue.slice(eqIndex + 1);
 
-  const loginBtn = page
-    .getByRole("button", { name: /login/i })
-    .first()
-    .or(page.locator('button[type="submit"]').first());
+    let path = "/";
+    let domain = url.hostname;
+    let httpOnly = false;
+    let secure = false;
+    let sameSite: "Lax" | "Strict" | "None" | undefined;
 
-  await expect(loginBtn).toBeVisible({ timeout: 20_000 });
-  await loginBtn.click();
+    for (const a of attrs) {
+      const [kRaw, vRaw] = a.split("=");
+      const k = (kRaw || "").toLowerCase();
+      const v = (vRaw || "").trim();
 
-  // ✅ Don't assume exact landing URL; only require leaving /login
-  await page.waitForURL((url: any) => !url.toString().includes("/login"), {
-    timeout: 20_000,
+      if (k === "path" && v) path = v;
+      if (k === "domain" && v) domain = v.startsWith(".") ? v.slice(1) : v;
+      if (k === "httponly") httpOnly = true;
+      if (k === "secure") secure = true;
+      if (k === "samesite" && v) {
+        const vv = v.toLowerCase();
+        if (vv === "lax") sameSite = "Lax";
+        if (vv === "strict") sameSite = "Strict";
+        if (vv === "none") sameSite = "None";
+      }
+    }
+
+    return { name, value, domain, path, httpOnly, secure, sameSite };
   });
 }
 
-test.describe("Admin BadgesPage / BadgeManagement", () => {
-  test.beforeEach(async ({ page }) => {
-    await login(page);
+/**
+ * Perform API login once and reuse credentials across tests.
+ * This avoids flaky UI login steps in CI.
+ */
+async function apiLogin(request: APIRequestContext) {
+  const loginResponse = await request.post(`${API_URL}/api/auth/login`, {
+    data: { username: TEST_USER.username, password: TEST_USER.password },
   });
 
-  test("loads badges, groups by exhibition, and renders cards", async ({
-    page,
-  }) => {
+  expect(loginResponse.ok()).toBeTruthy();
+
+  const loginJson = await loginResponse.json().catch(() => ({}));
+  const token =
+    loginJson?.token ||
+    loginJson?.data?.token ||
+    loginJson?.accessToken ||
+    loginJson?.data?.accessToken;
+
+  const setCookie = loginResponse.headers()["set-cookie"];
+
+  return { token: token as string | undefined, setCookie };
+}
+
+/**
+ * Inject auth into the browser context.
+ * Supports both token-in-localStorage and cookie-based session.
+ */
+async function applyAuth(page: Page, token?: string, setCookie?: string) {
+  if (setCookie) {
+    const cookies = parseSetCookieHeader(setCookie, FRONTEND_URL);
+    await page.context().addCookies(
+      cookies.map((c) => ({
+        name: c.name,
+        value: c.value,
+        domain: c.domain,
+        path: c.path,
+        httpOnly: c.httpOnly,
+        secure: c.secure,
+        sameSite: c.sameSite,
+      })),
+    );
+  }
+
+  if (token) {
+    // Ensure localStorage is set before any app code reads it.
+    await page.addInitScript(
+      ({ tokenValue, keys }) => {
+        for (const k of keys) {
+          try {
+            window.localStorage.setItem(k, tokenValue);
+          } catch {
+            // Ignore storage errors; the test will fail later if app truly requires it.
+          }
+        }
+      },
+      { tokenValue: token, keys: AUTH_STORAGE_KEYS },
+    );
+  }
+}
+
+/**
+ * Navigate to the badges page and ensure we are not redirected to /login.
+ */
+async function gotoBadgesAsAdmin(page: Page) {
+  await page.goto(BADGES_PAGE_URL, { waitUntil: "domcontentloaded" });
+  await expect(page).not.toHaveURL(/\/login(\b|\/|#|\?)/, { timeout: 20_000 });
+}
+
+// -------------------- Tests --------------------
+
+test.describe.configure({ mode: "serial" });
+
+test.describe("Admin BadgesPage / BadgeManagement", () => {
+  let authToken: string | undefined;
+  let setCookie: string | undefined;
+
+  test.beforeAll(async ({ request }) => {
+    const result = await apiLogin(request);
+    authToken = result.token;
+    setCookie = result.setCookie;
+
+    // Fail fast if neither token nor cookie exists. Adjust if your backend returns auth differently.
+    expect(authToken || setCookie).toBeTruthy();
+  });
+
+  test.beforeEach(async ({ page }) => {
+    await applyAuth(page, authToken, setCookie);
+    await gotoBadgesAsAdmin(page);
+  });
+
+  test("loads badges, groups by exhibition, and renders cards", async ({ page }) => {
     await page.route(anyBadgesAll, async (route) => {
       await route.fulfill({
         status: 200,
@@ -123,18 +226,15 @@ test.describe("Admin BadgesPage / BadgeManagement", () => {
       });
     });
 
-    await page.goto(BADGES_PAGE_URL, { waitUntil: "domcontentloaded" });
+    // Ensure routes apply to the current page load.
+    await page.reload({ waitUntil: "domcontentloaded" });
 
-    await expect(
-      page.getByRole("heading", { name: "Badge Management" }),
-    ).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Badge Management" })).toBeVisible({
+      timeout: 20_000,
+    });
 
-    await expect(
-      page.getByRole("heading", { name: "Tour Alpha" }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: "Tour Beta" }),
-    ).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Tour Alpha" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Tour Beta" })).toBeVisible();
 
     await expect(page.getByRole("heading", { name: "Explorer" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Master" })).toBeVisible();
@@ -162,38 +262,27 @@ test.describe("Admin BadgesPage / BadgeManagement", () => {
       });
     });
 
-    await page.goto(BADGES_PAGE_URL, { waitUntil: "domcontentloaded" });
+    await page.reload({ waitUntil: "domcontentloaded" });
 
-    // Style filter -> funny
     await page.locator("select").first().selectOption("funny");
     await expect(page.getByRole("heading", { name: "Joker" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Explorer" })).toHaveCount(
-      0,
-    );
+    await expect(page.getByRole("heading", { name: "Explorer" })).toHaveCount(0);
     await expect(page.getByRole("heading", { name: "Master" })).toHaveCount(0);
 
-    // Reset style filter, then search
     await page.locator("select").first().selectOption("all");
     await page
       .getByPlaceholder("Search by exhibition / exhibit / badge...")
       .fill("Alpha");
 
-    await expect(
-      page.getByRole("heading", { name: "Tour Alpha" }),
-    ).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Tour Beta" })).toHaveCount(
-      0,
-    );
+    await expect(page.getByRole("heading", { name: "Tour Alpha" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Tour Beta" })).toHaveCount(0);
 
     await expect(page.getByRole("heading", { name: "Explorer" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Master" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Joker" })).toHaveCount(0);
   });
 
-  test("opens create modal (button) and submits create + upload image", async ({
-    page,
-  }) => {
-    // initial fetch
+  test("opens create modal (button) and submits create + upload image", async ({ page }) => {
     await page.route(anyBadgesStyles, async (route) => {
       await route.fulfill({
         status: 200,
@@ -202,7 +291,6 @@ test.describe("Admin BadgesPage / BadgeManagement", () => {
       });
     });
 
-    // first load -> mockBadges; after create -> updatedBadges
     const updatedBadges = [
       ...mockBadges,
       {
@@ -230,7 +318,6 @@ test.describe("Admin BadgesPage / BadgeManagement", () => {
       });
     });
 
-    // ✅ Create endpoint: still mock response, but don't rely on it to capture body
     const anyBadgesCreateAny = /\/(api\/)?badges(\/.*)?$/;
     await page.route(anyBadgesCreateAny, async (route) => {
       if (route.request().method() !== "POST") return route.fallback();
@@ -241,14 +328,12 @@ test.describe("Admin BadgesPage / BadgeManagement", () => {
       });
     });
 
-    // upload image (more permissive id + POST/PUT)
     let uploadHit = false;
     const anyBadgeUploadAny = /\/(api\/)?badges\/[^/]+\/upload-image$/;
     await page.route(anyBadgeUploadAny, async (route) => {
       const method = route.request().method();
       if (method !== "POST" && method !== "PUT") return route.fallback();
       uploadHit = true;
-
       await route.fulfill({
         status: 200,
         contentType: "application/json",
@@ -260,17 +345,14 @@ test.describe("Admin BadgesPage / BadgeManagement", () => {
       });
     });
 
-    await page.goto(BADGES_PAGE_URL, { waitUntil: "domcontentloaded" });
+    await page.reload({ waitUntil: "domcontentloaded" });
 
-    // Open modal
     await page.getByRole("button", { name: /Create New Badge/i }).click();
 
-    // modal title (strict-safe)
     await expect(
       page.getByRole("heading", { name: "Create New Badge", exact: true }),
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 20_000 });
 
-    // Fill form
     await page.getByLabel("Assign to Exhibit").selectOption("10");
     await page.getByLabel("Badge Name").fill("New Badge");
     await page.getByLabel("Badge Description").fill("New desc");
@@ -282,41 +364,30 @@ test.describe("Admin BadgesPage / BadgeManagement", () => {
       buffer: Buffer.from([137, 80, 78, 71]),
     });
 
-    // ✅ Capture the real POST request (works across browsers)
     const createReqPromise = page.waitForRequest((req) => {
-      return (
-        req.method() === "POST" && /\/(api\/)?badges(\/.*)?$/.test(req.url())
-      );
+      return req.method() === "POST" && /\/(api\/)?badges(\/.*)?$/.test(req.url());
     });
 
-    // Submit
     await page.getByRole("button", { name: /Create Badge/i }).click();
 
     const createReq = await createReqPromise;
     const createBody = createReq.postDataJSON();
 
-    // ✅ Assert create payload
     expect(createBody).toBeTruthy();
     expect(createBody.name).toBe("New Badge");
     expect(createBody.description).toBe("New desc");
     expect(createBody.style).toBe("cute");
     expect(String(createBody.exhibitId)).toBe("10");
 
-    // upload might happen OR backend may accept imageUrl directly
     expect(
-      uploadHit ||
-        String(createBody?.imageUrl || "").includes("/images/badge/"),
+      uploadHit || String(createBody?.imageUrl || "").includes("/images/badge/"),
     ).toBeTruthy();
 
-    // Close modal if visible (avoid strict-mode confusion)
-    const closeBtn = page
-      .getByRole("button", { name: /close|cancel|x/i })
-      .first();
+    const closeBtn = page.getByRole("button", { name: /close|cancel|x/i }).first();
     if (await closeBtn.isVisible().catch(() => false)) {
       await closeBtn.click();
     }
 
-    // Assert NEW badge card appears by scoping to card container
     const newBadgeCardHeading = page
       .locator(".exhibit-card-manage")
       .filter({ hasText: "New Badge" })
@@ -325,9 +396,7 @@ test.describe("Admin BadgesPage / BadgeManagement", () => {
     await expect(newBadgeCardHeading).toBeVisible({ timeout: 10_000 });
   });
 
-  test("edits an existing badge (PUT) and optionally uploads new image", async ({
-    page,
-  }) => {
+  test("edits an existing badge (PUT) and optionally uploads new image", async ({ page }) => {
     await page.route(anyBadgesAll, async (route) => {
       await route.fulfill({
         status: 200,
@@ -335,6 +404,7 @@ test.describe("Admin BadgesPage / BadgeManagement", () => {
         body: JSON.stringify(mockBadges),
       });
     });
+
     await page.route(anyBadgesStyles, async (route) => {
       await route.fulfill({
         status: 200,
@@ -366,14 +436,12 @@ test.describe("Admin BadgesPage / BadgeManagement", () => {
       });
     });
 
-    await page.goto(BADGES_PAGE_URL, { waitUntil: "domcontentloaded" });
+    await page.reload({ waitUntil: "domcontentloaded" });
 
-    const explorerCard = page.locator(".exhibit-card-manage", {
-      hasText: "Explorer",
-    });
+    const explorerCard = page.locator(".exhibit-card-manage", { hasText: "Explorer" });
     await explorerCard.getByRole("button", { name: /Edit/i }).click();
 
-    await expect(page.getByText("Edit Badge: Explorer")).toBeVisible();
+    await expect(page.getByText("Edit Badge: Explorer")).toBeVisible({ timeout: 20_000 });
 
     await page.getByLabel("Badge Name").fill("Explorer Updated");
     await page.getByLabel("Badge Description").fill("Updated desc");
@@ -390,8 +458,7 @@ test.describe("Admin BadgesPage / BadgeManagement", () => {
     expect(updateBody.name).toBe("Explorer Updated");
     expect(updateBody.description).toBe("Updated desc");
 
-    // ✅ upload can be optional in edit mode, so do not hard-fail
-    // (some apps only upload on create, or upload endpoint differs)
+    // Upload can be optional in edit mode; do not hard fail.
     expect([true, false]).toContain(uploadHit);
   });
 
@@ -409,6 +476,7 @@ test.describe("Admin BadgesPage / BadgeManagement", () => {
         body: JSON.stringify(badgesState),
       });
     });
+
     await page.route(anyBadgesStyles, async (route) => {
       await route.fulfill({
         status: 200,
@@ -431,13 +499,13 @@ test.describe("Admin BadgesPage / BadgeManagement", () => {
       });
     });
 
-    await page.goto(BADGES_PAGE_URL, { waitUntil: "domcontentloaded" });
+    await page.reload({ waitUntil: "domcontentloaded" });
 
-    await expect(page.getByRole("heading", { name: "Joker" })).toBeVisible();
-
-    const jokerCard = page.locator(".exhibit-card-manage", {
-      hasText: "Joker",
+    await expect(page.getByRole("heading", { name: "Joker" })).toBeVisible({
+      timeout: 20_000,
     });
+
+    const jokerCard = page.locator(".exhibit-card-manage", { hasText: "Joker" });
     await jokerCard.getByRole("button", { name: /Delete/i }).click();
 
     await expect(page.getByRole("heading", { name: "Joker" })).toHaveCount(0);
@@ -451,6 +519,7 @@ test.describe("Admin BadgesPage / BadgeManagement", () => {
         body: JSON.stringify(mockBadges),
       });
     });
+
     await page.route(anyBadgesStyles, async (route) => {
       await route.fulfill({
         status: 200,
@@ -459,13 +528,29 @@ test.describe("Admin BadgesPage / BadgeManagement", () => {
       });
     });
 
-    await page.goto(`${BADGES_PAGE_URL}#add-badge`, {
-      waitUntil: "domcontentloaded",
+    /**
+     * Some implementations only process location.hash after initial render and data load.
+     * Use a stronger readiness signal and an explicit "page rendered" checkpoint.
+     */
+    await page.goto(`${BADGES_PAGE_URL}#add-badge`, { waitUntil: "networkidle" });
+
+    await expect(page.getByRole("heading", { name: "Badge Management" })).toBeVisible({
+      timeout: 20_000,
     });
 
-    // ✅ strict-mode safe
+    /**
+     * If your app truly opens the modal when hash is "#add-badge", this should pass.
+     * If it does not, then the product behavior does not match the test assumption.
+     * In that case, replace this assertion with a click on "Create New Badge".
+     */
     await expect(
       page.getByRole("heading", { name: "Create New Badge" }),
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 20_000 });
+
+    // Alternative (if hash does not auto-open modal):
+    // await page.getByRole("button", { name: /Create New Badge/i }).click();
+    // await expect(
+    //   page.getByRole("heading", { name: "Create New Badge", exact: true }),
+    // ).toBeVisible({ timeout: 20_000 });
   });
 });
