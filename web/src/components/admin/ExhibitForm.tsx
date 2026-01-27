@@ -195,6 +195,8 @@ const ExhibitForm: React.FC<{
     try {
       let currentId = exhibitToEdit?.exhibitId;
 
+      const arValue = isArEnabled && arExperienceUrl && arExperienceUrl.trim() !== "" ? arExperienceUrl : "none";
+
       // normalize badgeId: "none" => "none" (backend converts to null), "" => "none"
       const badgeValue =
         selectedBadgeId && selectedBadgeId !== "" ? selectedBadgeId : "none";
@@ -227,9 +229,8 @@ const ExhibitForm: React.FC<{
         fd.append("additionalDescription", additionalDescription);
         fd.append("exhibitionId", exhibitionId);
         fd.append("isArEnabled", String(isArEnabled));
-        if (isArEnabled && arExperienceUrl) {
-          fd.append("arExperienceUrl", arExperienceUrl);
-        }
+        fd.append("arExperienceUrl", arValue);
+
 
         // only append if user selected (send "none" too if you want explicit clear)
         fd.append("badgeId", badgeValue); // backend: "none" => null
@@ -446,7 +447,7 @@ const ExhibitForm: React.FC<{
                   value={arExperienceUrl}
                   onChange={(e) => setArExperienceUrl(e.target.value)}
                   placeholder="https://your-project.8thwall.app"
-                  required
+                  required={isArEnabled}
                 />
               </motion.div>
             )}
