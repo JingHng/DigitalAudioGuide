@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useMemo } from "react";
 import "./css/earnBadgeModal.css";
 
 interface EarnBadgeModalProps {
@@ -6,7 +6,7 @@ interface EarnBadgeModalProps {
   onClose: () => void;
   exhibitTitle: string;
   badgeImageUrl?: string;
-  className?: string;
+  autoCloseMs?: number;
 }
 
 const EarnBadgeModal: React.FC<EarnBadgeModalProps> = ({
@@ -14,35 +14,32 @@ const EarnBadgeModal: React.FC<EarnBadgeModalProps> = ({
   onClose,
   exhibitTitle,
   badgeImageUrl,
+  autoCloseMs = 3500,
 }) => {
+  // auto close
+  useEffect(() => {
+    if (!isOpen) return;
+    const t = window.setTimeout(onClose, autoCloseMs);
+    return () => window.clearTimeout(t);
+  }, [isOpen, onClose, autoCloseMs]);
+
+  const placeholderBadgeUrl = "/assets/badge-placeholder.png";
+  const displayBadgeUrl = useMemo(() => badgeImageUrl || placeholderBadgeUrl, [badgeImageUrl]);
+
   if (!isOpen) return null;
 
-  // Placeholder image: you can replace it with a real badge image in /public
-  const placeholderBadgeUrl = "/assets/badge-placeholder.png";
-
-  // Prefer backend badge image, fall back to placeholder
-  const displayBadgeUrl = badgeImageUrl || placeholderBadgeUrl;
-
   return (
-    <div className="earn-badge-modal-overlay">
-      <div className="earn-badge-modal">
-        <div className="earn-badge-modal-image-wrapper">
-          <img
-            src={displayBadgeUrl}
-            alt={`${exhibitTitle} badge`}
-            className="earn-badge-image"
-          />
-        </div>
+    <div className="earn-badge-toast" role="status" aria-live="polite">
+      <img src={displayBadgeUrl} alt="badge" className="earn-badge-toast-img" />
 
-        <h2 className="earn-badge-title">Badge unlocked!</h2>
-        <p className="earn-badge-text">
-          You&apos;ve earned the <strong>&quot;{exhibitTitle}&quot;</strong> badge.
-        </p>
-
-        <button className="earn-badge-button" onClick={onClose}>
-          Keep exploring
-        </button>
+      <div className="earn-badge-toast-content">
+        <div className="earn-badge-toast-title">You claimed a new badge!</div>
+        <div className="earn-badge-toast-text">{exhibitTitle}</div>
       </div>
+
+      <button className="earn-badge-toast-close" onClick={onClose} aria-label="close">
+        x
+      </button>
     </div>
   );
 };

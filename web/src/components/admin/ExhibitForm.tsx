@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import apiClient from '../../utils/apiClient';
-import { Loader2, Info, Languages, Mic, ImageIcon, Plus, CheckCircle2, Sparkles } from 'lucide-react';
+import { Loader2, Info, Languages, Mic, ImageIcon, Plus, CheckCircle2, Sparkles, Award } from 'lucide-react';
 import '../css/ExhibitForm.css';
 
 const BACKEND_URL = import.meta.env.VITE_API_TARGET || '';
@@ -20,10 +20,30 @@ const getImageUrl = (fileUrl: string | null): string => {
 };
 
 interface ExhibitImage { imageId: string; fileUrl: string; isPrimary: boolean; }
-interface ExhibitToEdit { exhibitId: string; title: string; description: string; additionalDescription: string; exhibitionId: string; images: ExhibitImage[]; }
+interface ExhibitToEdit {
+  exhibitId: string;
+  title: string;
+  description: string;
+  additionalDescription: string;
+  exhibitionId: string;
+  images: ExhibitImage[];
+  badgeId?: string | null;
+}
 interface Language { languageId: string; title: string; code: string; status?: { statusName: string; } | null; }
 
-const ExhibitForm: React.FC<{ exhibitToEdit: ExhibitToEdit | null; onSave: () => void; onClose: () => void; preselectedExhibitionId?: string | null; }> = ({ exhibitToEdit, onSave, onClose, preselectedExhibitionId }) => {
+// Badge option type
+interface BadgeOption {
+  badgeId: string;
+  name: string;
+  style?: string | null;
+}
+
+const ExhibitForm: React.FC<{
+  exhibitToEdit: ExhibitToEdit | null;
+  onSave: () => void;
+  onClose: () => void;
+  preselectedExhibitionId?: string | null;
+}> = ({ exhibitToEdit, onSave, onClose, preselectedExhibitionId }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [additionalDescription, setAdditionalDescription] = useState('');
@@ -39,6 +59,10 @@ const ExhibitForm: React.FC<{ exhibitToEdit: ExhibitToEdit | null; onSave: () =>
   const [sourceText, setSourceText] = useState('');
   const [isTranslating, setIsTranslating] = useState(false);
 
+  // Badge states
+  const [badges, setBadges] = useState<BadgeOption[]>([]);
+  const [selectedBadgeId, setSelectedBadgeId] = useState<string>('none'); // "none" = no badge
+
   useEffect(() => {
     apiClient.get('/exhibitions').then(res => setAvailableExhibitions(res.data));
     apiClient.get<Language[]>('/language').then(res => {
@@ -48,6 +72,41 @@ const ExhibitForm: React.FC<{ exhibitToEdit: ExhibitToEdit | null; onSave: () =>
     });
   }, []);
 
+  // helper: fetch badge options for dropdown
+  const fetchBadges = async (exId: string) => {
+    if (!exId) {
+      setBadges([]);
+      setSelectedBadgeId('none');
+      return;
+    }
+
+    try {
+      // Preferred API: /badges/options?exhibitionId=xxx
+      const res = await apiClient.get('/badges/options', { params: { exhibitionId: exId } });
+      const list = Array.isArray(res.data) ? res.data : [];
+      setBadges(list.map((b: any) => ({
+        badgeId: String(b.badgeId),
+        name: b.name ?? `Badge #${b.badgeId}`,
+        style: b.style ?? null,
+      })));
+    } catch (err) {
+      // Fallback: use /badges/allBadges then filter by exhibitionId
+      try {
+        const res2 = await apiClient.get('/badges/allBadges');
+        const all = Array.isArray(res2.data) ? res2.data : [];
+        const filtered = all.filter((b: any) => String(b?.exhibit?.exhibition?.exhibitionId) === String(exId));
+        setBadges(filtered.map((b: any) => ({
+          badgeId: String(b.badgeId),
+          name: b.name ?? `Badge #${b.badgeId}`,
+          style: b.style ?? null,
+        })));
+      } catch (err2) {
+        console.error('Error fetching badges:', err2);
+        setBadges([]);
+      }
+    }
+  };
+
   useEffect(() => {
     if (exhibitToEdit) {
       setTitle(exhibitToEdit.title || '');
@@ -55,10 +114,26 @@ const ExhibitForm: React.FC<{ exhibitToEdit: ExhibitToEdit | null; onSave: () =>
       setAdditionalDescription(exhibitToEdit.additionalDescription || '');
       setExhibitionId(exhibitToEdit.exhibitionId || '');
       setImages(exhibitToEdit.images || []);
+
+      // preload selected badge for edit
+      if (exhibitToEdit.badgeId) {
+        setSelectedBadgeId(String(exhibitToEdit.badgeId));
+      } else {
+        setSelectedBadgeId('none');
+      }
     } else if (preselectedExhibitionId) {
       setExhibitionId(preselectedExhibitionId);
     }
   }, [exhibitToEdit, preselectedExhibitionId]);
+
+  // whenever exhibitionId changes, refresh badges
+  useEffect(() => {
+    if (!exhibitionId) return;
+    fetchBadges(exhibitionId);
+    // if creating new exhibit, default to none
+    if (!exhibitToEdit) setSelectedBadgeId('none');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [exhibitionId]);
 
   const handleTranslate = async () => {
     const lang = languages.find(l => l.languageId === selectedLanguageId);
@@ -77,49 +152,82 @@ const ExhibitForm: React.FC<{ exhibitToEdit: ExhibitToEdit | null; onSave: () =>
     setLoading(true);
     try {
       let currentId = exhibitToEdit?.exhibitId;
+
+      // normalize badgeId: "none" => "none" (backend converts to null), "" => "none"
+      const badgeValue = selectedBadgeId && selectedBadgeId !== '' ? selectedBadgeId : 'none';
+
       if (exhibitToEdit) {
-        await apiClient.put(`/exhibits/${currentId}`, { title, description, additionalDescription, exhibitionId });
+        // send badgeId
+        // If you want "not change badge unless user touched", you'd need extra state.
+        // Here we always send what's currently selected (simple + predictable).
+        await apiClient.put(`/exhibits/${currentId}`, {
+          title,
+          description,
+          additionalDescription,
+          exhibitionId,
+          badgeId: badgeValue, // "none" or an id
+        });
+
         if (primaryImageFile) {
-          const fd = new FormData(); fd.append('images', primaryImageFile); fd.append('isPrimary', 'true');
+          const fd = new FormData();
+          fd.append('images', primaryImageFile);
+          fd.append('isPrimary', 'true');
           await apiClient.post(`/exhibits/${currentId}/image`, fd);
         }
       } else {
+        // create: FormData include badgeId (optional)
         const fd = new FormData();
-        fd.append('title', title); fd.append('description', description);
-        fd.append('additionalDescription', additionalDescription); fd.append('exhibitionId', exhibitionId);
+        fd.append('title', title);
+        fd.append('description', description);
+        fd.append('additionalDescription', additionalDescription);
+        fd.append('exhibitionId', exhibitionId);
+
+        // only append if user selected (send "none" too if you want explicit clear)
+        fd.append('badgeId', badgeValue); // backend: "none" => null
+
         if (primaryImageFile) fd.append('primaryImage', primaryImageFile);
+
         const res = await apiClient.post('/exhibits', fd);
         currentId = res.data.exhibitId;
       }
+
       const langName = languages.find(l => l.languageId === selectedLanguageId)?.title;
       if (ttsText.trim() && currentId && langName) {
         await apiClient.post(`/exhibits/${currentId}/tts`, { text: ttsText, language: langName });
       }
-      onSave(); onClose();
-    } catch (err) { console.error(err); }
-    finally { setLoading(false); }
+
+      onSave();
+      onClose();
+    } catch (err) {
+      console.error(err);
+    }
+    finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       className="exhibit-form-wrapper"
     >
       <form onSubmit={handleSubmit} className="exhibit-internal-form">
-        
+
         {/* BASIC INFO */}
         <div className="form-section-card">
           <div className="exhibit-section-header">
             <Info className="exhibit-icon-primary" size={18} />
             <span className="exhibit-header-text">Basic Information</span>
           </div>
-          
+
           <div className="exhibit-input-field">
             <label>Parent Tour</label>
             <select value={exhibitionId} onChange={(e) => setExhibitionId(e.target.value)} required>
               <option value="">Select a Tour</option>
-              {availableExhibitions.map(ex => <option key={ex.exhibitionId} value={ex.exhibitionId}>{ex.title}</option>)}
+              {availableExhibitions.map(ex => (
+                <option key={ex.exhibitionId} value={ex.exhibitionId}>{ex.title}</option>
+              ))}
             </select>
           </div>
 
@@ -131,6 +239,38 @@ const ExhibitForm: React.FC<{ exhibitToEdit: ExhibitToEdit | null; onSave: () =>
           <div className="exhibit-input-field">
             <label>Brief Description</label>
             <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} placeholder="A short overview for visitors..." />
+          </div>
+
+          {/* BADGE ASSIGNING */}
+          <div className="exhibit-input-field">
+            <label>
+              Badge
+            </label>
+            <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+              <select
+                value={selectedBadgeId}
+                onChange={(e) => setSelectedBadgeId(e.target.value)}
+                disabled={!exhibitionId}
+              >
+                <option value="none">No Badge</option>
+                {badges.map(b => (
+                  <option key={b.badgeId} value={b.badgeId}>
+                    {b.name}{b.style ? ` (${b.style})` : ''}
+                  </option>
+                ))}
+              </select>
+
+              <div style={{ opacity: 0.65, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Award size={16} />
+                <small>{exhibitionId ? `${badges.length} badges available` : 'Select a tour first'}</small>
+              </div>
+            </div>
+
+            <div style={{ marginTop: 6, opacity: 0.7 }}>
+              <small>
+                Tip: One badge can only belong to one exhibit. Selecting it here will detach it from other exhibits automatically.
+              </small>
+            </div>
           </div>
         </div>
 
@@ -144,10 +284,10 @@ const ExhibitForm: React.FC<{ exhibitToEdit: ExhibitToEdit | null; onSave: () =>
           <div className="exhibit-media-box">
             <div className="image-preview-area">
               {(images.filter(img => img.isPrimary).length > 0 || primaryImageFile) ? (
-                <img 
-                  src={primaryImageFile ? URL.createObjectURL(primaryImageFile) : getImageUrl(images.find(img => img.isPrimary)?.fileUrl || null)} 
-                  alt="Preview" 
-                  className="main-preview-img" 
+                <img
+                  src={primaryImageFile ? URL.createObjectURL(primaryImageFile) : getImageUrl(images.find(img => img.isPrimary)?.fileUrl || null)}
+                  alt="Preview"
+                  className="main-preview-img"
                 />
               ) : (
                 <div className="image-placeholder">
@@ -158,7 +298,13 @@ const ExhibitForm: React.FC<{ exhibitToEdit: ExhibitToEdit | null; onSave: () =>
             </div>
 
             <div className="file-upload-controls">
-              <input type="file" id="exhibit-upload" accept="image/*" onChange={(e) => e.target.files && setPrimaryImageFile(e.target.files[0])} className="hidden-file-input" />
+              <input
+                type="file"
+                id="exhibit-upload"
+                accept="image/*"
+                onChange={(e) => e.target.files && setPrimaryImageFile(e.target.files[0])}
+                className="hidden-file-input"
+              />
               <label htmlFor="exhibit-upload" className="custom-file-label">
                 <Plus size={16} /> Choose Image
               </label>
@@ -185,7 +331,7 @@ const ExhibitForm: React.FC<{ exhibitToEdit: ExhibitToEdit | null; onSave: () =>
           <div className="ai-card-content">
             <AnimatePresence mode="wait">
               {isTranslatorVisible ? (
-                <motion.div 
+                <motion.div
                   key="translator"
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
@@ -193,20 +339,20 @@ const ExhibitForm: React.FC<{ exhibitToEdit: ExhibitToEdit | null; onSave: () =>
                   className="ai-input-zone"
                 >
                   <div className="zone-label">English Script</div>
-                  <textarea 
+                  <textarea
                     className="ai-source-textarea"
-                    value={sourceText} 
-                    onChange={(e) => setSourceText(e.target.value)} 
-                    placeholder="Enter text to translate..." 
+                    value={sourceText}
+                    onChange={(e) => setSourceText(e.target.value)}
+                    placeholder="Enter text to translate..."
                   />
                   <div className="ai-actions">
                     <button type="button" className="btn-ghost-sm" onClick={() => setIsTranslatorVisible(false)}>
                       Cancel
                     </button>
-                    <button 
-                      type="button" 
-                      onClick={handleTranslate} 
-                      disabled={isTranslating || !sourceText} 
+                    <button
+                      type="button"
+                      onClick={handleTranslate}
+                      disabled={isTranslating || !sourceText}
                       className="btn-ai-generate"
                     >
                       {isTranslating ? <Loader2 className="animate-spin" size={14} /> : <Sparkles size={14} />}
@@ -215,7 +361,7 @@ const ExhibitForm: React.FC<{ exhibitToEdit: ExhibitToEdit | null; onSave: () =>
                   </div>
                 </motion.div>
               ) : (
-                <motion.div 
+                <motion.div
                   key="prompt"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -231,12 +377,12 @@ const ExhibitForm: React.FC<{ exhibitToEdit: ExhibitToEdit | null; onSave: () =>
 
             <div className="ai-output-zone">
               <div className="zone-label">Final Script</div>
-              <textarea 
-                className="exhibit-tts-final-refined" 
-                value={ttsText} 
-                onChange={(e) => setTtsText(e.target.value)} 
-                placeholder="Translated text will appear here..." 
-                rows={3} 
+              <textarea
+                className="exhibit-tts-final-refined"
+                value={ttsText}
+                onChange={(e) => setTtsText(e.target.value)}
+                placeholder="Translated text will appear here..."
+                rows={3}
               />
             </div>
           </div>

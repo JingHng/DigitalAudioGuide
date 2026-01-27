@@ -1,113 +1,126 @@
-/* Full-screen overlay behind the modal */
-.earn-badge-modal-overlay {
+/* ==========================
+   Earn Badge Toast CSS
+   ========================== */
+
+.earn-badge-toast {
   position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  top: 16px;
+  right: 16px;
   z-index: 9999;
 
-  /* Fade-in animation for the overlay */
-  animation: badge-overlay-fade-in 0.5s ease-out;
-}
-
-/* Modal container */
-.earn-badge-modal {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 20px 20px 24px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
-  text-align: center;
-
-  width: 90%;
-  max-width: 360px; /* Base width, you can override via parent if needed */
-
-  /* Subtle pop-in animation */
-  animation: badge-pop-in 0.6s ease-out;
-}
-
-/* Wrapper for the badge image (for centering and spacing) */
-.earn-badge-modal-image-wrapper {
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin-bottom: 16px;
+  gap: 12px;
+
+  width: min(360px, calc(100vw - 32px));
+  padding: 12px 12px;
+
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.14),
+    0 1px 0 rgba(255, 255, 255, 0.7) inset;
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  animation: badge-toast-in 220ms ease-out;
 }
 
-/* Badge image */
-.earn-badge-image {
-  width: 150px;
-  height: 150px;
-  object-fit: contain;
-  border-radius: 50%;
-  /* Soft halo effect */
-  box-shadow: 0 0 0 6px rgba(160, 189, 214, 0.18);
-}
-
-/* Modal title */
-.earn-badge-title {
-  font-size: 1.4rem;
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-
-/* Modal description text */
-.earn-badge-text {
-  font-size: 0.95rem;
-  color: #555555;
-  margin-bottom: 20px;
-}
-
-/* Primary button */
-.earn-badge-button {
-  padding: 10px 18px;
-  font-size: 0.95rem;
-  border-radius: 999px;
-  border: none;
-  cursor: pointer;
-
-  background: linear-gradient(135deg, #5b7ea6, #3f5f85);
-  color: #ffffff;
-  font-weight: 600;
-
-  transition:
-    transform 0.2s ease-out,
-    box-shadow 0.2s ease-out,
-    background 0.25s ease-out;
-}
-
-.earn-badge-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
-}
-
-.earn-badge-button:active {
-  transform: translateY(0);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* ====== Animation keyframes ====== */
-
-@keyframes badge-overlay-fade-in {
+@keyframes badge-toast-in {
   from {
     opacity: 0;
+    transform: translateY(-10px) scale(0.98);
   }
   to {
     opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 
-@keyframes badge-pop-in {
-  0% {
-    opacity: 0;
-    transform: scale(0.85) translateY(12px);
+/* Badge image (keep your halo style, but smaller) */
+.earn-badge-toast-img {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 14px;
+
+  box-shadow:
+    0 0 0 6px rgba(160, 189, 214, 0.18),
+    0 10px 22px rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* Text area */
+.earn-badge-toast-content {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+
+.earn-badge-toast-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  margin-bottom: 3px;
+}
+
+.earn-badge-toast-text {
+  font-size: 0.85rem;
+  color: rgba(0, 0, 0, 0.65);
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Close button */
+.earn-badge-toast-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+
+  border: none;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.04);
+  color: rgba(0, 0, 0, 0.55);
+  font-size: 20px;
+  line-height: 1;
+
+  display: grid;
+  place-items: center;
+
+  transition:
+    transform 0.15s ease-out,
+    background 0.15s ease-out,
+    color 0.15s ease-out;
+}
+
+.earn-badge-toast-close:hover {
+  background: rgba(0, 0, 0, 0.08);
+  color: rgba(0, 0, 0, 0.75);
+  transform: translateY(-1px);
+}
+
+.earn-badge-toast-close:active {
+  transform: translateY(0);
+}
+
+/* Mobile: center top */
+@media (max-width: 480px) {
+  .earn-badge-toast {
+    left: 16px;
+    right: 16px;
+    top: 12px;
+    margin: 0 auto;
   }
-  60% {
-    opacity: 1;
-    transform: scale(1.02) translateY(0);
-  }
-  100% {
-    transform: scale(1);
+}
+
+/* Reduce motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .earn-badge-toast {
+    animation: none;
   }
 }

@@ -18,6 +18,34 @@ if (process.env.NODE_ENV === "production") {
   prisma = global.__prisma;
 }
 
+async function normalizeBadgeId(badgeIdRaw) {
+  if (badgeIdRaw === undefined) return undefined; // Representing "no change"
+  if (badgeIdRaw === null) return null;          // Representing "remove badge"
+  const s = String(badgeIdRaw).trim();
+  if (s === "" || s.toLowerCase() === "none") return null;
+  return BigInt(s);
+}
+
+async function validateAndDetachBadgeFromOthers(tx, badgeId, currentExhibitId = null) {
+  if (badgeId === null || badgeId === undefined) return;
+
+  // 1) badge must exist
+  const badge = await tx.badge.findUnique({
+    where: { badgeId },
+    select: { badgeId: true, name: true },
+  });
+  if (!badge) throw new Error("Badge not found");
+
+  // 2) detach from other exhibits
+  await tx.exhibit.updateMany({
+    where: {
+      badgeId: badgeId,
+      ...(currentExhibitId ? { exhibitId: { not: currentExhibitId } } : {}),
+    },
+    data: { badgeId: null },
+  });
+}
+
 // Get all exhibits
 exports.getExhibits = async (req, res) => {
   try {
@@ -73,7 +101,7 @@ exports.getExhibitById = async (req, res) => {
 
 exports.createExhibit = async (req, res) => {
   try {
-    const { title, description, additionalDescription, exhibitionId, ttsText, language } = req.body;
+    const { title, description, additionalDescription, exhibitionId, ttsText, language, badgeId } = req.body;
     const files = req.files;
     const primaryImage = files?.primaryImage ? files.primaryImage[0] : null;
     const adminUserId = req.user?.userId;
@@ -85,30 +113,38 @@ exports.createExhibit = async (req, res) => {
     // Retry logic to handle race conditions with parallel test runs
     let retries = 3;
     let newExhibit;
-    
+
     while (retries > 0) {
       try {
         // Use a transaction to prevent race conditions with sequence calculation
         newExhibit = await prisma.$transaction(async (tx) => {
           // 1. Calculate the next sequence number within transaction
           const lastExhibit = await tx.exhibit.findFirst({
-            where: { 
-              exhibitionId: BigInt(exhibitionId)
-            },
-            orderBy: { sequence: 'desc' },
-            select: { sequence: true }
+            where: { exhibitionId: BigInt(exhibitionId) },
+            orderBy: { sequence: "desc" },
+            select: { sequence: true },
           });
           const nextSequence = lastExhibit ? (lastExhibit.sequence + 1) : 1;
+
+          // Badge - normalize + ensure unique usage
+          const normalizedBadgeId = await normalizeBadgeId(badgeId);
+          if (normalizedBadgeId) {
+            await validateAndDetachBadgeFromOthers(tx, normalizedBadgeId, null);
+          }
 
           // 2. Create the Exhibit within the same transaction
           return await tx.exhibit.create({
             data: {
               title,
-              description: description || '',
-              additionalDescription: additionalDescription || '',
+              description: description || "",
+              additionalDescription: additionalDescription || "",
               exhibitionId: BigInt(exhibitionId),
               sequence: nextSequence,
               statusId: 1, // Active
+
+              // Bind existing badge if provided
+              ...(normalizedBadgeId ? { badgeId: normalizedBadgeId } : {}),
+
               // Create the primary image record if a file exists
               images: primaryImage ? {
                 create: {
@@ -117,18 +153,20 @@ exports.createExhibit = async (req, res) => {
                   isPrimary: true
                 }
               } : undefined,
+
               // Generate the initial QR Code record
               qrCodes: {
                 create: {
-                  qrUrl: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/exhibit/temp-id`, 
+                  qrUrl: `${process.env.FRONTEND_URL || "http://localhost:5173"}/exhibit/temp-id`,
                 }
               }
             }
           });
         });
+
         break; // Success, exit retry loop
       } catch (err) {
-        if (err.code === 'P2002' && retries > 1) {
+        if (err.code === "P2002" && retries > 1) {
           // Unique constraint violation, retry after a small delay
           retries--;
           await new Promise(resolve => setTimeout(resolve, 50 * (4 - retries))); // Exponential backoff
@@ -139,30 +177,35 @@ exports.createExhibit = async (req, res) => {
     }
 
     // 3. Update the QR Code URL with the actual ID
-    const finalQrUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/exhibit/${newExhibit.exhibitId}`;
+    const finalQrUrl = `${process.env.FRONTEND_URL || "http://localhost:5173"}/exhibit/${newExhibit.exhibitId}`;
     await prisma.qRCode.updateMany({
       where: { exhibitId: newExhibit.exhibitId },
       data: { qrUrl: finalQrUrl }
     });
 
-    // 4. Handle TTS if provided 
+    // 4. Handle TTS if provided
     if (ttsText && language) {
       await internalAudioProcessor(newExhibit.exhibitId, ttsText, language, adminUserId, req);
     }
 
     // 5. Audit Log
-    await logAuditAction(adminUserId, null, "exhibit", "create", 
-      { exhibitId: newExhibit.exhibitId.toString(), title }, 
+    await logAuditAction(adminUserId, null, "exhibit", "create",
+      {
+        exhibitId: newExhibit.exhibitId.toString(),
+        title,
+        badgeId: newExhibit.badgeId ? newExhibit.badgeId.toString() : null
+      },
       { ip_address: req.ip }
     );
 
     // 6. Clear exhibitions cache
     clearExhibitionsCache();
 
-    res.status(201).json({ 
-      message: "Exhibit created successfully", 
+    res.status(201).json({
+      message: "Exhibit created successfully",
       exhibitId: newExhibit.exhibitId.toString(),
-      sequence: newExhibit.sequence 
+      sequence: newExhibit.sequence,
+      badgeId: newExhibit.badgeId ? newExhibit.badgeId.toString() : null
     });
 
   } catch (err) {
@@ -175,10 +218,10 @@ exports.createExhibit = async (req, res) => {
 exports.updateExhibit = async (req, res) => {
   try {
     const exhibitId = BigInt(req.params.id);
-    const { title, description, additionalDescription } = req.body;
+    const { title, description, additionalDescription, badgeId } = req.body;
     const adminUserId = req.user?.userId;
 
-    // STEP 1: Fetch the original record for the audit log. 
+    // STEP 1: Fetch the original record for the audit log.
     const originalExhibit = await prisma.exhibit.findUnique({
       where: { exhibitId },
     });
@@ -187,15 +230,30 @@ exports.updateExhibit = async (req, res) => {
       return res.status(404).json({ error: "Exhibit not found" });
     }
 
-    // STEP 2: Update the exhibit using Prisma directly since we're adding additionalDescription
-    const updatedExhibit = await prisma.exhibit.update({
-      where: { exhibitId },
-      data: { 
-        title,
-        description,
-        additionalDescription: additionalDescription || null,
-        updatedAt: new Date()
+    // STEP 2: Update the exhibit (with optional badge binding) in a transaction
+    const updatedExhibit = await prisma.$transaction(async (tx) => {
+      const normalizedBadgeId = await normalizeBadgeId(badgeId);
+
+      // Handle badge binding/unbinding
+      if (normalizedBadgeId !== undefined) {
+        // If badgeId is provided (not undefined), validate and detach from others
+        if (normalizedBadgeId !== null) {
+          await validateAndDetachBadgeFromOthers(tx, normalizedBadgeId, exhibitId);
+        }
       }
+
+      return await tx.exhibit.update({
+        where: { exhibitId },
+        data: {
+          title,
+          description,
+          additionalDescription: additionalDescription || null,
+          updatedAt: new Date(),
+
+          // only set badgeId when badgeId is provided in body
+          ...(normalizedBadgeId !== undefined ? { badgeId: normalizedBadgeId } : {}),
+        }
+      });
     });
 
     // STEP 3: Create the audit log.
@@ -210,6 +268,10 @@ exports.updateExhibit = async (req, res) => {
           title: { from: originalExhibit.title, to: updatedExhibit.title },
           description: { from: originalExhibit.description, to: updatedExhibit.description },
           additionalDescription: { from: originalExhibit.additionalDescription, to: updatedExhibit.additionalDescription },
+          badgeId: {
+            from: originalExhibit.badgeId ? originalExhibit.badgeId.toString() : null,
+            to: updatedExhibit.badgeId ? updatedExhibit.badgeId.toString() : null,
+          },
         },
       },
       {
@@ -222,17 +284,18 @@ exports.updateExhibit = async (req, res) => {
     clearExhibitionsCache();
 
     res.status(200).json({
-        exhibitId: updatedExhibit.exhibitId,
-        title: updatedExhibit.title,
-        description: updatedExhibit.description,
-        additionalDescription: updatedExhibit.additionalDescription,
-        createdAt: updatedExhibit.createdAt,
-        updatedAt: updatedExhibit.updatedAt
+      exhibitId: updatedExhibit.exhibitId,
+      title: updatedExhibit.title,
+      description: updatedExhibit.description,
+      additionalDescription: updatedExhibit.additionalDescription,
+      badgeId: updatedExhibit.badgeId ? updatedExhibit.badgeId.toString() : null,
+      createdAt: updatedExhibit.createdAt,
+      updatedAt: updatedExhibit.updatedAt
     });
 
   } catch (err) {
     console.error("Error in updateExhibit:", err);
-    res.status(500).json({ error: "Failed to update exhibit" });
+    res.status(500).json({ error: "Failed to update exhibit", details: err.message });
   }
 };
 
