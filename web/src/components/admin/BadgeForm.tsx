@@ -257,15 +257,11 @@ const BadgeForm: React.FC<BadgeFormProps> = ({
             -- Select an Exhibit --
           </option>
 
-          {exhibitGroups.map((grp) => (
-            <optgroup key={grp.exhibitionId} label={grp.exhibitionTitle}>
-              {grp.items.map((ex) => (
-                <option key={ex.exhibitId} value={ex.exhibitId}>
-                  {ex.exhibitTitle}
-                </option>
-              ))}
-            </optgroup>
-          ))}
+        {exhibits.map((ex) => (
+          <option key={ex.exhibitId} value={ex.exhibitId}>
+            {ex.exhibitTitle}
+          </option>
+        ))}
         </select>
       </div>
 
