@@ -345,30 +345,6 @@ exports.Prisma.MessageScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
-exports.Prisma.SenderTypeScalarFieldEnum = {
-  senderTypeId: 'senderTypeId',
-  senderType: 'senderType'
-};
-
-exports.Prisma.ConversationScalarFieldEnum = {
-  conversationId: 'conversationId',
-  userId: 'userId',
-  title: 'title',
-  statusId: 'statusId',
-  createdAt: 'createdAt',
-  modifiedAt: 'modifiedAt'
-};
-
-exports.Prisma.MessageScalarFieldEnum = {
-  messageId: 'messageId',
-  conversationId: 'conversationId',
-  senderTypeId: 'senderTypeId',
-  content: 'content',
-  metadata: 'metadata',
-  statusId: 'statusId',
-  createdAt: 'createdAt'
-};
-
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -422,7 +398,10 @@ exports.Prisma.ModelName = {
   EmailVerificationToken: 'EmailVerificationToken',
   Badge: 'Badge',
   UserBadge: 'UserBadge',
-  settings: 'settings'
+  Settings: 'Settings',
+  SenderType: 'SenderType',
+  Conversation: 'Conversation',
+  Message: 'Message'
 };
 
 /**
