@@ -5,8 +5,8 @@
 //   type APIRequestContext,
 // } from "@playwright/test";
 
-// const FRONTEND_URL = "http://localhost:5174";
-// const API_URL = "http://localhost:5175";
+const FRONTEND_URL = "http://localhost:5173";
+const API_URL = "http://localhost:5175";
 
 // const EXHIBITION_ID = 4;
 // const EXHIBIT_ID = 8;
