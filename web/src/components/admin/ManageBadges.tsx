@@ -105,6 +105,7 @@ const uploadBadgeImage = async (badgeId: string, file: File) => {
 const BadgeManagement: React.FC = () => {
   const [badges, setBadges] = useState<BadgeDTO[]>([]);
   const [styles, setStyles] = useState<string[]>([]);
+  const [exhibits, setExhibits] = useState<ExhibitLite[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -141,7 +142,7 @@ const BadgeManagement: React.FC = () => {
 
     } catch (err) {
       console.error(err);
-      setError("Failed to fetch badges.");
+      setError("Failed to fetch badges or exhibits.");
     } finally {
       setLoading(false);
     }
@@ -167,7 +168,7 @@ const BadgeManagement: React.FC = () => {
     return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
 
-  // Exhibit options from relations
+  // Exhibit options from all exhibits
   const exhibitOptions: ExhibitOption[] = useMemo(() => {
     return (exhibits || [])
       .map((ex) => ({

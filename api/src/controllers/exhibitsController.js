@@ -56,6 +56,7 @@ exports.getExhibits = async (req, res) => {
         audio: {
           include: { language: true },
         },
+        exhibition: true, 
       },
       orderBy: {
         title: "asc",

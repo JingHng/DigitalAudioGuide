@@ -89,15 +89,21 @@ const BadgeForm: React.FC<BadgeFormProps> = ({
   // group exhibits by exhibition
   const exhibitGroups = useMemo(() => {
     const map = new Map<string, { exhibitionTitle: string; items: ExhibitOption[] }>();
-
     for (const ex of exhibits) {
       if (!map.has(ex.exhibitionId)) {
         map.set(ex.exhibitionId, { exhibitionTitle: ex.exhibitionTitle, items: [] });
       }
       map.get(ex.exhibitionId)!.items.push(ex);
     }
-
-    return Array.from(map.entries())
+    // Correction: group by exhibitionId, not exhibitId
+    const exhibitionMap = new Map<string, { exhibitionTitle: string; items: ExhibitOption[] }>();
+    for (const ex of exhibits) {
+      if (!exhibitionMap.has(ex.exhibitionId)) {
+        exhibitionMap.set(ex.exhibitionId, { exhibitionTitle: ex.exhibitionTitle, items: [] });
+      }
+      exhibitionMap.get(ex.exhibitionId)!.items.push(ex);
+    }
+    return Array.from(exhibitionMap.entries())
       .map(([exhibitionId, data]) => ({
         exhibitionId,
         exhibitionTitle: data.exhibitionTitle,
