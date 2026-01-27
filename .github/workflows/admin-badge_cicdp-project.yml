@@ -15,21 +15,20 @@ env:
   NODE_VERSION: "20.x"
   API_DIR: "api"
   WEB_DIR: "web"
+  ARTIFACT_NAME: "deployment.zip"
 
-  # Production DB for deploy/runtime (do NOT use in E2E)
-  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  # Ports used in CI for E2E
+  API_PORT: "5175"
+  WEB_PORT: "5174"
 
-  # Test DB for CI E2E (must be an empty/isolated database or branch)
-  DATABASE_URL_TEST: ${{ secrets.DATABASE_URL_TEST }}
-
+  # Auth secrets used by API in CI (set these in GitHub Secrets)
   JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
   JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
 
+  # Azure OIDC secrets
   CLIENT_ID: ${{ secrets.AZUREAPPSERVICE_CLIENTID_86EE8967028A49F5965DD3913522BD11 }}
   TENANT_ID: ${{ secrets.AZUREAPPSERVICE_TENANTID_C0C0E3446DAE4866BB375773F0F65A87 }}
   SUBSCRIPTION_ID: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_2FB091A84E45407EB53EC296B400A658 }}
-
-  ARTIFACT_NAME: "deployment.zip"
 
 jobs:
   e2e:
@@ -53,48 +52,95 @@ jobs:
         working-directory: ${{ env.WEB_DIR }}
         run: npm ci
 
-      - name: Prepare DB + Build API (for E2E)
+      - name: Resolve DATABASE_URL for CI
+        id: dburl
+        shell: bash
+        run: |
+          # Prefer DATABASE_URL_TEST if it exists; otherwise fallback to DATABASE_URL.
+          DB_URL="${{ secrets.DATABASE_URL_TEST }}"
+          if [ -z "$DB_URL" ]; then
+            DB_URL="${{ secrets.DATABASE_URL }}"
+          fi
+
+          if [ -z "$DB_URL" ]; then
+            echo "No database URL found. Set DATABASE_URL_TEST or DATABASE_URL in GitHub Secrets."
+            exit 1
+          fi
+
+          echo "DATABASE_URL=$DB_URL" >> $GITHUB_ENV
+
+      - name: Prisma generate + migrate + seed (CI database)
         working-directory: ${{ env.API_DIR }}
         env:
-          DATABASE_URL: ${{ env.DATABASE_URL_TEST }}
+          DATABASE_URL: ${{ env.DATABASE_URL }}
         run: |
           npx prisma generate
           npx prisma migrate deploy
           npx prisma db seed
-          npm run build
+
+      - name: Build API (for E2E)
+        working-directory: ${{ env.API_DIR }}
+        run: npm run build
+
+      - name: Build Web (for E2E)
+        working-directory: ${{ env.WEB_DIR }}
+        run: npm run build
 
       - name: Install Playwright browsers
         working-directory: ${{ env.WEB_DIR }}
         run: npx playwright install --with-deps
 
-      - name: Start API server in background
+      - name: Start API server (background)
         working-directory: ${{ env.API_DIR }}
         env:
-          DATABASE_URL: ${{ env.DATABASE_URL_TEST }}
-          PORT: 5175
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+          PORT: ${{ env.API_PORT }}
           JWT_SECRET_KEY: ${{ env.JWT_SECRET_KEY }}
           JWT_REFRESH_SECRET: ${{ env.JWT_REFRESH_SECRET }}
           NODE_ENV: test
+        shell: bash
         run: |
           npm start &
-          sleep 10
-          curl -f http://localhost:5175/health || curl -f http://localhost:5175/ || echo "API server not responding"
+          echo "Waiting for API..."
+          for i in {1..30}; do
+            if curl -fsS "http://localhost:${API_PORT}/health" >/dev/null 2>&1; then
+              echo "API is up"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "API did not become ready"
+          exit 1
 
-      - name: Start Web server in background
+      - name: Start Web server (background)
         working-directory: ${{ env.WEB_DIR }}
         env:
-          VITE_API_TARGET: http://localhost:5175
+          # If your Vite app reads this to proxy API, keep it
+          VITE_API_TARGET: http://localhost:${{ env.API_PORT }}
+        shell: bash
         run: |
-          npm run dev -- --host 127.0.0.1 --port 5174 &
-          sleep 5
-          curl -f http://localhost:5174/ || echo "Web server not responding"
+          # Prefer preview for CI (serves the built dist)
+          # Ensure it binds to localhost and the desired port
+          npx vite preview --host 127.0.0.1 --port ${WEB_PORT} &
+          echo "Waiting for Web..."
+          for i in {1..30}; do
+            if curl -fsS "http://localhost:${WEB_PORT}" >/dev/null 2>&1; then
+              echo "Web is up"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Web did not become ready"
+          exit 1
 
-      - name: Run Playwright tests
+      - name: Run Playwright E2E
         working-directory: ${{ env.WEB_DIR }}
         env:
           CI: true
-          VITE_API_TARGET: http://localhost:5175
-          BASE_URL: http://localhost:5174
+          VITE_API_TARGET: http://localhost:${{ env.API_PORT }}
+          # If you later refactor tests to read these env vars, they are ready
+          FRONTEND_URL: http://localhost:${{ env.WEB_PORT }}
+          API_URL: http://localhost:${{ env.API_PORT }}
         run: npm run e2e
 
       - name: Upload Playwright report
@@ -121,7 +167,6 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
 
-      # ---- Frontend ----
       - name: Install web deps
         working-directory: ${{ env.WEB_DIR }}
         run: npm ci
@@ -130,7 +175,6 @@ jobs:
         working-directory: ${{ env.WEB_DIR }}
         run: npm run build
 
-      # ---- Backend ----
       - name: Install api deps
         working-directory: ${{ env.API_DIR }}
         run: npm ci
@@ -139,19 +183,19 @@ jobs:
         working-directory: ${{ env.API_DIR }}
         run: npm run build
 
-      - name: Prune dev dependencies (keep only production)
+      - name: Prune dev dependencies (keep production only)
         working-directory: ${{ env.API_DIR }}
         run: npm prune --production
 
-      # ---- Bundle web into api/public ----
       - name: Copy web build into api/public
+        shell: bash
         run: |
           rm -rf "${API_DIR}/public"
           mkdir -p "${API_DIR}/public"
           cp -R "${WEB_DIR}/dist/." "${API_DIR}/public/"
 
-      # ---- Create deployment artifact zip ----
-      - name: Package deployment artifact
+      - name: Package deployment artifact (deployment.zip)
+        shell: bash
         run: |
           cd "${API_DIR}"
           rm -f "../${ARTIFACT_NAME}"
@@ -179,9 +223,10 @@ jobs:
           path: .
 
       - name: List files (debug)
+        shell: bash
         run: |
           ls -la
-          unzip -l ${{ env.ARTIFACT_NAME }} || true
+          unzip -l "${ARTIFACT_NAME}"
 
       - name: Azure login (OIDC)
         uses: azure/login@v2
@@ -195,7 +240,9 @@ jobs:
         with:
           app-name: ${{ env.WEBAPP_NAME }}
           package: ${{ env.ARTIFACT_NAME }}
+          clean: true
 
-      - name: Restart Web App
+      - name: Restart web app
+        shell: bash
         run: |
-          az webapp restart --name ${{ env.WEBAPP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }}
+          az webapp restart --name "${WEBAPP_NAME}" --resource-group "${RESOURCE_GROUP}"
