@@ -15,48 +15,152 @@ env:
   NODE_VERSION: "20.x"
   API_DIR: "api"
   WEB_DIR: "web"
+  ARTIFACT_NAME: "deployment.zip"
+
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
   JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
   JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
+
   CLIENT_ID: ${{ secrets.AZUREAPPSERVICE_CLIENTID_86EE8967028A49F5965DD3913522BD11 }}
   TENANT_ID: ${{ secrets.AZUREAPPSERVICE_TENANTID_C0C0E3446DAE4866BB375773F0F65A87 }}
   SUBSCRIPTION_ID: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_2FB091A84E45407EB53EC296B400A658 }}
 
 jobs:
-  build:
+  e2e:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
 
-      - run: npm ci
-        working-directory: ${{ env.WEB_DIR }}
+      - name: Install API deps
+        working-directory: ${{ env.API_DIR }}
+        run: npm ci
 
-      - run: npm run build
+      - name: Install Web deps
         working-directory: ${{ env.WEB_DIR }}
+        run: npm ci
 
-      - run: |
+      - name: Prepare DB + Build API (for E2E)
+        working-directory: ${{ env.API_DIR }}
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+        run: |
+          npx prisma generate
+          npx prisma migrate deploy
+          npx prisma db seed
+          npm run build
+
+      - name: Install Playwright browsers
+        working-directory: ${{ env.WEB_DIR }}
+        run: npx playwright install --with-deps
+
+      - name: Start API server in background
+        working-directory: ${{ env.API_DIR }}
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+          PORT: 5175
+          JWT_SECRET_KEY: ${{ env.JWT_SECRET_KEY }}
+          JWT_REFRESH_SECRET: ${{ env.JWT_REFRESH_SECRET }}
+          NODE_ENV: test
+        run: |
+          npm start &
+          sleep 10
+          curl -f http://localhost:5175/health || curl -f http://localhost:5175/ || echo "API server not responding"
+
+      - name: Start Web server in background
+        working-directory: ${{ env.WEB_DIR }}
+        env:
+          CI: true
+          VITE_API_TARGET: http://localhost:5175
+        run: |
+          npm run dev -- --host 0.0.0.0 --port 5174 --strictPort &
+          sleep 10
+          curl -f http://localhost:5174/ || echo "Web server not responding"
+
+      - name: Run Playwright tests
+        working-directory: ${{ env.WEB_DIR }}
+        env:
+          CI: true
+          VITE_API_TARGET: http://localhost:5175
+          FRONTEND_URL: http://localhost:5174
+          API_URL: http://localhost:5175
+        run: npm run e2e
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: ${{ env.WEB_DIR }}/playwright-report/
+          retention-days: 7
+
+  build:
+    runs-on: ubuntu-latest
+    needs: e2e
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      # ---- Frontend ----
+      - name: Install web deps
+        working-directory: ${{ env.WEB_DIR }}
+        run: npm ci
+
+      - name: Build web
+        working-directory: ${{ env.WEB_DIR }}
+        run: npm run build
+
+      # ---- Backend ----
+      - name: Install api deps
+        working-directory: ${{ env.API_DIR }}
+        run: npm ci
+
+      - name: Build api (TypeScript -> dist)
+        working-directory: ${{ env.API_DIR }}
+        run: npm run build
+
+      - name: Prune dev dependencies (keep only production)
+        working-directory: ${{ env.API_DIR }}
+        run: npm prune --production
+
+      # ---- Bundle web into api/public ----
+      - name: Copy web build into api/public
+        run: |
           rm -rf "${API_DIR}/public"
           mkdir -p "${API_DIR}/public"
           cp -R "${WEB_DIR}/dist/." "${API_DIR}/public/"
 
-      - run: npm ci
-        working-directory: ${{ env.API_DIR }}
+      # ---- Create deployment zip ----
+      - name: Package deployment artifact
+        run: |
+          cd "${API_DIR}"
+          rm -f "../${ARTIFACT_NAME}"
+          zip -r "../${ARTIFACT_NAME}" dist node_modules package*.json prisma public || true
+          if [ ! -f "../${ARTIFACT_NAME}" ]; then
+            zip -r "../${ARTIFACT_NAME}" dist package*.json prisma public || true
+          fi
 
-      - run: npm run build
-        working-directory: ${{ env.API_DIR }}
-
-      - uses: actions/upload-artifact@v4
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
           name: deployment-package
-          path: .
+          path: ${{ env.ARTIFACT_NAME }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -67,31 +171,31 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/download-artifact@v4
+      - name: Download artifact
+        uses: actions/download-artifact@v4
         with:
           name: deployment-package
           path: .
 
-      - run: |
-          npm ci
-          npx prisma generate
-        working-directory: ${{ env.API_DIR }}
-        env:
-          DATABASE_URL: ${{ env.DATABASE_URL }}
+      - name: List files (debug)
+        run: |
+          ls -la
+          unzip -l ${{ env.ARTIFACT_NAME }} || true
 
-      - uses: azure/login@v2
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
         with:
           client-id: ${{ env.CLIENT_ID }}
           tenant-id: ${{ env.TENANT_ID }}
           subscription-id: ${{ env.SUBSCRIPTION_ID }}
 
-      - uses: azure/webapps-deploy@v3
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.WEBAPP_NAME }}
-          package: .
+          package: ${{ env.ARTIFACT_NAME }}
           clean: true
 
-      - run: |
+      - name: Restart webapp
+        run: |
           az webapp restart --name ${{ env.WEBAPP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }}
