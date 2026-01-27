@@ -40,10 +40,6 @@ interface ExhibitLite {
   title?: string;
   exhibition?: ExhibitionLite | null;
 }
-interface ExhibitFromApi {
-  exhibitId: string | number;
-  title?: string | null;
-}
 interface BadgeDTO {
   badgeId: string;
   name?: string | null;
@@ -109,8 +105,6 @@ const BadgeManagement: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const [exhibits, setExhibits] = useState<ExhibitFromApi[]>([]);
-
   const [isBadgeModalOpen, setIsBadgeModalOpen] = useState(false);
   const [editingBadge, setEditingBadge] = useState<BadgeDTO | null>(null);
 
@@ -130,16 +124,15 @@ const BadgeManagement: React.FC = () => {
       setLoading(true);
       setError("");
 
-    const [badgeRes, styleRes, exhibitRes] = await Promise.all([
-      apiClient.get("/badges/allBadges"),
-      apiClient.get("/badges/styles"),
-      apiClient.get("/exhibits"),
-    ]);
+      const [badgeRes, styleRes, exhibitRes] = await Promise.all([
+        apiClient.get("/badges/allBadges"),
+        apiClient.get("/badges/styles"),
+        apiClient.get("/exhibits"),
+      ]);
 
-    setBadges(badgeRes.data || []);
-    setStyles(styleRes.data || []);
-    setExhibits(exhibitRes.data || []); 
-
+      setBadges(badgeRes.data || []);
+      setStyles(styleRes.data || []);
+      setExhibits(exhibitRes.data || []);
     } catch (err) {
       console.error(err);
       setError("Failed to fetch badges or exhibits.");
@@ -170,17 +163,17 @@ const BadgeManagement: React.FC = () => {
 
   // Exhibit options from all exhibits
   const exhibitOptions: ExhibitOption[] = useMemo(() => {
-    return (exhibits || [])
-      .map((ex) => ({
-        exhibitId: String(ex.exhibitId),
-        exhibitTitle: (ex.title || "Untitled Exhibit").toString(),
-
-        exhibitionId: "all",
-        exhibitionTitle: "All Exhibits",
-      }))
-      .sort((a, b) => a.exhibitTitle.localeCompare(b.exhibitTitle));
+    return (exhibits || []).map((ex) => ({
+      exhibitId: ex.exhibitId,
+      exhibitTitle: (ex.title || "Untitled Exhibit").toString(),
+      exhibitionId: ex.exhibition?.exhibitionId || "unknown",
+      exhibitionTitle: ex.exhibition?.title || "Unknown Exhibition",
+    })).sort((a, b) => {
+      const byExh = a.exhibitionTitle.localeCompare(b.exhibitionTitle);
+      if (byExh !== 0) return byExh;
+      return a.exhibitTitle.localeCompare(b.exhibitTitle);
+    });
   }, [exhibits]);
-
 
   const normalizedSearch = searchText.trim().toLowerCase();
 
