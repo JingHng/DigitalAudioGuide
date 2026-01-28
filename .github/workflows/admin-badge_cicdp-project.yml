@@ -21,7 +21,7 @@ env:
   API_PORT: "5175"
   WEB_PORT: "5174"
 
-  # Auth secrets used by API in CI
+  # Auth secrets used by API in CI (set these in GitHub Secrets)
   JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
   JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
 
@@ -52,6 +52,7 @@ jobs:
         working-directory: ${{ env.WEB_DIR }}
         run: npm ci
 
+      # ---- DATABASE_URL: prefer DATABASE_URL_RUYI, fallback DATABASE_URL ----
       - name: Resolve DATABASE_URL for CI
         shell: bash
         run: |
@@ -59,20 +60,25 @@ jobs:
           if [ -z "$DB_URL" ]; then
             DB_URL="${{ secrets.DATABASE_URL }}"
           fi
+
           if [ -z "$DB_URL" ]; then
             echo "No database URL found. Set DATABASE_URL_RUYI or DATABASE_URL in GitHub Secrets."
             exit 1
           fi
-          echo "DATABASE_URL=$DB_URL" >> $GITHUB_ENV
 
-      - name: Prisma generate + migrate + seed (CI database)
+          echo "DATABASE_URL=$DB_URL" >> $GITHUB_ENV
+          echo "DATABASE_URL resolved ✅"
+
+      # ---- CI DB: reset -> deploy -> seed (same as your friend's approach) ----
+      - name: Prisma reset + migrate + seed (CI database)
         working-directory: ${{ env.API_DIR }}
         env:
           DATABASE_URL: ${{ env.DATABASE_URL }}
         run: |
           npx prisma generate
+          npx prisma migrate reset --force --skip-seed
           npx prisma migrate deploy
-          npx prisma db seed
+          node prisma/seed.js
 
       - name: Build API (for E2E)
         working-directory: ${{ env.API_DIR }}
@@ -98,14 +104,14 @@ jobs:
         run: |
           npm start &
           echo "Waiting for API..."
-          for i in {1..30}; do
+          for i in {1..40}; do
             if curl -fsS "http://localhost:${API_PORT}/health" >/dev/null 2>&1; then
-              echo "API is up"
+              echo "API is up ✅"
               exit 0
             fi
             sleep 1
           done
-          echo "API did not become ready"
+          echo "API did not become ready ❌"
           exit 1
 
       - name: Start Web server (background)
@@ -116,14 +122,14 @@ jobs:
         run: |
           npx vite preview --host 127.0.0.1 --port ${WEB_PORT} &
           echo "Waiting for Web..."
-          for i in {1..30}; do
+          for i in {1..40}; do
             if curl -fsS "http://localhost:${WEB_PORT}" >/dev/null 2>&1; then
-              echo "Web is up"
+              echo "Web is up ✅"
               exit 0
             fi
             sleep 1
           done
-          echo "Web did not become ready"
+          echo "Web did not become ready ❌"
           exit 1
 
       - name: Run Playwright E2E
@@ -181,6 +187,7 @@ jobs:
         working-directory: ${{ env.API_DIR }}
         run: npm prune --production
 
+      # ---- Bundle web into api/public ----
       - name: Copy web build into api/public
         shell: bash
         run: |
@@ -188,31 +195,36 @@ jobs:
           mkdir -p "${API_DIR}/public"
           cp -R "${WEB_DIR}/dist/." "${API_DIR}/public/"
           echo "✅ Copied web/dist into api/public"
-          ls -la "${API_DIR}/public" | head -20
+          ls -la "${API_DIR}/public" | head -30
 
-      - name: Package deployment artifact (deployment.zip) - safe mode
+      # ---- Create clean deployment artifact: ONLY dist + prod deps + prisma + public ----
+      - name: Package deployment artifact (deployment.zip)
         shell: bash
         run: |
           cd "${API_DIR}"
-          echo "== API root files =="
-          ls -la
-          echo "== dist files =="
-          ls -la dist || true
-
           rm -f "../${ARTIFACT_NAME}"
 
-          # If server.js exists, include it; otherwise package without it (won't fail)
-          if [ -f server.js ]; then
-            echo "✅ Found server.js, include it in zip"
-            zip -r "../${ARTIFACT_NAME}" dist node_modules package*.json prisma public server.js
-          else
-            echo "⚠️ server.js NOT found, zip without it (make sure Azure startup points to dist entry)"
-            zip -r "../${ARTIFACT_NAME}" dist node_modules package*.json prisma public
-          fi
+          echo "📦 Creating deployment package..."
+          echo "📌 Checking dist exists:"
+          ls -la dist/ | head -30
+
+          echo "📌 Checking public exists:"
+          ls -la public/ | head -30
+
+          zip -r "../${ARTIFACT_NAME}" \
+            dist/ \
+            node_modules/ \
+            package*.json \
+            prisma/ \
+            public/ \
+            -x "*.log" "*.test.*" "coverage/*" "node_modules/*/test/*" "node_modules/*/tests/*"
 
           cd ..
-          echo "== ZIP content check =="
-          unzip -l "${ARTIFACT_NAME}" | grep -E "(package.json|server.js|dist/)" | head -60 || true
+          echo "✅ Deployment package created"
+          ls -lh "${ARTIFACT_NAME}"
+
+          echo "📋 Verifying zip key files:"
+          unzip -l "${ARTIFACT_NAME}" | grep -E "(dist/|package.json|prisma/|public/)" | head -60
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -239,7 +251,7 @@ jobs:
         shell: bash
         run: |
           ls -la
-          unzip -l "${ARTIFACT_NAME}" | head -80
+          unzip -l "${ARTIFACT_NAME}" | head -120
 
       - name: Azure login (OIDC)
         uses: azure/login@v2
@@ -259,3 +271,4 @@ jobs:
         shell: bash
         run: |
           az webapp restart --name "${WEBAPP_NAME}" --resource-group "${RESOURCE_GROUP}"
+          echo "✅ Restarted Azure Web App"
