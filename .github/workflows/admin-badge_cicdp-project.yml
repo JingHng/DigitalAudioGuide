@@ -21,7 +21,7 @@ env:
   API_PORT: "5175"
   WEB_PORT: "5174"
 
-  # Auth secrets
+  # Auth secrets used by API in CI
   JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
   JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
 
@@ -52,8 +52,8 @@ jobs:
         working-directory: ${{ env.WEB_DIR }}
         run: npm ci
 
-      # Database used here WILL be reset
-      - name: Resolve reset database URL (E2E)
+      # The E2E database will be reset, therefore DATABASE_URL_RUYI is required here.
+      - name: Resolve reset database URL for E2E
         shell: bash
         run: |
           if [ -z "${{ secrets.DATABASE_URL_RUYI }}" ]; then
@@ -72,39 +72,24 @@ jobs:
           npx prisma migrate deploy
           node prisma/seed.js
 
-      # Compile TypeScript without relying on tsconfig.files
-      - name: Build API (CI TypeScript compilation)
+      # Ensure server.js can resolve require("./app") in App Service.
+      # If the real implementation is under src/app, this shim makes it available at root.
+      - name: Create app entry shim for runtime
         working-directory: ${{ env.API_DIR }}
         shell: bash
         run: |
-          rm -rf dist
-          SRC_FILES=$(find src -type f -name "*.ts")
-          if [ -z "$SRC_FILES" ]; then
-            echo "No TypeScript files found in api/src."
+          if [ -f "src/app.js" ] || [ -f "src/app/index.js" ] || [ -f "src/app.cjs" ] || [ -f "src/app.mjs" ]; then
+            cat > app.js <<'EOF'
+            module.exports = require("./src/app");
+            EOF
+          else
+            # If your project uses a different path/name (e.g., src/app/index.js), adjust the shim accordingly.
+            # This fail-fast message prevents shipping a broken runtime package.
+            echo "Could not find a supported src/app entry. Expected src/app.js or src/app."
             exit 1
           fi
 
-          npx tsc \
-            --outDir dist \
-            --module commonjs \
-            --target ES2020 \
-            --moduleResolution node \
-            --esModuleInterop \
-            --skipLibCheck \
-            $SRC_FILES
-
-          if [ ! -f dist/server.js ]; then
-            echo "dist/server.js not found after compilation."
-            exit 1
-          fi
-
-          # Create runtime wrapper for Azure (node server.js)
-          cat > server.js <<'EOF'
-          const path = require("path");
-          require(path.join(__dirname, "dist", "server.js"));
-          EOF
-
-      - name: Build Web
+      - name: Build Web (E2E)
         working-directory: ${{ env.WEB_DIR }}
         run: npm run build
 
@@ -120,22 +105,35 @@ jobs:
           JWT_SECRET_KEY: ${{ env.JWT_SECRET_KEY }}
           JWT_REFRESH_SECRET: ${{ env.JWT_REFRESH_SECRET }}
           NODE_ENV: test
+        shell: bash
         run: |
-          node dist/server.js &
+          # Start the API using the package start script
+          npm start &
+          echo "Waiting for API readiness..."
           for i in {1..30}; do
-            curl -fsS http://localhost:${API_PORT}/health && exit 0
+            if curl -fsS "http://localhost:${API_PORT}/health" >/dev/null 2>&1; then
+              echo "API is ready."
+              exit 0
+            fi
             sleep 1
           done
+          echo "API did not become ready."
           exit 1
 
       - name: Start Web server (E2E)
         working-directory: ${{ env.WEB_DIR }}
+        shell: bash
         run: |
           npx vite preview --host 127.0.0.1 --port ${WEB_PORT} &
+          echo "Waiting for Web readiness..."
           for i in {1..30}; do
-            curl -fsS http://localhost:${WEB_PORT} && exit 0
+            if curl -fsS "http://localhost:${WEB_PORT}" >/dev/null 2>&1; then
+              echo "Web is ready."
+              exit 0
+            fi
             sleep 1
           done
+          echo "Web did not become ready."
           exit 1
 
       - name: Run Playwright E2E tests
@@ -152,10 +150,13 @@ jobs:
         with:
           name: playwright-report
           path: ${{ env.WEB_DIR }}/playwright-report/
+          retention-days: 7
 
   build:
     runs-on: ubuntu-latest
     needs: e2e
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout repository
@@ -167,66 +168,75 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
 
-      - name: Install API dependencies
+      - name: Install web dependencies
+        working-directory: ${{ env.WEB_DIR }}
+        run: npm ci
+
+      - name: Build web
+        working-directory: ${{ env.WEB_DIR }}
+        run: npm run build
+
+      - name: Install api dependencies
         working-directory: ${{ env.API_DIR }}
         run: npm ci
 
-      # Database used here MUST NOT be reset
+      # The production database must not be reset. DATABASE_URL is used here.
       - name: Resolve production database URL
         shell: bash
         run: |
           if [ -z "${{ secrets.DATABASE_URL }}" ]; then
-            echo "DATABASE_URL is required for build/production."
+            echo "DATABASE_URL is required for build/production but not set."
             exit 1
           fi
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
 
-      - name: Build API (production)
+      - name: Prisma generate (no reset)
+        working-directory: ${{ env.API_DIR }}
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+        run: |
+          npx prisma generate
+
+      # Ensure server.js can resolve require("./app") in App Service.
+      - name: Create app entry shim for runtime
         working-directory: ${{ env.API_DIR }}
         shell: bash
         run: |
-          rm -rf dist
-          npx prisma generate
-
-          SRC_FILES=$(find src -type f -name "*.ts")
-          npx tsc \
-            --outDir dist \
-            --module commonjs \
-            --target ES2020 \
-            --moduleResolution node \
-            --esModuleInterop \
-            --skipLibCheck \
-            $SRC_FILES
-
-          cat > server.js <<'EOF'
-          const path = require("path");
-          require(path.join(__dirname, "dist", "server.js"));
-          EOF
+          if [ -f "src/app.js" ] || [ -f "src/app/index.js" ] || [ -f "src/app.cjs" ] || [ -f "src/app.mjs" ]; then
+            cat > app.js <<'EOF'
+            module.exports = require("./src/app");
+            EOF
+          else
+            echo "Could not find a supported src/app entry. Expected src/app.js or src/app."
+            exit 1
+          fi
 
       - name: Prune dev dependencies
         working-directory: ${{ env.API_DIR }}
         run: npm prune --production
 
-      - name: Build Web
-        working-directory: ${{ env.WEB_DIR }}
-        run: npm ci && npm run build
-
-      - name: Copy web build into API public
+      - name: Copy web build into api/public
+        shell: bash
         run: |
-          rm -rf api/public
-          mkdir -p api/public
-          cp -R web/dist/. api/public/
+          rm -rf "${API_DIR}/public"
+          mkdir -p "${API_DIR}/public"
+          cp -R "${WEB_DIR}/dist/." "${API_DIR}/public/"
 
       - name: Package deployment artifact
+        shell: bash
         run: |
-          cd api
-          zip -r ../${ARTIFACT_NAME} \
-            dist \
-            node_modules \
+          cd "${API_DIR}"
+          rm -f "../${ARTIFACT_NAME}"
+
+          # The runtime package must include server.js, app.js shim, src, prisma, public, and production node_modules.
+          zip -r "../${ARTIFACT_NAME}" \
+            node_modules/ \
             package*.json \
-            prisma \
-            public \
+            prisma/ \
+            public/ \
+            src/ \
             server.js \
+            app.js \
             web.config
 
       - name: Upload artifact
@@ -238,6 +248,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
+    if: startsWith(github.ref, 'refs/heads/admin/badge')
     permissions:
       id-token: write
       contents: read
@@ -247,23 +258,23 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: deployment-package
+          path: .
 
-      - name: Azure login
+      - name: Azure login (OIDC)
         uses: azure/login@v2
         with:
           client-id: ${{ env.CLIENT_ID }}
           tenant-id: ${{ env.TENANT_ID }}
           subscription-id: ${{ env.SUBSCRIPTION_ID }}
 
-      - name: Deploy to Azure App Service
+      - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.WEBAPP_NAME }}
           package: ${{ env.ARTIFACT_NAME }}
           clean: true
 
-      - name: Restart App Service
+      - name: Restart web app
+        shell: bash
         run: |
-          az webapp restart \
-            --name "${WEBAPP_NAME}" \
-            --resource-group "${RESOURCE_GROUP}"
+          az webapp restart --name "${WEBAPP_NAME}" --resource-group "${RESOURCE_GROUP}"
