@@ -172,6 +172,9 @@ class ReviewModel {
   // Get review by ID
   static async getReviewById(reviewId) {
     try {
+      if (reviewId === undefined || reviewId === null || reviewId === "") {
+        throw new Error('ReviewModel.getReviewById: reviewId is required');
+      }
       const review = await prisma.feedback.findUnique({
         where: {
           feedbackId: BigInt(reviewId)
