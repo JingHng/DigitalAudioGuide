@@ -5,8 +5,8 @@
 //   type APIRequestContext,
 // } from "@playwright/test";
 
-const FRONTEND_URL = "http://localhost:5173";
-const API_URL = "http://localhost:5175";
+// const FRONTEND_URL = "http://localhost:5173";
+// const API_URL = "http://localhost:5175";
 
 // const BADGES_PAGE_URL = `${FRONTEND_URL}/admin/badges`;
 
