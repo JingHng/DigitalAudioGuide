@@ -52,22 +52,9 @@ const ExhibitionDetailsPage: React.FC = () => {
 
     // Use apiClient which handles authentication headers
     apiClient.get(`/exhibitions/${id}`)
-      .then(async (res) => {
+      .then((res) => {
         const data = res.data as Exhibition;
-        // For each exhibit, fetch its review stats and attach averageRating
-        try {
-          const exhibits = Array.isArray(data.exhibits) ? data.exhibits : [];
-          const statsPromises = exhibits.map((ex) => apiClient.get(`/reviews/exhibit/${ex.exhibitId}/stats`).then(r => r.data?.data).catch(() => null));
-          const stats = await Promise.all(statsPromises);
-          const exhibitsWithRatings = exhibits.map((ex, idx) => {
-            const s = stats[idx];
-            const avg = s && typeof s.average_rating === 'number' ? Number(s.average_rating) : 0;
-            return { ...ex, averageRating: Number(avg.toFixed(1)) };
-          });
-          setExhibition({ ...data, exhibits: exhibitsWithRatings });
-        } catch (err) {
-          setExhibition(data);
-        }
+        setExhibition(data);
       })
       .catch((err: any) => {
         // Only log error if it's not a 401 (which might be expected for public endpoints)
@@ -153,14 +140,6 @@ const ExhibitionDetailsPage: React.FC = () => {
                     <div className="exhibit-card-content">
                       <h3>{exhibit.title}</h3>
                       <p className="exhibit-description">{exhibit.description}</p>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 }}>
-                        <div style={{ color: '#f5b301', fontSize: 18 }}>
-                          {Array.from({ length: 5 }).map((_, i) => (
-                            <span key={i} style={{ color: (exhibit as any).averageRating && i < (exhibit as any).averageRating ? '#FFD700' : '#ccc', fontSize: '1.1em' }}>★</span>
-                          ))}
-                        </div>
-                        <div style={{ color: '#555', fontSize: '0.95em' }}>{(exhibit as any).averageRating ? (exhibit as any).averageRating.toFixed ? (exhibit as any).averageRating.toFixed(1) : String((exhibit as any).averageRating) : '—'} / 5</div>
-                      </div>
                       <div className="exhibit-learn-more-btn">
                         <span>Learn More</span>
                         <ArrowRight size={16} />

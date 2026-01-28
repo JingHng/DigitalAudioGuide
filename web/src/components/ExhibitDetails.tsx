@@ -1,71 +1,87 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import apiClient from "../utils/apiClient";
 import {
-  Play, Pause, ArrowLeft, Info, Headphones,
-  Languages, BookOpen, RotateCcw, RotateCw, Volume2, VolumeX, Eye
+  Play,
+  Pause,
+  ArrowLeft,
+  RotateCcw,
+  RotateCw,
+  Share2,
+  Info,
+  Globe,
 } from "lucide-react";
 
-import "../styles/exhibitDetails.css";
-import "../styles/SmartExhibit.css"; 
+import "./css/ExhibitDetails.css";
 import { useAuth } from "../contexts/AuthContext";
-import { fetchExhibitRating, fetchExhibitReviews, submitExhibitReview } from "../utils/api";
+import {
+  fetchExhibitRating,
+  fetchExhibitReviews,
+  submitExhibitReview,
+} from "../utils/api";
+
+import EarnBadgeModal from "./earnBadgeModal";
 
 const BACKEND_URL = import.meta.env.VITE_API_TARGET || "";
 const DEFAULT_IMAGE_URL = `${BACKEND_URL}/public/images/Map.jpg`;
 
 const ExhibitDetails: React.FC = () => {
-  const { exhibitionId, id } = useParams<{ exhibitionId: string; id: string }>();
+  const { exhibitionId, id } = useParams<{
+    exhibitionId: string;
+    id: string;
+  }>();
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  // --- YOUR STATE ---
+  // Core Exhibit State
   const [exhibit, setExhibit] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [showDesc, setShowDesc] = useState(false);
+
+  // Audio & Language State
   const [selectedAudioId, setSelectedAudioId] = useState<string | null>(null);
   const [currentAudio, setCurrentAudio] = useState<any>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
-  const [volume, setVolume] = useState(1);
   const [activeWordIndex, setActiveWordIndex] = useState(-1);
 
-  // --- REVIEWS STATE (From Development) ---
+  // Reviews & Rating State
   const [rating, setRating] = useState<number>(0);
   const [reviews, setReviews] = useState<any[]>([]);
-  const [reviewPage, setReviewPage] = useState(1);
   const [userRating, setUserRating] = useState<number>(0);
-  const [userDescription, setUserDescription] = useState<string>('');
+  const [userDescription, setUserDescription] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
-  const [reviewError, setReviewError] = useState<string | null>(null);
-  const [reviewSuccess, setReviewSuccess] = useState<string | null>(null);
-  const [reviewsExpanded, setReviewsExpanded] = useState<boolean>(false);
+  // Badge State
+  const [newBadge, setNewBadge] = useState<{ name?: string; imageUrl?: string } | null>(null);
+  const claimedRef = useRef(false);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  //Fetch Exhibit Data
+  // 1. Fetch Exhibit Data
   useEffect(() => {
     if (!id) return;
     setLoading(true);
-    apiClient.get(`/exhibits/${id}`)
+    apiClient
+      .get(`/exhibits/${id}`)
       .then((res) => {
         setExhibit(res.data);
         const firstAudio = res.data.audio?.find((a: any) => a.fileUrl);
         if (firstAudio) setSelectedAudioId(firstAudio.audioId.toString());
       })
-      .catch((err) => console.error('Error fetching exhibit:', err))
+      .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   }, [id]);
 
-  // ---  PROGRESS TRACKING LOGIC ---
+  // 2. Handle Tour Progress
   useEffect(() => {
     if (exhibit && id && exhibitionId) {
       const storageKey = `tour_progress_${exhibitionId}`;
       const rawProgress = localStorage.getItem(storageKey);
-      const progress = rawProgress 
-        ? JSON.parse(rawProgress) 
+      const progress = rawProgress
+        ? JSON.parse(rawProgress)
         : { completed: [], unlocked: [] };
-
       const currentId = parseInt(id, 10);
       if (!progress.completed.includes(currentId)) {
         progress.completed.push(currentId);
@@ -74,182 +90,352 @@ const ExhibitDetails: React.FC = () => {
     }
   }, [exhibit, id, exhibitionId]);
 
-  //Audio Logic
+  // 3. Audio & Transcript Switching Logic
   useEffect(() => {
     if (!exhibit || !selectedAudioId) return;
-    const newAudio = exhibit.audio.find((a: any) => a.audioId.toString() === selectedAudioId);
+    const newAudio = exhibit.audio.find(
+      (a: any) => a.audioId.toString() === selectedAudioId,
+    );
     setCurrentAudio(newAudio || null);
     setIsPlaying(false);
 
     if (audioRef.current && newAudio?.fileUrl) {
-      const cleanUrl = newAudio.fileUrl.startsWith("/") ? newAudio.fileUrl : `/${newAudio.fileUrl}`;
+      const cleanUrl = newAudio.fileUrl.startsWith("/")
+        ? newAudio.fileUrl
+        : `/${newAudio.fileUrl}`;
       audioRef.current.src = `${BACKEND_URL}${cleanUrl.replace("/audios/", "/public/audios/")}`;
       audioRef.current.load();
     }
   }, [selectedAudioId, exhibit]);
 
+  // 4. Word Highlighting (No Auto-Scroll)
   const handleTimeUpdate = useCallback(() => {
     if (!audioRef.current || !currentAudio) return;
     const time = audioRef.current.currentTime;
     setCurrentTime(time);
     const transcript = currentAudio.subtitles?.[0]?.text;
     if (Array.isArray(transcript)) {
-      const idx = transcript.findIndex((w: any) => time >= w.start && time < (w.end || w.start + 0.5));
+      const idx = transcript.findIndex(
+        (w: any) => time >= w.start && time < (w.end || w.start + 0.5),
+      );
       if (idx !== -1 && idx !== activeWordIndex) setActiveWordIndex(idx);
     }
   }, [currentAudio, activeWordIndex]);
 
-  // --- REVIEWS LOGIC (From Development - Owen Part) ---
+  // 5. Load Ratings and Reviews
   useEffect(() => {
     if (!id) return;
-    const loadReviews = async () => {
+    fetchExhibitRating(id).then((res) => setRating(Number(res) || 0));
+    fetchExhibitReviews(id, { page: 1, limit: 10 }).then(
+      (res) => res?.reviews && setReviews(res.reviews),
+    );
+  }, [id]);
+
+   // Badge Claiming Logic
+  useEffect(() => {
+    if (!id) return;
+    if (!user) return;  // only logged-in users can claim badges
+    if (claimedRef.current) return;  // prevent multiple claims
+    claimedRef.current = true;
+
+    const claimBadge = async () => {
       try {
-        const avg = await fetchExhibitRating(id);
-        setRating(Number(avg) || 0);
-        const res = await fetchExhibitReviews(id, { page: reviewPage, limit: 5 });
-        if (res && Array.isArray(res.reviews)) setReviews(res.reviews);
-      } catch (err) { console.error('Failed to load reviews:', err); }
+        const res = await apiClient.post(`/badges/assignBadges/${id}`);
+
+        if (res.data?.isNew) {
+          setNewBadge({
+            name: res.data.name,
+            imageUrl: res.data.imageUrl,
+          });
+        }
+      } catch (err) {
+        console.error("claim badge failed", err);
+      }
     };
-    loadReviews();
-  }, [id, reviewPage]);
+
+    claimBadge();
+  }, [id, user]);
+
+
 
   const handleReviewSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!id || !user) return;
     setSubmitting(true);
     try {
-      await submitExhibitReview(id, userRating, userDescription || null, user.userId);
-      setReviewSuccess('Review submitted successfully.');
-      setUserRating(0); setUserDescription(''); setReviewPage(1);
-      const avg = await fetchExhibitRating(id); setRating(Number(avg) || 0);
-    } catch (error: any) { setReviewError('Failed to submit review'); }
-    finally { setSubmitting(false); }
+      await submitExhibitReview(
+        id,
+        userRating,
+        userDescription || null,
+        user.userId,
+      );
+      setUserRating(0);
+      setUserDescription("");
+      const freshReviews = await fetchExhibitReviews(id, {
+        page: 1,
+        limit: 10,
+      });
+      if (freshReviews?.reviews) setReviews(freshReviews.reviews);
+      const avg = await fetchExhibitRating(id);
+      setRating(Number(avg) || 0);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const getImageUrl = (url: string | null) => {
     if (!url) return DEFAULT_IMAGE_URL;
-    return url.includes('/images/') ? `${BACKEND_URL}/public/images/${url.split('/images/')[1]}` : DEFAULT_IMAGE_URL;
+    return url.includes("/images/")
+      ? `${BACKEND_URL}/public/images/${url.split("/images/")[1]}`
+      : DEFAULT_IMAGE_URL;
   };
 
-  if (loading) return <div className="loading-screen">Loading...</div>;
-  if (!exhibit) return <div className="error-screen">Exhibit not found.</div>;
+  if (loading) return <div className="loading-minimal" />;
 
   return (
+    <div className="aesthetic-page">
     <div className="exhibit-page-wrapper">
-      <audio ref={audioRef} onTimeUpdate={handleTimeUpdate} onPlay={() => setIsPlaying(true)} onPause={() => setIsPlaying(false)} onLoadedMetadata={() => setDuration(audioRef.current?.duration || 0)} />
+        {/* --- EARN BADGE MODAL --- */}
+        <EarnBadgeModal
+          isOpen={!!newBadge}
+          onClose={() => setNewBadge(null)}
+          exhibitTitle={exhibit?.title || "New Badge"}
+          badgeImageUrl={
+            newBadge?.imageUrl
+              ? `${BACKEND_URL}/public/images/${newBadge.imageUrl.split("/images/")[1]}`
+              : undefined
+          }
+        />
+    </div>
+      <audio
+        ref={audioRef}
+        onTimeUpdate={handleTimeUpdate}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
+        onLoadedMetadata={() => setDuration(audioRef.current?.duration || 0)}
+      />
 
-      <nav className="exhibit-nav">
-        <button onClick={() => navigate(`/exhibitions/${exhibitionId}/tour`)} className="nav-back">
-          <ArrowLeft size={18} /> <span>Back to Tour</span>
+      <nav className="aesthetic-nav">
+        <button onClick={() => navigate(-1)} className="nav-icon-btn">
+          <ArrowLeft size={20} />
         </button>
-        <div className="nav-title">{exhibit.title}</div>
-        <div style={{width: '60px'}}></div>
+        <div className="nav-actions">
+          {/* DYNAMIC LANGUAGE DROPDOWN */}
+          {exhibit?.audio?.length > 1 && (
+            <div className="lang-pill">
+              <Globe size={16} />
+              <select
+                value={selectedAudioId || ""}
+                onChange={(e) => setSelectedAudioId(e.target.value)}
+              >
+                {exhibit.audio.map((a: any) => (
+                  <option key={a.audioId} value={a.audioId}>
+                    {a.language?.title || "Language"}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          <div
+            className="info-popover-container"
+            onMouseEnter={() => setShowDesc(true)}
+            onMouseLeave={() => setShowDesc(false)}
+          >
+            <button className="nav-icon-btn">
+              <Info size={20} />
+            </button>
+            <AnimatePresence>
+              {showDesc && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                  className="description-popup"
+                >
+                  <p>{exhibit.description}</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+          <button className="nav-icon-btn">
+            <Share2 size={20} />
+          </button>
+        </div>
       </nav>
 
-      <main className="exhibit-main-container">
-        <div className="exhibit-grid">
-          {/*  IMAGE & INFO COLUMN */}
-          <div className="info-column">
-            <div className="image-container-full">
-                <img src={getImageUrl(exhibit.images.find((img: any) => img.isPrimary)?.fileUrl || exhibit.images[0]?.fileUrl)} alt={exhibit.title} />
-            </div>
-            <div className="section-card">
-              <div className="card-header"><Info size={20} /><h3>Description</h3></div>
-              <p className="description-text">{exhibit.description}</p>
-            </div>
-            {exhibit.additionalDescription && (
-              <div className="section-card no-margin">
-                <div className="card-header"><BookOpen size={20} /><h3>Context & History</h3></div>
-                <div className="additional-description-box">
-                  <p className="description-text">{exhibit.additionalDescription}</p>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/*  AUDIO COLUMN */}
-          <div className="audio-column">
-            <div className="audio-card matched-height">
-              <div className="audio-header">
-                <div className="header-left"><Headphones size={18} /><span>Audio Guide</span></div>
-                {exhibit.audio?.length > 0 && (
-                  <div className="lang-selector">
-                    <Languages size={14} />
-                    <select value={selectedAudioId || ''} onChange={(e) => setSelectedAudioId(e.target.value)}>
-                      {exhibit.audio.map((a: any) => <option key={a.audioId} value={a.audioId}>{a.language?.title || 'Language'}</option>)}
-                    </select>
-                  </div>
-                )}
-              </div>
-
-              {exhibit.audio?.length > 0 ? (
-                <>
-                  <div className="transcript-area">
-                    {currentAudio?.subtitles?.[0]?.text.map((word: any, idx: number) => (
-                      <span key={idx} className={`word ${activeWordIndex === idx ? 'active' : ''}`}>{word.word}{' '}</span>
-                    ))}
-                  </div>
-                  <div className="player-footer">
-                    <div className="progress-section">
-                        <input type="range" max={duration} value={currentTime} className="seek-bar" onChange={(e) => audioRef.current && (audioRef.current.currentTime = parseFloat(e.target.value))} />
-                        <div className="time-display"><span>{Math.floor(currentTime)}s</span><span>{Math.floor(duration)}s</span></div>
-                    </div>
-                    <div className="controls-section">
-                        <div className="playback-btns">
-                            <button onClick={() => audioRef.current && (audioRef.current.currentTime -= 10)} className="btn-skip"><RotateCcw size={18} /></button>
-                            <button onClick={() => isPlaying ? audioRef.current?.pause() : audioRef.current?.play()} className="btn-play">
-                                {isPlaying ? <Pause fill="white" size={20} /> : <Play fill="white" size={20} />}
-                            </button>
-                            <button onClick={() => audioRef.current && (audioRef.current.currentTime += 10)} className="btn-skip"><RotateCw size={18} /></button>
-                        </div>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <div className="no-audio-message"><VolumeX size={48} color="#cbd5e1" /><h3>No Audio Available</h3></div>
-              )}
-            </div>
+      <main className="immersive-container">
+        {/* CENTERED HEADER */}
+        <div className="header-block centered">
+          <h1>{exhibit.title}</h1>
+          <div className="meta-row">
+            <span className="rating-pill">★ {rating.toFixed(1)}</span>
+            <span className="dot">•</span>
+            <span className="author">Museum Exhibit</span>
           </div>
         </div>
 
-        {/* --- REVIEWS SECTION (From Development - Owen Part) --- */}
-        <div className="reviews-integration-container" style={{ marginTop: '40px', padding: '20px', borderTop: '1px solid #eee' }}>
-            <div className="exhibit-rating" style={{ textAlign: 'center', marginBottom: '20px' }}>
-                {Array.from({ length: 5 }).map((_, i) => (
-                    <span key={i} style={{ color: i < rating ? '#FFD700' : '#ccc', fontSize: '1.5em' }}>★</span>
-                ))}
-                <span style={{ marginLeft: 8 }}>{rating ? rating.toFixed(1) : '—'} / 5</span>
+        {/* MEDIA INTERACTION ROW */}
+        <div className="media-interaction-row">
+          <div className="media-hero-box">
+            <img
+              src={getImageUrl(exhibit.images[0]?.fileUrl)}
+              alt={exhibit.title}
+            />
+          </div>
+
+          <div className="guide-box">
+            <div className="transcript-scroll-area no-cloud">
+              {currentAudio?.subtitles?.[0]?.text.map(
+                (word: any, idx: number) => (
+                  <span
+                    key={idx}
+                    className={`word-fade ${activeWordIndex === idx ? "active" : ""}`}
+                  >
+                    {word.word}{" "}
+                  </span>
+                ),
+              )}
             </div>
 
-            <div className="review-form-box" style={{ maxWidth: '500px', margin: '0 auto' }}>
-                <form onSubmit={handleReviewSubmit}>
-                    <div style={{ display: 'flex', justifyContent: 'center', gap: '5px', marginBottom: '10px' }}>
-                        {[1, 2, 3, 4, 5].map((star) => (
-                            <button key={star} type="button" onClick={() => setUserRating(star)} style={{ fontSize: '24px', background: 'none', border: 'none', cursor: 'pointer', color: userRating >= star ? '#FFD700' : '#ccc' }}>★</button>
-                        ))}
-                    </div>
-                    <textarea value={userDescription} onChange={(e) => setUserDescription(e.target.value)} placeholder="Write a review..." style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ddd' }} />
-                    <button type="submit" disabled={submitting || userRating === 0} style={{ width: '100%', marginTop: '10px', padding: '10px', background: '#007bff', color: 'white', border: 'none', borderRadius: '8px' }}>
-                        {submitting ? 'Submitting...' : 'Submit Review'}
-                    </button>
-                </form>
+            <div className="player-controls-bottom">
+              <div className="progress-minimal">
+                <div
+                  className="progress-fill"
+                  style={{ width: `${(currentTime / duration) * 100}%` }}
+                ></div>
+              </div>
+              <div className="buttons-minimal">
+                <button
+                  onClick={() =>
+                    audioRef.current && (audioRef.current.currentTime -= 10)
+                  }
+                >
+                  <RotateCcw size={18} />
+                </button>
+                <button
+                  className="play-toggle"
+                  onClick={() =>
+                    isPlaying
+                      ? audioRef.current?.pause()
+                      : audioRef.current?.play()
+                  }
+                >
+                  {isPlaying ? (
+                    <Pause size={20} fill="black" />
+                  ) : (
+                    <Play
+                      size={20}
+                      fill="black"
+                      style={{ marginLeft: "2px" }}
+                    />
+                  )}
+                </button>
+                <button
+                  onClick={() =>
+                    audioRef.current && (audioRef.current.currentTime += 10)
+                  }
+                >
+                  <RotateCw size={18} />
+                </button>
+              </div>
             </div>
-            
-            <button onClick={() => setReviewsExpanded(!reviewsExpanded)} style={{ display: 'block', margin: '20px auto', background: 'none', border: 'none', color: '#007bff', cursor: 'pointer' }}>
-                {reviewsExpanded ? 'Hide Reviews' : `Show Reviews (${reviews.length})`}
-            </button>
-
-            {reviewsExpanded && (
-                <div className="reviews-list" style={{ maxWidth: '600px', margin: '0 auto' }}>
-                    {reviews.map((r, i) => (
-                        <div key={i} style={{ padding: '10px', borderBottom: '1px solid #eee' }}>
-                            <div style={{ color: '#FFD700' }}>{'★'.repeat(r.rating)}</div>
-                            <p>{r.comment}</p>
-                            <small style={{ color: '#888' }}>— {r.user?.username || 'Visitor'}</small>
-                        </div>
-                    ))}
-                </div>
+          </div>
+        </div>
+        
+        {/* AR EXPERIENCE BUTTONS */}
+        {exhibit?.isArEnabled && (
+          <div className="ar-actions-row centered">
+            {exhibit.arExperienceUrl && (
+              <a
+                href={exhibit.arExperienceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ar-btn ar-primary"
+              >
+                <span className="ar-icon">✨</span>
+                Launch AR Experience
+              </a>
             )}
+
+            <a
+              href="https://jinghngwan.8thwall.app/spopenhousephotobooth/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ar-btn ar-secondary"
+            >
+              <span className="ar-icon">📸</span>
+              AR Photobooth
+            </a>
+          </div>
+        )}
+
+        {/* CENTERED REVIEWS AREA */}
+        <div className="lower-content-area centered">
+          <h3>Visitor Thoughts</h3>
+
+          {user ? (
+            <form
+              className="clean-input-form centralized-form"
+              onSubmit={handleReviewSubmit}
+            >
+              <div className="star-input">
+                {[1, 2, 3, 4, 5].map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => setUserRating(s)}
+                    className={userRating >= s ? "active" : ""}
+                  >
+                    ★
+                  </button>
+                ))}
+              </div>
+              <input
+                type="text"
+                placeholder="Add a comment..."
+                value={userDescription}
+                onChange={(e) => setUserDescription(e.target.value)}
+              />
+              <button
+                type="submit"
+                disabled={!userRating || submitting}
+                className="send-btn"
+              >
+                Post
+              </button>
+            </form>
+          ) : (
+            <div className="login-prompt-box">
+              <p>Login now to leave a review!</p>
+              <button
+                onClick={() => navigate("/login")}
+                className="login-link-btn"
+              >
+                Login
+              </button>
+            </div>
+          )}
+
+          <div className="reviews-stack-central">
+            {reviews.length > 0
+              ? reviews.map((r, i) => (
+                  <div key={i} className="mini-review-centered">
+                    <div className="stars">{"★".repeat(r.rating)}</div>
+                    <p>{r.comment}</p>
+                    <span className="user">
+                      — {r.user?.username || "Visitor"}
+                    </span>
+                  </div>
+                ))
+              : user && (
+                  <div className="empty-reviews">
+                    No reviews yet! Leave one login and leave one now!
+                  </div>
+                )}
+          </div>
         </div>
       </main>
     </div>

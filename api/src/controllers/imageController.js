@@ -1,10 +1,9 @@
-const { PrismaClient } = require('../../generated/prisma');
+const prisma = require('../db/prisma');
 const fs = require('fs');
 const path = require('path');
 const { logUserAction, logAuditAction } = require('./auditLogsController');
 
 exports.deleteImage = async (req, res) => {
-  const prisma = new PrismaClient(); // Create client per request
   try {
     const imageId = BigInt(req.params.id);
     const adminUserId = req.user?.userId; // Assuming user info is in req.user

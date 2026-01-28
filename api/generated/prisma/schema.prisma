@@ -20,6 +20,9 @@ model Exhibition {
   status       Status?   @relation(fields: [statusId], references: [statusId], onUpdate: NoAction)
   images       Image[]
 
+  @@index([statusId], map: "idx_exhibitions_status")
+  @@index([createdAt], map: "idx_exhibitions_created_at")
+  @@index([title], map: "idx_exhibitions_title")
   @@map("exhibitions")
 }
 
@@ -32,6 +35,8 @@ model Exhibit {
   description           String?
   additionalDescription String?     @map("additional_description")
   sequence              Int?        @map("sequence")
+  isArEnabled           Boolean     @default(false) @map("is_ar_enabled")
+  arExperienceUrl       String?     @map("ar_experience_url") @db.VarChar(2048)
   createdAt             DateTime?   @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt             DateTime?   @default(now()) @map("updated_at") @db.Timestamptz(6)
   audio                 Audio[]
@@ -43,9 +48,13 @@ model Exhibit {
   qrCodes               QRCode[]
 
   @@unique([exhibitionId, sequence], map: "unique_exhibition_sequence")
+  @@index([exhibitionId], map: "idx_exhibit_exhibition_id")
+  @@index([statusId], map: "idx_exhibit_status")
+  @@index([badgeId], map: "idx_exhibit_badge_id")
+  @@index([sequence], map: "idx_exhibit_sequence")
   @@index([title], map: "idx_exhibit_title")
   @@index([createdAt], map: "idx_exhibit_created_at")
-  @@index([exhibitionId, sequence], map: "idx_exhibition_sequence")
+  @@index([exhibitionId, sequence], map: "idx_exhibit_exhibition_sequence")
   @@map("exhibit")
 }
 
@@ -96,6 +105,7 @@ model Feedback {
   exhibitId   BigInt?   @map("exhibit_id")
   rating      Int?
   description String?
+  isHidden    Boolean   @default(false) @map("is_hidden")
   createdAt   DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt   DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
   exhibit     Exhibit?  @relation(fields: [exhibitId], references: [exhibitId], onDelete: Cascade, onUpdate: NoAction)
@@ -153,6 +163,7 @@ model Language {
   audio      Audio[]
   status     Status?    @relation(fields: [statusId], references: [statusId], onUpdate: NoAction)
   subtitles  Subtitle[]
+  users      User[]
 
   @@index([statusId], map: "idx_language_status")
   @@index([code], map: "idx_language_code")
@@ -247,11 +258,16 @@ model User {
   username                String                   @unique @db.VarChar(100)
   email                   String                   @unique @db.VarChar(100)
   passwordHash            String                   @map("password_hash") @db.VarChar(72)
+  profilePictureUrl       String?                  @map("profile_picture_url") @db.VarChar(255)
   emailVerified           Boolean?                 @default(false) @map("email_verified")
   statusId                Int?                     @map("status_id")
   lastLoginAt             DateTime?                @map("last_login_at") @db.Timestamptz(6)
   createdAt               DateTime?                @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt               DateTime?                @default(now()) @map("updated_at") @db.Timestamptz(6)
+  gender                  String?                  @db.VarChar(10)
+  dateOfBirth             DateTime?                @map("date_of_birth") @db.Date
+  languageId              BigInt?                  @map("language_id")
+  language                Language?                @relation(fields: [languageId], references: [languageId])
   playbackLogs            AudioPlaybackLog[]
   adminAudits             AuditLog[]               @relation("AdminUserAudits")
   targetAudits            AuditLog[]               @relation("TargetUserAudits")
@@ -362,11 +378,13 @@ model UserBadge {
   @@map("user_badge")
 }
 
-model settings {
-  key        String    @id
-  value      Json
-  created_at DateTime? @default(now()) @db.Timestamptz(6)
-  updated_at DateTime? @default(now()) @db.Timestamptz(6)
+model Settings {
+  key       String    @id
+  value     Json
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  @@map("settings")
 }
 
 model SenderType {

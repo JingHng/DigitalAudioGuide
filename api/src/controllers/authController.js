@@ -1,11 +1,10 @@
-const { PrismaClient } = require('../../generated/prisma');
+const prisma = require('../db/prisma');
 const bcrypt = require('bcryptjs');
 const crypto = require("crypto");
 const { logAuditAction } = require('./auditLogsController');
 const { sendPasswordResetEmail, sendEmailVerificationEmail } = require("../utils/emailService");
 
 exports.login = async (req, res, next) => {
-  const prisma = new PrismaClient(); // Create client per request
   try {
     const { username, password } = req.body;
     if (!username || !password) {
@@ -107,14 +106,11 @@ exports.login = async (req, res, next) => {
   } catch (err) {
     console.error('Login Controller Error:', err);
     res.status(500).json({ error: 'Server error during login' });
-  } finally {
-    await prisma.$disconnect(); // Disconnect client when done
   }
 };
 
 
 exports.register = async (req, res, next) => {
-  const prisma = new PrismaClient();
   try {
     const { username, email, password } = req.body;
 
@@ -219,15 +215,14 @@ exports.register = async (req, res, next) => {
   } catch (err) {
     console.error('Register Controller Error:', err);
     res.status(500).json({ error: 'Server error during registration' });
-  } finally {
-    await prisma.$disconnect();
+
   }
 };
 
 
 
 exports.forgotPassword = async (req, res) => {
-  const prisma = new PrismaClient();
+
   try {
     const { email } = req.body;
 
@@ -280,14 +275,11 @@ exports.forgotPassword = async (req, res) => {
     // Even on a server error, send a generic message if possible,
     // but logging the error is critical.
     res.status(500).json({ error: 'An unexpected error occurred. Please try again.' });
-  } finally {
-    await prisma.$disconnect();
   }
 };
 
 
 exports.resetPassword = async (req, res) => {
-  const prisma = new PrismaClient();
   try {
     const { token, newPassword } = req.body;
 
@@ -343,8 +335,6 @@ exports.resetPassword = async (req, res) => {
   } catch (err) {
     console.error('Reset Password Controller Error:', err);
     res.status(500).json({ error: 'An unexpected error occurred. Please try again.' });
-  } finally {
-    await prisma.$disconnect();
   }
 };
 
@@ -352,7 +342,7 @@ exports.resetPassword = async (req, res) => {
 
 
 exports.getProfile = async (req, res) => {
-  const prisma = new PrismaClient();
+
   try {
     const userId = res.locals.userId;
 
@@ -362,6 +352,7 @@ exports.getProfile = async (req, res) => {
         userId: true,
         username: true,
         email: true,
+        profilePictureUrl: true,
         createdAt: true,
         roles: {
           include: {
@@ -382,6 +373,7 @@ exports.getProfile = async (req, res) => {
       userId: user.userId.toString(),
       username: user.username,
       email: user.email,
+      profilePictureUrl: user.profilePictureUrl,
       firstName: user.firstName,
       lastName: user.lastName,
       createdAt: user.createdAt,
@@ -400,13 +392,10 @@ exports.getProfile = async (req, res) => {
   } catch (err) {
     console.error('Get Profile Controller Error:', err);
     res.status(500).json({ error: 'Server error while fetching profile' });
-  } finally {
-    await prisma.$disconnect();
   }
 };
 
 exports.changePassword = async (req, res) => {
-  const prisma = new PrismaClient();
   try {
     const userId = res.locals.userId;
     const { currentPassword, newPassword } = req.body;
@@ -449,13 +438,10 @@ exports.changePassword = async (req, res) => {
   } catch (err) {
     console.error('Change Password Controller Error:', err);
     res.status(500).json({ error: 'Server error while changing password' });
-  } finally {
-    await prisma.$disconnect();
   }
 };
 
 exports.changeEmail = async (req, res) => {
-  const prisma = new PrismaClient();
   try {
     const userId = res.locals.userId;
     const { newEmail, password } = req.body;
@@ -507,13 +493,10 @@ exports.changeEmail = async (req, res) => {
   } catch (err) {
     console.error('Change Email Controller Error:', err);
     res.status(500).json({ error: 'Server error while changing email' });
-  } finally {
-    await prisma.$disconnect();
   }
 };
 
 exports.updateProfile = async (req, res) => {
-  const prisma = new PrismaClient();
   try {
     const userId = res.locals.userId;
     const { username } = req.body;
@@ -578,13 +561,10 @@ exports.updateProfile = async (req, res) => {
   } catch (err) {
     console.error("Update Profile Controller Error:", err);
     res.status(500).json({ error: "Server error while updating profile" });
-  } finally {
-    await prisma.$disconnect();
   }
 };
 
 exports.verifyEmail = async (req, res) => {
-  const prisma = new PrismaClient();
   try {
     const { token } = req.body;
 
@@ -655,13 +635,11 @@ exports.verifyEmail = async (req, res) => {
   } catch (err) {
     console.error("Email Verification Controller Error:", err);
     res.status(500).json({ error: "Server error during email verification" });
-  } finally {
-    await prisma.$disconnect();
+
   }
 };
 
 exports.resendVerificationEmail = async (req, res) => {
-  const prisma = new PrismaClient();
   try {
     const { email } = req.body;
 
@@ -738,7 +716,95 @@ exports.resendVerificationEmail = async (req, res) => {
   } catch (err) {
     console.error("Resend Verification Email Controller Error:", err);
     res.status(500).json({ error: "Server error during verification email resend" });
-  } finally {
-    await prisma.$disconnect();
+
+  }
+};
+
+exports.updateProfilePicture = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const file = req.file;
+
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded." });
+    }
+
+    const profilePictureUrl = `${req.protocol}://${req.get("host")}/public/images/${
+      file.filename
+    }`;
+
+    // Update the user's profilePictureUrl
+    await prisma.user.update({
+      where: { userId: BigInt(userId.toString()) },
+      data: { profilePictureUrl },
+      select: { userId: true, profilePictureUrl: true, username: true },
+    });
+
+    res.status(200).json({
+      message: "Profile picture updated successfully!",
+      profilePictureUrl,
+    });
+  } catch (err) {
+    console.error("Error uploading profile picture:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+exports.changeUsername = async (req, res) => {
+  try {
+    const userId = res.locals.userId;
+    const { newUsername, password } = req.body;
+
+    if (!newUsername || !password) {
+      return res.status(400).json({ error: "Username is required" });
+    }
+
+    // Validate username (basic validation)
+    if (newUsername.length < 3 || newUsername.length > 50) {
+      return res.status(400).json({ error: "Username must be between 3 and 50 characters" });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { userId: BigInt(userId) },
+      select: { username: true },
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Check if username is already taken by another user
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        username: newUsername,
+        userId: { not: BigInt(userId) },
+      },
+    });
+
+    if (existingUser) {
+      return res.status(400).json({ error: "Username is already taken" });
+    }
+
+    // Update username
+    await prisma.user.update({
+      where: { userId: BigInt(userId) },
+      data: {
+        username: newUsername,
+        updatedAt: new Date(),
+      },
+    });
+
+    // Log audit action
+    await logAuditAction(userId, userId, "user", "update", {
+      field: "username",
+      oldValue: user.username,
+      newValue: newUsername,
+    });
+
+    res.status(200).json({ message: "Username updated successfully" });
+
+  } catch (err) {
+    console.error("Update Username Controller Error:", err);
+    res.status(500).json({ error: "Server error while updating username" });
   }
 };

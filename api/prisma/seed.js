@@ -88,6 +88,8 @@ async function seed() {
         description TEXT,
         additional_description TEXT,
         sequence INTEGER,
+        is_ar_enabled BOOLEAN NOT NULL DEFAULT FALSE,
+        ar_experience_url VARCHAR(2048),
         created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
         CONSTRAINT unique_exhibition_sequence UNIQUE (exhibition_id, sequence)
@@ -124,6 +126,10 @@ async function seed() {
         user_id BIGSERIAL PRIMARY KEY,
         username VARCHAR(100) UNIQUE NOT NULL,
         email VARCHAR(100) UNIQUE NOT NULL,
+        gender VARCHAR(20),          
+        date_of_birth DATE,        
+        language_id BIGINT REFERENCES language(language_id),   
+        profile_picture_url VARCHAR(255) NULL,
         password_hash VARCHAR(72) NOT NULL,
         email_verified BOOLEAN DEFAULT FALSE,
         status_id INTEGER REFERENCES status(status_id) ON DELETE SET NULL,
@@ -315,6 +321,7 @@ async function seed() {
         exhibit_id BIGINT REFERENCES exhibit(exhibit_id) ON DELETE CASCADE,
         rating INTEGER CHECK (rating >= 1 AND rating <= 5),
         description TEXT,
+        is_hidden BOOLEAN DEFAULT FALSE,
         created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
       );
@@ -390,9 +397,22 @@ async function seed() {
       CREATE INDEX idx_roles_name ON roles(role_name);
       CREATE INDEX idx_permissions_name ON permissions(permission_name);
 
-      -- Exhibit and content indexes
+      -- Exhibition indexes (CRITICAL for dashboard performance)
+      CREATE INDEX idx_exhibitions_status ON exhibitions(status_id);
+      CREATE INDEX idx_exhibitions_created_at ON exhibitions(created_at);
+      CREATE INDEX idx_exhibitions_title ON exhibitions(title);
+
+      -- Exhibit indexes (CRITICAL for tour management)
+      CREATE INDEX idx_exhibit_exhibition_id ON exhibit(exhibition_id);
+      CREATE INDEX idx_exhibit_status ON exhibit(status_id);
+      CREATE INDEX idx_exhibit_badge_id ON exhibit(badge_id);
+      CREATE INDEX idx_exhibit_sequence ON exhibit(sequence);
+      CREATE INDEX idx_exhibit_exhibition_sequence ON exhibit(exhibition_id, sequence);
       CREATE INDEX idx_exhibit_title ON exhibit(title);
       CREATE INDEX idx_exhibit_created_at ON exhibit(created_at);
+
+      -- Badge indexes
+      CREATE INDEX idx_badge_created_at ON badge(created_at);
 
       -- QR Code indexes
       CREATE INDEX idx_qr_code_exhibit_id ON qr_code(exhibit_id);
@@ -764,6 +784,21 @@ async function seed() {
       ('verify_email', 'Verify user email addresses');
     `);
 
+    // Insert languages BEFORE users (users reference language_id)
+    await client.query(`
+      INSERT INTO language (title, lang_code, is_default, status_id) VALUES
+      ('English', 'en', true, 1),
+      ('Spanish', 'es', false, 1),
+      ('French', 'fr', false, 1),
+      ('German', 'de', false, 1),
+      ('Italian', 'it', false, 1),
+      ('Portuguese', 'pt', false, 1),
+      ('Chinese (Simplified)', 'zh-CN', false, 1),
+      ('Japanese', 'ja', false, 1),
+      ('Korean', 'ko', false, 1),
+      ('Arabic', 'ar', false, 1);
+    `);
+
     // Insert admin user first
     // Admin password: admin123
     // Generate hash for admin123 password
@@ -773,9 +808,9 @@ async function seed() {
     const userHash = await bcrypt.hash('User123$%', 12);
     
     await client.query(`
-      INSERT INTO "user" (username, email, password_hash, email_verified, status_id, last_login_at) VALUES
-      ($1, $2, $3, true, 1, CURRENT_TIMESTAMP - INTERVAL '2 hours'),
-      ($4, $5, $6, true, 1, CURRENT_TIMESTAMP - INTERVAL '1 day')
+      INSERT INTO "user" (username, email, password_hash, email_verified, status_id, last_login_at, gender, date_of_birth, language_id) VALUES
+      ($1, $2, $3, true, 1, CURRENT_TIMESTAMP - INTERVAL '2 hours', 'Male', '1980-01-01', 1),
+      ($4, $5, $6, true, 1, CURRENT_TIMESTAMP - INTERVAL '1 day', 'Female', '1985-01-01', 1)
     `, ['admin', 'admin@audiomuseum.com', adminHash, 'moderator', 'moderator@audiomuseum.com', moderatorHash]);
 
     // Generate 100+ users with varying registration dates for trend analysis
@@ -840,6 +875,10 @@ async function seed() {
       const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
       const username = `${firstName.toLowerCase()}_${lastName.toLowerCase()}_${i}`;
       const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${i}@example.com`;
+      const genders = ['Male', 'Female', 'Non-binary'];
+      const randomGender = genders[Math.floor(Math.random() * genders.length)];
+      const randomDOB = `19${Math.floor(Math.random() * 40 + 60)}-01-01`;
+      const languageId = 1; 
 
       // Distribute registrations over past 12 months with higher activity in recent months
       const daysAgo = Math.floor(Math.random() * 365);
@@ -859,8 +898,7 @@ async function seed() {
           )} days'`
         : "NULL";
 
-      users.push(`('${username}', '${email}', '${userHash}', ${emailVerified}, ${statusId}, ${lastLoginAt}, ${createdAt})`);
-      usernames.push(username);
+      users.push(`('${username}', '${email}', '${userHash}', ${emailVerified}, ${statusId}, ${lastLoginAt}, '${randomGender}', '${randomDOB}', ${languageId}, ${createdAt})`);      usernames.push(username);
       emails.push(email);
     }
 
@@ -868,10 +906,20 @@ async function seed() {
     const batchSize = 50;
     for (let i = 0; i < users.length; i += batchSize) {
       const batch = users.slice(i, i + batchSize);
-      await client.query(`
-        INSERT INTO "user" (username, email, password_hash, email_verified, status_id, last_login_at, created_at) VALUES
-        ${batch.join(", ")};
-      `);
+    await client.query(`
+  INSERT INTO "user" (
+    username, 
+    email, 
+    password_hash, 
+    email_verified, 
+    status_id, 
+    last_login_at, 
+    gender, 
+    date_of_birth,
+    language_id,    -- Add this!
+    created_at
+  ) VALUES ${batch.join(", ")};
+`);
     }
 
     console.log(
@@ -920,21 +968,6 @@ async function seed() {
       );
     `);
 
-    // Insert languages
-    await client.query(`
-      INSERT INTO language (title, lang_code, is_default, status_id) VALUES
-      ('English', 'en', true, 1),
-      ('Spanish', 'es', false, 1),
-      ('French', 'fr', false, 1),
-      ('German', 'de', false, 1),
-      ('Italian', 'it', false, 1),
-      ('Portuguese', 'pt', false, 1),
-      ('Chinese (Simplified)', 'zh-CN', false, 1),
-      ('Japanese', 'ja', false, 1),
-      ('Korean', 'ko', false, 1),
-      ('Arabic', 'ar', false, 1);
-    `);
-
     // Insert exhibitions (matching seed data IDs 6 and 7)
 await client.query(`
     INSERT INTO exhibitions (exhibition_id, title, description, status_id) VALUES
@@ -962,16 +995,16 @@ await client.query(`
 
     // Insert exhibits from seed data (exhibit_ids 1, 2, 3, 4, 5, 6)
 await client.query(`
-      INSERT INTO exhibit (exhibit_id, exhibition_id, badge_id, title, description, additional_description, status_id, sequence) VALUES
-      (1, 1, 1, 'Maritime Roots Interactive Gallery', 'This exhibit recreates early Singapore as a bustling maritime hub. Visitors walk through a curved projection wall showing trading ships arriving from the region, bustling markets, and cultural exchanges. Interactive hotspots allow visitors to tap on historical objects—such as spices, pottery, and navigational tools—to learn how these items shaped Singapore''s early importance in regional trade.', 'Dive deeper into Singapore''s maritime heritage through immersive storytelling. This gallery features authentic artifacts recovered from archaeological sites, including ancient coins, ceramics, and navigation instruments. Advanced augmented reality stations let visitors virtually handle historical trading goods and understand their significance in Southeast Asian commerce. The exhibit showcases how Singapore''s strategic location attracted merchants from China, India, the Malay world, and beyond, creating the multicultural foundation that defines Singapore today.', 1, 1),
-      (2, 1, 2, 'Ancient Singapore Map Table', 'This exhibit features a large illuminated table displaying an animated map of early Singapore and the surrounding region. As visitors move their hands over different areas, sensors highlight ancient trade routes, regional kingdoms, and important geographic features. The map shows how Singapore''s location made it a natural meeting point for merchants, sailors, and explorers. Visitors can select specific time periods to see how the island evolved before colonisation.', 'Experience 14th-century Singapore through cutting-edge cartographic technology. The interactive table combines historical maps from the British Library, National Archives of Singapore, and regional museums to create an unprecedented view of pre-colonial Southeast Asia. Gesture-controlled interfaces allow visitors to zoom from satellite views down to village level, revealing settlement patterns, monsoon trading cycles, and the rise and fall of maritime empires. Special focus is given to the Johor-Riau Sultanate and the role of Temasek in regional politics.', 1, 2),
-      (3, 2, 3, 'Wartime Bunker Immersion Room', 'This exhibit recreates a WWII underground bunker with dim lighting, sandbags, and distant sounds of conflict. Visitors enter a narrow room where projected scenes show Singapore during the early days of the Japanese invasion. Ambient effects—sirens, footsteps, radio chatter—create the tense atmosphere experienced by soldiers and civilians. Interactive panels allow visitors to learn about key moments leading up to the fall of Singapore.', 'Step into February 1942 Singapore through this historically accurate bunker recreation. Built using original architectural plans from Fort Canning and Labrador, the space features period-correct equipment, uniforms, and communication devices. Carefully researched audio tracks include actual radio broadcasts, air raid sirens, and eyewitness accounts from the Imperial War Museum archives. Motion sensors trigger different scenarios as visitors move through the space, creating a deeply personal understanding of the fear, uncertainty, and courage displayed during Singapore''s darkest hours.', 1, 1),
-      (4, 2, 4, 'Faces of the Occupation Story Wall', 'A large digital wall displays portraits of civilians during the Japanese Occupation—children, nurses, shopkeepers, and families. Selecting a face brings up their personal story through photos, reenacted clips, and historical documents. Visitors learn how everyday life changed under rationing, curfews, and fear. The aim is to humanise the impact of war through individual experiences.', 'Meet 50 real families who lived through the Japanese Occupation through this comprehensive digital memorial. Each story has been carefully researched using oral history archives, family documents, and wartime records. Professional actors perform dramatic readings of diary entries, letters, and testimonies, while period photographs and documents provide authentic context. The wall includes stories from all of Singapore''s communities—Chinese, Malay, Indian, Eurasian, and European—showing how war affected people regardless of background. Interactive family trees let visitors trace how occupation experiences shaped post-war Singapore society.', 1, 2),
-      (5, 3, 5, 'Project INC', 'Project INC: Industry Now Curriculum Project INC (which stands for Industry Now Curriculum) is the Singapore Polytechnic School of Computing''s unique, industry-facing learning approach. It''s not just a final-year project; it''s an accelerated software house environment where students work as professional software developers on real, client-paid industry projects from leading companies.', 'Did You Know? In Project INC, Students get a chance to work with real life client projects! INC Students in 2025 got to work on client projects from SLA, CleoSpa and Singapore Poly Open House so far! What are You Waiting For? Join us Today!', 1, 2),
-      (6, 3, 6, 'Registration Booth', 'Find out about the School of Computing! Discover our cutting-edge facilities, innovative programs, and how we are shaping the next generation of tech leaders. From AI and Machine Learning to Cybersecurity and Game Development, explore the diverse specializations that await you at Singapore Polytechnic School of Computing.', 'Welcome to the School of Computing Registration! Here you will learn about our state-of-the-art computing labs, industry partnerships with tech giants, and how our graduates are making waves in the tech industry. Our diploma programs cover everything from Software Development, Information Technology, to Immersive Media and Game Design. Find out about our hands-on learning approach, internship opportunities, and how we prepare students for real-world challenges. Scan the QR code to begin your computing journey today!', 1, 1),
-      (7, 3, 7, 'Course Counselling', 'Get know more about Singapore Polytechnic counselling options. Get personalized guidance on choosing the right diploma program that matches your interests and career goals. Our experienced counsellors are here to help you navigate through course requirements, application processes, and scholarship opportunities.', 'Singapore Polytechnic Course Counselling - Your Guide to Success! Our dedicated counselling team provides comprehensive support for prospective students. Learn about entry requirements for different diploma courses, understand the application timeline, explore financial aid options, and discover career pathways after graduation. Whether you are interested in Engineering, Business, Design, Health Sciences, or Computing, our counsellors will help you make informed decisions about your educational journey. Book a one-on-one session to discuss your aspirations and find the perfect course for you!', 1, 3),
-      (8, 4, 8, 'Course Counselling', 'Get know more about Singapore Polytechnic counselling options. Get personalized guidance on choosing the right diploma program that matches your interests and career goals. Our experienced counsellors are here to help you navigate through course requirements, application processes, and scholarship opportunities.', 'Singapore Polytechnic Course Counselling - Your Guide to Success! Our dedicated counselling team provides comprehensive support for prospective students. Learn about entry requirements for different diploma courses, understand the application timeline, explore financial aid options, and discover career pathways after graduation. Whether you are interested in Engineering, Business, Design, Health Sciences, or Computing, our counsellors will help you make informed decisions about your educational journey. Book a one-on-one session to discuss your aspirations and find the perfect course for you!', 1, 1),
-      (9, 5, 9, 'Course Counselling', 'Get know more about Singapore Polytechnic counselling options. Get personalized guidance on choosing the right diploma program that matches your interests and career goals. Our experienced counsellors are here to help you navigate through course requirements, application processes, and scholarship opportunities.', 'Singapore Polytechnic Course Counselling - Your Guide to Success! Our dedicated counselling team provides comprehensive support for prospective students. Learn about entry requirements for different diploma courses, understand the application timeline, explore financial aid options, and discover career pathways after graduation. Whether you are interested in Engineering, Business, Design, Health Sciences, or Computing, our counsellors will help you make informed decisions about your educational journey. Book a one-on-one session to discuss your aspirations and find the perfect course for you!', 1, 1)
+      INSERT INTO exhibit (exhibit_id, exhibition_id, badge_id, title, description, additional_description, status_id, sequence, is_ar_enabled) VALUES
+      (1, 1, 1, 'Maritime Roots Interactive Gallery', 'This exhibit recreates early Singapore as a bustling maritime hub. Visitors walk through a curved projection wall showing trading ships arriving from the region, bustling markets, and cultural exchanges. Interactive hotspots allow visitors to tap on historical objects—such as spices, pottery, and navigational tools—to learn how these items shaped Singapore''s early importance in regional trade.', 'Dive deeper into Singapore''s maritime heritage through immersive storytelling. This gallery features authentic artifacts recovered from archaeological sites, including ancient coins, ceramics, and navigation instruments. Advanced augmented reality stations let visitors virtually handle historical trading goods and understand their significance in Southeast Asian commerce. The exhibit showcases how Singapore''s strategic location attracted merchants from China, India, the Malay world, and beyond, creating the multicultural foundation that defines Singapore today.', 1, 1, false),
+      (2, 1, 2, 'Ancient Singapore Map Table', 'This exhibit features a large illuminated table displaying an animated map of early Singapore and the surrounding region. As visitors move their hands over different areas, sensors highlight ancient trade routes, regional kingdoms, and important geographic features. The map shows how Singapore''s location made it a natural meeting point for merchants, sailors, and explorers. Visitors can select specific time periods to see how the island evolved before colonisation.', 'Experience 14th-century Singapore through cutting-edge cartographic technology. The interactive table combines historical maps from the British Library, National Archives of Singapore, and regional museums to create an unprecedented view of pre-colonial Southeast Asia. Gesture-controlled interfaces allow visitors to zoom from satellite views down to village level, revealing settlement patterns, monsoon trading cycles, and the rise and fall of maritime empires. Special focus is given to the Johor-Riau Sultanate and the role of Temasek in regional politics.', 1, 2, false),
+      (3, 2, 3, 'Wartime Bunker Immersion Room', 'This exhibit recreates a WWII underground bunker with dim lighting, sandbags, and distant sounds of conflict. Visitors enter a narrow room where projected scenes show Singapore during the early days of the Japanese invasion. Ambient effects—sirens, footsteps, radio chatter—create the tense atmosphere experienced by soldiers and civilians. Interactive panels allow visitors to learn about key moments leading up to the fall of Singapore.', 'Step into February 1942 Singapore through this historically accurate bunker recreation. Built using original architectural plans from Fort Canning and Labrador, the space features period-correct equipment, uniforms, and communication devices. Carefully researched audio tracks include actual radio broadcasts, air raid sirens, and eyewitness accounts from the Imperial War Museum archives. Motion sensors trigger different scenarios as visitors move through the space, creating a deeply personal understanding of the fear, uncertainty, and courage displayed during Singapore''s darkest hours.', 1, 1, false),
+      (4, 2, 4, 'Faces of the Occupation Story Wall', 'A large digital wall displays portraits of civilians during the Japanese Occupation—children, nurses, shopkeepers, and families. Selecting a face brings up their personal story through photos, reenacted clips, and historical documents. Visitors learn how everyday life changed under rationing, curfews, and fear. The aim is to humanise the impact of war through individual experiences.', 'Meet 50 real families who lived through the Japanese Occupation through this comprehensive digital memorial. Each story has been carefully researched using oral history archives, family documents, and wartime records. Professional actors perform dramatic readings of diary entries, letters, and testimonies, while period photographs and documents provide authentic context. The wall includes stories from all of Singapore''s communities—Chinese, Malay, Indian, Eurasian, and European—showing how war affected people regardless of background. Interactive family trees let visitors trace how occupation experiences shaped post-war Singapore society.', 1, 2, false),
+      (5, 3, 5, 'Project INC', 'Project INC: Industry Now Curriculum Project INC (which stands for Industry Now Curriculum) is the Singapore Polytechnic School of Computing''s unique, industry-facing learning approach. It''s not just a final-year project; it''s an accelerated software house environment where students work as professional software developers on real, client-paid industry projects from leading companies.', 'Did You Know? In Project INC, Students get a chance to work with real life client projects! INC Students in 2025 got to work on client projects from SLA, CleoSpa and Singapore Poly Open House so far! What are You Waiting For? Join us Today!', 1, 2, false),
+      (6, 3, 6, 'Registration Booth', 'Find out about the School of Computing! Discover our cutting-edge facilities, innovative programs, and how we are shaping the next generation of tech leaders. From AI and Machine Learning to Cybersecurity and Game Development, explore the diverse specializations that await you at Singapore Polytechnic School of Computing.', 'Welcome to the School of Computing Registration! Here you will learn about our state-of-the-art computing labs, industry partnerships with tech giants, and how our graduates are making waves in the tech industry. Our diploma programs cover everything from Software Development, Information Technology, to Immersive Media and Game Design. Find out about our hands-on learning approach, internship opportunities, and how we prepare students for real-world challenges. Scan the QR code to begin your computing journey today!', 1, 1, false),
+      (7, 3, 7, 'Course Counselling', 'Get know more about Singapore Polytechnic counselling options. Get personalized guidance on choosing the right diploma program that matches your interests and career goals. Our experienced counsellors are here to help you navigate through course requirements, application processes, and scholarship opportunities.', 'Singapore Polytechnic Course Counselling - Your Guide to Success! Our dedicated counselling team provides comprehensive support for prospective students. Learn about entry requirements for different diploma courses, understand the application timeline, explore financial aid options, and discover career pathways after graduation. Whether you are interested in Engineering, Business, Design, Health Sciences, or Computing, our counsellors will help you make informed decisions about your educational journey. Book a one-on-one session to discuss your aspirations and find the perfect course for you!', 1, 3, false),
+      (8, 4, 8, 'Course Counselling', 'Get know more about Singapore Polytechnic counselling options. Get personalized guidance on choosing the right diploma program that matches your interests and career goals. Our experienced counsellors are here to help you navigate through course requirements, application processes, and scholarship opportunities.', 'Singapore Polytechnic Course Counselling - Your Guide to Success! Our dedicated counselling team provides comprehensive support for prospective students. Learn about entry requirements for different diploma courses, understand the application timeline, explore financial aid options, and discover career pathways after graduation. Whether you are interested in Engineering, Business, Design, Health Sciences, or Computing, our counsellors will help you make informed decisions about your educational journey. Book a one-on-one session to discuss your aspirations and find the perfect course for you!', 1, 1, false),
+      (9, 5, 9, 'Course Counselling', 'Get know more about Singapore Polytechnic counselling options. Get personalized guidance on choosing the right diploma program that matches your interests and career goals. Our experienced counsellors are here to help you navigate through course requirements, application processes, and scholarship opportunities.', 'Singapore Polytechnic Course Counselling - Your Guide to Success! Our dedicated counselling team provides comprehensive support for prospective students. Learn about entry requirements for different diploma courses, understand the application timeline, explore financial aid options, and discover career pathways after graduation. Whether you are interested in Engineering, Business, Design, Health Sciences, or Computing, our counsellors will help you make informed decisions about your educational journey. Book a one-on-one session to discuss your aspirations and find the perfect course for you!', 1, 1, false)
 
       `);
 
@@ -1008,7 +1041,7 @@ await client.query(`
       (9, 5, NULL, 'Project INC Image', '', '/images/SoC3.jpg', false),
       (10, 5, NULL, 'Project INC Image', '', '/images/SoC2.jpg', false),
       (11, 5, NULL, 'Project INC Image', '', '/images/SoC1.avif', false),
-      (12, 6, NULL, 'Registration Booth Primary', '', '/images/Register.jpg', true),
+      (12, 6, NULL, 'Registration Booth Primary', '', '/images/RegistrationBooth.jpg', true),
       (13, 6, NULL, 'Registration Booth Secondary', '', '/images/AI.jpg', false),
       (14, 6, NULL, 'Registration Booth Tertiary', '', '/images/Cyber.jpg', false),
       (15, 7, NULL, 'Course Counselling Primary', '', '/images/Course.jpg', true),
@@ -1105,10 +1138,14 @@ await client.query(`
     // Insert settings
     await client.query(`
       INSERT INTO settings (key, value) VALUES
-      ('inactivityThresholdDays', '"7"');
+      ('inactivityThresholdDays', '"7"')
+      ON CONFLICT (key) DO NOTHING;
     `);
 
-    // Insert audit logs (first 10 from seed data, then add more if needed)
+    // Clear existing audit logs and insert fresh data
+    await client.query(`DELETE FROM audit_logs;`);
+    
+    // Insert audit logs (first 12 from original seed data)
     await client.query(`
       INSERT INTO audit_logs (audit_log_id, admin_user_id, target_user_id, resource, action, changes, metadata, timestamp) VALUES
       (1, 1, 3, 'user', 'create', '{"username": "john_doe", "email": "john@example.com"}', '{"ip_address": "192.168.1.100", "user_agent": "Mozilla/5.0"}', '2025-11-17 04:13:14.186392+00'),
@@ -1125,6 +1162,159 @@ await client.query(`
       (12, NULL, 1, 'user', 'login', '{"message":"User logged in, status set to Active"}', NULL, '2025-11-17 07:46:10.958+00');
     `);
 
+    // Insert feedback/reviews for exhibits (2 reviews per exhibit)
+    await client.query(`
+      INSERT INTO feedback (user_id, exhibit_id, rating, description, is_hidden, created_at) VALUES
+      -- Exhibit 1: Maritime Roots Interactive Gallery
+      (3, 1, 5, 'Absolutely fascinating! The interactive projections really brought Singapore''s maritime history to life. I loved being able to tap on the artifacts and learn about their significance in trade.', false, CURRENT_TIMESTAMP - INTERVAL '5 days'),
+      (15, 1, 4, 'Great exhibit! The AR stations were impressive and the authentic artifacts made me appreciate how Singapore became such an important trading hub. Would have loved more information about the specific trade routes.', false, CURRENT_TIMESTAMP - INTERVAL '3 days'),
+      
+      -- Exhibit 2: Ancient Singapore Map Table
+      (7, 2, 5, 'The illuminated map table is incredible! Being able to see how Singapore evolved through different time periods with gesture controls was mind-blowing. This is definitely a must-see.', false, CURRENT_TIMESTAMP - INTERVAL '7 days'),
+      (22, 2, 5, 'Wow! The level of detail in the historical maps is amazing. I spent over 20 minutes exploring different regions and learning about the Johor-Riau Sultanate. Very educational and engaging.', false, CURRENT_TIMESTAMP - INTERVAL '2 days'),
+      
+      -- Exhibit 3: Wartime Bunker Immersion Room
+      (11, 3, 5, 'This exhibit gave me chills. The recreation of the WWII bunker with authentic sounds and period equipment really transported me back to 1942. A powerful and moving experience.', false, CURRENT_TIMESTAMP - INTERVAL '6 days'),
+      (28, 3, 4, 'Very immersive and historically accurate. The ambient effects really captured the tension of that era. Could use a bit more lighting in some areas, but overall an excellent exhibit.', false, CURRENT_TIMESTAMP - INTERVAL '4 days'),
+      
+      -- Exhibit 4: Faces of the Occupation Story Wall
+      (9, 4, 5, 'Deeply moving. Reading the personal stories and seeing actual photos from families during the Japanese Occupation made history feel so much more real and personal. An important exhibit.', false, CURRENT_TIMESTAMP - INTERVAL '8 days'),
+      (19, 4, 5, 'The digital wall is beautifully done. Each story is carefully researched and the dramatic readings of diary entries brought tears to my eyes. This is how history should be taught.', false, CURRENT_TIMESTAMP - INTERVAL '1 day'),
+      
+      -- Exhibit 5: Project INC
+      (5, 5, 5, 'As a tech enthusiast, this exhibit blew my mind! Learning about how SP students work on real client projects is incredible. The hands-on approach to learning is exactly what the industry needs.', false, CURRENT_TIMESTAMP - INTERVAL '4 days'),
+      (24, 5, 4, 'Very impressive program! The fact that students get to work with real clients like SLA and CleoSpa shows how seriously SP takes industry preparation. Definitely considering applying now.', false, CURRENT_TIMESTAMP - INTERVAL '2 days'),
+      
+      -- Exhibit 6: Registration Booth
+      (12, 6, 4, 'Great introduction to the School of Computing! The staff were friendly and knowledgeable. Got all my questions answered about the different specializations available.', false, CURRENT_TIMESTAMP - INTERVAL '5 days'),
+      (30, 6, 5, 'The computing labs look amazing! I''m particularly interested in Cybersecurity and Game Development. The QR code made it easy to get more information. Very organized booth.', false, CURRENT_TIMESTAMP - INTERVAL '3 days'),
+      
+      -- Exhibit 7: Course Counselling
+      (8, 7, 5, 'The counsellor was extremely helpful in guiding me through the different diploma programs. They took time to understand my interests and helped me choose the right path. Highly recommend!', false, CURRENT_TIMESTAMP - INTERVAL '6 days'),
+      (17, 7, 5, 'Excellent counselling service! Got clear information about entry requirements, scholarships, and career pathways. The one-on-one session really helped clarify my educational goals.', false, CURRENT_TIMESTAMP - INTERVAL '4 days'),
+      
+      -- Exhibit 8: Course Counselling (CLS)
+      (14, 8, 4, 'Good counselling session for CLS courses. The counsellor explained the application timeline clearly and helped me understand which courses would be best for my career aspirations.', false, CURRENT_TIMESTAMP - INTERVAL '7 days'),
+      (26, 8, 5, 'Very informative! The counsellor was patient and answered all my questions about CLS programs. I feel much more confident about my application now.', false, CURRENT_TIMESTAMP - INTERVAL '2 days'),
+      
+      -- Exhibit 9: Course Counselling (SOB)
+      (10, 9, 5, 'Amazing guidance for SOB courses! The counsellor helped me understand the different business diploma options and how they align with industry needs. Very professional service.', false, CURRENT_TIMESTAMP - INTERVAL '5 days'),
+      (20, 9, 4, 'Helpful counselling session. Got good insights into the School of Business programs and the various career paths available after graduation. Would recommend to prospective students.', false, CURRENT_TIMESTAMP - INTERVAL '3 days')
+    `);
+
+    // Insert audio playback logs (simulating users listening to audio guides)
+    console.log("📻 Inserting audio playback logs...");
+    await client.query(`
+      INSERT INTO audio_playback_logs (user_id, audio_id, audio_start, audio_end, duration_listened, created_at) VALUES
+      -- Exhibit 1 audio plays (Maritime Roots)
+      (5, 804, CURRENT_TIMESTAMP - INTERVAL '2 days', CURRENT_TIMESTAMP - INTERVAL '2 days' + INTERVAL '34 seconds', 34, CURRENT_TIMESTAMP - INTERVAL '2 days'),
+      (12, 804, CURRENT_TIMESTAMP - INTERVAL '4 days', CURRENT_TIMESTAMP - INTERVAL '4 days' + INTERVAL '34 seconds', 34, CURRENT_TIMESTAMP - INTERVAL '4 days'),
+      (18, 804, CURRENT_TIMESTAMP - INTERVAL '6 days', CURRENT_TIMESTAMP - INTERVAL '6 days' + INTERVAL '30 seconds', 30, CURRENT_TIMESTAMP - INTERVAL '6 days'),
+      (25, 804, CURRENT_TIMESTAMP - INTERVAL '1 day', CURRENT_TIMESTAMP - INTERVAL '1 day' + INTERVAL '34 seconds', 34, CURRENT_TIMESTAMP - INTERVAL '1 day'),
+      (30, 804, CURRENT_TIMESTAMP - INTERVAL '3 days', CURRENT_TIMESTAMP - INTERVAL '3 days' + INTERVAL '28 seconds', 28, CURRENT_TIMESTAMP - INTERVAL '3 days'),
+      (7, 804, CURRENT_TIMESTAMP - INTERVAL '5 days', CURRENT_TIMESTAMP - INTERVAL '5 days' + INTERVAL '34 seconds', 34, CURRENT_TIMESTAMP - INTERVAL '5 days'),
+      (22, 804, CURRENT_TIMESTAMP - INTERVAL '7 days', CURRENT_TIMESTAMP - INTERVAL '7 days' + INTERVAL '34 seconds', 34, CURRENT_TIMESTAMP - INTERVAL '7 days'),
+      (14, 804, CURRENT_TIMESTAMP - INTERVAL '2 hours', CURRENT_TIMESTAMP - INTERVAL '2 hours' + INTERVAL '32 seconds', 32, CURRENT_TIMESTAMP - INTERVAL '2 hours'),
+      
+      -- Exhibit 2 audio plays (Ancient Map Table)
+      (8, 805, CURRENT_TIMESTAMP - INTERVAL '3 days', CURRENT_TIMESTAMP - INTERVAL '3 days' + INTERVAL '37 seconds', 37, CURRENT_TIMESTAMP - INTERVAL '3 days'),
+      (15, 805, CURRENT_TIMESTAMP - INTERVAL '5 days', CURRENT_TIMESTAMP - INTERVAL '5 days' + INTERVAL '37 seconds', 37, CURRENT_TIMESTAMP - INTERVAL '5 days'),
+      (21, 805, CURRENT_TIMESTAMP - INTERVAL '1 day', CURRENT_TIMESTAMP - INTERVAL '1 day' + INTERVAL '35 seconds', 35, CURRENT_TIMESTAMP - INTERVAL '1 day'),
+      (28, 805, CURRENT_TIMESTAMP - INTERVAL '6 days', CURRENT_TIMESTAMP - INTERVAL '6 days' + INTERVAL '37 seconds', 37, CURRENT_TIMESTAMP - INTERVAL '6 days'),
+      (11, 805, CURRENT_TIMESTAMP - INTERVAL '4 days', CURRENT_TIMESTAMP - INTERVAL '4 days' + INTERVAL '37 seconds', 37, CURRENT_TIMESTAMP - INTERVAL '4 days'),
+      (19, 805, CURRENT_TIMESTAMP - INTERVAL '8 hours', CURRENT_TIMESTAMP - INTERVAL '8 hours' + INTERVAL '33 seconds', 33, CURRENT_TIMESTAMP - INTERVAL '8 hours'),
+      
+      -- Exhibit 3 audio plays (Wartime Bunker)
+      (9, 806, CURRENT_TIMESTAMP - INTERVAL '4 days', CURRENT_TIMESTAMP - INTERVAL '4 days' + INTERVAL '33 seconds', 33, CURRENT_TIMESTAMP - INTERVAL '4 days'),
+      (16, 806, CURRENT_TIMESTAMP - INTERVAL '2 days', CURRENT_TIMESTAMP - INTERVAL '2 days' + INTERVAL '33 seconds', 33, CURRENT_TIMESTAMP - INTERVAL '2 days'),
+      (23, 806, CURRENT_TIMESTAMP - INTERVAL '7 days', CURRENT_TIMESTAMP - INTERVAL '7 days' + INTERVAL '33 seconds', 33, CURRENT_TIMESTAMP - INTERVAL '7 days'),
+      (13, 806, CURRENT_TIMESTAMP - INTERVAL '1 day', CURRENT_TIMESTAMP - INTERVAL '1 day' + INTERVAL '30 seconds', 30, CURRENT_TIMESTAMP - INTERVAL '1 day'),
+      (27, 806, CURRENT_TIMESTAMP - INTERVAL '5 days', CURRENT_TIMESTAMP - INTERVAL '5 days' + INTERVAL '33 seconds', 33, CURRENT_TIMESTAMP - INTERVAL '5 days'),
+      
+      -- Exhibit 4 audio plays (Faces of Occupation)
+      (10, 807, CURRENT_TIMESTAMP - INTERVAL '3 days', CURRENT_TIMESTAMP - INTERVAL '3 days' + INTERVAL '35 seconds', 35, CURRENT_TIMESTAMP - INTERVAL '3 days'),
+      (17, 807, CURRENT_TIMESTAMP - INTERVAL '6 days', CURRENT_TIMESTAMP - INTERVAL '6 days' + INTERVAL '35 seconds', 35, CURRENT_TIMESTAMP - INTERVAL '6 days'),
+      (24, 807, CURRENT_TIMESTAMP - INTERVAL '2 days', CURRENT_TIMESTAMP - INTERVAL '2 days' + INTERVAL '35 seconds', 35, CURRENT_TIMESTAMP - INTERVAL '2 days'),
+      (29, 807, CURRENT_TIMESTAMP - INTERVAL '8 days', CURRENT_TIMESTAMP - INTERVAL '8 days' + INTERVAL '35 seconds', 35, CURRENT_TIMESTAMP - INTERVAL '8 days'),
+      
+      -- Exhibit 5 audio plays (Project INC) - Most popular!
+      (6, 809, CURRENT_TIMESTAMP - INTERVAL '1 day', CURRENT_TIMESTAMP - INTERVAL '1 day' + INTERVAL '54 seconds', 54, CURRENT_TIMESTAMP - INTERVAL '1 day'),
+      (12, 809, CURRENT_TIMESTAMP - INTERVAL '2 days', CURRENT_TIMESTAMP - INTERVAL '2 days' + INTERVAL '54 seconds', 54, CURRENT_TIMESTAMP - INTERVAL '2 days'),
+      (18, 809, CURRENT_TIMESTAMP - INTERVAL '3 days', CURRENT_TIMESTAMP - INTERVAL '3 days' + INTERVAL '50 seconds', 50, CURRENT_TIMESTAMP - INTERVAL '3 days'),
+      (25, 809, CURRENT_TIMESTAMP - INTERVAL '4 days', CURRENT_TIMESTAMP - INTERVAL '4 days' + INTERVAL '54 seconds', 54, CURRENT_TIMESTAMP - INTERVAL '4 days'),
+      (30, 809, CURRENT_TIMESTAMP - INTERVAL '5 days', CURRENT_TIMESTAMP - INTERVAL '5 days' + INTERVAL '54 seconds', 54, CURRENT_TIMESTAMP - INTERVAL '5 days'),
+      (11, 809, CURRENT_TIMESTAMP - INTERVAL '6 days', CURRENT_TIMESTAMP - INTERVAL '6 days' + INTERVAL '54 seconds', 54, CURRENT_TIMESTAMP - INTERVAL '6 days'),
+      (22, 809, CURRENT_TIMESTAMP - INTERVAL '7 days', CURRENT_TIMESTAMP - INTERVAL '7 days' + INTERVAL '54 seconds', 54, CURRENT_TIMESTAMP - INTERVAL '7 days'),
+      (14, 809, CURRENT_TIMESTAMP - INTERVAL '8 days', CURRENT_TIMESTAMP - INTERVAL '8 days' + INTERVAL '48 seconds', 48, CURRENT_TIMESTAMP - INTERVAL '8 days'),
+      (20, 809, CURRENT_TIMESTAMP - INTERVAL '4 hours', CURRENT_TIMESTAMP - INTERVAL '4 hours' + INTERVAL '54 seconds', 54, CURRENT_TIMESTAMP - INTERVAL '4 hours'),
+      (26, 809, CURRENT_TIMESTAMP - INTERVAL '12 hours', CURRENT_TIMESTAMP - INTERVAL '12 hours' + INTERVAL '52 seconds', 52, CURRENT_TIMESTAMP - INTERVAL '12 hours'),
+      (8, 809, CURRENT_TIMESTAMP - INTERVAL '1 day' - INTERVAL '6 hours', CURRENT_TIMESTAMP - INTERVAL '1 day' - INTERVAL '6 hours' + INTERVAL '54 seconds', 54, CURRENT_TIMESTAMP - INTERVAL '1 day' - INTERVAL '6 hours'),
+      (15, 809, CURRENT_TIMESTAMP - INTERVAL '2 days' - INTERVAL '3 hours', CURRENT_TIMESTAMP - INTERVAL '2 days' - INTERVAL '3 hours' + INTERVAL '54 seconds', 54, CURRENT_TIMESTAMP - INTERVAL '2 days' - INTERVAL '3 hours'),
+      
+      -- Exhibit 6 audio plays (Registration Booth)
+      (7, 810, CURRENT_TIMESTAMP - INTERVAL '2 days', CURRENT_TIMESTAMP - INTERVAL '2 days' + INTERVAL '38 seconds', 38, CURRENT_TIMESTAMP - INTERVAL '2 days'),
+      (19, 810, CURRENT_TIMESTAMP - INTERVAL '5 days', CURRENT_TIMESTAMP - INTERVAL '5 days' + INTERVAL '38 seconds', 38, CURRENT_TIMESTAMP - INTERVAL '5 days'),
+      (28, 810, CURRENT_TIMESTAMP - INTERVAL '3 days', CURRENT_TIMESTAMP - INTERVAL '3 days' + INTERVAL '38 seconds', 38, CURRENT_TIMESTAMP - INTERVAL '3 days'),
+      (13, 810, CURRENT_TIMESTAMP - INTERVAL '7 days', CURRENT_TIMESTAMP - INTERVAL '7 days' + INTERVAL '38 seconds', 38, CURRENT_TIMESTAMP - INTERVAL '7 days'),
+      (21, 810, CURRENT_TIMESTAMP - INTERVAL '1 day', CURRENT_TIMESTAMP - INTERVAL '1 day' + INTERVAL '35 seconds', 35, CURRENT_TIMESTAMP - INTERVAL '1 day'),
+      (4, 810, CURRENT_TIMESTAMP - INTERVAL '6 hours', CURRENT_TIMESTAMP - INTERVAL '6 hours' + INTERVAL '38 seconds', 38, CURRENT_TIMESTAMP - INTERVAL '6 hours'),
+      
+      -- Exhibit 7 audio plays (Course Counselling)
+      (9, 811, CURRENT_TIMESTAMP - INTERVAL '4 days', CURRENT_TIMESTAMP - INTERVAL '4 days' + INTERVAL '66 seconds', 66, CURRENT_TIMESTAMP - INTERVAL '4 days'),
+      (16, 811, CURRENT_TIMESTAMP - INTERVAL '2 days', CURRENT_TIMESTAMP - INTERVAL '2 days' + INTERVAL '66 seconds', 66, CURRENT_TIMESTAMP - INTERVAL '2 days'),
+      (23, 811, CURRENT_TIMESTAMP - INTERVAL '6 days', CURRENT_TIMESTAMP - INTERVAL '6 days' + INTERVAL '62 seconds', 62, CURRENT_TIMESTAMP - INTERVAL '6 days'),
+      (27, 811, CURRENT_TIMESTAMP - INTERVAL '1 day', CURRENT_TIMESTAMP - INTERVAL '1 day' + INTERVAL '66 seconds', 66, CURRENT_TIMESTAMP - INTERVAL '1 day'),
+      (10, 811, CURRENT_TIMESTAMP - INTERVAL '8 days', CURRENT_TIMESTAMP - INTERVAL '8 days' + INTERVAL '66 seconds', 66, CURRENT_TIMESTAMP - INTERVAL '8 days'),
+      
+      -- Chinese audio plays
+      (3, 812, CURRENT_TIMESTAMP - INTERVAL '3 days', CURRENT_TIMESTAMP - INTERVAL '3 days' + INTERVAL '22 seconds', 22, CURRENT_TIMESTAMP - INTERVAL '3 days'),
+      (5, 813, CURRENT_TIMESTAMP - INTERVAL '5 days', CURRENT_TIMESTAMP - INTERVAL '5 days' + INTERVAL '52 seconds', 52, CURRENT_TIMESTAMP - INTERVAL '5 days'),
+      (17, 814, CURRENT_TIMESTAMP - INTERVAL '2 days', CURRENT_TIMESTAMP - INTERVAL '2 days' + INTERVAL '45 seconds', 45, CURRENT_TIMESTAMP - INTERVAL '2 days')
+    `);
+
+    // Reset audit_logs sequence after inserting the first 12 with explicit IDs
+    await client.query(`SELECT setval('audit_logs_audit_log_id_seq', (SELECT MAX(audit_log_id) FROM audit_logs));`);
+
+    // Insert more admin audit logs for recent activity
+    console.log("📋 Inserting additional audit logs...");
+    await client.query(`
+      INSERT INTO audit_logs (admin_user_id, target_user_id, resource, action, changes, metadata, timestamp) VALUES
+      -- Recent audio management by admin
+      (1, NULL, 'audio', 'generate_tts', '{"exhibit_id": "5", "language": "English", "status": "completed"}', NULL, CURRENT_TIMESTAMP - INTERVAL '3 hours'),
+      (1, NULL, 'audio', 'generate_tts', '{"exhibit_id": "6", "language": "English", "status": "completed"}', NULL, CURRENT_TIMESTAMP - INTERVAL '5 hours'),
+      (1, NULL, 'audio', 'update', '{"audio_id": "809", "field": "title", "new_value": "Project INC (English)"}', NULL, CURRENT_TIMESTAMP - INTERVAL '8 hours'),
+      
+      -- Exhibit management by admin
+      (1, NULL, 'exhibit', 'create', '{"exhibit_id": "5", "title": "Project INC", "exhibition_id": "7"}', NULL, CURRENT_TIMESTAMP - INTERVAL '2 days'),
+      (1, NULL, 'exhibit', 'update', '{"exhibit_id": "1", "field": "sequence", "old_value": "1", "new_value": "1"}', NULL, CURRENT_TIMESTAMP - INTERVAL '6 hours'),
+      (1, NULL, 'exhibit', 'update', '{"exhibit_id": "2", "field": "description", "change": "Added more details"}', NULL, CURRENT_TIMESTAMP - INTERVAL '1 day'),
+      
+      -- User management activities
+      (1, 15, 'user', 'create', '{"username": "user15", "email": "user15@example.com", "role": "user"}', NULL, CURRENT_TIMESTAMP - INTERVAL '4 days'),
+      (1, 28, 'user', 'update', '{"user_id": "28", "field": "status", "new_value": "active"}', NULL, CURRENT_TIMESTAMP - INTERVAL '12 hours'),
+      (2, 22, 'user', 'password_reset', '{"user_id": "22", "method": "admin_initiated"}', NULL, CURRENT_TIMESTAMP - INTERVAL '2 days'),
+      
+      -- Exhibition management
+      (1, NULL, 'exhibition', 'update', '{"exhibition_id": "6", "field": "title", "change": "Updated description"}', NULL, CURRENT_TIMESTAMP - INTERVAL '3 days'),
+      (1, NULL, 'exhibition', 'create', '{"exhibition_id": "7", "title": "Singapore Polytechnic Open House"}', NULL, CURRENT_TIMESTAMP - INTERVAL '5 days'),
+      
+      -- Badge management
+      (1, NULL, 'badge', 'create', '{"badge_id": "1", "name": "Maritime Explorer", "linked_to": "Exhibit 1"}', NULL, CURRENT_TIMESTAMP - INTERVAL '6 days'),
+      (1, NULL, 'badge', 'assign', '{"badge_id": "1", "user_id": "1", "exhibit_id": "1"}', NULL, CURRENT_TIMESTAMP - INTERVAL '4 days'),
+      
+      -- Image uploads
+      (1, NULL, 'image', 'upload', '{"exhibit_id": "1", "type": "primary", "filename": "maritime_exhibit.jpg"}', NULL, CURRENT_TIMESTAMP - INTERVAL '7 days'),
+      (1, NULL, 'image', 'upload', '{"exhibition_id": "6", "type": "cover", "filename": "wwii_cover.jpg"}', NULL, CURRENT_TIMESTAMP - INTERVAL '8 days'),
+      
+      -- System configuration
+      (1, NULL, 'settings', 'update', '{"key": "inactivity_threshold", "old_value": "30", "new_value": "45"}', NULL, CURRENT_TIMESTAMP - INTERVAL '10 days'),
+      (2, NULL, 'permission', 'grant', '{"user_id": "1", "permission": "manage_audio", "granted_by": "admin"}', NULL, CURRENT_TIMESTAMP - INTERVAL '12 days'),
+      
+      -- Recent feedback moderation
+      (2, NULL, 'feedback', 'moderate', '{"feedback_id": "5", "action": "approved", "exhibit_id": "5"}', NULL, CURRENT_TIMESTAMP - INTERVAL '1 day'),
+      (1, NULL, 'feedback', 'moderate', '{"feedback_id": "8", "action": "approved", "exhibit_id": "4"}', NULL, CURRENT_TIMESTAMP - INTERVAL '2 days')
+    `);
+
     // Update sequences to match inserted IDs
     await client.query(`
       SELECT setval('exhibitions_exhibition_id_seq', (SELECT MAX(exhibition_id) FROM exhibitions));
@@ -1134,6 +1324,9 @@ await client.query(`
       SELECT setval('subtitle_subtitle_id_seq', (SELECT MAX(subtitle_id) FROM subtitle));
       SELECT setval('images_image_id_seq', (SELECT MAX(image_id) FROM images));
       SELECT setval('qr_code_qr_id_seq', (SELECT MAX(qr_id) FROM qr_code));
+      SELECT setval('feedback_feedback_id_seq', (SELECT MAX(feedback_id) FROM feedback));
+      SELECT setval('audio_playback_logs_audio_logs_id_seq', (SELECT MAX(audio_logs_id) FROM audio_playback_logs));
+      SELECT setval('audit_logs_audit_log_id_seq', (SELECT MAX(audit_log_id) FROM audit_logs));
     `);
 
     // Clean up expired tokens as demonstration
@@ -1148,20 +1341,22 @@ await client.query(`
       "   - 3 roles with proper permissions (including password reset & email verification)"
     );
     console.log("   - 10 languages with English as default");
-    console.log("   - 2 exhibitions (IDs 6 & 7) with 4 exhibits (IDs 29-32)");
+    console.log("   - 2 exhibitions (IDs 6 & 7) with 9 exhibits (IDs 1-9)");
     console.log(
       "   - 25 badges created, each linked uniquely to an exhibit (with name and description)"
     );
     console.log("   - 4 badges are given to admin1");
-    console.log("   - 4 audio records with 4 subtitle records (JSONB)");
+    console.log("   - 10 audio records with 10 subtitle records (JSONB)");
     console.log("   - 6 images (2 exhibition covers + 4 exhibit images)");
-    console.log("   - 4 QR codes");
+    console.log("   - 9 QR codes");
+    console.log("   - 18 feedback/reviews (2 per exhibit from various users)");
+    console.log("   - 56 audio playback logs from 30+ different users");
+    console.log("   - 30 audit log entries (admin activities, user management, etc.)");
     console.log("   - Settings table with inactivity threshold");
     console.log("   - Password reset and email verification token tables");
     console.log(
       "   - Sample tokens for testing (1 expired, cleaned up automatically)"
     );
-    console.log("   - 12 audit log entries");
     console.log(
       "   - Comprehensive performance indexes and constraints applied"
     );
@@ -1171,6 +1366,8 @@ await client.query(`
     );
     console.log("   - 2 sender types (user, assistant) for AI Assistant");
     console.log("   - Conversation and message tables for AI Assistant (Omnie)");
+    console.log("   - 🎧 Audio analytics ready: Popular exhibits tracked by playback count");
+    console.log("   - 📋 Recent admin actions logged and visible on dashboard");
   } catch (err) {
     console.error("❌ Error during seeding:", err);
     throw err;

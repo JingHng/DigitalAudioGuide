@@ -59,7 +59,15 @@ router.patch(
 );
 
 // --- ADMIN SEQUENCE MANAGEMENT ---
-// Update exhibit sequence order (Admin only)
+// Batch update exhibit sequences for entire exhibition (OPTIMIZED - Use this for drag-and-drop reordering)
+router.put(
+  '/exhibition/:exhibitionId/reorder',
+  jwtMiddleware.verifyToken,
+  checkPermission('update_exhibit'),
+  exhibitionController.batchUpdateExhibitSequences
+);
+
+// Update single exhibit sequence order (Admin only)
 router.put(
   '/:id/sequence',
   jwtMiddleware.verifyToken,

@@ -1,10 +1,11 @@
-const { PrismaClient } = require("../../generated/prisma"); 
+const { PrismaClient } = require("../../generated/prisma");
 const googleTTS = require("google-tts-api");
 const path = require("path");
 const fs = require("fs");
 const axios = require("axios");
 const qr = require("qr-image");
 const { logUserAction, logAuditAction } = require("./auditLogsController");
+const { clearExhibitionsCache } = require("./exhibitionController");
 
 let prisma;
 
@@ -17,6 +18,34 @@ if (process.env.NODE_ENV === "production") {
   prisma = global.__prisma;
 }
 
+async function normalizeBadgeId(badgeIdRaw) {
+  if (badgeIdRaw === undefined) return undefined; // Representing "no change"
+  if (badgeIdRaw === null) return null;          // Representing "remove badge"
+  const s = String(badgeIdRaw).trim();
+  if (s === "" || s.toLowerCase() === "none") return null;
+  return BigInt(s);
+}
+
+async function validateAndDetachBadgeFromOthers(tx, badgeId, currentExhibitId = null) {
+  if (badgeId === null || badgeId === undefined) return;
+
+  // 1) badge must exist
+  const badge = await tx.badge.findUnique({
+    where: { badgeId },
+    select: { badgeId: true, name: true },
+  });
+  if (!badge) throw new Error("Badge not found");
+
+  // 2) detach from other exhibits
+  await tx.exhibit.updateMany({
+    where: {
+      badgeId: badgeId,
+      ...(currentExhibitId ? { exhibitId: { not: currentExhibitId } } : {}),
+    },
+    data: { badgeId: null },
+  });
+}
+
 // Get all exhibits
 exports.getExhibits = async (req, res) => {
   try {
@@ -27,26 +56,29 @@ exports.getExhibits = async (req, res) => {
         audio: {
           include: { language: true },
         },
+        exhibition: true, 
       },
       orderBy: {
-        title: 'asc'
-      }
+        title: "asc",
+      },
     });
     res.status(200).json(exhibits);
   } catch (err) {
     console.error(" Error in getExhibits:", err);
-    res.status(500).json({ message: "Error fetching exhibits", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Error fetching exhibits", error: err.message });
   }
 };
-
 
 // Get a specific exhibit by ID
 exports.getExhibitById = async (req, res) => {
   try {
-    const exhibit = await prisma.exhibit.findFirst({ // Use findFirst to add a where clause
+    const exhibit = await prisma.exhibit.findFirst({
+      // Use findFirst to add a where clause
       where: {
         exhibitId: BigInt(req.params.id),
-        statusId: 1, 
+        statusId: 1,
       },
       include: {
         images: true,
@@ -65,86 +97,153 @@ exports.getExhibitById = async (req, res) => {
     res.status(200).json(exhibit);
   } catch (err) {
     console.error("🔥 Error in getExhibitById:", err);
-    res.status(500).json({ message: "Error fetching exhibit", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Error fetching exhibit", error: err.message });
   }
 };
 
-
 exports.createExhibit = async (req, res) => {
   try {
-    const { title, description, additionalDescription, exhibitionId, ttsText, language } = req.body;
+    const {
+      title,
+      description,
+      additionalDescription,
+      exhibitionId,
+      ttsText,
+      language,
+      badgeId,
+      isArEnabled,
+      arExperienceUrl,
+    } = req.body;
     const files = req.files;
     const primaryImage = files?.primaryImage ? files.primaryImage[0] : null;
     const adminUserId = req.user?.userId;
 
     if (!title || !exhibitionId) {
-      return res.status(400).json({ error: "Title and Exhibition ID are required." });
+      return res
+        .status(400)
+        .json({ error: "Title and Exhibition ID are required." });
     }
 
-    // 1. Calculate the next sequence number (Max + 1 logic)
-    const lastExhibit = await prisma.exhibit.findFirst({
-      where: { 
-        exhibitionId: BigInt(exhibitionId),
-        statusId: 1 
-      },
-      orderBy: { sequence: 'desc' },
-      select: { sequence: true }
-    });
-    const nextSequence = lastExhibit ? (lastExhibit.sequence + 1) : 1;
+    if (isArEnabled && !arExperienceUrl) {
+      return res.status(400).json({
+        error: "AR experience URL is required when AR is enabled.",
+      });
+    }
 
-    // 2. Create the Exhibit using standard Prisma 'create'
-    const newExhibit = await prisma.exhibit.create({
-      data: {
-        title,
-        description: description || '',
-        additionalDescription: additionalDescription || '',
-        exhibitionId: BigInt(exhibitionId),
-        sequence: nextSequence,
-        statusId: 1, // Active
+    // Retry logic to handle race conditions with parallel test runs
+    let retries = 3;
+    let newExhibit;
+
+    while (retries > 0) {
+      try {
+        // Use a transaction to prevent race conditions with sequence calculation
+        newExhibit = await prisma.$transaction(async (tx) => {
+          // 1. Calculate the next sequence number within transaction
+          const lastExhibit = await tx.exhibit.findFirst({
+            where: { exhibitionId: BigInt(exhibitionId) },
+            orderBy: { sequence: "desc" },
+            select: { sequence: true },
+          });
+          const nextSequence = lastExhibit ? (lastExhibit.sequence + 1) : 1;
+
+          // Badge - normalize + ensure unique usage
+          const normalizedBadgeId = await normalizeBadgeId(badgeId);
+          if (normalizedBadgeId) {
+            await validateAndDetachBadgeFromOthers(tx, normalizedBadgeId, null);
+          }
+
+          // 2. Create the Exhibit within the same transaction
+          return await tx.exhibit.create({
+            data: {
+              title,
+              description: description || "",
+              additionalDescription: additionalDescription || "",
+              exhibitionId: BigInt(exhibitionId),
+              sequence: nextSequence,
+              statusId: 1, // Active
+              isArEnabled: isArEnabled === 'true' || isArEnabled === true,
+              arExperienceUrl: isArEnabled ? arExperienceUrl : null,
+
+              // Bind existing badge if provided
+              ...(normalizedBadgeId ? { badgeId: normalizedBadgeId } : {}),
+
         // Create the primary image record if a file exists
-        images: primaryImage ? {
-          create: {
-            fileUrl: `/images/${primaryImage.filename}`,
-            title: primaryImage.originalname,
-            isPrimary: true
-          }
-        } : undefined,
-        // Generate the initial QR Code record
-        qrCodes: {
-          create: {
-            qrUrl: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/exhibit/temp-id`, 
-          }
+              images: primaryImage
+          ? {
+                    create: {
+                      fileUrl: `/images/${primaryImage.filename}`,
+                      title: primaryImage.originalname,
+                      isPrimary: true,
+              },
+                  }
+                : undefined,
+
+              // Generate the initial QR Code record
+              qrCodes: {
+                create: {
+                  qrUrl: `${process.env.FRONTEND_URL || "http://localhost:5173"}/exhibit/temp-id`,
+                }
+              }
+            }
+          });
+        });
+
+        break; // Success, exit retry loop
+      } catch (err) {
+        if (err.code === "P2002" && retries > 1) {
+          // Unique constraint violation, retry after a small delay
+          retries--;
+          await new Promise(resolve => setTimeout(resolve, 50 * (4 - retries))); // Exponential backoff
+          continue;
         }
+        throw err; // Re-throw if not a unique constraint error or no retries left
       }
-    });
+    }
 
     // 3. Update the QR Code URL with the actual ID
-    const finalQrUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/exhibit/${newExhibit.exhibitId}`;
+    const finalQrUrl = `${process.env.FRONTEND_URL || "http://localhost:5173"}/exhibit/${newExhibit.exhibitId}`;
     await prisma.qRCode.updateMany({
       where: { exhibitId: newExhibit.exhibitId },
-      data: { qrUrl: finalQrUrl }
+      data: { qrUrl: finalQrUrl },
     });
 
-    // 4. Handle TTS if provided 
+    // 4. Handle TTS if provided
     if (ttsText && language) {
-      await internalAudioProcessor(newExhibit.exhibitId, ttsText, language, adminUserId, req);
+      await internalAudioProcessor(
+        newExhibit.exhibitId,
+        ttsText,
+        language,
+        adminUserId,
+        req,
+      );
     }
 
     // 5. Audit Log
-    await logAuditAction(adminUserId, null, "exhibit", "create", 
-      { exhibitId: newExhibit.exhibitId.toString(), title }, 
+    await logAuditAction(adminUserId, null, "exhibit", "create",
+      {
+        exhibitId: newExhibit.exhibitId.toString(),
+        title,
+        badgeId: newExhibit.badgeId ? newExhibit.badgeId.toString() : null
+      },
       { ip_address: req.ip }
     );
 
-    res.status(201).json({ 
-      message: "Exhibit created successfully", 
-      exhibitId: newExhibit.exhibitId.toString(),
-      sequence: nextSequence 
-    });
+    // 6. Clear exhibitions cache
+    clearExhibitionsCache();
 
+    res.status(201).json({
+      message: "Exhibit created successfully",
+      exhibitId: newExhibit.exhibitId.toString(),
+      sequence: newExhibit.sequence,
+      badgeId: newExhibit.badgeId ? newExhibit.badgeId.toString() : null
+    });
   } catch (err) {
     console.error("Error in createExhibit:", err);
-    res.status(500).json({ error: "Failed to create exhibit", details: err.message });
+    res
+      .status(500)
+      .json({ error: "Failed to create exhibit", details: err.message });
   }
 };
 
@@ -152,10 +251,17 @@ exports.createExhibit = async (req, res) => {
 exports.updateExhibit = async (req, res) => {
   try {
     const exhibitId = BigInt(req.params.id);
-    const { title, description, additionalDescription } = req.body;
+    const {
+      title,
+      description,
+      additionalDescription,
+      badgeId,
+      isArEnabled,
+      arExperienceUrl,
+    } = req.body;
     const adminUserId = req.user?.userId;
 
-    // STEP 1: Fetch the original record for the audit log. 
+    // STEP 1: Fetch the original record for the audit log.
     const originalExhibit = await prisma.exhibit.findUnique({
       where: { exhibitId },
     });
@@ -164,18 +270,114 @@ exports.updateExhibit = async (req, res) => {
       return res.status(404).json({ error: "Exhibit not found" });
     }
 
-    // STEP 2: Update the exhibit using Prisma directly since we're adding additionalDescription
-    const updatedExhibit = await prisma.exhibit.update({
-      where: { exhibitId },
-      data: { 
-        title,
-        description,
-        additionalDescription: additionalDescription || null,
-        updatedAt: new Date()
-      }
-    });
+    // STEP 1.5: Validate AR fields (only if AR content is enabled)
+    if (
+      isArEnabled === true &&
+      !arExperienceUrl &&
+      !originalExhibit.arExperienceUrl
+    ) {
+      return res.status(400).json({
+        error: "AR experience URL is required when enabling AR.",
+      });
+    }
 
-    // STEP 3: Create the audit log.
+    // STEP 2: Build update payload dynamically
+    const updateData = {
+      updatedAt: new Date(),
+    };
+
+    if (title !== undefined) updateData.title = title;
+    if (description !== undefined) updateData.description = description;
+    if (additionalDescription !== undefined) {
+      updateData.additionalDescription = additionalDescription || null;
+    }
+
+    // AR updates
+    if (isArEnabled !== undefined) {
+      updateData.isArEnabled = Boolean(isArEnabled);
+
+      // If AR is disabled, null out the URL
+      if (isArEnabled === false) {
+        updateData.arExperienceUrl = null;
+      }
+    }
+
+    if (arExperienceUrl !== undefined) {
+      updateData.arExperienceUrl = arExperienceUrl;
+    }
+
+    // STEP 3: Update exhibit
+const updatedExhibit = await prisma.$transaction(async (tx) => {
+  // Handle badge binding/unbinding
+  if (badgeId !== undefined) {
+    const normalizedBadgeId = await normalizeBadgeId(badgeId);
+
+    if (normalizedBadgeId !== undefined && normalizedBadgeId !== null) {
+      await validateAndDetachBadgeFromOthers(tx, normalizedBadgeId, exhibitId);
+    }
+
+    // Only set badgeId if it was provided in body
+    updateData.badgeId = normalizedBadgeId;
+  }
+  return await tx.exhibit.update({
+    where: { exhibitId },
+    data: updateData,
+  });
+});
+
+    // STEP 4: Create the audit log.
+    const changes = {};
+
+    if (title !== undefined && title !== originalExhibit.title) {
+      changes.title = { from: originalExhibit.title, to: updatedExhibit.title };
+    }
+
+    if (
+      description !== undefined &&
+      description !== originalExhibit.description
+    ) {
+      changes.description = {
+        from: originalExhibit.description,
+        to: updatedExhibit.description,
+      };
+    }
+
+    if (
+      additionalDescription !== undefined &&
+      additionalDescription !== originalExhibit.additionalDescription
+    ) {
+      changes.additionalDescription = {
+        from: originalExhibit.additionalDescription,
+        to: updatedExhibit.additionalDescription,
+      };
+    }
+
+    if (
+      isArEnabled !== undefined &&
+      isArEnabled !== originalExhibit.isArEnabled
+    ) {
+      changes.isArEnabled = {
+        from: originalExhibit.isArEnabled,
+        to: updatedExhibit.isArEnabled,
+      };
+    }
+
+    if (
+      arExperienceUrl !== undefined &&
+      arExperienceUrl !== originalExhibit.arExperienceUrl
+    ) {
+      changes.arExperienceUrl = {
+        from: originalExhibit.arExperienceUrl,
+        to: updatedExhibit.arExperienceUrl,
+      };
+    }
+
+    if (badgeId !== undefined && updatedExhibit.badgeId !== originalExhibit.badgeId) {
+  changes.badgeId = {
+    from: originalExhibit.badgeId,
+    to: updatedExhibit.badgeId,
+  };
+}
     await logAuditAction(
       adminUserId,
       null,
@@ -183,30 +385,32 @@ exports.updateExhibit = async (req, res) => {
       "update",
       {
         exhibitId: exhibitId.toString(),
-        changes: {
-          title: { from: originalExhibit.title, to: updatedExhibit.title },
-          description: { from: originalExhibit.description, to: updatedExhibit.description },
-          additionalDescription: { from: originalExhibit.additionalDescription, to: updatedExhibit.additionalDescription },
-        },
+        changes,
       },
       {
         ip_address: req.ip,
         user_agent: req.get("User-Agent"),
-      }
+      },
     );
+
+    // Clear exhibitions cache
+    clearExhibitionsCache();
 
     res.status(200).json({
         exhibitId: updatedExhibit.exhibitId,
         title: updatedExhibit.title,
         description: updatedExhibit.description,
         additionalDescription: updatedExhibit.additionalDescription,
+        badgeId: updatedExhibit.badgeId ? updatedExhibit.badgeId.toString() : null,
+        isArEnabled: updatedExhibit.isArEnabled,
+        arExperienceUrl: updatedExhibit.arExperienceUrl,
+
         createdAt: updatedExhibit.createdAt,
         updatedAt: updatedExhibit.updatedAt
     });
-
   } catch (err) {
     console.error("Error in updateExhibit:", err);
-    res.status(500).json({ error: "Failed to update exhibit" });
+    res.status(500).json({ error: "Failed to update exhibit", details: err.message });
   }
 };
 
@@ -217,7 +421,9 @@ exports.deleteExhibit = async (req, res) => {
     const adminUserId = req.user?.userId;
 
     // Fetch details for logging BEFORE deactivating
-    const exhibitToDeactivate = await prisma.exhibit.findUnique({ where: { exhibitId } });
+    const exhibitToDeactivate = await prisma.exhibit.findUnique({
+      where: { exhibitId },
+    });
     if (!exhibitToDeactivate) {
       return res.status(404).json({ error: "Exhibit not found." });
     }
@@ -226,10 +432,19 @@ exports.deleteExhibit = async (req, res) => {
     await prisma.$executeRaw`CALL sp_deactivate_exhibit(${exhibitId});`;
 
     await logAuditAction(
-      adminUserId, null, "exhibit", "deactivate",
-      { exhibitId: exhibitToDeactivate.exhibitId.toString(), title: exhibitToDeactivate.title },
-      { ip_address: req.ip, user_agent: req.get("User-Agent") }
+      adminUserId,
+      null,
+      "exhibit",
+      "deactivate",
+      {
+        exhibitId: exhibitToDeactivate.exhibitId.toString(),
+        title: exhibitToDeactivate.title,
+      },
+      { ip_address: req.ip, user_agent: req.get("User-Agent") },
     );
+
+    // Clear exhibitions cache
+    clearExhibitionsCache();
 
     res.status(200).json({ message: "Exhibit was marked as inactive." });
   } catch (err) {
@@ -237,8 +452,6 @@ exports.deleteExhibit = async (req, res) => {
     res.status(500).json({ error: "Failed to deactivate exhibit" });
   }
 };
-
-
 
 // Upload one or more images for an exhibit
 exports.uploadExhibitImage = async (req, res) => {
@@ -254,35 +467,39 @@ exports.uploadExhibitImage = async (req, res) => {
     // Check if this exhibit exists
     const exhibit = await prisma.exhibit.findUnique({
       where: { exhibitId },
-      include: { images: true }
+      include: { images: true },
     });
 
     if (!exhibit) {
       return res.status(404).json({ error: "Exhibit not found." });
     }
 
-    const isPrimaryUpload = isPrimary === 'true' || isPrimary === true;
-    
+    const isPrimaryUpload = isPrimary === "true" || isPrimary === true;
+
     // If uploading primary image, check if one already exists
     if (isPrimaryUpload) {
-      const existingPrimaryImage = exhibit.images.find(img => img.isPrimary);
+      const existingPrimaryImage = exhibit.images.find((img) => img.isPrimary);
       if (existingPrimaryImage) {
         // Remove the existing primary image
         await prisma.image.delete({
-          where: { imageId: existingPrimaryImage.imageId }
+          where: { imageId: existingPrimaryImage.imageId },
         });
       }
-      
+
       // Only allow one primary image at a time
       if (req.files.length > 1) {
-        return res.status(400).json({ error: "Only one primary image can be uploaded at a time." });
+        return res
+          .status(400)
+          .json({ error: "Only one primary image can be uploaded at a time." });
       }
     } else {
       // For additional images, check the 4-image limit
-      const existingAdditionalImages = exhibit.images.filter(img => !img.isPrimary);
+      const existingAdditionalImages = exhibit.images.filter(
+        (img) => !img.isPrimary,
+      );
       if (existingAdditionalImages.length + req.files.length > 4) {
-        return res.status(400).json({ 
-          error: `Cannot upload ${req.files.length} additional images. Maximum of 4 additional images allowed. You currently have ${existingAdditionalImages.length} additional images.`
+        return res.status(400).json({
+          error: `Cannot upload ${req.files.length} additional images. Maximum of 4 additional images allowed. You currently have ${existingAdditionalImages.length} additional images.`,
         });
       }
     }
@@ -299,7 +516,7 @@ exports.uploadExhibitImage = async (req, res) => {
         },
       });
     });
-    
+
     const newImages = await prisma.$transaction(imageCreations);
 
     // Log the audit action for image upload
@@ -323,7 +540,7 @@ exports.uploadExhibitImage = async (req, res) => {
         ip_address: req.ip,
         user_agent: req.get("User-Agent"),
         fileCount: newImages.length,
-      }
+      },
     );
 
     res
@@ -374,11 +591,9 @@ exports.generateExhibitTTS = async (req, res) => {
     });
 
     if (!langRecord) {
-      return res
-        .status(400)
-        .json({
-          error: `Language '${cleanedLanguageName}' not found in the database.`,
-        });
+      return res.status(400).json({
+        error: `Language '${cleanedLanguageName}' not found in the database.`,
+      });
     }
 
     // Map language titles to proper codes for TTS and transcription
@@ -442,7 +657,7 @@ exports.generateExhibitTTS = async (req, res) => {
         console.log(
           `Processing chunk ${i + 1}/${textChunks.length} (${
             chunk.length
-          } chars)`
+          } chars)`,
         );
 
         try {
@@ -451,65 +666,72 @@ exports.generateExhibitTTS = async (req, res) => {
           const maxRetries = 3;
           let success = false;
           let audioChunk;
-          
+
           while (retryCount < maxRetries && !success) {
             try {
               // Add delay between retries to avoid rate limiting
               if (retryCount > 0) {
                 const delay = Math.min(1000 * Math.pow(2, retryCount), 5000); // Exponential backoff
-                console.log(`Waiting ${delay}ms before retry ${retryCount} for chunk ${i + 1}`);
-                await new Promise(resolve => setTimeout(resolve, delay));
+                console.log(
+                  `Waiting ${delay}ms before retry ${retryCount} for chunk ${i + 1}`,
+                );
+                await new Promise((resolve) => setTimeout(resolve, delay));
               }
-              
+
               const ttsUrl = googleTTS.getAudioUrl(chunk, {
                 lang: langCode,
                 slow: false,
-                host: 'https://translate.google.com',
+                host: "https://translate.google.com",
               });
-              
+
               const response = await fetch(ttsUrl, {
                 headers: {
-                  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                  'Accept': 'audio/mpeg, audio/*',
-                  'Accept-Language': 'en-US,en;q=0.9',
-                  'Referer': 'https://translate.google.com/',
-                  'Accept-Encoding': 'gzip, deflate, br'
+                  "User-Agent":
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                  Accept: "audio/mpeg, audio/*",
+                  "Accept-Language": "en-US,en;q=0.9",
+                  Referer: "https://translate.google.com/",
+                  "Accept-Encoding": "gzip, deflate, br",
                 },
-                timeout: 15000
+                timeout: 15000,
               });
-              
+
               if (!response.ok) {
-                throw new Error(`TTS chunk ${i + 1} failed: ${response.status} ${response.statusText}`);
+                throw new Error(
+                  `TTS chunk ${i + 1} failed: ${response.status} ${response.statusText}`,
+                );
               }
-              
+
               audioChunk = Buffer.from(await response.arrayBuffer());
               success = true;
-              
             } catch (retryError) {
               retryCount++;
-              console.error(`Chunk ${i + 1}, attempt ${retryCount} failed:`, retryError.message);
-              
+              console.error(
+                `Chunk ${i + 1}, attempt ${retryCount} failed:`,
+                retryError.message,
+              );
+
               if (retryCount >= maxRetries) {
                 throw retryError; // Re-throw to be caught by outer catch
               }
             }
           }
-          
+
           audioChunks.push(audioChunk);
         } catch (chunkError) {
           console.error(`Error processing chunk ${i + 1}:`, chunkError.message);
-          
+
           // Create a silent audio chunk as fallback
           const silentChunk = Buffer.alloc(1024); // 1KB of silence
           audioChunks.push(silentChunk);
-          
+
           console.log(`Added silent chunk for chunk ${i + 1} due to TTS error`);
         }
       }
 
       audioBuffer = Buffer.concat(audioChunks);
       console.log(
-        `Combined ${audioChunks.length} chunks into single audio file`
+        `Combined ${audioChunks.length} chunks into single audio file`,
       );
     } else {
       console.log("Using single TTS request for short text");
@@ -518,54 +740,61 @@ exports.generateExhibitTTS = async (req, res) => {
         let retryCount = 0;
         const maxRetries = 3;
         let success = false;
-        
+
         while (retryCount < maxRetries && !success) {
           try {
             if (retryCount > 0) {
               const delay = Math.min(1000 * Math.pow(2, retryCount), 5000);
-              console.log(`Waiting ${delay}ms before retry ${retryCount} for single text TTS`);
-              await new Promise(resolve => setTimeout(resolve, delay));
+              console.log(
+                `Waiting ${delay}ms before retry ${retryCount} for single text TTS`,
+              );
+              await new Promise((resolve) => setTimeout(resolve, delay));
             }
-            
+
             const ttsUrl = googleTTS.getAudioUrl(text, {
               lang: langCode,
               slow: false,
-              host: 'https://translate.google.com',
+              host: "https://translate.google.com",
             });
-            
+
             const response = await fetch(ttsUrl, {
               headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                'Accept': 'audio/mpeg, audio/*',
-                'Accept-Language': 'en-US,en;q=0.9',
-                'Referer': 'https://translate.google.com/',
-                'Accept-Encoding': 'gzip, deflate, br'
+                "User-Agent":
+                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                Accept: "audio/mpeg, audio/*",
+                "Accept-Language": "en-US,en;q=0.9",
+                Referer: "https://translate.google.com/",
+                "Accept-Encoding": "gzip, deflate, br",
               },
-              timeout: 15000
+              timeout: 15000,
             });
-            
+
             if (!response.ok) {
-              throw new Error(`Google TTS failed: ${response.status} ${response.statusText}`);
+              throw new Error(
+                `Google TTS failed: ${response.status} ${response.statusText}`,
+              );
             }
-            
+
             audioBuffer = Buffer.from(await response.arrayBuffer());
             success = true;
-            
           } catch (retryError) {
             retryCount++;
-            console.error(`Single TTS attempt ${retryCount} failed:`, retryError.message);
-            
+            console.error(
+              `Single TTS attempt ${retryCount} failed:`,
+              retryError.message,
+            );
+
             if (retryCount >= maxRetries) {
               throw retryError;
             }
           }
         }
       } catch (ttsError) {
-        console.error('TTS Error:', ttsError.message);
-        
+        console.error("TTS Error:", ttsError.message);
+
         // Create a minimal audio file as fallback
         audioBuffer = Buffer.alloc(2048); // 2KB of silence
-        console.log('Using silent audio as fallback due to TTS error');
+        console.log("Using silent audio as fallback due to TTS error");
       }
     }
 
@@ -620,32 +849,37 @@ exports.generateExhibitTTS = async (req, res) => {
         user_agent: req.get("User-Agent"),
         tts_service: "google-tts",
         transcript_service: "deepgram",
-      }
+      },
     );
 
-    res
-      .status(201)
-      .json({
-        message: "TTS audio and transcript created successfully",
-        audio: newAudio,
-      });
+    res.status(201).json({
+      message: "TTS audio and transcript created successfully",
+      audio: newAudio,
+    });
   } catch (err) {
     console.error(
       "Error in generateExhibitTTS:",
-      err.response ? err.response.data : err.message || err
+      err.response ? err.response.data : err.message || err,
     );
-    
+
     // Provide more specific error messages
     let errorMessage = "Failed to generate TTS audio and transcript.";
-    
-    if (err.message && err.message.includes('Invalid credentials')) {
-      errorMessage = "TTS service authentication failed. Please try again later or contact support.";
-    } else if (err.message && err.message.includes('TTS')) {
-      errorMessage = "Text-to-speech service temporarily unavailable. Please try again later.";
-    } else if (err.response && err.response.data && err.response.data.err_code === 'INVALID_AUTH') {
-      errorMessage = "TTS service authentication error. The service may be temporarily unavailable.";
+
+    if (err.message && err.message.includes("Invalid credentials")) {
+      errorMessage =
+        "TTS service authentication failed. Please try again later or contact support.";
+    } else if (err.message && err.message.includes("TTS")) {
+      errorMessage =
+        "Text-to-speech service temporarily unavailable. Please try again later.";
+    } else if (
+      err.response &&
+      err.response.data &&
+      err.response.data.err_code === "INVALID_AUTH"
+    ) {
+      errorMessage =
+        "TTS service authentication error. The service may be temporarily unavailable.";
     }
-    
+
     res.status(500).json({ error: errorMessage, details: err.message });
   }
 };
@@ -672,14 +906,14 @@ exports.getExhibitQRCode = async (req, res) => {
     }
 
     // Generate the QR code image from the qrUrl using qr-image with high quality settings
-    const qrCodeImage = qr.imageSync(qrCode.qrUrl, { 
+    const qrCodeImage = qr.imageSync(qrCode.qrUrl, {
       type: "png",
-      size: 10,        // Larger size for better quality
-      margin: 2,       // Adequate margin
-      ec_level: 'H'    // High error correction for better scanning reliability
+      size: 10, // Larger size for better quality
+      margin: 2, // Adequate margin
+      ec_level: "H", // High error correction for better scanning reliability
     });
     const qrCodeBase64 = `data:image/png;base64,${qrCodeImage.toString(
-      "base64"
+      "base64",
     )}`;
 
     console.log(`✅ QR code generated for exhibit ID: ${req.params.id}`);
@@ -697,13 +931,14 @@ exports.getExhibitQRCode = async (req, res) => {
   }
 };
 
-
 exports.reactivateExhibit = async (req, res) => {
   try {
     const exhibitId = BigInt(req.params.id);
     const adminUserId = req.user?.userId;
-    
-    const exhibitToReactivate = await prisma.exhibit.findUnique({ where: { exhibitId } });
+
+    const exhibitToReactivate = await prisma.exhibit.findUnique({
+      where: { exhibitId },
+    });
     if (!exhibitToReactivate) {
       return res.status(404).json({ error: "Exhibit not found." });
     }
@@ -712,9 +947,15 @@ exports.reactivateExhibit = async (req, res) => {
     await prisma.$executeRaw`CALL sp_reactivate_exhibit(${exhibitId});`;
 
     await logAuditAction(
-      adminUserId, null, "exhibit", "reactivate",
-      { exhibitId: exhibitToReactivate.exhibitId.toString(), title: exhibitToReactivate.title },
-      { ip_address: req.ip, user_agent: req.get("User-Agent") }
+      adminUserId,
+      null,
+      "exhibit",
+      "reactivate",
+      {
+        exhibitId: exhibitToReactivate.exhibitId.toString(),
+        title: exhibitToReactivate.title,
+      },
+      { ip_address: req.ip, user_agent: req.get("User-Agent") },
     );
 
     res.status(200).json({ message: "Exhibit was reactivated." });

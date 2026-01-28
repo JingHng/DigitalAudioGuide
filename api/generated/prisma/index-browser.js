@@ -140,6 +140,8 @@ exports.Prisma.ExhibitScalarFieldEnum = {
   description: 'description',
   additionalDescription: 'additionalDescription',
   sequence: 'sequence',
+  isArEnabled: 'isArEnabled',
+  arExperienceUrl: 'arExperienceUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -172,6 +174,7 @@ exports.Prisma.FeedbackScalarFieldEnum = {
   exhibitId: 'exhibitId',
   rating: 'rating',
   description: 'description',
+  isHidden: 'isHidden',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -253,11 +256,15 @@ exports.Prisma.UserScalarFieldEnum = {
   username: 'username',
   email: 'email',
   passwordHash: 'passwordHash',
+  profilePictureUrl: 'profilePictureUrl',
   emailVerified: 'emailVerified',
   statusId: 'statusId',
   lastLoginAt: 'lastLoginAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  gender: 'gender',
+  dateOfBirth: 'dateOfBirth',
+  languageId: 'languageId'
 };
 
 exports.Prisma.UserRoleScalarFieldEnum = {
@@ -312,8 +319,8 @@ exports.Prisma.UserBadgeScalarFieldEnum = {
 exports.Prisma.SettingsScalarFieldEnum = {
   key: 'key',
   value: 'value',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SenderTypeScalarFieldEnum = {
@@ -393,7 +400,7 @@ exports.Prisma.ModelName = {
   EmailVerificationToken: 'EmailVerificationToken',
   Badge: 'Badge',
   UserBadge: 'UserBadge',
-  settings: 'settings',
+  Settings: 'Settings',
   SenderType: 'SenderType',
   Conversation: 'Conversation',
   Message: 'Message'

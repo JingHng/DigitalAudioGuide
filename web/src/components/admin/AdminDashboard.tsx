@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import AdminLayout from "./AdminLayout";
 import apiClient from "../../utils/apiClient";
 import { useAuth } from "../../contexts/AuthContext";
 import {
   LineChart,
   Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -18,13 +19,11 @@ import {
 } from "recharts";
 import {
   Users,
-  TrendingUp,
   RefreshCw,
   UserPlus,
   Activity,
   Headphones,
   Eye,
-  Music,
 } from "lucide-react";
 import "../../css/AdminDashboard.css";
 
@@ -72,6 +71,11 @@ const COLORS = [
 const AdminDashboard = () => {
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+
+  const breadcrumbs = [
+    { label: 'Admin', path: '/admin/dashboard' },
+    { label: 'Dashboard' }
+  ];
 
   // Registration trend filtering options
   const [filterType, setFilterType] = useState<"period" | "dateRange">(
@@ -196,120 +200,98 @@ const AdminDashboard = () => {
         queryParams = `?dateFrom=${fromDate}&dateTo=${toDate}`;
       }
 
-      console.log("Making API call to:", `/users/stats${queryParams}`); // Debug log
+      console.log("Making API calls to:", `/users/stats${queryParams}`, "/exhibitions/stats", "/audio-logs/analytics", "/audit-logs/stats"); // Debug log
 
-      // Fetch user statistics with appropriate parameters
-      const userResponse = await apiClient.get(`/users/stats${queryParams}`);
-      console.log("User stats response:", userResponse.data); // Debug log
+      // PARALLEL FETCH: Fetch all dashboard stats simultaneously for much faster loading
+      const [userResponse, exhibitResponse, audioResponse, auditResponse] = await Promise.allSettled([
+        apiClient.get(`/users/stats${queryParams}`),
+        apiClient.get("/exhibitions/stats"),
+        apiClient.get("/audio-logs/analytics"),
+        apiClient.get("/audit-logs/stats")
+      ]);
 
-      if (userResponse.data) {
-        setUserStats(userResponse.data);
+      // Process user stats
+      if (userResponse.status === "fulfilled" && userResponse.value.data) {
+        console.log("User stats response:", userResponse.value.data); // Debug log
+        setUserStats(userResponse.value.data);
       }
 
-      // Fetch exhibit statistics
-      const exhibitResponse = await apiClient.get("/exhibitions");
-      if (exhibitResponse.data) {
+      // Process exhibit statistics
+      if (exhibitResponse.status === "fulfilled" && exhibitResponse.value.data) {
         setExhibitStats({
-          totalExhibits: exhibitResponse.data.length,
-          popularExhibits: exhibitResponse.data
+          totalExhibits: exhibitResponse.value.data.totalExhibitions,
+          popularExhibits: exhibitResponse.value.data.recentExhibitions
             .slice(0, 5)
             .map((exhibit: any) => ({
-              id: exhibit.exhibitId,
-              name: exhibit.title,
+              id: exhibit.id,
+              name: exhibit.name,
               visits: Math.floor(Math.random() * 1000) + 100, // Mock data for now
             })),
-          exhibitViews: exhibitResponse.data
+          exhibitViews: exhibitResponse.value.data.recentExhibitions
             .slice(0, 6)
             .map((exhibit: any) => ({
-              name: exhibit.title,
+              name: exhibit.name,
               views: Math.floor(Math.random() * 500) + 50,
             })),
         });
       }
 
-      // Fetch audio analytics
-      try {
-        const audioResponse = await apiClient.get("/audio-logs/analytics");
-        if (audioResponse.data) {
-          setAudioStats(audioResponse.data);
-        }
-      } catch (audioError) {
-        console.log(
-          "Audio analytics not available, using mock data based on exhibits:",
-          audioError
-        );
-        // Generate mock audio stats based on available exhibits for better demo
+      // Process audio analytics
+      if (audioResponse.status === "fulfilled" && audioResponse.value.data) {
+        setAudioStats(audioResponse.value.data);
+      } else {
+        console.log("Audio analytics not available, using mock data");
+        // Generate mock audio stats
+        const mockExhibits = exhibitResponse.status === "fulfilled" && exhibitResponse.value.data
+          ? exhibitResponse.value.data.recentExhibitions.slice(0, 5)
+          : [];
+        
         const mockAudioStats = {
           totalAudioPlays: Math.floor(Math.random() * 2000) + 500,
           audioByLanguage: [
-            {
-              language: "English",
-              plays: Math.floor(Math.random() * 800) + 200,
-            },
-            {
-              language: "Japanese",
-              plays: Math.floor(Math.random() * 400) + 100,
-            },
-            {
-              language: "Chinese",
-              plays: Math.floor(Math.random() * 300) + 50,
-            },
+            { language: "English", plays: Math.floor(Math.random() * 800) + 200 },
+            { language: "Japanese", plays: Math.floor(Math.random() * 400) + 100 },
+            { language: "Chinese", plays: Math.floor(Math.random() * 300) + 50 },
           ],
-          averageListenTime: Math.floor(Math.random() * 300) + 120, // 2-7 minutes
-          topAudioContent: exhibitStats.popularExhibits.map((exhibit) => ({
+          averageListenTime: Math.floor(Math.random() * 300) + 120,
+          topAudioContent: mockExhibits.map((exhibit: any) => ({
             exhibit: exhibit.name || `Exhibit ${exhibit.id}`,
             plays: Math.floor(Math.random() * 200) + 50,
-            avgDuration: Math.floor(Math.random() * 240) + 60, // 1-5 minutes
+            avgDuration: Math.floor(Math.random() * 240) + 60,
           })),
         };
         setAudioStats(mockAudioStats);
       }
 
-      // Fetch audit log data with better error handling and response mapping
-      try {
-        const auditResponse = await apiClient.get("/audit-logs/stats");
-        console.log("Audit response:", auditResponse.data); // Debug log
-
-        if (auditResponse.data) {
-          setAuditStats({
-            totalActions: auditResponse.data.totalLogs || 0,
-            recentActions: (auditResponse.data.recentLogs || [])
-              .slice(0, 5)
-              .map((log: any) => ({
-                action: log.action || "unknown",
-                resource: log.resource || "system",
-                adminUser:
-                  log.adminUser?.username || log.adminUser?.email || "System",
-                targetUser:
-                  log.targetUser?.username ||
-                  log.targetUser?.email ||
-                  undefined,
-                timestamp: log.timestamp || new Date().toISOString(),
-              })),
-          });
-        }
-      } catch (auditError: any) {
-        console.error("Audit stats error details:", auditError);
-
-        // Try to get recent audit logs from regular endpoint as fallback
+      // Process audit log data
+      if (auditResponse.status === "fulfilled" && auditResponse.value.data) {
+        console.log("Audit response:", auditResponse.value.data); // Debug log
+        setAuditStats({
+          totalActions: auditResponse.value.data.totalLogs || 0,
+          recentActions: (auditResponse.value.data.recentLogs || [])
+            .slice(0, 5)
+            .map((log: any) => ({
+              action: log.action || "unknown",
+              resource: log.resource || "system",
+              adminUser: log.adminUser?.username || log.adminUser?.email || "System",
+              targetUser: log.targetUser?.username || log.targetUser?.email || undefined,
+              timestamp: log.timestamp || new Date().toISOString(),
+            })),
+        });
+      } else {
+        // Fallback to regular audit logs endpoint
         try {
           const fallbackResponse = await apiClient.get("/audit-logs?limit=5");
           if (fallbackResponse.data?.auditLogs) {
             setAuditStats({
-              totalActions:
-                fallbackResponse.data.pagination?.totalLogs ||
-                fallbackResponse.data.auditLogs.length,
+              totalActions: fallbackResponse.data.pagination?.totalLogs || fallbackResponse.data.auditLogs.length,
               recentActions: fallbackResponse.data.auditLogs
                 .slice(0, 5)
                 .map((log: any) => ({
                   action: log.action || "unknown",
                   resource: log.resource || "system",
-                  adminUser:
-                    log.adminUser?.username || log.adminUser?.email || "System",
-                  targetUser:
-                    log.targetUser?.username ||
-                    log.targetUser?.email ||
-                    undefined,
+                  adminUser: log.adminUser?.username || log.adminUser?.email || "System",
+                  targetUser: log.targetUser?.username || log.targetUser?.email || undefined,
                   timestamp: log.timestamp || new Date().toISOString(),
                 })),
             });
@@ -318,7 +300,6 @@ const AdminDashboard = () => {
           }
         } catch (fallbackError) {
           console.log("Using mock audit data due to API unavailability");
-          // Generate realistic mock audit data based on current time
           const now = Date.now();
           const mockAuditStats = {
             totalActions: Math.floor(Math.random() * 100) + 50,
@@ -327,26 +308,26 @@ const AdminDashboard = () => {
                 action: "generate_tts",
                 resource: "audio",
                 adminUser: user?.username || "admin@museum.com",
-                timestamp: new Date(now - 1000 * 60 * 5).toISOString(), // 5 min ago
+                timestamp: new Date(now - 1000 * 60 * 5).toISOString(),
               },
               {
                 action: "create",
                 resource: "audio",
                 adminUser: user?.username || "admin@museum.com",
-                timestamp: new Date(now - 1000 * 60 * 15).toISOString(), // 15 min ago
+                timestamp: new Date(now - 1000 * 60 * 15).toISOString(),
               },
               {
                 action: "update",
                 resource: "exhibit",
                 adminUser: user?.username || "curator@museum.com",
-                timestamp: new Date(now - 1000 * 60 * 45).toISOString(), // 45 min ago
+                timestamp: new Date(now - 1000 * 60 * 45).toISOString(),
               },
               {
                 action: "create",
                 resource: "user",
                 adminUser: user?.username || "admin@museum.com",
                 targetUser: "visitor@email.com",
-                timestamp: new Date(now - 1000 * 60 * 120).toISOString(), // 2 hours ago
+                timestamp: new Date(now - 1000 * 60 * 120).toISOString(),
               },
               {
                 action: "upload",
@@ -444,7 +425,7 @@ const AdminDashboard = () => {
   };
 
   return (
-    <AdminLayout currentPath="/admin">
+    <AdminLayout currentPath="/admin/dashboard" breadcrumbs={breadcrumbs}>
       <div className="admin-dashboard">
         <div className="dashboard-header">
           <h1>Dashboard</h1>
@@ -466,78 +447,70 @@ const AdminDashboard = () => {
         {/* KPI Cards */}
         <div className="kpi-cards">
           <div className="kpi-card">
-            <div className="kpi-icon visitors">
-              <Users size={24} />
+            <div className="kpi-icon-wrapper visitors-bg">
+              <div className="kpi-icon visitors">
+                <Users size={24} />
+              </div>
             </div>
             <div className="kpi-content">
               <h3>Total Users</h3>
               <div className="kpi-value">
                 <span className="value">{stats.totalUsers.total}</span>
-                <span
-                  className={`trend ${
-                    stats.totalUsers.isPositive ? "positive" : "negative"
-                  }`}
-                >
-                  {stats.totalUsers.trend}
-                </span>
               </div>
+              <span className="kpi-trend positive">
+                {stats.totalUsers.trend}
+              </span>
             </div>
           </div>
 
           <div className="kpi-card">
-            <div className="kpi-icon sales">
-              <UserPlus size={24} />
+            <div className="kpi-icon-wrapper success-bg">
+              <div className="kpi-icon sales">
+                <UserPlus size={24} />
+              </div>
             </div>
             <div className="kpi-content">
               <h3>Active Users</h3>
               <div className="kpi-value">
                 <span className="value">{stats.activeUsers.total}</span>
-                <span
-                  className={`trend ${
-                    stats.activeUsers.isPositive ? "positive" : "negative"
-                  }`}
-                >
-                  {stats.activeUsers.trend}
-                </span>
               </div>
+              <span className="kpi-trend positive">
+                {stats.activeUsers.trend}
+              </span>
             </div>
           </div>
 
           <div className="kpi-card">
-            <div className="kpi-icon exhibits">
-              <Eye size={24} />
+            <div className="kpi-icon-wrapper warning-bg">
+              <div className="kpi-icon exhibits">
+                <Eye size={24} />
+              </div>
             </div>
             <div className="kpi-content">
-              <h3>Total Exhibitions</h3>
+              <h3>Total Tours</h3>
               <div className="kpi-value">
                 <span className="value">{stats.totalExhibits.total}</span>
-                <span
-                  className={`trend ${
-                    stats.totalExhibits.isPositive ? "positive" : "negative"
-                  }`}
-                >
-                  {stats.totalExhibits.trend}
-                </span>
               </div>
+              <span className="kpi-trend info">
+                {stats.totalExhibits.trend}
+              </span>
             </div>
           </div>
 
           <div className="kpi-card">
-            <div className="kpi-icon events">
-              <Headphones size={24} />
+            <div className="kpi-icon-wrapper purple-bg">
+              <div className="kpi-icon events">
+                <Headphones size={24} />
+              </div>
             </div>
             <div className="kpi-content">
               <h3>Audio Plays</h3>
               <div className="kpi-value">
                 <span className="value">{stats.audioPlays.total}</span>
-                <span
-                  className={`trend ${
-                    stats.audioPlays.isPositive ? "positive" : "negative"
-                  }`}
-                >
-                  {stats.audioPlays.trend}
-                </span>
               </div>
+              <span className="kpi-trend positive">
+                {stats.audioPlays.trend}
+              </span>
             </div>
           </div>
         </div>
@@ -703,13 +676,14 @@ const AdminDashboard = () => {
                             value: item.plays,
                             duration: item.avgDuration,
                           }))}
-                        cx="38%"
+                        cx="50%"
                         cy="50%"
                         labelLine={false}
-                        outerRadius={80}
+                        outerRadius={85}
+                        innerRadius={45}
                         fill="#8884d8"
                         dataKey="value"
-                        label={({ name, value }) => `${name}: ${value}`}
+                        label={false}
                       >
                         {audioStats.topAudioContent
                           .slice(0, 6)
@@ -722,6 +696,12 @@ const AdminDashboard = () => {
                       </Pie>
                       <Tooltip
                         formatter={(value, name) => [`${value} plays`, name]}
+                      />
+                      <Legend
+                        layout="horizontal"
+                        align="center"
+                        verticalAlign="bottom"
+                        wrapperStyle={{ paddingTop: '20px' }}
                       />
                     </PieChart>
                   ) : (
@@ -823,26 +803,25 @@ const AdminDashboard = () => {
                   <h3>Audio Plays by Language</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={250}>
-                  <PieChart>
-                    <Pie
-                      data={audioStats.audioByLanguage}
-                      cx="38%"
-                      cy="50%"
-                      labelLine={false}
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="plays"
-                      label={({ language, plays }) => `${language}: ${plays}`}
-                    >
+                  <BarChart
+                    data={audioStats.audioByLanguage}
+                    layout="vertical"
+                    margin={{ top: 5, right: 30, left: 80, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis type="number" />
+                    <YAxis dataKey="language" type="category" />
+                    <Tooltip formatter={(value) => [`${value} plays`, "Plays"]} />
+                    <Legend />
+                    <Bar dataKey="plays" fill="#3b82f6" name="Audio Plays">
                       {audioStats.audioByLanguage.map((_, index) => (
                         <Cell
                           key={`cell-${index}`}
                           fill={COLORS[index % COLORS.length]}
                         />
                       ))}
-                    </Pie>
-                    <Tooltip formatter={(value) => [`${value}`, "Plays"]} />
-                  </PieChart>
+                    </Bar>
+                  </BarChart>
                 </ResponsiveContainer>
               </div>
 

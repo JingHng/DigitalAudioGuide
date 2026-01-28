@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const authController = require("../controllers/authController");
 const jwtMiddleware = require("../middleware/jwtMiddleware");
+const { uploadImage } = require('../middleware/fileUploads');
 
 // Login route
 router.post(
@@ -34,6 +35,8 @@ router.get("/profile", jwtMiddleware.verifyToken, authController.getProfile);
 router.put("/profile", jwtMiddleware.verifyToken, authController.updateProfile);
 router.put("/change-password", jwtMiddleware.verifyToken, authController.changePassword);
 router.put("/change-email", jwtMiddleware.verifyToken, authController.changeEmail);
+router.put("/change-username", jwtMiddleware.verifyToken, authController.changeUsername);
+router.post("/upload-profile-pic", jwtMiddleware.verifyToken, uploadImage.single('profilePicture'), authController.updateProfilePicture );
 
 module.exports = router;
 

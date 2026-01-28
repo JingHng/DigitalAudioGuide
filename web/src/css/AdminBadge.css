@@ -1,0 +1,233 @@
+/* ==========================================================================
+   AdminBadge.css
+   Specific styles for the Badge Management page.
+   ========================================================================== */
+
+/* --- Action Bar (Filter + Create Button) --- */
+.page-actions-header {
+  display: flex;
+  flex-wrap: wrap; /* Allow wrapping on small screens */
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.filter-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* --- Exhibition Group Section --- */
+.exhibition-group {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border: 1px solid #e5e7eb;
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+.exhibition-group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.exhibition-group-title {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.exhibition-group-title h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.exhibit-count {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* --- Exhibition Header Action Buttons --- */
+.exhibition-group-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.action-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.action-button.create { background-color: #f3f4f6; border-color: #d1d5db; color: #374151; }
+.action-button.create:hover { background-color: #e5e7eb; }
+
+.action-button.edit { background-color: #dbeafe; border-color: #bfdbfe; color: #1e40af; }
+.action-button.edit:hover { background-color: #bfdbfe; }
+
+.action-button.delete { background-color: #fee2e2; border-color: #fecaca; color: #b91c1c; }
+.action-button.delete:hover { background-color: #fecaca; }
+
+.action-button.reactivate { background-color: #d1fae5; border-color: #a7f3d0; color: #065f46; }
+.action-button.reactivate:hover { background-color: #a7f3d0; }
+
+.action-button.qr-code { background-color: #f3f4f6; border-color: #d1d5db; color: #374151; }
+.action-button.qr-code:hover { background-color: #e5e7eb; }
+
+/* --- Grid of Exhibit Cards --- */
+.exhibits-list {
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2.5rem;
+}
+
+.no-exhibits-message {
+  color: #6b7280;
+  padding: 1rem;
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+/* --- Individual Exhibit Card --- */
+.exhibit-card-manage {
+  background-color: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.exhibit-card-manage:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.07);
+}
+
+.exhibit-card-image {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  background-color: #f3f4f6;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.exhibit-card-body { padding: 1rem; flex-grow: 1; display: flex; flex-direction: column; }
+.exhibit-card-body h4 { font-size: 1.125rem; font-weight: 600; color: #111827; margin: 0 0 0.5rem 0; }
+.item-counts { font-size: 0.875rem; color: #6b7280; margin-bottom: 1rem; flex-grow: 1; }
+.exhibit-card-actions { padding-top: 1rem; border-top: 1px solid #e5e7eb; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+
+/* --- QR Modal --- */
+.qr-code-modal-content { display: flex; flex-direction: column; align-items: center; gap: 1rem; text-align: center; }
+.qr-image { max-width: 250px; border-radius: 8px; }
+.qr-url-link { color: #3b82f6; word-break: break-all; }
+.qr-download-btn { margin-top: 1rem; }
+
+/* ==========================================================================
+   DARK MODE STYLES
+   ========================================================================== */
+
+.dark-mode .page-actions-header { background-color: #1f2937; border-color: #374151; }
+.dark-mode .exhibition-group { background-color: #1f2937; border-color: #374151; }
+.dark-mode .exhibition-group-header { background-color: #111827; border-bottom-color: #374151; }
+.dark-mode .exhibition-group-title h3 { color: #f3f4f6; }
+.dark-mode .exhibit-count { color: #9ca3af; }
+
+.dark-mode .action-button.create, .dark-mode .action-button.qr-code { background-color: #374151; border-color: #4b5563; color: #d1d5db; }
+.dark-mode .action-button.create:hover, .dark-mode .action-button.qr-code:hover { background-color: #4b5563; }
+
+.dark-mode .action-button.edit { background-color: #1e40af; border-color: #3b82f6; color: #dbeafe; }
+.dark-mode .action-button.edit:hover { background-color: #1d4ed8; }
+
+.dark-mode .action-button.delete { background-color: #991b1b; border-color: #ef4444; color: #fee2e2; }
+.dark-mode .action-button.delete:hover { background-color: #b91c1c; }
+
+.dark-mode .action-button.reactivate { background-color: #065f46; border-color: #10b981; color: #d1fae5; }
+.dark-mode .action-button.reactivate:hover { background-color: #059669; }
+
+.dark-mode .no-exhibits-message { color: #9ca3af; }
+
+.dark-mode .exhibit-card-manage { background-color: #374151; border-color: #4b5563; }
+.dark-mode .exhibit-card-manage:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+.dark-mode .exhibit-card-image { background-color: #1f2937; border-bottom-color: #4b5563; }
+.dark-mode .exhibit-card-body h4 { color: #f9fafb; }
+.dark-mode .item-counts { color: #9ca3af; }
+.dark-mode .exhibit-card-actions { border-top-color: #4b5563; }
+
+/* ==========================================================================
+   RESPONSIVE STYLES
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .page-actions-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .filter-container {
+    width: 100%;
+  }
+
+  .page-actions-header .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .exhibition-group-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .exhibits-list {
+  padding: 1.5rem;
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: 2.5rem;
+}
+  .exhibit-card-body h4 {
+    font-size: 1rem;
+  }
+}
+
+.exhibit-card-manage {
+  background-color: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+@media (max-width: 768px) {
+  .exhibit-card-manage {
+    width: 100%;
+  }
+}

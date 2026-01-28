@@ -1,8 +1,6 @@
-const { PrismaClient } = require('../../generated/prisma');
+const prisma = require('../db/prisma');
 const bcrypt = require('bcryptjs');
 const { logUserAction, logAuditAction } = require('./auditLogsController');
-
-const prisma = new PrismaClient();
 
 // Get all users with pagination, filtering, and sorting
 const getAllUsers = async (req, res) => {
@@ -688,12 +686,23 @@ const getUserStats = async (req, res) => {
     });
 
     // Generate registration trend data for the specified date range
-    const registrationTrend = [];
-    const monthsInRange = [];
+    // OPTIMIZED: Fetch all users in range once, then group by month in memory
+    const usersInRange = await prisma.user.findMany({
+      where: {
+        createdAt: {
+          gte: startDate,
+          lte: endDate
+        }
+      },
+      select: {
+        createdAt: true
+      }
+    });
     
-    console.log('Generating trend data for range:', { startDate, endDate }); // Debug log
+    console.log('Generating trend data for range:', { startDate, endDate, totalUsers: usersInRange.length }); // Debug log
     
     // Generate all months between start and end date
+    const monthsInRange = [];
     const current = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
     const end = new Date(endDate.getFullYear(), endDate.getMonth(), 1);
     
@@ -704,8 +713,8 @@ const getUserStats = async (req, res) => {
     
     console.log('Months in range:', monthsInRange.length); // Debug log
     
-    // Get user counts for each month
-    for (const monthStart of monthsInRange) {
+    // Group users by month in memory (much faster than N queries)
+    const registrationTrend = monthsInRange.map(monthStart => {
       const monthEnd = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 0, 23, 59, 59, 999);
       
       // Only count within the actual date range
@@ -715,29 +724,22 @@ const getUserStats = async (req, res) => {
       const monthName = monthStart.toLocaleDateString('en-US', { month: 'short' });
       const yearName = monthStart.getFullYear();
       
-      console.log('Querying users for month:', { monthName, yearName, actualStart, actualEnd }); // Debug log
-      
-      const count = await prisma.user.count({
-        where: {
-          createdAt: {
-            gte: actualStart,
-            lte: actualEnd
-          }
-        }
-      });
-      
-      console.log('User count for', monthName, yearName, ':', count); // Debug log
+      // Count users in this month range
+      const count = usersInRange.filter(user => {
+        const userDate = new Date(user.createdAt);
+        return userDate >= actualStart && userDate <= actualEnd;
+      }).length;
       
       // Show year if range spans multiple years or is more than 12 months
       const rangeMonths = (endDate.getFullYear() - startDate.getFullYear()) * 12 + 
                          (endDate.getMonth() - startDate.getMonth()) + 1;
       const showYear = rangeMonths > 12 || startDate.getFullYear() !== endDate.getFullYear();
       
-      registrationTrend.push({
+      return {
         date: showYear ? `${monthName} ${yearName}` : monthName,
         count: count
-      });
-    }
+      };
+    });
     
     console.log('Final registration trend:', registrationTrend); // Debug log
 
