@@ -5,7 +5,6 @@ name: Deploy monorepo (api + web) to Azure App Service
 on:
   push:
     branches:
-      - development 
       - features/updatedDevelopmentBranchWorkflowFIle # Added branch for testing
     paths-ignore:
       - "modules/**"
@@ -13,18 +12,18 @@ on:
   workflow_dispatch: # Allows manual trigger
 
 env:
-  WEBAPP_NAME: "JingHngIndividualDeployment"
-  RESOURCE_GROUP: "TourFeatureCICD"
+  WEBAPP_NAME: "SDCGroup3"
+  RESOURCE_GROUP: "SingaporeDiscoveryCentre_Group3"
   NODE_VERSION: "20.x"
   API_DIR: "api"
   WEB_DIR: "web"
-  ARTIFACT_NAME: "node-app.zip"
+  ARTIFACT_NAME: "deployment.zip"
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
   JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
   JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
-  CLIENT_ID: ${{ secrets.AZUREAPPSERVICE_CLIENTID_7B46095111024D8791ED30AE27C67101 }}
-  TENANT_ID: ${{ secrets.AZUREAPPSERVICE_TENANTID_A8CBFC0120224CEFB0544B06D60F26E4 }}
-  SUBSCRIPTION_ID: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_A6899D18F6D14443B16B10568D09540C }}
+  CLIENT_ID: ${{ secrets.AZUREAPPSERVICE_CLIENTID_4330C975942B4DDCA15E0D4616BA43E8 }}
+  TENANT_ID: ${{ secrets.AZUREAPPSERVICE_TENANTID_96770E6A4A34489D8EEC451700443C4F }}
+  SUBSCRIPTION_ID: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_572DFA48CF314A3098295F4F77B7283C }}
 
 jobs:
   e2e:
