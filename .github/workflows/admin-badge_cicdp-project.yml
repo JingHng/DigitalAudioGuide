@@ -21,7 +21,7 @@ env:
   API_PORT: "5175"
   WEB_PORT: "5174"
 
-  # Auth secrets used by API in CI (set these in GitHub Secrets)
+  # Auth secrets used by API in CI
   JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
   JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
 
@@ -53,20 +53,16 @@ jobs:
         run: npm ci
 
       - name: Resolve DATABASE_URL for CI
-        id: dburl
         shell: bash
         run: |
-          # Prefer DATABASE_URL_RUYI if it exists; otherwise fallback to DATABASE_URL.
           DB_URL="${{ secrets.DATABASE_URL_RUYI }}"
           if [ -z "$DB_URL" ]; then
             DB_URL="${{ secrets.DATABASE_URL }}"
           fi
-
           if [ -z "$DB_URL" ]; then
             echo "No database URL found. Set DATABASE_URL_RUYI or DATABASE_URL in GitHub Secrets."
             exit 1
           fi
-
           echo "DATABASE_URL=$DB_URL" >> $GITHUB_ENV
 
       - name: Prisma generate + migrate + seed (CI database)
@@ -115,12 +111,9 @@ jobs:
       - name: Start Web server (background)
         working-directory: ${{ env.WEB_DIR }}
         env:
-          # If your Vite app reads this to proxy API, keep it
           VITE_API_TARGET: http://localhost:${{ env.API_PORT }}
         shell: bash
         run: |
-          # Prefer preview for CI (serves the built dist)
-          # Ensure it binds to localhost and the desired port
           npx vite preview --host 127.0.0.1 --port ${WEB_PORT} &
           echo "Waiting for Web..."
           for i in {1..30}; do
@@ -138,7 +131,6 @@ jobs:
         env:
           CI: true
           VITE_API_TARGET: http://localhost:${{ env.API_PORT }}
-          # If you later refactor tests to read these env vars, they are ready
           FRONTEND_URL: http://localhost:${{ env.WEB_PORT }}
           API_URL: http://localhost:${{ env.API_PORT }}
         run: npm run e2e
@@ -167,6 +159,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
 
+      # ---- Frontend ----
       - name: Install web deps
         working-directory: ${{ env.WEB_DIR }}
         run: npm ci
@@ -175,6 +168,7 @@ jobs:
         working-directory: ${{ env.WEB_DIR }}
         run: npm run build
 
+      # ---- Backend ----
       - name: Install api deps
         working-directory: ${{ env.API_DIR }}
         run: npm ci
@@ -193,13 +187,32 @@ jobs:
           rm -rf "${API_DIR}/public"
           mkdir -p "${API_DIR}/public"
           cp -R "${WEB_DIR}/dist/." "${API_DIR}/public/"
+          echo "✅ Copied web/dist into api/public"
+          ls -la "${API_DIR}/public" | head -20
 
-      - name: Package deployment artifact (deployment.zip)
+      - name: Package deployment artifact (deployment.zip) - safe mode
         shell: bash
         run: |
           cd "${API_DIR}"
+          echo "== API root files =="
+          ls -la
+          echo "== dist files =="
+          ls -la dist || true
+
           rm -f "../${ARTIFACT_NAME}"
-          zip -r "../${ARTIFACT_NAME}" dist node_modules package*.json prisma public
+
+          # If server.js exists, include it; otherwise package without it (won't fail)
+          if [ -f server.js ]; then
+            echo "✅ Found server.js, include it in zip"
+            zip -r "../${ARTIFACT_NAME}" dist node_modules package*.json prisma public server.js
+          else
+            echo "⚠️ server.js NOT found, zip without it (make sure Azure startup points to dist entry)"
+            zip -r "../${ARTIFACT_NAME}" dist node_modules package*.json prisma public
+          fi
+
+          cd ..
+          echo "== ZIP content check =="
+          unzip -l "${ARTIFACT_NAME}" | grep -E "(package.json|server.js|dist/)" | head -60 || true
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -226,7 +239,7 @@ jobs:
         shell: bash
         run: |
           ls -la
-          unzip -l "${ARTIFACT_NAME}"
+          unzip -l "${ARTIFACT_NAME}" | head -80
 
       - name: Azure login (OIDC)
         uses: azure/login@v2
