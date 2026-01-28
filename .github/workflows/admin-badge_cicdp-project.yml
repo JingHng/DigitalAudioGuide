@@ -17,16 +17,13 @@ env:
   WEB_DIR: "web"
   ARTIFACT_NAME: "deployment.zip"
 
-  # Ports used in CI for E2E
   API_PORT: "5175"
   WEB_PORT: "5174"
 
-  # Azure OIDC secrets
   CLIENT_ID: ${{ secrets.AZUREAPPSERVICE_CLIENTID_86EE8967028A49F5965DD3913522BD11 }}
   TENANT_ID: ${{ secrets.AZUREAPPSERVICE_TENANTID_C0C0E3446DAE4866BB375773F0F65A87 }}
   SUBSCRIPTION_ID: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_2FB091A84E45407EB53EC296B400A658 }}
 
-  # Auth secrets used by API in CI
   JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
   JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
 
@@ -59,16 +56,14 @@ jobs:
           if [ -z "$DB_URL" ]; then
             DB_URL="${{ secrets.DATABASE_URL }}"
           fi
-
           if [ -z "$DB_URL" ]; then
-            echo "❌ No database URL found. Set DATABASE_URL_RUYI (preferred) or DATABASE_URL in GitHub Secrets."
+            echo "❌ No database URL found. Set DATABASE_URL_RUYI (preferred) or DATABASE_URL."
             exit 1
           fi
-
           echo "DATABASE_URL=$DB_URL" >> $GITHUB_ENV
           echo "✅ DATABASE_URL resolved"
 
-      - name: Prisma reset + migrate + seed (CI clean DB)
+      - name: Prisma reset + migrate + seed (clean CI DB)
         working-directory: ${{ env.API_DIR }}
         env:
           DATABASE_URL: ${{ env.DATABASE_URL }}
@@ -77,14 +72,20 @@ jobs:
           npx prisma generate
           npx prisma migrate reset --force --skip-seed
           npx prisma migrate deploy
-          # Use the same style as your teammate (explicit seed file)
           node prisma/seed.js
 
-      - name: Build API (for E2E)
+      - name: Build API
         working-directory: ${{ env.API_DIR }}
         run: npm run build
 
-      - name: Build Web (for E2E)
+      - name: Verify API dist exists
+        working-directory: ${{ env.API_DIR }}
+        shell: bash
+        run: |
+          echo "📌 Checking dist exists:"
+          ls -la dist/ || (echo "❌ dist/ not found. Fix tsconfig outDir to dist." && exit 1)
+
+      - name: Build Web
         working-directory: ${{ env.WEB_DIR }}
         run: npm run build
 
@@ -92,7 +93,7 @@ jobs:
         working-directory: ${{ env.WEB_DIR }}
         run: npx playwright install --with-deps
 
-      - name: Start API server in background
+      - name: Start API server (background)
         working-directory: ${{ env.API_DIR }}
         env:
           DATABASE_URL: ${{ env.DATABASE_URL }}
@@ -102,7 +103,8 @@ jobs:
           NODE_ENV: test
         shell: bash
         run: |
-          npm start &
+          # Use compiled start in CI too (matches Azure)
+          node dist/server.js &
           echo "Waiting for API..."
           for i in {1..30}; do
             if curl -fsS "http://localhost:${API_PORT}/health" >/dev/null 2>&1; then
@@ -114,7 +116,7 @@ jobs:
           echo "❌ API did not become ready"
           exit 1
 
-      - name: Start Web server in background (vite preview)
+      - name: Start Web server (background)
         working-directory: ${{ env.WEB_DIR }}
         env:
           VITE_API_TARGET: http://localhost:${{ env.API_PORT }}
@@ -165,7 +167,6 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
 
-      # ---- Frontend ----
       - name: Install web deps
         working-directory: ${{ env.WEB_DIR }}
         run: npm ci
@@ -174,7 +175,6 @@ jobs:
         working-directory: ${{ env.WEB_DIR }}
         run: npm run build
 
-      # ---- Backend ----
       - name: Install api deps
         working-directory: ${{ env.API_DIR }}
         run: npm ci
@@ -183,76 +183,41 @@ jobs:
         working-directory: ${{ env.API_DIR }}
         run: npm run build
 
-      # Detect build output folder (dist/build/lib)
-      - name: Detect API build output folder
-        shell: bash
-        run: |
-          cd "${API_DIR}"
-
-          if [ -d "dist" ]; then
-            echo "OUT_DIR=dist" >> $GITHUB_ENV
-            echo "✅ Found dist/"
-          elif [ -d "build" ]; then
-            echo "OUT_DIR=build" >> $GITHUB_ENV
-            echo "✅ Found build/"
-          elif [ -d "lib" ]; then
-            echo "OUT_DIR=lib" >> $GITHUB_ENV
-            echo "✅ Found lib/"
-          else
-            echo "❌ No dist/build/lib folder found after npm run build"
-            echo "📌 Debug: api/ listing:"
-            ls -la
-            echo "📌 Debug: api/package.json scripts:"
-            cat package.json | head -160
-            exit 1
-          fi
-
-      # Keep only production deps
-      - name: Prepare production dependencies (API)
+      - name: Verify dist exists
         working-directory: ${{ env.API_DIR }}
         shell: bash
         run: |
-          npm prune --production
-          echo "✅ Pruned to production dependencies"
-          du -sh . || true
+          echo "📌 Checking dist exists:"
+          ls -la dist/ || (echo "❌ dist/ not found. Fix tsconfig outDir to dist." && exit 1)
 
-      # Bundle web into api/public
+      - name: Prune dev dependencies (API)
+        working-directory: ${{ env.API_DIR }}
+        run: npm prune --production
+
       - name: Copy web build into api/public
         shell: bash
         run: |
-          echo "📁 Copying web/dist -> api/public"
           rm -rf "${API_DIR}/public"
           mkdir -p "${API_DIR}/public"
           cp -R "${WEB_DIR}/dist/." "${API_DIR}/public/"
-          echo "✅ Copied web/dist into api/public"
-          ls -la "${API_DIR}/public" | head -40
-          test -f "${API_DIR}/public/index.html" && echo "✅ index.html exists" || (echo "❌ index.html missing" && exit 1)
+          test -f "${API_DIR}/public/index.html" || (echo "❌ index.html missing in api/public" && exit 1)
 
-      # Package deployment artifact
-      - name: Package deployment artifact (deployment.zip)
+      - name: Package deployment artifact
         shell: bash
         run: |
           cd "${API_DIR}"
           rm -f "../${ARTIFACT_NAME}"
-
-          echo "📦 Creating deployment package..."
-          echo "📌 OUT_DIR=${OUT_DIR}"
-          ls -la "${OUT_DIR}/" | head -40
-
-          # Include runtime essentials only
+          echo "📦 Creating deployment package (api + public)..."
           zip -r "../${ARTIFACT_NAME}" \
-            "${OUT_DIR}/" \
+            dist/ \
             node_modules/ \
             package*.json \
             prisma/ \
             public/ \
-            *.js \
+            web.config \
             -x "*.log" "*.test.*" "coverage/*" "node_modules/*/test/*" "node_modules/*/tests/*"
-
           cd ..
-          echo "✅ Deployment package created"
           ls -lh "${ARTIFACT_NAME}"
-          echo "📋 Package contents (top):"
           unzip -l "${ARTIFACT_NAME}" | head -120
 
       - name: Upload artifact
@@ -275,12 +240,6 @@ jobs:
         with:
           name: deployment-package
           path: .
-
-      - name: List files (debug)
-        shell: bash
-        run: |
-          ls -la
-          unzip -l "${ARTIFACT_NAME}" | head -120
 
       - name: Azure login (OIDC)
         uses: azure/login@v2
