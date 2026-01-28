@@ -1,0 +1,236 @@
+# # .github/workflows/feature_tour_deployment.yml
+
+# name: Jing Hng Individual Deployment - features/tour
+
+# on:
+#   push:
+#     branches:
+#       - features/tour
+#     paths-ignore:
+#       - "modules/**"
+#       - "**/*.md"
+#   workflow_dispatch: # Allows manual trigger
+
+# # Prevents multiple pushes to the same branch from colliding in the DB
+# concurrency:
+#   group: ${{ github.workflow }}-${{ github.ref }}
+#   cancel-in-progress: true
+
+# env:
+#   WEBAPP_NAME: "JingHngIndividualDeployment"
+#   RESOURCE_GROUP: "TourFeatureCICD"
+#   NODE_VERSION: "20.x"
+#   API_DIR: "api"
+#   WEB_DIR: "web"
+#   ARTIFACT_NAME: "node-app.zip"
+#   DATABASE_URL: ${{ secrets.DATABASE_URL }}
+#   JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+#   JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
+#   CLIENT_ID: ${{ secrets.AZUREAPPSERVICE_CLIENTID_7B46095111024D8791ED30AE27C67101 }}
+#   TENANT_ID: ${{ secrets.AZUREAPPSERVICE_TENANTID_A8CBFC0120224CEFB0544B06D60F26E4 }}
+#   SUBSCRIPTION_ID: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_A6899D18F6D14443B16B10568D09540C }}
+
+# jobs:
+#   e2e:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v4
+
+#       - name: Setup Node
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: ${{ env.NODE_VERSION }}
+#           cache: "npm"
+
+#       - name: Extract feature name
+#         id: extract-feature
+#         run: |
+#           BRANCH_NAME="${{ github.ref_name }}"
+#           FEATURE_NAME=$(echo "$BRANCH_NAME" | sed 's/^features\///;s/^feature\///')
+#           echo "feature_name=$FEATURE_NAME" >> $GITHUB_OUTPUT
+
+#       - name: Install API deps
+#         working-directory: ${{ env.API_DIR }}
+#         run: npm ci
+
+#       - name: Install Web deps
+#         working-directory: ${{ env.WEB_DIR }}
+#         run: npm ci
+
+#       - name: Build API (for E2E)
+#         working-directory: ${{ env.API_DIR }}
+#         env:
+#           DATABASE_URL: ${{ env.DATABASE_URL }}
+#         run: |
+#           npx prisma generate
+#           npx prisma migrate reset --force --skip-seed
+#           npx prisma migrate deploy
+#           node prisma/seed.js
+#           npm run build
+
+#       - name: Install Playwright browsers
+#         working-directory: ${{ env.WEB_DIR }}
+#         run: npx playwright install --with-deps
+
+#       - name: Start API server in background
+#         working-directory: ${{ env.API_DIR }}
+#         env:
+#           DATABASE_URL: ${{ env.DATABASE_URL }}
+#           PORT: 5175
+#           JWT_SECRET_KEY: ${{ env.JWT_SECRET_KEY }}
+#           JWT_REFRESH_SECRET: ${{ env.JWT_REFRESH_SECRET }}
+#           NODE_ENV: test
+#         run: |
+#           npm start &
+#           sleep 10
+#           curl -f http://localhost:5175/health || curl -f http://localhost:5175/ || echo "API server not responding"
+
+#       - name: Run Playwright tests for branch
+#         working-directory: ${{ env.WEB_DIR }}
+#         env:
+#           CI: true
+#           VITE_API_TARGET: http://localhost:5175
+#         run: |
+#           FEATURE_FOLDER="tests/e2e/${{ steps.extract-feature.outputs.feature_name }}"
+#           if [ -d "$FEATURE_FOLDER" ]; then
+#             echo "🚀 Running E2E tests specifically for: $FEATURE_FOLDER"
+#             npx playwright test "$FEATURE_FOLDER" --workers=8
+#           else
+#             echo "⚠️ Folder $FEATURE_FOLDER not found. Running default tests."
+#             npm run e2e
+#           fi
+
+#       - name: Upload Playwright report
+#         if: always()
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: playwright-report
+#           path: ${{ env.WEB_DIR }}/playwright-report/
+#           retention-days: 7
+
+#   build:
+#     runs-on: ubuntu-latest
+#     needs: e2e
+#     permissions: { contents: read }
+
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v4
+
+#       - name: Setup Node
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: ${{ env.NODE_VERSION }}
+#           cache: "npm"
+
+#       - name: Install web deps
+#         working-directory: ${{ env.WEB_DIR }}
+#         run: npm ci
+
+#       - name: Build web
+#         working-directory: ${{ env.WEB_DIR }}
+#         run: npm run build
+
+#       - name: Install api deps (for build)
+#         working-directory: ${{ env.API_DIR }}
+#         run: npm ci
+
+#       - name: Build api (TypeScript -> dist)
+#         working-directory: ${{ env.API_DIR }}
+#         run: npm run build
+
+#       - name: Prune dev dependencies (keep only production)
+#         working-directory: ${{ env.API_DIR }}
+#         run: npm prune --production
+
+#       - name: Copy web build into api/public
+#         run: |
+#           echo "📁 Copying frontend build to API public folder"
+#           rm -rf "${API_DIR}/public"
+#           mkdir -p "${API_DIR}/public"
+#           cp -R "${WEB_DIR}/dist/." "${API_DIR}/public/"
+#           echo "✅ Frontend copied successfully"
+#           ls -la "${API_DIR}/public/"
+#           echo "📄 Checking index.html exists:"
+#           cat "${API_DIR}/public/index.html" | head -20
+
+#       - name: Debug and Copy API Static Assets
+#         run: |
+#           echo "==============================================="
+#           echo "1. DEBUG: Checking Source Files (api/src/public)"
+#           echo "==============================================="
+#           ls -laR "${API_DIR}/src/public/"
+          
+#           echo "==============================================="
+#           echo "2. COPY: Moving API source assets to final public"
+#           echo "==============================================="
+#           cp -R -u -v "${API_DIR}/src/public/." "${API_DIR}/public/" || true
+          
+#           echo "==============================================="
+#           echo "3. DEBUG: Checking Final Public Folder (api/public)"
+#           echo "==============================================="
+#           ls -laR "${API_DIR}/public/"
+#           echo "==============================================="
+
+#       - name: Prepare production API
+#         run: |
+#           cd "${API_DIR}"
+#           echo "🧹 Preparing production build"
+#           npm ci --production --ignore-scripts
+#           rm -rf tests/ *.log coverage/ .git/ .github/ || true
+#           find node_modules -name "*.md" -delete || true
+#           find node_modules -name "*.ts" -delete || true
+#           find node_modules -name "test" -type d -exec rm -rf {} + || true
+#           find node_modules -name "tests" -type d -exec rm -rf {} + || true
+#           du -sh . || true
+
+#       - name: Package deployment artifact
+#         run: |
+#           cd "${API_DIR}"
+#           rm -f "../${ARTIFACT_NAME}"
+#           zip -r "../${ARTIFACT_NAME}" \
+#             node_modules/ package*.json prisma/ public/ src/ *.js web.config generated/ .deployment \
+#             -x "*.log" "*.test.js" "coverage/*" "node_modules/*/test/*" "node_modules/*/tests/*"
+#           cd ..
+#           unzip -l "${ARTIFACT_NAME}" | grep -E "(package.json|app.js|server.js)" | head -10
+
+#       - name: Upload artifact
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: deployment-package
+#           path: ${{ env.ARTIFACT_NAME }}
+
+#   deploy:
+#     runs-on: ubuntu-latest
+#     needs: build
+#     if: github.ref == 'refs/heads/features/tour'
+#     permissions:
+#       id-token: write
+#       contents: read
+
+#     steps:
+#       - name: Download artifact
+#         uses: actions/download-artifact@v4
+#         with:
+#           name: deployment-package
+#           path: .
+
+#       - name: Azure login (OIDC)
+#         uses: azure/login@v2
+#         with:
+#           client-id: ${{ env.CLIENT_ID }}
+#           tenant-id: ${{ env.TENANT_ID }}
+#           subscription-id: ${{ env.SUBSCRIPTION_ID }}
+
+#       - name: Deploy to Azure Web App
+#         uses: azure/webapps-deploy@v3
+#         with:
+#           app-name: ${{ env.WEBAPP_NAME }}
+#           package: ${{ env.ARTIFACT_NAME }}
+#           clean: true
+
+#       - name: Restart Azure Web App
+#         run: |
+#           az webapp restart --name ${{ env.WEBAPP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }}
