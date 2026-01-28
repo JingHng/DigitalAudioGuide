@@ -21,14 +21,14 @@ env:
   API_PORT: "5175"
   WEB_PORT: "5174"
 
-  # Auth secrets used by API in CI (set these in GitHub Secrets)
-  JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-  JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
-
   # Azure OIDC secrets
   CLIENT_ID: ${{ secrets.AZUREAPPSERVICE_CLIENTID_86EE8967028A49F5965DD3913522BD11 }}
   TENANT_ID: ${{ secrets.AZUREAPPSERVICE_TENANTID_C0C0E3446DAE4866BB375773F0F65A87 }}
   SUBSCRIPTION_ID: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_2FB091A84E45407EB53EC296B400A658 }}
+
+  # Auth secrets used by API in CI
+  JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+  JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
 
 jobs:
   e2e:
@@ -44,16 +44,15 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
 
-      - name: Install API dependencies
+      - name: Install API deps
         working-directory: ${{ env.API_DIR }}
         run: npm ci
 
-      - name: Install Web dependencies
+      - name: Install Web deps
         working-directory: ${{ env.WEB_DIR }}
         run: npm ci
 
-      # ---- DATABASE_URL: prefer DATABASE_URL_RUYI, fallback DATABASE_URL ----
-      - name: Resolve DATABASE_URL for CI
+      - name: Resolve DATABASE_URL for CI (prefer DATABASE_URL_RUYI)
         shell: bash
         run: |
           DB_URL="${{ secrets.DATABASE_URL_RUYI }}"
@@ -62,22 +61,23 @@ jobs:
           fi
 
           if [ -z "$DB_URL" ]; then
-            echo "No database URL found. Set DATABASE_URL_RUYI or DATABASE_URL in GitHub Secrets."
+            echo "❌ No database URL found. Set DATABASE_URL_RUYI (preferred) or DATABASE_URL in GitHub Secrets."
             exit 1
           fi
 
           echo "DATABASE_URL=$DB_URL" >> $GITHUB_ENV
-          echo "DATABASE_URL resolved ✅"
+          echo "✅ DATABASE_URL resolved"
 
-      # ---- CI DB: reset -> deploy -> seed (same as your friend's approach) ----
-      - name: Prisma reset + migrate + seed (CI database)
+      - name: Prisma reset + migrate + seed (CI clean DB)
         working-directory: ${{ env.API_DIR }}
         env:
           DATABASE_URL: ${{ env.DATABASE_URL }}
+        shell: bash
         run: |
           npx prisma generate
           npx prisma migrate reset --force --skip-seed
           npx prisma migrate deploy
+          # Use the same style as your teammate (explicit seed file)
           node prisma/seed.js
 
       - name: Build API (for E2E)
@@ -92,7 +92,7 @@ jobs:
         working-directory: ${{ env.WEB_DIR }}
         run: npx playwright install --with-deps
 
-      - name: Start API server (background)
+      - name: Start API server in background
         working-directory: ${{ env.API_DIR }}
         env:
           DATABASE_URL: ${{ env.DATABASE_URL }}
@@ -104,17 +104,17 @@ jobs:
         run: |
           npm start &
           echo "Waiting for API..."
-          for i in {1..40}; do
+          for i in {1..30}; do
             if curl -fsS "http://localhost:${API_PORT}/health" >/dev/null 2>&1; then
-              echo "API is up ✅"
+              echo "✅ API is up"
               exit 0
             fi
             sleep 1
           done
-          echo "API did not become ready ❌"
+          echo "❌ API did not become ready"
           exit 1
 
-      - name: Start Web server (background)
+      - name: Start Web server in background (vite preview)
         working-directory: ${{ env.WEB_DIR }}
         env:
           VITE_API_TARGET: http://localhost:${{ env.API_PORT }}
@@ -122,14 +122,14 @@ jobs:
         run: |
           npx vite preview --host 127.0.0.1 --port ${WEB_PORT} &
           echo "Waiting for Web..."
-          for i in {1..40}; do
+          for i in {1..30}; do
             if curl -fsS "http://localhost:${WEB_PORT}" >/dev/null 2>&1; then
-              echo "Web is up ✅"
+              echo "✅ Web is up"
               exit 0
             fi
             sleep 1
           done
-          echo "Web did not become ready ❌"
+          echo "❌ Web did not become ready"
           exit 1
 
       - name: Run Playwright E2E
@@ -179,25 +179,56 @@ jobs:
         working-directory: ${{ env.API_DIR }}
         run: npm ci
 
-      - name: Build api (TypeScript -> dist)
+      - name: Build api
         working-directory: ${{ env.API_DIR }}
         run: npm run build
 
-      - name: Prune dev dependencies (keep production only)
-        working-directory: ${{ env.API_DIR }}
-        run: npm prune --production
+      # Detect build output folder (dist/build/lib)
+      - name: Detect API build output folder
+        shell: bash
+        run: |
+          cd "${API_DIR}"
 
-      # ---- Bundle web into api/public ----
+          if [ -d "dist" ]; then
+            echo "OUT_DIR=dist" >> $GITHUB_ENV
+            echo "✅ Found dist/"
+          elif [ -d "build" ]; then
+            echo "OUT_DIR=build" >> $GITHUB_ENV
+            echo "✅ Found build/"
+          elif [ -d "lib" ]; then
+            echo "OUT_DIR=lib" >> $GITHUB_ENV
+            echo "✅ Found lib/"
+          else
+            echo "❌ No dist/build/lib folder found after npm run build"
+            echo "📌 Debug: api/ listing:"
+            ls -la
+            echo "📌 Debug: api/package.json scripts:"
+            cat package.json | head -160
+            exit 1
+          fi
+
+      # Keep only production deps
+      - name: Prepare production dependencies (API)
+        working-directory: ${{ env.API_DIR }}
+        shell: bash
+        run: |
+          npm prune --production
+          echo "✅ Pruned to production dependencies"
+          du -sh . || true
+
+      # Bundle web into api/public
       - name: Copy web build into api/public
         shell: bash
         run: |
+          echo "📁 Copying web/dist -> api/public"
           rm -rf "${API_DIR}/public"
           mkdir -p "${API_DIR}/public"
           cp -R "${WEB_DIR}/dist/." "${API_DIR}/public/"
           echo "✅ Copied web/dist into api/public"
-          ls -la "${API_DIR}/public" | head -30
+          ls -la "${API_DIR}/public" | head -40
+          test -f "${API_DIR}/public/index.html" && echo "✅ index.html exists" || (echo "❌ index.html missing" && exit 1)
 
-      # ---- Create clean deployment artifact: ONLY dist + prod deps + prisma + public ----
+      # Package deployment artifact
       - name: Package deployment artifact (deployment.zip)
         shell: bash
         run: |
@@ -205,26 +236,24 @@ jobs:
           rm -f "../${ARTIFACT_NAME}"
 
           echo "📦 Creating deployment package..."
-          echo "📌 Checking dist exists:"
-          ls -la dist/ | head -30
+          echo "📌 OUT_DIR=${OUT_DIR}"
+          ls -la "${OUT_DIR}/" | head -40
 
-          echo "📌 Checking public exists:"
-          ls -la public/ | head -30
-
+          # Include runtime essentials only
           zip -r "../${ARTIFACT_NAME}" \
-            dist/ \
+            "${OUT_DIR}/" \
             node_modules/ \
             package*.json \
             prisma/ \
             public/ \
+            *.js \
             -x "*.log" "*.test.*" "coverage/*" "node_modules/*/test/*" "node_modules/*/tests/*"
 
           cd ..
           echo "✅ Deployment package created"
           ls -lh "${ARTIFACT_NAME}"
-
-          echo "📋 Verifying zip key files:"
-          unzip -l "${ARTIFACT_NAME}" | grep -E "(dist/|package.json|prisma/|public/)" | head -60
+          echo "📋 Package contents (top):"
+          unzip -l "${ARTIFACT_NAME}" | head -120
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -271,4 +300,4 @@ jobs:
         shell: bash
         run: |
           az webapp restart --name "${WEBAPP_NAME}" --resource-group "${RESOURCE_GROUP}"
-          echo "✅ Restarted Azure Web App"
+          echo "✅ Restarted ${WEBAPP_NAME}"
