@@ -384,7 +384,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "D:\\DIT\\Y2S2\\CICDP\\SDC Project\\Source file\\cicdp-project-group-3-sdc\\api\\generated\\prisma",
+      "value": "C:\\SPCodingProjects\\CICD\\cicdp-project-group-3-sdc\\api\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -402,7 +402,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "D:\\DIT\\Y2S2\\CICDP\\SDC Project\\Source file\\cicdp-project-group-3-sdc\\api\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\SPCodingProjects\\CICD\\cicdp-project-group-3-sdc\\api\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -416,6 +416,7 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
