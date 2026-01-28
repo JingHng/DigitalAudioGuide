@@ -78,6 +78,16 @@ jobs:
         working-directory: ${{ env.API_DIR }}
         run: npm run build
 
+      - name: Debug tsconfig (why no dist)
+        working-directory: ${{ env.API_DIR }}
+        shell: bash
+        run: |
+          echo "---- tsconfig.json ----"
+          cat tsconfig.json
+          echo "---- tsc showConfig ----"
+          npx tsc --showConfig | head -200
+
+
       - name: Verify API dist exists
         working-directory: ${{ env.API_DIR }}
         shell: bash
