@@ -77,25 +77,32 @@ jobs:
         shell: bash
         run: |
           npm start &
-          
-          echo "Waiting for API to become ready..."
+
+          echo "Waiting for API to bind to port 5175..."
           for i in {1..60}; do
-            if curl -fsS "http://localhost:5175/health" >/dev/null 2>&1; then
-              echo "API ready: /health"
-              exit 0
+            if nc -z 127.0.0.1 5175 >/dev/null 2>&1; then
+              echo "API port is open."
+              break
             fi
-            if curl -fsS "http://localhost:5175/api/health" >/dev/null 2>&1; then
-              echo "API ready: /api/health"
-              exit 0
-            fi
-            if curl -fsS "http://localhost:5175/" >/dev/null 2>&1; then
-              echo "API ready: /"
+            sleep 1
+          done
+
+          if ! nc -z 127.0.0.1 5175 >/dev/null 2>&1; then
+            echo "API did not bind to port 5175 in time."
+            exit 1
+          fi
+
+          echo "Checking that API returns an HTTP response (any status code is acceptable)..."
+          for i in {1..30}; do
+            code="$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:5175/ || true)"
+            if [ "$code" != "000" ]; then
+              echo "API responded with HTTP status: $code"
               exit 0
             fi
             sleep 1
           done
 
-          echo "API did not become ready in time."
+          echo "API did not return an HTTP response in time."
           exit 1
 
       - name: Run Playwright tests
