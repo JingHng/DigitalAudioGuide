@@ -50,6 +50,7 @@ const ExhibitDetails: React.FC = () => {
   const [userRating, setUserRating] = useState<number>(0);
   const [userDescription, setUserDescription] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
+  const [reviewError, setReviewError] = useState<string | null>(null);
   // Pagination and filter state for exhibit reviews
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -188,12 +189,23 @@ const ExhibitDetails: React.FC = () => {
     e.preventDefault();
     if (!id || !user) return;
     setSubmitting(true);
+    setReviewError(null); // Clear previous errors
     try {
       await submitExhibitReview(id, userRating, userDescription || null, user.userId);
       setUserRating(0); setUserDescription("");
+      setReviewError(null); // Clear error on success
       await fetchReviews(1);
       const avg = await fetchExhibitRating(id); setRating(Number(avg) || 0);
-    } catch (err) { console.error(err); }
+    } catch (err: any) { 
+      console.error(err);
+      // Display profanity or validation error message in UI
+      if (err.response?.status === 400 && err.response?.data?.error) {
+        // Show validation error (including profanity errors)
+        setReviewError(err.response.data.error);
+      } else {
+        setReviewError('Failed to submit review. Please try again.');
+      }
+    }
     finally { setSubmitting(false); }
   };
 
@@ -440,7 +452,10 @@ const ExhibitDetails: React.FC = () => {
                 type="text"
                 placeholder="Add a comment..."
                 value={userDescription}
-                onChange={(e) => setUserDescription(e.target.value)}
+                onChange={(e) => {
+                  setUserDescription(e.target.value);
+                  if (reviewError) setReviewError(null); // Clear error when user types
+                }}
               />
               <button
                 type="submit"
@@ -449,6 +464,21 @@ const ExhibitDetails: React.FC = () => {
               >
                 Post
               </button>
+              {reviewError && (
+                <div className="review-error-message" style={{
+                  marginTop: '12px',
+                  padding: '12px 16px',
+                  backgroundColor: '#fee',
+                  border: '1px solid #fcc',
+                  borderRadius: '8px',
+                  color: '#c33',
+                  fontSize: '14px',
+                  lineHeight: '1.5',
+                  textAlign: 'center'
+                }}>
+                  <strong>⚠️ Submission Blocked:</strong> {reviewError}
+                </div>
+              )}
             </form>
           ) : (
             <div className="login-prompt-box">
