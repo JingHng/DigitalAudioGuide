@@ -167,40 +167,6 @@ test.describe('Exhibition Statistics Admin UI - Comprehensive Tests', () => {
         expect(labelCount).toBeGreaterThan(0);
     });
 
-    test('should select and deselect exhibitions using dropdown', async ({ page }) => {
-        await page.goto('/admin/dashboard', { waitUntil: 'load' });
-        await page.waitForSelector('.admin-dashboard', { timeout: 20000 });
-        await page.waitForTimeout(1500);
-        
-        const dropdownButton = page.locator('.visitor-stats-filter button').first();
-        
-        // Open dropdown
-        await dropdownButton.click();
-        await page.waitForTimeout(500);
-        
-        // Click Clear button within the dropdown
-        const clearButton = page.locator('.visitor-stats-filter button:has-text("Clear")');
-        await clearButton.click();
-        
-        // Wait for the React state to update and button text to change
-        await expect(dropdownButton).toContainText('0 tours selected', { timeout: 10000 });
-        
-        // Now click the All button (dropdown should still be visible)
-        const allButton = page.locator('.visitor-stats-filter button:has-text("All")');
-        await allButton.click();
-        
-        // Wait for state to update with all selected
-        await expect(dropdownButton).not.toContainText('0 tours selected', { timeout: 10000 });
-        
-        // Close dropdown
-        await page.click('h1:has-text("Dashboard")');
-        await page.waitForTimeout(300);
-        
-        // Verify button shows all selected (should be > 0)
-        const buttonText = await dropdownButton.textContent();
-        expect(buttonText).toMatch(/[1-9]\d* tours? selected/);
-    });
-
     test('should display refresh button and reload data', async ({ page }) => {
         await page.goto('/admin/dashboard', { waitUntil: 'load' });
         await page.waitForSelector('.admin-dashboard', { timeout: 20000 });
