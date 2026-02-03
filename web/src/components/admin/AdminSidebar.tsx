@@ -95,6 +95,12 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
       path: '/admin/audio-analytics'
     },
     {
+      id: 'badge-analytics',
+      label: 'Badge Analytics',
+      icon: <BarChart3 size={20} />,
+      path: '/admin/badge-analytics'
+    },
+    {
       id: 'audit-logs',
       label: 'Audit Logs',
       icon: <FileText size={20} />,
