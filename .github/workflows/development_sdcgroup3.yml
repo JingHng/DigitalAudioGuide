@@ -5,6 +5,7 @@ name: Deploy monorepo (api + web) to Azure App Service
 on:
   push:
     branches:
+      - development 
       - features/updatedDevelopmentBranchWorkflowFIle # Added branch for testing
     paths-ignore:
       - "modules/**"
