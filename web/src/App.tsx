@@ -29,6 +29,7 @@ import ProtectedRoute, { AdminRoute } from "./components/ProtectedRoute";
 import AdminDashboard from "./components/admin/AdminDashboard";
 import ExhibitsPage from "./components/admin/ExhibitsPage";
 import BadgesPage from "./components/admin/BadgesPage";
+import BadgeAnalyticsPage from "./components/admin/BadgeAnalyticsPage";
 import RolesPage from "./components/admin/RolesPage";
 import UsersPage from "./components/admin/UsersPage";
 import AuditLogsPage from "./components/admin/AuditLogsPage";
@@ -60,6 +61,7 @@ function App() {
           <Route path="/admin/assistant/history" element={<AdminRoute><AssistantHistoryPage /></AdminRoute>} />
           <Route path="/admin/exhibits" element={<AdminRoute><ExhibitsPage /></AdminRoute>} />
           <Route path="/admin/badges" element={<AdminRoute><BadgesPage /></AdminRoute>} />
+          <Route path="/admin/badge-analytics" element={<BadgeAnalyticsPage />} />
           <Route path="/admin/audio" element={<AdminRoute><AudioManagement /></AdminRoute>} />
           <Route path="/admin/reviews" element={<AdminRoute><AdminReviewsPage /></AdminRoute>} />
           <Route path="/admin/floating-cards" element={<AdminRoute><AdminFloatingCards /></AdminRoute>} />

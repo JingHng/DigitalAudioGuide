@@ -929,10 +929,10 @@ await client.query(`
     // Insert badges first (25 badges)
    await client.query(`
     INSERT INTO badge (badge_id, name, description, style, image_url) VALUES
-    (1, 'Enter The Sandbox', 'We have witnessed Singapore''s journey to nationhood... Leave your unique imprint on our present and future here in the Sandbox today.', 'cool', '/images/badge/Enter_The_Sandbox.png'),
-    (2, 'Particles of Change', 'Immerse in an experience where play meets inspiration.', 'cool', '/images/badge/Particles_of_Change.png'),
-    (3, 'Strength of Our Nation', 'The peace we experience in Singapore today is in no small part due to our men and women in uniform...', 'cool', '/images/badge/Strength_of_Our_Nation.png'),
-    (4, 'Staying Resilient Amid Tough Times', 'Singaporeans have shown resilience amid challenges...', 'cool', '/images/badge/Staying_Resilient_Amid_Tough_Times.png'),
+    (1, 'Enter The Sandbox', 'We have witnessed Singapore''s journey to nationhood... Leave your unique imprint on our present and future here in the Sandbox today.', 'medal', '/images/badge/Enter_The_Sandbox.png'),
+    (2, 'Particles of Change', 'Immerse in an experience where play meets inspiration.', 'medal', '/images/badge/Particles_of_Change.png'),
+    (3, 'Strength of Our Nation', 'The peace we experience in Singapore today is in no small part due to our men and women in uniform...', 'silver', '/images/badge/Strength_of_Our_Nation.png'),
+    (4, 'Staying Resilient Amid Tough Times', 'Singaporeans have shown resilience amid challenges...', 'silver', '/images/badge/Staying_Resilient_Amid_Tough_Times.png'),
     (5, 'Special Badge Number 5', 'Malaysians have shown resilience amid challenges...', 'cool', '/images/badge/Staying_Resilient_Amid_Tough_Times.png'),
     (6, 'School of Computing Explorer', 'Scan here to discover the exciting world of computing at Singapore Polytechnic!', 'cool', '/images/badge/Our_Milestones.png'),
     (7, 'SP Counselling Guide', 'Learn about course counselling and find your perfect program at Singapore Polytechnic.', 'cool', '/images/badge/Relentless_Sabotage.png'),
