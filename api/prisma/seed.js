@@ -364,6 +364,20 @@ async function seed() {
       );
     `);
 
+    // 20. HOME_FLOATING_CARD table
+    await client.query(`
+      CREATE TABLE home_floating_card (
+        card_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        title VARCHAR(100) NOT NULL,
+        icon VARCHAR(50) NOT NULL,
+        link_url VARCHAR(255) NOT NULL,
+        position INTEGER NOT NULL,
+        is_active BOOLEAN NOT NULL DEFAULT true,
+        created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
     // Add comprehensive performance indexes
     await client.query(`
       -- User table indexes
@@ -463,6 +477,10 @@ async function seed() {
       -- AI Assistant (Omnie) indexes
       CREATE INDEX idx_message_conversation_status ON message(conversation_id, status_id, created_at, sender_type_id);
       CREATE INDEX idx_conversation_user_status ON conversation(user_id, status_id, created_at);
+
+      -- Home floating card indexes
+      CREATE INDEX idx_floating_card_position ON home_floating_card(position);
+      CREATE INDEX idx_floating_card_active ON home_floating_card(is_active);
 
       -- Composite indexes for common queries
       CREATE INDEX idx_user_email_status ON "user"(email, status_id);
@@ -1266,6 +1284,15 @@ await client.query(`
       (1, NULL, 'feedback', 'moderate', '{"feedback_id": "8", "action": "approved", "exhibit_id": "4"}', NULL, CURRENT_TIMESTAMP - INTERVAL '2 days')
     `);
 
+    // Seed home floating cards
+    console.log("🎯 Seeding homepage floating cards...");
+    await client.query(`
+      INSERT INTO home_floating_card (title, icon, link_url, position, is_active) VALUES
+      ('Interactive Scanning', 'QrCode', '/scan', 1, true),
+      ('Tour Navigation', 'MapPin', '/exhibitions', 2, true),
+      ('Badge Collection', 'Settings', '/badges', 3, true)
+    `);
+
     // Update sequences to match inserted IDs
     await client.query(`
       SELECT setval('exhibitions_exhibition_id_seq', (SELECT MAX(exhibition_id) FROM exhibitions));
@@ -1316,6 +1343,7 @@ await client.query(`
     console.log("   - 🎧 Audio analytics ready: Popular exhibits tracked by playback count");
     console.log("   - 📋 Recent admin actions logged and visible on dashboard");
     console.log("   - 🎯 Test users have realistic badge unlocks and audio listening history");
+    console.log("   - 🖱️ 3 homepage floating cards (Interactive Scanning, Smart Navigation, AI Insights)");
   } catch (err) {
     console.error("❌ Error during seeding:", err);
     throw err;
