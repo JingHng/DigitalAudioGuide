@@ -138,6 +138,11 @@ export type Conversation = $Result.DefaultSelection<Prisma.$ConversationPayload>
  * 
  */
 export type Message = $Result.DefaultSelection<Prisma.$MessagePayload>
+/**
+ * Model HomeFloatingCard
+ * 
+ */
+export type HomeFloatingCard = $Result.DefaultSelection<Prisma.$HomeFloatingCardPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -511,6 +516,16 @@ export class PrismaClient<
     * ```
     */
   get message(): Prisma.MessageDelegate<ExtArgs>;
+
+  /**
+   * `prisma.homeFloatingCard`: Exposes CRUD operations for the **HomeFloatingCard** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more HomeFloatingCards
+    * const homeFloatingCards = await prisma.homeFloatingCard.findMany()
+    * ```
+    */
+  get homeFloatingCard(): Prisma.HomeFloatingCardDelegate<ExtArgs>;
 }
 
 export namespace Prisma {
@@ -976,7 +991,8 @@ export namespace Prisma {
     Settings: 'Settings',
     SenderType: 'SenderType',
     Conversation: 'Conversation',
-    Message: 'Message'
+    Message: 'Message',
+    HomeFloatingCard: 'HomeFloatingCard'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -992,7 +1008,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "exhibition" | "exhibit" | "audio" | "audioPlaybackLog" | "feedback" | "image" | "qRCode" | "language" | "permission" | "role" | "rolePermission" | "session" | "status" | "subtitle" | "user" | "userRole" | "auditLog" | "passwordResetToken" | "emailVerificationToken" | "badge" | "userBadge" | "settings" | "senderType" | "conversation" | "message"
+      modelProps: "exhibition" | "exhibit" | "audio" | "audioPlaybackLog" | "feedback" | "image" | "qRCode" | "language" | "permission" | "role" | "rolePermission" | "session" | "status" | "subtitle" | "user" | "userRole" | "auditLog" | "passwordResetToken" | "emailVerificationToken" | "badge" | "userBadge" | "settings" | "senderType" | "conversation" | "message" | "homeFloatingCard"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2743,6 +2759,76 @@ export namespace Prisma {
           count: {
             args: Prisma.MessageCountArgs<ExtArgs>
             result: $Utils.Optional<MessageCountAggregateOutputType> | number
+          }
+        }
+      }
+      HomeFloatingCard: {
+        payload: Prisma.$HomeFloatingCardPayload<ExtArgs>
+        fields: Prisma.HomeFloatingCardFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.HomeFloatingCardFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HomeFloatingCardPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.HomeFloatingCardFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HomeFloatingCardPayload>
+          }
+          findFirst: {
+            args: Prisma.HomeFloatingCardFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HomeFloatingCardPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.HomeFloatingCardFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HomeFloatingCardPayload>
+          }
+          findMany: {
+            args: Prisma.HomeFloatingCardFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HomeFloatingCardPayload>[]
+          }
+          create: {
+            args: Prisma.HomeFloatingCardCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HomeFloatingCardPayload>
+          }
+          createMany: {
+            args: Prisma.HomeFloatingCardCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.HomeFloatingCardCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HomeFloatingCardPayload>[]
+          }
+          delete: {
+            args: Prisma.HomeFloatingCardDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HomeFloatingCardPayload>
+          }
+          update: {
+            args: Prisma.HomeFloatingCardUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HomeFloatingCardPayload>
+          }
+          deleteMany: {
+            args: Prisma.HomeFloatingCardDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.HomeFloatingCardUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.HomeFloatingCardUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HomeFloatingCardPayload>
+          }
+          aggregate: {
+            args: Prisma.HomeFloatingCardAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateHomeFloatingCard>
+          }
+          groupBy: {
+            args: Prisma.HomeFloatingCardGroupByArgs<ExtArgs>
+            result: $Utils.Optional<HomeFloatingCardGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.HomeFloatingCardCountArgs<ExtArgs>
+            result: $Utils.Optional<HomeFloatingCardCountAggregateOutputType> | number
           }
         }
       }
@@ -29151,6 +29237,954 @@ export namespace Prisma {
 
 
   /**
+   * Model HomeFloatingCard
+   */
+
+  export type AggregateHomeFloatingCard = {
+    _count: HomeFloatingCardCountAggregateOutputType | null
+    _avg: HomeFloatingCardAvgAggregateOutputType | null
+    _sum: HomeFloatingCardSumAggregateOutputType | null
+    _min: HomeFloatingCardMinAggregateOutputType | null
+    _max: HomeFloatingCardMaxAggregateOutputType | null
+  }
+
+  export type HomeFloatingCardAvgAggregateOutputType = {
+    position: number | null
+  }
+
+  export type HomeFloatingCardSumAggregateOutputType = {
+    position: number | null
+  }
+
+  export type HomeFloatingCardMinAggregateOutputType = {
+    cardId: string | null
+    title: string | null
+    icon: string | null
+    linkUrl: string | null
+    position: number | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type HomeFloatingCardMaxAggregateOutputType = {
+    cardId: string | null
+    title: string | null
+    icon: string | null
+    linkUrl: string | null
+    position: number | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type HomeFloatingCardCountAggregateOutputType = {
+    cardId: number
+    title: number
+    icon: number
+    linkUrl: number
+    position: number
+    isActive: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type HomeFloatingCardAvgAggregateInputType = {
+    position?: true
+  }
+
+  export type HomeFloatingCardSumAggregateInputType = {
+    position?: true
+  }
+
+  export type HomeFloatingCardMinAggregateInputType = {
+    cardId?: true
+    title?: true
+    icon?: true
+    linkUrl?: true
+    position?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type HomeFloatingCardMaxAggregateInputType = {
+    cardId?: true
+    title?: true
+    icon?: true
+    linkUrl?: true
+    position?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type HomeFloatingCardCountAggregateInputType = {
+    cardId?: true
+    title?: true
+    icon?: true
+    linkUrl?: true
+    position?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type HomeFloatingCardAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which HomeFloatingCard to aggregate.
+     */
+    where?: HomeFloatingCardWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of HomeFloatingCards to fetch.
+     */
+    orderBy?: HomeFloatingCardOrderByWithRelationInput | HomeFloatingCardOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: HomeFloatingCardWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` HomeFloatingCards from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` HomeFloatingCards.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned HomeFloatingCards
+    **/
+    _count?: true | HomeFloatingCardCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: HomeFloatingCardAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: HomeFloatingCardSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: HomeFloatingCardMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: HomeFloatingCardMaxAggregateInputType
+  }
+
+  export type GetHomeFloatingCardAggregateType<T extends HomeFloatingCardAggregateArgs> = {
+        [P in keyof T & keyof AggregateHomeFloatingCard]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateHomeFloatingCard[P]>
+      : GetScalarType<T[P], AggregateHomeFloatingCard[P]>
+  }
+
+
+
+
+  export type HomeFloatingCardGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: HomeFloatingCardWhereInput
+    orderBy?: HomeFloatingCardOrderByWithAggregationInput | HomeFloatingCardOrderByWithAggregationInput[]
+    by: HomeFloatingCardScalarFieldEnum[] | HomeFloatingCardScalarFieldEnum
+    having?: HomeFloatingCardScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: HomeFloatingCardCountAggregateInputType | true
+    _avg?: HomeFloatingCardAvgAggregateInputType
+    _sum?: HomeFloatingCardSumAggregateInputType
+    _min?: HomeFloatingCardMinAggregateInputType
+    _max?: HomeFloatingCardMaxAggregateInputType
+  }
+
+  export type HomeFloatingCardGroupByOutputType = {
+    cardId: string
+    title: string
+    icon: string
+    linkUrl: string
+    position: number
+    isActive: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: HomeFloatingCardCountAggregateOutputType | null
+    _avg: HomeFloatingCardAvgAggregateOutputType | null
+    _sum: HomeFloatingCardSumAggregateOutputType | null
+    _min: HomeFloatingCardMinAggregateOutputType | null
+    _max: HomeFloatingCardMaxAggregateOutputType | null
+  }
+
+  type GetHomeFloatingCardGroupByPayload<T extends HomeFloatingCardGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<HomeFloatingCardGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof HomeFloatingCardGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], HomeFloatingCardGroupByOutputType[P]>
+            : GetScalarType<T[P], HomeFloatingCardGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type HomeFloatingCardSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    cardId?: boolean
+    title?: boolean
+    icon?: boolean
+    linkUrl?: boolean
+    position?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["homeFloatingCard"]>
+
+  export type HomeFloatingCardSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    cardId?: boolean
+    title?: boolean
+    icon?: boolean
+    linkUrl?: boolean
+    position?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["homeFloatingCard"]>
+
+  export type HomeFloatingCardSelectScalar = {
+    cardId?: boolean
+    title?: boolean
+    icon?: boolean
+    linkUrl?: boolean
+    position?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+
+  export type $HomeFloatingCardPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "HomeFloatingCard"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      cardId: string
+      title: string
+      icon: string
+      linkUrl: string
+      position: number
+      isActive: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["homeFloatingCard"]>
+    composites: {}
+  }
+
+  type HomeFloatingCardGetPayload<S extends boolean | null | undefined | HomeFloatingCardDefaultArgs> = $Result.GetResult<Prisma.$HomeFloatingCardPayload, S>
+
+  type HomeFloatingCardCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<HomeFloatingCardFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: HomeFloatingCardCountAggregateInputType | true
+    }
+
+  export interface HomeFloatingCardDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['HomeFloatingCard'], meta: { name: 'HomeFloatingCard' } }
+    /**
+     * Find zero or one HomeFloatingCard that matches the filter.
+     * @param {HomeFloatingCardFindUniqueArgs} args - Arguments to find a HomeFloatingCard
+     * @example
+     * // Get one HomeFloatingCard
+     * const homeFloatingCard = await prisma.homeFloatingCard.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends HomeFloatingCardFindUniqueArgs>(args: SelectSubset<T, HomeFloatingCardFindUniqueArgs<ExtArgs>>): Prisma__HomeFloatingCardClient<$Result.GetResult<Prisma.$HomeFloatingCardPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one HomeFloatingCard that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {HomeFloatingCardFindUniqueOrThrowArgs} args - Arguments to find a HomeFloatingCard
+     * @example
+     * // Get one HomeFloatingCard
+     * const homeFloatingCard = await prisma.homeFloatingCard.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends HomeFloatingCardFindUniqueOrThrowArgs>(args: SelectSubset<T, HomeFloatingCardFindUniqueOrThrowArgs<ExtArgs>>): Prisma__HomeFloatingCardClient<$Result.GetResult<Prisma.$HomeFloatingCardPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first HomeFloatingCard that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HomeFloatingCardFindFirstArgs} args - Arguments to find a HomeFloatingCard
+     * @example
+     * // Get one HomeFloatingCard
+     * const homeFloatingCard = await prisma.homeFloatingCard.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends HomeFloatingCardFindFirstArgs>(args?: SelectSubset<T, HomeFloatingCardFindFirstArgs<ExtArgs>>): Prisma__HomeFloatingCardClient<$Result.GetResult<Prisma.$HomeFloatingCardPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first HomeFloatingCard that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HomeFloatingCardFindFirstOrThrowArgs} args - Arguments to find a HomeFloatingCard
+     * @example
+     * // Get one HomeFloatingCard
+     * const homeFloatingCard = await prisma.homeFloatingCard.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends HomeFloatingCardFindFirstOrThrowArgs>(args?: SelectSubset<T, HomeFloatingCardFindFirstOrThrowArgs<ExtArgs>>): Prisma__HomeFloatingCardClient<$Result.GetResult<Prisma.$HomeFloatingCardPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more HomeFloatingCards that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HomeFloatingCardFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all HomeFloatingCards
+     * const homeFloatingCards = await prisma.homeFloatingCard.findMany()
+     * 
+     * // Get first 10 HomeFloatingCards
+     * const homeFloatingCards = await prisma.homeFloatingCard.findMany({ take: 10 })
+     * 
+     * // Only select the `cardId`
+     * const homeFloatingCardWithCardIdOnly = await prisma.homeFloatingCard.findMany({ select: { cardId: true } })
+     * 
+     */
+    findMany<T extends HomeFloatingCardFindManyArgs>(args?: SelectSubset<T, HomeFloatingCardFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HomeFloatingCardPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a HomeFloatingCard.
+     * @param {HomeFloatingCardCreateArgs} args - Arguments to create a HomeFloatingCard.
+     * @example
+     * // Create one HomeFloatingCard
+     * const HomeFloatingCard = await prisma.homeFloatingCard.create({
+     *   data: {
+     *     // ... data to create a HomeFloatingCard
+     *   }
+     * })
+     * 
+     */
+    create<T extends HomeFloatingCardCreateArgs>(args: SelectSubset<T, HomeFloatingCardCreateArgs<ExtArgs>>): Prisma__HomeFloatingCardClient<$Result.GetResult<Prisma.$HomeFloatingCardPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many HomeFloatingCards.
+     * @param {HomeFloatingCardCreateManyArgs} args - Arguments to create many HomeFloatingCards.
+     * @example
+     * // Create many HomeFloatingCards
+     * const homeFloatingCard = await prisma.homeFloatingCard.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends HomeFloatingCardCreateManyArgs>(args?: SelectSubset<T, HomeFloatingCardCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many HomeFloatingCards and returns the data saved in the database.
+     * @param {HomeFloatingCardCreateManyAndReturnArgs} args - Arguments to create many HomeFloatingCards.
+     * @example
+     * // Create many HomeFloatingCards
+     * const homeFloatingCard = await prisma.homeFloatingCard.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many HomeFloatingCards and only return the `cardId`
+     * const homeFloatingCardWithCardIdOnly = await prisma.homeFloatingCard.createManyAndReturn({ 
+     *   select: { cardId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends HomeFloatingCardCreateManyAndReturnArgs>(args?: SelectSubset<T, HomeFloatingCardCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HomeFloatingCardPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a HomeFloatingCard.
+     * @param {HomeFloatingCardDeleteArgs} args - Arguments to delete one HomeFloatingCard.
+     * @example
+     * // Delete one HomeFloatingCard
+     * const HomeFloatingCard = await prisma.homeFloatingCard.delete({
+     *   where: {
+     *     // ... filter to delete one HomeFloatingCard
+     *   }
+     * })
+     * 
+     */
+    delete<T extends HomeFloatingCardDeleteArgs>(args: SelectSubset<T, HomeFloatingCardDeleteArgs<ExtArgs>>): Prisma__HomeFloatingCardClient<$Result.GetResult<Prisma.$HomeFloatingCardPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one HomeFloatingCard.
+     * @param {HomeFloatingCardUpdateArgs} args - Arguments to update one HomeFloatingCard.
+     * @example
+     * // Update one HomeFloatingCard
+     * const homeFloatingCard = await prisma.homeFloatingCard.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends HomeFloatingCardUpdateArgs>(args: SelectSubset<T, HomeFloatingCardUpdateArgs<ExtArgs>>): Prisma__HomeFloatingCardClient<$Result.GetResult<Prisma.$HomeFloatingCardPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more HomeFloatingCards.
+     * @param {HomeFloatingCardDeleteManyArgs} args - Arguments to filter HomeFloatingCards to delete.
+     * @example
+     * // Delete a few HomeFloatingCards
+     * const { count } = await prisma.homeFloatingCard.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends HomeFloatingCardDeleteManyArgs>(args?: SelectSubset<T, HomeFloatingCardDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more HomeFloatingCards.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HomeFloatingCardUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many HomeFloatingCards
+     * const homeFloatingCard = await prisma.homeFloatingCard.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends HomeFloatingCardUpdateManyArgs>(args: SelectSubset<T, HomeFloatingCardUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one HomeFloatingCard.
+     * @param {HomeFloatingCardUpsertArgs} args - Arguments to update or create a HomeFloatingCard.
+     * @example
+     * // Update or create a HomeFloatingCard
+     * const homeFloatingCard = await prisma.homeFloatingCard.upsert({
+     *   create: {
+     *     // ... data to create a HomeFloatingCard
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the HomeFloatingCard we want to update
+     *   }
+     * })
+     */
+    upsert<T extends HomeFloatingCardUpsertArgs>(args: SelectSubset<T, HomeFloatingCardUpsertArgs<ExtArgs>>): Prisma__HomeFloatingCardClient<$Result.GetResult<Prisma.$HomeFloatingCardPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of HomeFloatingCards.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HomeFloatingCardCountArgs} args - Arguments to filter HomeFloatingCards to count.
+     * @example
+     * // Count the number of HomeFloatingCards
+     * const count = await prisma.homeFloatingCard.count({
+     *   where: {
+     *     // ... the filter for the HomeFloatingCards we want to count
+     *   }
+     * })
+    **/
+    count<T extends HomeFloatingCardCountArgs>(
+      args?: Subset<T, HomeFloatingCardCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], HomeFloatingCardCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a HomeFloatingCard.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HomeFloatingCardAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends HomeFloatingCardAggregateArgs>(args: Subset<T, HomeFloatingCardAggregateArgs>): Prisma.PrismaPromise<GetHomeFloatingCardAggregateType<T>>
+
+    /**
+     * Group by HomeFloatingCard.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HomeFloatingCardGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends HomeFloatingCardGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: HomeFloatingCardGroupByArgs['orderBy'] }
+        : { orderBy?: HomeFloatingCardGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, HomeFloatingCardGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetHomeFloatingCardGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the HomeFloatingCard model
+   */
+  readonly fields: HomeFloatingCardFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for HomeFloatingCard.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__HomeFloatingCardClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the HomeFloatingCard model
+   */ 
+  interface HomeFloatingCardFieldRefs {
+    readonly cardId: FieldRef<"HomeFloatingCard", 'String'>
+    readonly title: FieldRef<"HomeFloatingCard", 'String'>
+    readonly icon: FieldRef<"HomeFloatingCard", 'String'>
+    readonly linkUrl: FieldRef<"HomeFloatingCard", 'String'>
+    readonly position: FieldRef<"HomeFloatingCard", 'Int'>
+    readonly isActive: FieldRef<"HomeFloatingCard", 'Boolean'>
+    readonly createdAt: FieldRef<"HomeFloatingCard", 'DateTime'>
+    readonly updatedAt: FieldRef<"HomeFloatingCard", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * HomeFloatingCard findUnique
+   */
+  export type HomeFloatingCardFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HomeFloatingCard
+     */
+    select?: HomeFloatingCardSelect<ExtArgs> | null
+    /**
+     * Filter, which HomeFloatingCard to fetch.
+     */
+    where: HomeFloatingCardWhereUniqueInput
+  }
+
+  /**
+   * HomeFloatingCard findUniqueOrThrow
+   */
+  export type HomeFloatingCardFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HomeFloatingCard
+     */
+    select?: HomeFloatingCardSelect<ExtArgs> | null
+    /**
+     * Filter, which HomeFloatingCard to fetch.
+     */
+    where: HomeFloatingCardWhereUniqueInput
+  }
+
+  /**
+   * HomeFloatingCard findFirst
+   */
+  export type HomeFloatingCardFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HomeFloatingCard
+     */
+    select?: HomeFloatingCardSelect<ExtArgs> | null
+    /**
+     * Filter, which HomeFloatingCard to fetch.
+     */
+    where?: HomeFloatingCardWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of HomeFloatingCards to fetch.
+     */
+    orderBy?: HomeFloatingCardOrderByWithRelationInput | HomeFloatingCardOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for HomeFloatingCards.
+     */
+    cursor?: HomeFloatingCardWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` HomeFloatingCards from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` HomeFloatingCards.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of HomeFloatingCards.
+     */
+    distinct?: HomeFloatingCardScalarFieldEnum | HomeFloatingCardScalarFieldEnum[]
+  }
+
+  /**
+   * HomeFloatingCard findFirstOrThrow
+   */
+  export type HomeFloatingCardFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HomeFloatingCard
+     */
+    select?: HomeFloatingCardSelect<ExtArgs> | null
+    /**
+     * Filter, which HomeFloatingCard to fetch.
+     */
+    where?: HomeFloatingCardWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of HomeFloatingCards to fetch.
+     */
+    orderBy?: HomeFloatingCardOrderByWithRelationInput | HomeFloatingCardOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for HomeFloatingCards.
+     */
+    cursor?: HomeFloatingCardWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` HomeFloatingCards from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` HomeFloatingCards.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of HomeFloatingCards.
+     */
+    distinct?: HomeFloatingCardScalarFieldEnum | HomeFloatingCardScalarFieldEnum[]
+  }
+
+  /**
+   * HomeFloatingCard findMany
+   */
+  export type HomeFloatingCardFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HomeFloatingCard
+     */
+    select?: HomeFloatingCardSelect<ExtArgs> | null
+    /**
+     * Filter, which HomeFloatingCards to fetch.
+     */
+    where?: HomeFloatingCardWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of HomeFloatingCards to fetch.
+     */
+    orderBy?: HomeFloatingCardOrderByWithRelationInput | HomeFloatingCardOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing HomeFloatingCards.
+     */
+    cursor?: HomeFloatingCardWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` HomeFloatingCards from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` HomeFloatingCards.
+     */
+    skip?: number
+    distinct?: HomeFloatingCardScalarFieldEnum | HomeFloatingCardScalarFieldEnum[]
+  }
+
+  /**
+   * HomeFloatingCard create
+   */
+  export type HomeFloatingCardCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HomeFloatingCard
+     */
+    select?: HomeFloatingCardSelect<ExtArgs> | null
+    /**
+     * The data needed to create a HomeFloatingCard.
+     */
+    data: XOR<HomeFloatingCardCreateInput, HomeFloatingCardUncheckedCreateInput>
+  }
+
+  /**
+   * HomeFloatingCard createMany
+   */
+  export type HomeFloatingCardCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many HomeFloatingCards.
+     */
+    data: HomeFloatingCardCreateManyInput | HomeFloatingCardCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * HomeFloatingCard createManyAndReturn
+   */
+  export type HomeFloatingCardCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HomeFloatingCard
+     */
+    select?: HomeFloatingCardSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many HomeFloatingCards.
+     */
+    data: HomeFloatingCardCreateManyInput | HomeFloatingCardCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * HomeFloatingCard update
+   */
+  export type HomeFloatingCardUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HomeFloatingCard
+     */
+    select?: HomeFloatingCardSelect<ExtArgs> | null
+    /**
+     * The data needed to update a HomeFloatingCard.
+     */
+    data: XOR<HomeFloatingCardUpdateInput, HomeFloatingCardUncheckedUpdateInput>
+    /**
+     * Choose, which HomeFloatingCard to update.
+     */
+    where: HomeFloatingCardWhereUniqueInput
+  }
+
+  /**
+   * HomeFloatingCard updateMany
+   */
+  export type HomeFloatingCardUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update HomeFloatingCards.
+     */
+    data: XOR<HomeFloatingCardUpdateManyMutationInput, HomeFloatingCardUncheckedUpdateManyInput>
+    /**
+     * Filter which HomeFloatingCards to update
+     */
+    where?: HomeFloatingCardWhereInput
+  }
+
+  /**
+   * HomeFloatingCard upsert
+   */
+  export type HomeFloatingCardUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HomeFloatingCard
+     */
+    select?: HomeFloatingCardSelect<ExtArgs> | null
+    /**
+     * The filter to search for the HomeFloatingCard to update in case it exists.
+     */
+    where: HomeFloatingCardWhereUniqueInput
+    /**
+     * In case the HomeFloatingCard found by the `where` argument doesn't exist, create a new HomeFloatingCard with this data.
+     */
+    create: XOR<HomeFloatingCardCreateInput, HomeFloatingCardUncheckedCreateInput>
+    /**
+     * In case the HomeFloatingCard was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<HomeFloatingCardUpdateInput, HomeFloatingCardUncheckedUpdateInput>
+  }
+
+  /**
+   * HomeFloatingCard delete
+   */
+  export type HomeFloatingCardDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HomeFloatingCard
+     */
+    select?: HomeFloatingCardSelect<ExtArgs> | null
+    /**
+     * Filter which HomeFloatingCard to delete.
+     */
+    where: HomeFloatingCardWhereUniqueInput
+  }
+
+  /**
+   * HomeFloatingCard deleteMany
+   */
+  export type HomeFloatingCardDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which HomeFloatingCards to delete
+     */
+    where?: HomeFloatingCardWhereInput
+  }
+
+  /**
+   * HomeFloatingCard without action
+   */
+  export type HomeFloatingCardDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HomeFloatingCard
+     */
+    select?: HomeFloatingCardSelect<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -29462,6 +30496,20 @@ export namespace Prisma {
   };
 
   export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
+  export const HomeFloatingCardScalarFieldEnum: {
+    cardId: 'cardId',
+    title: 'title',
+    icon: 'icon',
+    linkUrl: 'linkUrl',
+    position: 'position',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type HomeFloatingCardScalarFieldEnum = (typeof HomeFloatingCardScalarFieldEnum)[keyof typeof HomeFloatingCardScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -31291,6 +32339,75 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Message"> | Date | string
   }
 
+  export type HomeFloatingCardWhereInput = {
+    AND?: HomeFloatingCardWhereInput | HomeFloatingCardWhereInput[]
+    OR?: HomeFloatingCardWhereInput[]
+    NOT?: HomeFloatingCardWhereInput | HomeFloatingCardWhereInput[]
+    cardId?: UuidFilter<"HomeFloatingCard"> | string
+    title?: StringFilter<"HomeFloatingCard"> | string
+    icon?: StringFilter<"HomeFloatingCard"> | string
+    linkUrl?: StringFilter<"HomeFloatingCard"> | string
+    position?: IntFilter<"HomeFloatingCard"> | number
+    isActive?: BoolFilter<"HomeFloatingCard"> | boolean
+    createdAt?: DateTimeFilter<"HomeFloatingCard"> | Date | string
+    updatedAt?: DateTimeFilter<"HomeFloatingCard"> | Date | string
+  }
+
+  export type HomeFloatingCardOrderByWithRelationInput = {
+    cardId?: SortOrder
+    title?: SortOrder
+    icon?: SortOrder
+    linkUrl?: SortOrder
+    position?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type HomeFloatingCardWhereUniqueInput = Prisma.AtLeast<{
+    cardId?: string
+    AND?: HomeFloatingCardWhereInput | HomeFloatingCardWhereInput[]
+    OR?: HomeFloatingCardWhereInput[]
+    NOT?: HomeFloatingCardWhereInput | HomeFloatingCardWhereInput[]
+    title?: StringFilter<"HomeFloatingCard"> | string
+    icon?: StringFilter<"HomeFloatingCard"> | string
+    linkUrl?: StringFilter<"HomeFloatingCard"> | string
+    position?: IntFilter<"HomeFloatingCard"> | number
+    isActive?: BoolFilter<"HomeFloatingCard"> | boolean
+    createdAt?: DateTimeFilter<"HomeFloatingCard"> | Date | string
+    updatedAt?: DateTimeFilter<"HomeFloatingCard"> | Date | string
+  }, "cardId">
+
+  export type HomeFloatingCardOrderByWithAggregationInput = {
+    cardId?: SortOrder
+    title?: SortOrder
+    icon?: SortOrder
+    linkUrl?: SortOrder
+    position?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: HomeFloatingCardCountOrderByAggregateInput
+    _avg?: HomeFloatingCardAvgOrderByAggregateInput
+    _max?: HomeFloatingCardMaxOrderByAggregateInput
+    _min?: HomeFloatingCardMinOrderByAggregateInput
+    _sum?: HomeFloatingCardSumOrderByAggregateInput
+  }
+
+  export type HomeFloatingCardScalarWhereWithAggregatesInput = {
+    AND?: HomeFloatingCardScalarWhereWithAggregatesInput | HomeFloatingCardScalarWhereWithAggregatesInput[]
+    OR?: HomeFloatingCardScalarWhereWithAggregatesInput[]
+    NOT?: HomeFloatingCardScalarWhereWithAggregatesInput | HomeFloatingCardScalarWhereWithAggregatesInput[]
+    cardId?: UuidWithAggregatesFilter<"HomeFloatingCard"> | string
+    title?: StringWithAggregatesFilter<"HomeFloatingCard"> | string
+    icon?: StringWithAggregatesFilter<"HomeFloatingCard"> | string
+    linkUrl?: StringWithAggregatesFilter<"HomeFloatingCard"> | string
+    position?: IntWithAggregatesFilter<"HomeFloatingCard"> | number
+    isActive?: BoolWithAggregatesFilter<"HomeFloatingCard"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"HomeFloatingCard"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"HomeFloatingCard"> | Date | string
+  }
+
   export type ExhibitionCreateInput = {
     exhibitionId?: bigint | number
     title: string
@@ -32951,6 +34068,83 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type HomeFloatingCardCreateInput = {
+    cardId?: string
+    title: string
+    icon: string
+    linkUrl: string
+    position: number
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type HomeFloatingCardUncheckedCreateInput = {
+    cardId?: string
+    title: string
+    icon: string
+    linkUrl: string
+    position: number
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type HomeFloatingCardUpdateInput = {
+    cardId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    icon?: StringFieldUpdateOperationsInput | string
+    linkUrl?: StringFieldUpdateOperationsInput | string
+    position?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type HomeFloatingCardUncheckedUpdateInput = {
+    cardId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    icon?: StringFieldUpdateOperationsInput | string
+    linkUrl?: StringFieldUpdateOperationsInput | string
+    position?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type HomeFloatingCardCreateManyInput = {
+    cardId?: string
+    title: string
+    icon: string
+    linkUrl: string
+    position: number
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type HomeFloatingCardUpdateManyMutationInput = {
+    cardId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    icon?: StringFieldUpdateOperationsInput | string
+    linkUrl?: StringFieldUpdateOperationsInput | string
+    position?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type HomeFloatingCardUncheckedUpdateManyInput = {
+    cardId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    icon?: StringFieldUpdateOperationsInput | string
+    linkUrl?: StringFieldUpdateOperationsInput | string
+    position?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type BigIntFilter<$PrismaModel = never> = {
     equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
     in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
@@ -34533,6 +35727,47 @@ export namespace Prisma {
   export type MessageSumOrderByAggregateInput = {
     senderTypeId?: SortOrder
     statusId?: SortOrder
+  }
+
+  export type HomeFloatingCardCountOrderByAggregateInput = {
+    cardId?: SortOrder
+    title?: SortOrder
+    icon?: SortOrder
+    linkUrl?: SortOrder
+    position?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type HomeFloatingCardAvgOrderByAggregateInput = {
+    position?: SortOrder
+  }
+
+  export type HomeFloatingCardMaxOrderByAggregateInput = {
+    cardId?: SortOrder
+    title?: SortOrder
+    icon?: SortOrder
+    linkUrl?: SortOrder
+    position?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type HomeFloatingCardMinOrderByAggregateInput = {
+    cardId?: SortOrder
+    title?: SortOrder
+    icon?: SortOrder
+    linkUrl?: SortOrder
+    position?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type HomeFloatingCardSumOrderByAggregateInput = {
+    position?: SortOrder
   }
 
   export type ExhibitCreateNestedManyWithoutExhibitionInput = {
@@ -43014,6 +44249,10 @@ export namespace Prisma {
      * @deprecated Use MessageDefaultArgs instead
      */
     export type MessageArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = MessageDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use HomeFloatingCardDefaultArgs instead
+     */
+    export type HomeFloatingCardArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = HomeFloatingCardDefaultArgs<ExtArgs>
 
   /**
    * Batch Payload for updateMany & deleteMany & createMany

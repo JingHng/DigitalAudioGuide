@@ -11,6 +11,7 @@ const audioRoutes = require('./src/routes/audioRoutes');
 const languageRoutes = require('./src/routes/languageRoutes');
 const translateRoutes = require('./src/routes/translationRoutes');
 const assistantRoutes = require('./src/routes/assistantRoutes');
+const floatingCardRoutes = require('./src/routes/floatingCardRoutes');
 const path = require('path');
 const cors = require('cors');
 
@@ -80,6 +81,7 @@ app.use('/api/audio', audioRoutes);
 app.use('/api/language', languageRoutes);
 app.use('/api/translate', translateRoutes);
 app.use('/api/assistant', assistantRoutes);
+app.use('/api/home/floating-cards', floatingCardRoutes);
 
 // SPA catch-all: serve index.html for non-API routes (client-side routing)
 app.use((req, res, next) => {

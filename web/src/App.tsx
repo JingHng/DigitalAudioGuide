@@ -1,5 +1,4 @@
 import { Routes, Route, useLocation } from "react-router-dom";
-import { useEffect } from "react";
 
 // --- Context & Utilities ---
 import { AuthProvider } from "./contexts/AuthContext";
@@ -14,6 +13,7 @@ import ResetPasswordPage from "./components/ResetPasswordPage";
 import EmailVerificationPage from "./routes/EmailVerificationPage";
 import ScanPage from "./components/ScanPage.tsx";
 import UserBadgePage from "./routes/userBadgePage.tsx";
+import AllBadgesShowcase from "./pages/BadgesPage.tsx";
 
 // --- EXHIBITIONS & TOURS ---
 import AllExhibitions from "./components/ExhibitionsPage.tsx";
@@ -39,6 +39,7 @@ import SettingsPage from "./components/admin/SettingsPage";
 import AssistantPage from "./components/admin/AssistantPage";
 import AssistantHistoryPage from "./components/admin/AssistantHistoryPage";
 import AdminReviewsPage from "./components/admin/AdminReviewsPage";
+import AdminFloatingCards from "./components/admin/AdminFloatingCards";
 
 import NotFoundPage from "./components/NotFoundPage.tsx";
 import ProfilePage from "./components/ProfilePage.tsx";
@@ -63,6 +64,7 @@ function App() {
           <Route path="/admin/badge-analytics" element={<BadgeAnalyticsPage />} />
           <Route path="/admin/audio" element={<AdminRoute><AudioManagement /></AdminRoute>} />
           <Route path="/admin/reviews" element={<AdminRoute><AdminReviewsPage /></AdminRoute>} />
+          <Route path="/admin/floating-cards" element={<AdminRoute><AdminFloatingCards /></AdminRoute>} />
           <Route path="/admin/roles" element={<AdminRoute><RolesPage /></AdminRoute>} />
           <Route path="/admin/users" element={<AdminRoute><UsersPage /></AdminRoute>} />
           <Route path="/admin/audit-logs" element={<AdminRoute><AuditLogsPage /></AdminRoute>} />
@@ -97,6 +99,7 @@ function App() {
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/verify-email" element={<EmailVerificationPage />} />
             <Route path="/scan" element={<ScanPage />} />
+            <Route path="/badges" element={<AllBadgesShowcase />} />
             <Route path="/user-badge" element={<UserBadgePage />} />
             <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
             <Route path="/edit-profile" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
