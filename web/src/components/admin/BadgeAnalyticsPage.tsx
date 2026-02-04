@@ -13,7 +13,14 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { Award, Users, TrendingUp, Hash, RefreshCw, Activity } from "lucide-react";
+import {
+  Award,
+  Users,
+  TrendingUp,
+  Hash,
+  RefreshCw,
+  Activity,
+} from "lucide-react";
 import "../../css/AdminDashboard.css";
 
 type RangeKey = "7d" | "30d" | "90d" | "1y";
@@ -87,7 +94,9 @@ const BadgeAnalyticsPage = () => {
   const [selectedPeriod, setSelectedPeriod] = useState<RangeKey>("30d");
   const [selectedExhibition, setSelectedExhibition] = useState<string>("all");
   const [exhibitions, setExhibitions] = useState<ExhibitionOption[]>([]);
-  const [dashboard, setDashboard] = useState<BadgeDashboardResponse | null>(null);
+  const [dashboard, setDashboard] = useState<BadgeDashboardResponse | null>(
+    null,
+  );
 
   /** Fetches the exhibition list used by the exhibition filter dropdown. */
   const fetchExhibitions = async () => {
@@ -126,6 +135,18 @@ const BadgeAnalyticsPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedPeriod, selectedExhibition]);
 
+  const exhibitionLabel = useMemo(() => {
+    if (selectedExhibition === "all") {
+      return "All Exhibitions";
+    }
+
+    const found = exhibitions.find(
+      (ex) => ex.exhibitionId === selectedExhibition,
+    );
+
+    return found ? found.title : "Unknown Exhibition";
+  }, [selectedExhibition, exhibitions]);
+
   /** Builds the window label in dd/mm/yyyy to avoid locale-dependent formatting. */
   const timeWindowLabel = useMemo(() => {
     if (!dashboard?.filters?.from || !dashboard?.filters?.to) return "";
@@ -137,7 +158,12 @@ const BadgeAnalyticsPage = () => {
   /** Normalizes KPI values into safe numbers for display. */
   const kpi = useMemo(() => {
     if (!dashboard) {
-      return { totalBadges: 0, totalEarned: 0, usersEarned: 0, avgEarnsPerDay: 0 };
+      return {
+        totalBadges: 0,
+        totalEarned: 0,
+        usersEarned: 0,
+        avgEarnsPerDay: 0,
+      };
     }
     return {
       totalBadges: toNumber(dashboard.kpis.totalBadges),
@@ -196,10 +222,18 @@ const BadgeAnalyticsPage = () => {
     <AdminLayout currentPath="/admin/badge-analytics" breadcrumbs={breadcrumbs}>
       <div className="admin-dashboard">
         <div className="dashboard-header">
-          <h1>Badge Analytics</h1>
+          <h1>
+            Badge Analytics{" "}
+            <span style={{ fontWeight: 400, color: "#6b7280" }}>
+              — {exhibitionLabel}
+            </span>
+          </h1>
 
           {/* Filter controls are left-aligned to improve scanability. */}
-          <div className="dashboard-filters dashboard-filters-left" style={{ gap: 12 }}>
+          <div
+            className="dashboard-filters dashboard-filters-left"
+            style={{ gap: 12 }}
+          >
             <div className="period-filter-dropdown">
               <label htmlFor="badgePeriod">Period:</label>
               <select
@@ -282,7 +316,9 @@ const BadgeAnalyticsPage = () => {
                 <div className="kpi-value">
                   <span className="value">{kpi.totalBadges}</span>
                 </div>
-                <span className="kpi-trend info">Badges available in scope</span>
+                <span className="kpi-trend info">
+                  Badges available in scope
+                </span>
               </div>
             </div>
 
@@ -297,7 +333,9 @@ const BadgeAnalyticsPage = () => {
                 <div className="kpi-value">
                   <span className="value">{kpi.totalEarned}</span>
                 </div>
-                <span className="kpi-trend positive">Total user badge claims</span>
+                <span className="kpi-trend positive">
+                  Total user badge claims
+                </span>
               </div>
             </div>
 
@@ -327,7 +365,9 @@ const BadgeAnalyticsPage = () => {
                 <div className="kpi-value">
                   <span className="value">{kpi.avgEarnsPerDay}</span>
                 </div>
-                <span className="kpi-trend positive">Average by selected period</span>
+                <span className="kpi-trend positive">
+                  Average by selected period
+                </span>
               </div>
             </div>
           </div>
@@ -341,7 +381,9 @@ const BadgeAnalyticsPage = () => {
                 <div className="chart-stat">
                   <Activity size={14} />
                   <span className="chart-stat-value">
-                    {dashboard?.filters?.interval === "week" ? "Weekly" : "Daily"}
+                    {dashboard?.filters?.interval === "week"
+                      ? "Weekly"
+                      : "Daily"}
                   </span>
                 </div>
               </div>
@@ -354,7 +396,10 @@ const BadgeAnalyticsPage = () => {
               </div>
             ) : timelineData.length > 0 ? (
               <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={timelineData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                <LineChart
+                  data={timelineData}
+                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                >
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="date" />
                   <YAxis allowDecimals={false} />
@@ -386,7 +431,9 @@ const BadgeAnalyticsPage = () => {
                 <div className="chart-stats">
                   <div className="chart-stat">
                     <span className="chart-stat-label">Styles:</span>
-                    <span className="chart-stat-value">{styleChartData.length}</span>
+                    <span className="chart-stat-value">
+                      {styleChartData.length}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -398,7 +445,10 @@ const BadgeAnalyticsPage = () => {
                 </div>
               ) : styleChartData.length > 0 ? (
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={styleChartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                  <BarChart
+                    data={styleChartData}
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                  >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="styleName" />
                     <YAxis allowDecimals={false} />
@@ -434,7 +484,10 @@ const BadgeAnalyticsPage = () => {
                 </div>
               ) : topBadgesChartData.length > 0 ? (
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={topBadgesChartData} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
+                  <BarChart
+                    data={topBadgesChartData}
+                    margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
+                  >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
                     <YAxis allowDecimals={false} />
@@ -442,8 +495,13 @@ const BadgeAnalyticsPage = () => {
                       formatter={(value: any, _n: any, ctx: any) => {
                         const p = ctx?.payload;
                         const title = p?.fullName ? `: ${p.fullName}` : "";
-                        const badgeStyle = p?.badgeStyle ? ` (${p.badgeStyle})` : "";
-                        return [`${value} earned${badgeStyle}${title}`, "Earned"];
+                        const badgeStyle = p?.badgeStyle
+                          ? ` (${p.badgeStyle})`
+                          : "";
+                        return [
+                          `${value} earned${badgeStyle}${title}`,
+                          "Earned",
+                        ];
                       }}
                     />
                     <Legend />
@@ -488,15 +546,20 @@ const BadgeAnalyticsPage = () => {
                 </div>
 
                 <div className="content-table">
-                  {Array.isArray(dashboard.topBadges) && dashboard.topBadges.length > 0 ? (
+                  {Array.isArray(dashboard.topBadges) &&
+                  dashboard.topBadges.length > 0 ? (
                     dashboard.topBadges.map((b, idx) => (
                       <div key={b.badgeId} className="content-row">
                         <div className="rank">#{idx + 1}</div>
 
                         {/* Two-column alignment for name + earned */}
                         <div className="content-info badge-table-main">
-                          <span className="content-name">{b.name || "(Unnamed)"}</span>
-                          <span className="badge-earned">{toNumber(b.earned)} earned</span>
+                          <span className="content-name">
+                            {b.name || "(Unnamed)"}
+                          </span>
+                          <span className="badge-earned">
+                            {toNumber(b.earned)} earned
+                          </span>
                         </div>
 
                         {/* Preserves the original style appearance */}
@@ -517,15 +580,20 @@ const BadgeAnalyticsPage = () => {
                 </div>
 
                 <div className="content-table">
-                  {Array.isArray(dashboard.bottomBadges) && dashboard.bottomBadges.length > 0 ? (
+                  {Array.isArray(dashboard.bottomBadges) &&
+                  dashboard.bottomBadges.length > 0 ? (
                     dashboard.bottomBadges.map((b, idx) => (
                       <div key={b.badgeId} className="content-row">
                         <div className="rank">#{idx + 1}</div>
 
                         {/* Two-column alignment for name + earned */}
                         <div className="content-info badge-table-main">
-                          <span className="content-name">{b.name || "(Unnamed)"}</span>
-                          <span className="badge-earned">{toNumber(b.earned)} earned</span>
+                          <span className="content-name">
+                            {b.name || "(Unnamed)"}
+                          </span>
+                          <span className="badge-earned">
+                            {toNumber(b.earned)} earned
+                          </span>
                         </div>
 
                         {/* Preserves the original style appearance */}
