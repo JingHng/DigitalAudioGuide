@@ -2,7 +2,7 @@ name: E2E Testing Pipeline
 
 on:
   push:
-    branches: [ "feature/**", "features/**", "!features/tour" ]
+    branches: [ "features/**", "features/**", "!features/tour" ]
     paths-ignore:
       - "modules/**"
       - "**/*.md"
