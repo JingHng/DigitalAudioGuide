@@ -3,6 +3,7 @@ import { Routes, Route, useLocation } from "react-router-dom";
 // --- Context & Utilities ---
 import { AuthProvider } from "./contexts/AuthContext";
 import Navbar from "./components/Navbar.tsx";
+import Footer from "./components/Footer";
 import Homepage from "./components/HomePage.tsx";
 
 // --- Auth & User Components ---
@@ -108,6 +109,7 @@ function App() {
           </Routes>
         </div>
       )}
+      <Footer />
     </AuthProvider>
   );
 }
