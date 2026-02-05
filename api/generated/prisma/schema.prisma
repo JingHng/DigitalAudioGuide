@@ -10,15 +10,20 @@ datasource db {
 }
 
 model Exhibition {
-  exhibitionId BigInt    @id @default(autoincrement()) @map("exhibition_id")
-  title        String    @unique @db.VarChar(255)
+  exhibitionId BigInt  @id @default(autoincrement()) @map("exhibition_id")
+  title        String  @unique @db.VarChar(255)
   description  String?
-  statusId     Int?      @map("status_id")
-  createdAt    DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt    DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
-  exhibits     Exhibit[]
-  status       Status?   @relation(fields: [statusId], references: [statusId], onUpdate: NoAction)
-  images       Image[]
+  statusId     Int?    @map("status_id")
+
+  startsAt DateTime? @map("starts_at") @db.Timestamptz(6)
+  endsAt   DateTime? @map("ends_at") @db.Timestamptz(6)
+
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  exhibits Exhibit[]
+  status   Status?   @relation(fields: [statusId], references: [statusId], onUpdate: NoAction)
+  images   Image[]
 
   @@index([statusId], map: "idx_exhibitions_status")
   @@index([createdAt], map: "idx_exhibitions_created_at")
