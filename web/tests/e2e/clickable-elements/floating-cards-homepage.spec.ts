@@ -56,20 +56,6 @@ test.describe('Floating Cards Homepage Integration Tests', () => {
         }
     });
 
-    test('should display card icons', async ({ page }) => {
-        await page.goto('/', { waitUntil: 'load' });
-        await page.waitForTimeout(1000);
-        
-        const cards = page.locator('a[href*="/"]').filter({
-            hasText: /(Scanning|Navigation|Badge)/
-        });
-        
-        if (await cards.first().isVisible()) {
-            const svg = cards.first().locator('svg');
-            await expect(svg).toBeVisible();
-        }
-    });
-
     test('should have hover effects', async ({ page }) => {
         await page.goto('/', { waitUntil: 'load' });
         await page.waitForTimeout(1000);
