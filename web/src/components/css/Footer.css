@@ -6,6 +6,8 @@
   border-top: 1px solid #e5e7eb;
   background: #ffffff;
   color: #6b7280;
+  position: relative;
+  z-index: 1;
 }
 
 .footer__container {
@@ -19,13 +21,13 @@
    --------------------------------------------------------- */
 
 .footer--admin {
-  /* The sidebar width is injected as a CSS variable from TSX */
   margin-left: var(--admin-sidebar-width, 0px);
   width: calc(100% - var(--admin-sidebar-width, 0px));
-
-  /* Increased padding to keep content away from edges */
   padding: 20px 60px;
+  box-sizing: border-box;
+  overflow: visible;
 }
+
 
 .footer__container--admin {
   display: flex;
