@@ -14,10 +14,9 @@ const TEST_USER = {
   gender: null,
 };
 
-test.describe("Profile Page (ProfilePage2)", () => {
+test.describe("Profile Page", () => {
   test.beforeEach(async ({ page }) => {
-    // Default profile mock
-    await page.route("/auth/profile", async (route) => {
+    await page.route("api/auth/profile", async (route) => {
       await route.fulfill({
         status: 200,
         contentType: "application/json",
@@ -25,8 +24,7 @@ test.describe("Profile Page (ProfilePage2)", () => {
       });
     });
 
-    // Default badges mock (no badges initially)
-    await page.route("/badges/userBadges", async (route) => {
+    await page.route("api/badges/userBadges", async (route) => {
       await route.fulfill({
         status: 200,
         contentType: "application/json",
@@ -34,14 +32,21 @@ test.describe("Profile Page (ProfilePage2)", () => {
       });
     });
 
-    // Login via UI
+    await page.route("api/auth/login", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ token: "fake-jwt-token" }),
+      });
+    });
+
+
     await page.goto("/login");
     await page.getByPlaceholder("Your username").fill(TEST_USER.username);
     await page.getByPlaceholder("••••••••").fill(TEST_USER.password);
     await page.getByRole("button", { name: "Sign In" }).click();
     await page.waitForURL("/admin/dashboard", { timeout: 15000 });
 
-    // Navigate to profile
     await page.goto("/profile");
     await expect(page.locator(".display-name")).toBeVisible();
   });
@@ -68,8 +73,8 @@ test.describe("Profile Page (ProfilePage2)", () => {
   });
 
   test("optionally shows gender pill when gender exists", async ({ page }) => {
-    await page.unroute("/auth/profile");
-    await page.route("/auth/profile", async (route) => {
+    await page.unroute("api/auth/profile");
+    await page.route("api/auth/profile", async (route) => {
       await route.fulfill({
         status: 200,
         contentType: "application/json",
