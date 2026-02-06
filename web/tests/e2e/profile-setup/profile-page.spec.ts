@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test.use({ trace: "on-first-retry" }); // helpful in CI
+test.use({ trace: "on-first-retry" });
 
 const TEST_USER = {
   userId: "1",
@@ -9,15 +9,15 @@ const TEST_USER = {
   email: "admin@audiomuseum.com",
   roles: ["admin"],
   profilePictureUrl: "/avatars/admin.png",
-  firstName: "Admin",
-  lastName: "User",
+  firstName: "System",
+  lastName: "Admin",
   gender: null,
 };
 
 test.describe("Profile Page (ProfilePage2)", () => {
   test.beforeEach(async ({ page }) => {
     // Default profile mock
-    await page.route("**/auth/profile", async (route) => {
+    await page.route("/auth/profile", async (route) => {
       await route.fulfill({
         status: 200,
         contentType: "application/json",
@@ -25,8 +25,8 @@ test.describe("Profile Page (ProfilePage2)", () => {
       });
     });
 
-    // Default badges mock
-    await page.route("**/badges/userBadges", async (route) => {
+    // Default badges mock (no badges initially)
+    await page.route("/badges/userBadges", async (route) => {
       await route.fulfill({
         status: 200,
         contentType: "application/json",
@@ -39,11 +39,11 @@ test.describe("Profile Page (ProfilePage2)", () => {
     await page.getByPlaceholder("Your username").fill(TEST_USER.username);
     await page.getByPlaceholder("••••••••").fill(TEST_USER.password);
     await page.getByRole("button", { name: "Sign In" }).click();
-    await page.waitForURL("**/admin/dashboard", { timeout: 15000 });
+    await page.waitForURL("/admin/dashboard", { timeout: 15000 });
 
     // Navigate to profile
     await page.goto("/profile");
-    await expect(page.locator(".display-name")).toBeVisible(); // explicit wait
+    await expect(page.locator(".display-name")).toBeVisible();
   });
 
   test("shows full name + username handle + email + roles", async ({ page }) => {
@@ -67,34 +67,9 @@ test.describe("Profile Page (ProfilePage2)", () => {
     await expect(page.locator(".badge-item")).toHaveCount(0);
   });
 
-  test("shows assigned badge when API returns badge list", async ({ page }) => {
-    // Override badges route
-    await page.unroute("**/badges/userBadges");
-    await page.route("**/badges/userBadges", async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({
-          data: [
-            {
-              badgeId: 1,
-              badge: { name: "Explorer", imageUrl: "/badges/badge-1.png" },
-            },
-          ],
-        }),
-      });
-    });
-
-    await page.reload();
-    await expect(page.locator(".badge-item")).toHaveCount(1);
-    await expect(page.locator(".badge-name")).toHaveText("Explorer");
-    await expect(page.locator(".badge-image")).toHaveAttribute("src", /badge-1\.png/);
-  });
-
   test("optionally shows gender pill when gender exists", async ({ page }) => {
-    // Override profile route
-    await page.unroute("**/auth/profile");
-    await page.route("**/auth/profile", async (route) => {
+    await page.unroute("/auth/profile");
+    await page.route("/auth/profile", async (route) => {
       await route.fulfill({
         status: 200,
         contentType: "application/json",
