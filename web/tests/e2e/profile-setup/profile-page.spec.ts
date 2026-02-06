@@ -1,5 +1,7 @@
 import { test, expect } from "@playwright/test";
 
+test.use({ trace: "on-first-retry" }); // helpful in CI
+
 const TEST_USER = {
   userId: "1",
   username: "admin",
@@ -9,33 +11,21 @@ const TEST_USER = {
   profilePictureUrl: "/avatars/admin.png",
   firstName: "Admin",
   lastName: "User",
-  gender: null, 
+  gender: null,
 };
 
 test.describe("Profile Page (ProfilePage2)", () => {
   test.beforeEach(async ({ page }) => {
-    // Mock profile API BEFORE /profile loads
+    // Default profile mock
     await page.route("**/auth/profile", async (route) => {
       await route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify({
-          user: {
-            userId: TEST_USER.userId,
-            username: TEST_USER.username,
-            email: TEST_USER.email,
-            profilePictureUrl: TEST_USER.profilePictureUrl,
-            firstName: TEST_USER.firstName,
-            lastName: TEST_USER.lastName,
-            gender: TEST_USER.gender,
-            roles: TEST_USER.roles,
-            badges: [],
-          },
-        }),
+        body: JSON.stringify({ user: TEST_USER }),
       });
     });
 
-    // Default: no badges
+    // Default badges mock
     await page.route("**/badges/userBadges", async (route) => {
       await route.fulfill({
         status: 200,
@@ -46,29 +36,22 @@ test.describe("Profile Page (ProfilePage2)", () => {
 
     // Login via UI
     await page.goto("/login");
-    await page.fill('input[placeholder="Your username"]', TEST_USER.username);
-    await page.fill('input[placeholder="••••••••"]', TEST_USER.password);
-    await page.click('button:has-text("Sign In")');
+    await page.getByPlaceholder("Your username").fill(TEST_USER.username);
+    await page.getByPlaceholder("••••••••").fill(TEST_USER.password);
+    await page.getByRole("button", { name: "Sign In" }).click();
     await page.waitForURL("**/admin/dashboard", { timeout: 15000 });
 
-    // Go to profile
+    // Navigate to profile
     await page.goto("/profile");
-    await page.waitForLoadState("networkidle", { timeout: 15000 });
+    await expect(page.locator(".display-name")).toBeVisible(); // explicit wait
   });
 
   test("shows full name + username handle + email + roles", async ({ page }) => {
-    // Full name must be shown
     await expect(page.locator(".display-name")).toHaveText(
       `${TEST_USER.firstName} ${TEST_USER.lastName}`
     );
-
-    // Username handle must be shown
     await expect(page.locator(".username-handle")).toHaveText(`@${TEST_USER.username}`);
-
-    // Email visible
     await expect(page.getByText(TEST_USER.email)).toBeVisible();
-
-    // Role chips
     await expect(page.locator(".role-chip")).toHaveCount(TEST_USER.roles.length);
     await expect(page.locator(".role-chip")).toContainText(TEST_USER.roles[0]);
   });
@@ -79,15 +62,14 @@ test.describe("Profile Page (ProfilePage2)", () => {
   });
 
   test("shows no badges message when user has no badges", async ({ page }) => {
-    await expect(page.locator(".badges-title")).toHaveText("Your Badges");
-    await expect(page.locator(".no-badges-text")).toBeVisible();
-    await expect(page.locator(".no-badges-text")).toHaveText(
-      "You haven't earned any badges yet."
-    );
+    await expect(page.getByText("Your Badges")).toBeVisible();
+    await expect(page.getByText("You haven't earned any badges yet.")).toBeVisible();
     await expect(page.locator(".badge-item")).toHaveCount(0);
   });
 
   test("shows assigned badge when API returns badge list", async ({ page }) => {
+    // Override badges route
+    await page.unroute("**/badges/userBadges");
     await page.route("**/badges/userBadges", async (route) => {
       await route.fulfill({
         status: 200,
@@ -103,29 +85,24 @@ test.describe("Profile Page (ProfilePage2)", () => {
       });
     });
 
-    // Reload so the badges useEffect refetches with new mock
-    await page.goto("/profile");
-    await page.waitForLoadState("networkidle", { timeout: 15000 });
-
+    await page.reload();
     await expect(page.locator(".badge-item")).toHaveCount(1);
     await expect(page.locator(".badge-name")).toHaveText("Explorer");
     await expect(page.locator(".badge-image")).toHaveAttribute("src", /badge-1\.png/);
   });
 
   test("optionally shows gender pill when gender exists", async ({ page }) => {
+    // Override profile route
+    await page.unroute("**/auth/profile");
     await page.route("**/auth/profile", async (route) => {
       await route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify({
-          user: { ...TEST_USER, gender: "male" },
-        }),
+        body: JSON.stringify({ user: { ...TEST_USER, gender: "male" } }),
       });
     });
 
-    await page.goto("/profile");
-    await page.waitForLoadState("networkidle", { timeout: 15000 });
-
+    await page.reload();
     await expect(page.locator(".gender-pill")).toBeVisible();
   });
 });
