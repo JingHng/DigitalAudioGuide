@@ -26,3 +26,5 @@
 {"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2026-02-06 08:48:45"}
 {"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2026-02-06 08:53:13"}
 {"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2026-02-06 08:53:13"}
+{"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2026-02-06 08:56:59"}
+{"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2026-02-06 08:56:59"}
