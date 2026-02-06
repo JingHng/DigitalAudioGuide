@@ -1,146 +1,131 @@
-// import { test, expect } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 
-// const badgeUrlRegex = new RegExp('/badges/assignBadges/1');
+const TEST_USER = {
+  userId: "1",
+  username: "admin",
+  password: "admin123",
+  email: "admin@audiomuseum.com",
+  roles: ["admin"],
+  profilePictureUrl: "/avatars/admin.png",
+  firstName: "Admin",
+  lastName: "User",
+  gender: null, 
+};
 
-// // Test account
-// const TEST_USER = {
-//   userId: '1',
-//   username: 'admin',
-//   password: 'admin123',
-//   email: 'admin@audiomuseum.com',
-//   roles: ['admin'],
-//   profilePictureUrl: '/avatars/admin.png',
-//   badges: [],
-// };
+test.describe("Profile Page (ProfilePage2)", () => {
+  test.beforeEach(async ({ page }) => {
+    // Mock profile API BEFORE /profile loads
+    await page.route("**/auth/profile", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          user: {
+            userId: TEST_USER.userId,
+            username: TEST_USER.username,
+            email: TEST_USER.email,
+            profilePictureUrl: TEST_USER.profilePictureUrl,
+            firstName: TEST_USER.firstName,
+            lastName: TEST_USER.lastName,
+            gender: TEST_USER.gender,
+            roles: TEST_USER.roles,
+            badges: [],
+          },
+        }),
+      });
+    });
 
-// // helper function
-// async function loginAndGetToken(request) {
-//   const res = await request.post('/api/auth/login', {
-//     data: {
-//       username: 'admin',
-//       password: 'admin123',
-//     },
-//   });
+    // Default: no badges
+    await page.route("**/badges/userBadges", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ data: [] }),
+      });
+    });
 
-//   expect(res.ok()).toBeTruthy();
+    // Login via UI
+    await page.goto("/login");
+    await page.fill('input[placeholder="Your username"]', TEST_USER.username);
+    await page.fill('input[placeholder="••••••••"]', TEST_USER.password);
+    await page.click('button:has-text("Sign In")');
+    await page.waitForURL("**/admin/dashboard", { timeout: 15000 });
 
-//   const body = await res.json();
-//   return body.token; 
-// }
+    // Go to profile
+    await page.goto("/profile");
+    await page.waitForLoadState("networkidle", { timeout: 15000 });
+  });
 
+  test("shows full name + username handle + email + roles", async ({ page }) => {
+    // Full name must be shown
+    await expect(page.locator(".display-name")).toHaveText(
+      `${TEST_USER.firstName} ${TEST_USER.lastName}`
+    );
 
-// test.describe('Profile Page', () => {
-//   // -----------------------------------
-//   // Setup: Login before each test & mock badge data
-//   // -----------------------------------
-//   test.beforeEach(async ({ page }) => {
-//     // Login as admin
-//     await page.goto('/login');
-    
-//     await page.fill('input[placeholder="Your username"]', TEST_USER.username);
-//     await page.fill('input[placeholder="••••••••"]', TEST_USER.password);
-//     await page.click('button:has-text("Sign In")');
-    
-//     // Wait for redirect to admin dashboard
-//     await page.waitForURL('http://localhost:5173/admin/dashboard', { timeout: 15000 });
+    // Username handle must be shown
+    await expect(page.locator(".username-handle")).toHaveText(`@${TEST_USER.username}`);
 
-//     // Assign badge to user
-//     await page.route(badgeUrlRegex, async route => {
-//       await route.fulfill({
-//         status: 200,
-//         contentType: 'application/json',
-//         body: JSON.stringify({
-//           message: 'Badge claimed successfully',
-//           badgeId: 'badge-1',
-//           image_url: '/badges/badge-1.png',
-//         }),
-//       });
-//     });
-    
-//     // Navigate to profile page page
-//     await page.goto('/profile');
-    
-//     // Wait for page to load
-//     await page.waitForLoadState('networkidle', { timeout: 15000 });
-//   });
+    // Email visible
+    await expect(page.getByText(TEST_USER.email)).toBeVisible();
 
-//   // -----------------------------------
-//   // Test 1: Page Layout and Welcome Screen
-//   // -----------------------------------
-//   test('should display profile page with greeting and edit profile', async ({ page }) => {
-//     // Check for greeting message
-//     const greeting = page.locator('h2');
-//     await expect(greeting).toBeVisible();
-//     await expect(greeting).toHaveText(`Welcome, ${TEST_USER.username}!`);
-    
-//     // Check for email container
-//     await expect(page.locator('.email-container'))
-//       .toHaveText(TEST_USER.email);
-    
-//     // Check for role container
-//     await expect(page.locator('.role-container'))
-//       .toContainText(`Role: ${TEST_USER.roles.join(', ')}`);
+    // Role chips
+    await expect(page.locator(".role-chip")).toHaveCount(TEST_USER.roles.length);
+    await expect(page.locator(".role-chip")).toContainText(TEST_USER.roles[0]);
+  });
 
-//   });
+  test("navigates to edit profile when Edit button clicked", async ({ page }) => {
+    await page.click(".edit-profile-btn");
+    await expect(page).toHaveURL(/\/edit-profile$/);
+  });
 
-//   // -----------------------------------
-//   // Test 2: Navigate to edit profile
-//   // -----------------------------------
-//   test('navigates to edit profile page when button is clicked', async ({ page }) => {
-//     await page.getByRole('button', { name: /edit profile/i }).click();
-//     await expect(page).toHaveURL(/\/edit-profile$/);
-//   });
+  test("shows no badges message when user has no badges", async ({ page }) => {
+    await expect(page.locator(".badges-title")).toHaveText("Your Badges");
+    await expect(page.locator(".no-badges-text")).toBeVisible();
+    await expect(page.locator(".no-badges-text")).toHaveText(
+      "You haven't earned any badges yet."
+    );
+    await expect(page.locator(".badge-item")).toHaveCount(0);
+  });
 
-  
-//   // -----------------------------------
-//   // Test 3: Badges Section Display
-//   // -----------------------------------
-// test('shows no badges message when user has no badges', async ({ page }) => {
-//   // Badges title
-//   await expect(page.locator('.badges-title'))
-//     .toHaveText('Your Badges');
+  test("shows assigned badge when API returns badge list", async ({ page }) => {
+    await page.route("**/badges/userBadges", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          data: [
+            {
+              badgeId: 1,
+              badge: { name: "Explorer", imageUrl: "/badges/badge-1.png" },
+            },
+          ],
+        }),
+      });
+    });
 
-//   // "No badges" message
-//   await expect(page.locator('.no-badges-text'))
-//     .toBeVisible();
+    // Reload so the badges useEffect refetches with new mock
+    await page.goto("/profile");
+    await page.waitForLoadState("networkidle", { timeout: 15000 });
 
-//   await expect(page.locator('.no-badges-text'))
-//     .toHaveText("You haven't earned any badges yet.");
+    await expect(page.locator(".badge-item")).toHaveCount(1);
+    await expect(page.locator(".badge-name")).toHaveText("Explorer");
+    await expect(page.locator(".badge-image")).toHaveAttribute("src", /badge-1\.png/);
+  });
 
-//   // Ensure no badge items are rendered
-//   await expect(page.locator('.badge-item'))
-//     .toHaveCount(0);
-// });
+  test("optionally shows gender pill when gender exists", async ({ page }) => {
+    await page.route("**/auth/profile", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          user: { ...TEST_USER, gender: "male" },
+        }),
+      });
+    });
 
+    await page.goto("/profile");
+    await page.waitForLoadState("networkidle", { timeout: 15000 });
 
-//   // -----------------------------------
-//   // Test 4: Assigned Badge Display
-//   // -----------------------------------
-//   test('profile page shows assigned badge', async ({ page, request }) => {
-//     await page.route('**/badges/userBadges', async route => {
-//   await route.fulfill({
-//     status: 200,
-//     contentType: 'application/json',
-//     body: JSON.stringify({
-//       data: [
-//         {
-//           badgeId: '1',
-//           badge: {
-//             name: 'Explorer',
-//             imageUrl: '/badges/badge-1.png',
-//           },
-//         },
-//       ],
-//     }),
-//   });
-// });
-
-// await page.goto('/profile');
-
-// // Assert
-// await expect(page.locator('.badge-item')).toHaveCount(1);
-// await expect(page.locator('.badge-name')).toHaveText('Explorer');
-
-// });
-
-// });
+    await expect(page.locator(".gender-pill")).toBeVisible();
+  });
+});
