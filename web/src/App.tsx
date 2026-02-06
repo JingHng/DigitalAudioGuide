@@ -44,6 +44,7 @@ import AdminFloatingCards from "./components/admin/AdminFloatingCards";
 import NotFoundPage from "./components/NotFoundPage.tsx";
 import ProfilePage from "./components/ProfilePage.tsx";
 import EditProfilePage from "./components/EditProfilePage.tsx";
+import ProfileSetupPage from "./components/ProfileSetupPage.tsx";
 
 function App() {
   const location = useLocation();
@@ -102,6 +103,7 @@ function App() {
             <Route path="/badges" element={<AllBadgesShowcase />} />
             <Route path="/user-badge" element={<UserBadgePage />} />
             <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+            <Route path="/profile/setup" element={<ProtectedRoute><ProfileSetupPage /></ProtectedRoute>} />
             <Route path="/edit-profile" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
 
             <Route path="*" element={<NotFoundPage />} />

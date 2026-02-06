@@ -1,0 +1,294 @@
+:root {
+  --bg: #0b1020;
+  --card: rgba(255, 255, 255, 0.08);
+  --card-2: rgba(255, 255, 255, 0.06);
+  --border: rgba(255, 255, 255, 0.14);
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.65);
+
+
+  --accent-1: #4f46e5; /* indigo */
+  --accent-2: #a855f7; /* purple */
+  --accent-3: #22d3ee; /* cyan pop */
+  --shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
+}
+
+
+* {
+  box-sizing: border-box;
+}
+
+
+.profile-setup-page {
+  min-height: 100vh;
+  padding: 40px 16px;
+  background:
+    radial-gradient(
+      1200px 600px at 20% 10%,
+      rgba(79, 70, 229, 0.25),
+      transparent 60%
+    ),
+    radial-gradient(
+      1000px 700px at 80% 30%,
+      rgba(168, 85, 247, 0.22),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 600px at 50% 90%,
+      rgba(34, 211, 238, 0.12),
+      transparent 55%
+    ),
+    var(--bg);
+  color: var(--text);
+  color-scheme: dark;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.setup-card {
+  width: 100%;
+  max-width: 520px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  backdrop-filter: blur(14px);
+}
+
+
+/* Optional header strip to match your profile card header vibe */
+.setup-card::before {
+  content: "";  
+  display: block;
+  height: 40px;
+  position: relative;
+}
+
+
+.setup-card::after {
+  content: "";
+  position: absolute;
+  /* create the same glow as profile-card__header::after */
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      600px 120px at 30% 30%,
+      rgba(255, 255, 255, 0.18),
+      transparent 60%
+    ),
+    radial-gradient(
+      500px 130px at 70% 20%,
+      rgba(34, 211, 238, 0.18),
+      transparent 60%
+    );
+  opacity: 0.55;
+}
+
+
+/* Body spacing */
+.setup-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+
+.setup-title {
+  margin: -10px 0 6px;
+  padding: 0 22px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+
+.setup-progress {
+  padding: 0 22px 18px;
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 0.95rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+
+/* Form controls */
+.setup-card label {
+  display: block;
+  padding: 0 22px;
+  margin: 14px 0 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+
+.setup-card input,
+.setup-card select {
+  width: calc(100% - 44px);
+  margin: 0 22px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.92);
+  outline: none;
+  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+
+.setup-card input::placeholder {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+
+.setup-card input:focus,
+.setup-card select:focus {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+
+/* Hide number spinners for zip */
+.setup-card input[type="number"]::-webkit-outer-spin-button,
+.setup-card input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.setup-card input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+
+/* Consent step helpers (if you add a consent step UI) */
+.consent-box {
+  margin: 12px 22px 0;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+
+.consent-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 8px;
+  border-radius: 14px;
+  color: rgba(255, 255, 255, 0.86);
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+
+.consent-row:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+
+.consent-row input[type="checkbox"] {
+  margin-top: 3px;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent-2);
+}
+
+
+/* Actions */
+.setup-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 22px 22px;
+}
+
+
+/* Buttons to match your edit-profile button look */
+.primary-btn,
+.ghost-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+
+  padding: 10px 12px;
+  border-radius: 14px;
+  cursor: pointer;
+
+
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease,
+    filter 0.15s ease;
+}
+
+
+.ghost-btn {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+
+.ghost-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.10);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+
+.primary-btn {
+  color: white;
+  background: linear-gradient(
+    90deg,
+    rgba(79, 70, 229, 0.75),
+    rgba(168, 85, 247, 0.65)
+  );
+}
+
+
+.primary-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+
+.primary-btn:disabled,
+.ghost-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+
+/* Responsive */
+@media (max-width: 520px) {
+  .setup-actions {
+    flex-direction: column;
+  }
+
+
+  .primary-btn,
+  .ghost-btn {
+    width: 100%;
+  }
+}
+
+
+.setup-card select {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+
+.setup-card select option {
+  background: #0b1020;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+
+
