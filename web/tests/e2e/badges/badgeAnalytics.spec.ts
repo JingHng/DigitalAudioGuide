@@ -361,7 +361,7 @@ test.describe("Admin BadgeAnalyticsPage", () => {
     });
   });
 
-  // ✅ 用更宽松的 dashboard 匹配（避免 /api 前缀 / query 顺序 / baseURL 变化）
+
   const anyDashboardLoose = /\/badges\/stats\/dashboard(\?.*)?$/;
 
   await page.route(anyDashboardLoose, async (route) => {
@@ -377,10 +377,8 @@ test.describe("Admin BadgeAnalyticsPage", () => {
 
   await page.reload({ waitUntil: "domcontentloaded" });
 
-  // ✅ 等到页面第一次 dashboard 数据渲染出来，确保初始加载完成
   await expect(page.getByText("Window:")).toBeVisible({ timeout: 20_000 });
 
-  // ✅ 关键：点击 Refresh 前，先挂起对“下一次 dashboard 请求”的等待
   const reqPromise = page.waitForRequest((req) => {
     return (
       req.method() === "GET" &&

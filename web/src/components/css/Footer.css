@@ -2,27 +2,26 @@
    Shared footer base styles
    --------------------------------------------------------- */
 
-/* 给 body 或 page wrapper 做 flex */
 body, html {
   height: 100%;
   margin: 0;
 }
 
-.page-wrapper {       /* 包裹 header + main + footer 的容器 */
+.page-wrapper { 
   display: flex;
   flex-direction: column;
-  min-height: 100vh;  /* 保证至少占满整个视口高度 */
+  min-height: 100vh; 
 }
 
 .main-content {
-  flex: 1;            /* 占据剩余空间，把 footer 推到底 */
+  flex: 1; 
 }
 
 .se-footer {
   border-top: 1px solid #e5e7eb;
   background: #ffffff;
   color: #6b7280;
-  position: relative;  /* 不用 fixed */
+  position: relative; 
   z-index: 1;
 }
 
