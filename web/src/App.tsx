@@ -15,6 +15,7 @@ import EmailVerificationPage from "./routes/EmailVerificationPage";
 import ScanPage from "./components/ScanPage.tsx";
 import UserBadgePage from "./routes/userBadgePage.tsx";
 import AllBadgesShowcase from "./pages/BadgesPage.tsx";
+import AudioGuidePreferencePage from "./pages/AudioGuidePreferencePage.tsx";
 
 // --- EXHIBITIONS & TOURS ---
 import AllExhibitions from "./components/ExhibitionsPage.tsx";
@@ -104,6 +105,7 @@ function App() {
             <Route path="/user-badge" element={<UserBadgePage />} />
             <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
             <Route path="/edit-profile" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
+            <Route path="/dashboard" element={<ProtectedRoute><AudioGuidePreferencePage /></ProtectedRoute>} />
 
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
