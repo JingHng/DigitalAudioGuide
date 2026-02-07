@@ -88,6 +88,60 @@ const ReviewsPage: React.FC = () => {
     );
   }
 
+  // Helper for rendering page numbers with ellipsis
+  const renderPagination = () => {
+    if (totalPages <= 1) return null;
+    const pageNumbers = [];
+    const maxPageButtons = 5;
+    let start = Math.max(1, page - 2);
+    let end = Math.min(totalPages, page + 2);
+
+    if (end - start < maxPageButtons - 1) {
+      if (start === 1) {
+        end = Math.min(totalPages, start + maxPageButtons - 1);
+      } else if (end === totalPages) {
+        start = Math.max(1, end - maxPageButtons + 1);
+      }
+    }
+
+    for (let i = start; i <= end; i++) {
+      pageNumbers.push(i);
+    }
+
+    return (
+      <footer className="pagination-footer">
+        <button className="page-btn" onClick={() => fetchReviews(1)} disabled={page === 1} title="First Page">
+          <ChevronLeft size={14} style={{ marginRight: -4 }} />
+          <ChevronLeft size={14} />
+        </button>
+        <button className="page-btn" onClick={() => fetchReviews(page - 1)} disabled={page <= 1} title="Previous Page">
+          <ChevronLeft size={18} />
+        </button>
+        {start > 1 && <span className="page-info">...</span>}
+        {pageNumbers.map((num) => (
+          <button
+            key={num}
+            className={`page-btn${num === page ? ' active' : ''}`}
+            onClick={() => fetchReviews(num)}
+            disabled={num === page}
+            aria-current={num === page ? 'page' : undefined}
+          >
+            {num}
+          </button>
+        ))}
+        {end < totalPages && <span className="page-info">...</span>}
+        <button className="page-btn" onClick={() => fetchReviews(page + 1)} disabled={page >= totalPages} title="Next Page">
+          <ChevronRight size={18} />
+        </button>
+        <button className="page-btn" onClick={() => fetchReviews(totalPages)} disabled={page === totalPages} title="Last Page">
+          <ChevronRight size={14} />
+          <ChevronRight size={14} style={{ marginLeft: -4 }} />
+        </button>
+        <span className="page-info">Page <strong>{page}</strong> of {totalPages}</span>
+      </footer>
+    );
+  };
+
   return (
     <div className="reviews-master-container">
       <header className="reviews-header">
@@ -195,17 +249,7 @@ const ReviewsPage: React.FC = () => {
       </div>
 
       {/* PAGINATION */}
-      {!loading && reviews.length > 0 && (
-        <footer className="pagination-footer">
-          <button className="page-btn" onClick={() => fetchReviews(page - 1)} disabled={page <= 1}>
-            <ChevronLeft size={18} />
-          </button>
-          <span className="page-info">Page <strong>{page}</strong> of {totalPages}</span>
-          <button className="page-btn" onClick={() => fetchReviews(page + 1)} disabled={page >= totalPages}>
-            <ChevronRight size={18} />
-          </button>
-        </footer>
-      )}
+      {!loading && reviews.length > 0 && renderPagination()}
     </div>
   );
 };
