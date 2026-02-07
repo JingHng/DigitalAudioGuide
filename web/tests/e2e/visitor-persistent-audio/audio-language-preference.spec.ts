@@ -160,7 +160,7 @@ test.describe('Audio Guide Language Preference', () => {
     // Check for selected indicator (checkmark)
     const selectedIndicator = firstCard.locator('.selected-indicator');
     await expect(selectedIndicator).toBeVisible();
-  });
+  }); 
 
   // -----------------------------------
   // Test 5: Language Preference Persistence
