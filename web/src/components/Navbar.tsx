@@ -193,7 +193,7 @@ const Navbar: React.FC = () => {
                   <div className="dropdown-divider"></div>
                   <a href="/dashboard" className="dropdown-item">
                     <User size={16} />
-                    Settings
+                    Audio Language Preference
                   </a>
                   {isAdmin() && (
                     <a href="/admin/dashboard" className="dropdown-item">
@@ -283,7 +283,7 @@ const Navbar: React.FC = () => {
                   <div className="dropdown-divider"></div>
                   <a href="/dashboard" className="dropdown-item">
                     <User size={16} />
-                    Settings
+                    Audio Language Preference
                   </a>
                   {isAdmin() && (
                     <a href="/admin/dashboard" className="dropdown-item">

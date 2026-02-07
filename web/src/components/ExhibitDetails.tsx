@@ -43,6 +43,7 @@ const ExhibitDetails: React.FC = () => {
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [activeWordIndex, setActiveWordIndex] = useState(-1);
+  const [userLanguageId, setUserLanguageId] = useState<string | null>(null);
 
   // Reviews & Rating State
   const [rating, setRating] = useState<number>(0);
@@ -63,6 +64,20 @@ const ExhibitDetails: React.FC = () => {
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  // Fetch user's language preference
+  useEffect(() => {
+    if (user) {
+      apiClient
+        .get('/auth/profile')
+        .then((res) => {
+          if (res.data.user.languageId) {
+            setUserLanguageId(res.data.user.languageId);
+          }
+        })
+        .catch((err) => console.error('Error fetching user language preference:', err));
+    }
+  }, [user]);
+
   // 1. Fetch Exhibit Data
   useEffect(() => {
     if (!id) return;
@@ -71,12 +86,27 @@ const ExhibitDetails: React.FC = () => {
       .get(`/exhibits/${id}`)
       .then((res) => {
         setExhibit(res.data);
-        const firstAudio = res.data.audio?.find((a: any) => a.fileUrl);
-        if (firstAudio) setSelectedAudioId(firstAudio.audioId.toString());
+        
+        // Try to find audio matching user's language preference
+        let selectedAudio = null;
+        if (userLanguageId && res.data.audio) {
+          selectedAudio = res.data.audio.find(
+            (a: any) => a.fileUrl && a.languageId?.toString() === userLanguageId
+          );
+        }
+        
+        // Fallback to first available audio if no match
+        if (!selectedAudio && res.data.audio) {
+          selectedAudio = res.data.audio.find((a: any) => a.fileUrl);
+        }
+        
+        if (selectedAudio) {
+          setSelectedAudioId(selectedAudio.audioId.toString());
+        }
       })
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [id, userLanguageId]);
 
   // 2. Handle Tour Progress
   useEffect(() => {
