@@ -133,18 +133,20 @@ test.describe('Review Management & Display - Full Coverage', () => {
     const toggle = page.locator('.toggle-group input[type=checkbox]');
     if (await toggle.isVisible()) {
       await toggle.scrollIntoViewIfNeeded();
-      await toggle.check();
-      await page.waitForTimeout(500);
+      if (!(await toggle.isChecked())) {
+        await toggle.check();
+      }
+      await expect(page.locator('.loading-state-ref')).toBeHidden({ timeout: 8000 }).catch(() => {});
+      await page.waitForTimeout(300);
     }
 
-    if (await reviewCards.count() > 0) {
-      for (let i = 0; i < await reviewCards.count(); i++) {
-        const card = reviewCards.nth(i);
-        const hasCommentBubble = await card.locator('.comment-bubble').count() > 0;
-        if (hasCommentBubble) {
-          await expect(card.locator('.comment-bubble')).toBeVisible();
-        }
-      }
+    const postFilterCardCount = await reviewCards.count();
+    if (postFilterCardCount > 0) {
+      const cardsWithComments = reviewCards.filter({ has: page.locator('.comment-bubble') });
+      const commentCount = await cardsWithComments.count();
+      expect(commentCount).toBeGreaterThan(0);
+      await expect(cardsWithComments.first().locator('.comment-bubble')).toBeVisible();
+      await expect(commentCount).toBeLessThanOrEqual(postFilterCardCount);
     }
 
     // Pagination test: select the correct pagination button (not the filter pill)
@@ -314,5 +316,40 @@ test.describe('Review Management & Display - Full Coverage', () => {
     // Verify form is still populated (user can edit)
     const commentInput = page.getByPlaceholder('Add a comment...');
     await expect(commentInput).toHaveValue('This exhibit is fucking amazing!');
+  });
+
+  test('admin analytics shows highest/lowest exhibit cards with links', async ({ page, request }) => {
+    if (!authToken) {
+      const loginResp = await request.post(`${API_URL}/api/auth/login`, { data: TEST_USER });
+      if (loginResp.ok()) {
+        const loginJson = await loginResp.json();
+        authToken = loginJson.accessToken ?? loginJson.token ?? loginJson.data?.token ?? null;
+      }
+    }
+
+    if (!authToken) {
+      throw new Error('Unable to authenticate admin user for analytics test');
+    }
+
+    // Set token so admin route passes guard
+    await page.goto(FRONTEND);
+    await page.evaluate(token => {
+      localStorage.setItem('token', token);
+      window.dispatchEvent(new Event('loginStateChange'));
+    }, authToken);
+
+    await page.goto(`${FRONTEND}/admin/reviews`);
+
+    // Wait for analytics section
+    const analyticsHeader = page.getByRole('heading', { name: /review analytics/i, level: 2 });
+    await expect(analyticsHeader).toBeVisible({ timeout: 8000 });
+
+    // Highest-rated card present
+    const highestCard = page.getByRole('heading', { name: /highest-rated exhibit/i, level: 4 }).locator('..');
+    await expect(highestCard).toBeVisible();
+
+    // Lowest-rated card present
+    const lowestCard = page.getByRole('heading', { name: /lowest-rated exhibit/i, level: 4 }).locator('..');
+    await expect(lowestCard).toBeVisible();
   });
 });

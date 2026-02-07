@@ -1,26 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { Users, Plus, Edit, Trash2, Search, Eye, EyeOff, RotateCcw } from "lucide-react";
+import { Users, Plus, Search, EyeOff, RotateCcw, ShieldAlert } from "lucide-react";
 import apiClient from "../../utils/apiClient";
 import AdminLayout from "./AdminLayout";
+import ReviewAnalyticsDashboard from "./ReviewAnalyticsDashboard";
+import { normalizeReview, NormalizedReview } from "../../utils/reviewAnalytics";
+import { useAuth } from "../../contexts/AuthContext";
 import "../../css/AdminTable.css";
 import "../../css/AdminComponents.css";
 import "../../css/AdminForms.css";
 import "../../css/AdminModals.css";
 
 
-interface Review {
-  feedback_id: number;
-  user: {
-    username: string;
-  };
-  exhibit: {
-    title: string;
-  };
-  rating: number;
-  comment: string;
-  created_at: string;
-  is_hidden?: boolean; // Backend field
-}
+type Review = NormalizedReview;
 
 interface ReviewFormData {
   username: string;
@@ -42,6 +33,8 @@ const AdminReviewsPage: React.FC = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const { user } = useAuth();
+  const isAdmin = !!user?.roles?.includes("admin");
 
   // Modal states
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -64,22 +57,24 @@ const AdminReviewsPage: React.FC = () => {
   const fetchReviews = async () => {
     try {
       setLoading(true);
+      const sortFieldMap: Record<string, string> = {
+        username: "username",
+        exhibitName: "exhibitName",
+        rating: "rating",
+        createdAt: "created_at"
+      };
       const params = new URLSearchParams({
         page: currentPage.toString(),
         limit: itemsPerPage.toString(),
         search: searchQuery,
         status: statusFilter,
-        sort_by: sortBy,
+        sort_by: sortFieldMap[sortBy] || "created_at",
         sort_order: sortOrder,
       });
       const response = await apiClient.get(`/reviews?${params}`);
-      // Map is_hidden from backend to is_hidden in frontend
       const reviewsArr = response.data.data.reviews;
-      const reviewsWithHidden = reviewsArr.map((r: any) => ({
-        ...r,
-        is_hidden: r.is_hidden ?? r.isHidden ?? false,
-      }));
-      setReviews(reviewsWithHidden);
+      const normalized = reviewsArr.map((r: any) => normalizeReview(r));
+      setReviews(normalized);
       setTotalPages(response.data.data.pagination.total_pages);
       setTotalReviews(response.data.data.pagination.total_count);
     } catch (err) {
@@ -99,9 +94,10 @@ const AdminReviewsPage: React.FC = () => {
   };
 
   useEffect(() => {
+    if (!isAdmin) return;
     fetchReviews();
     // eslint-disable-next-line
-  }, [currentPage, searchQuery, statusFilter, sortBy, sortOrder, itemsPerPage]);
+  }, [currentPage, searchQuery, statusFilter, sortBy, sortOrder, itemsPerPage, isAdmin]);
 
   const handleSort = (column: string) => {
     if (sortBy === column) {
@@ -120,11 +116,11 @@ const AdminReviewsPage: React.FC = () => {
   const openEditModal = (review: Review) => {
     setSelectedReview(review);
     setFormData({
-      username: review.username,
-      exhibitName: review.exhibitName,
+      username: review.user?.username || review.username || "",
+      exhibitName: review.exhibit?.title || review.exhibitName || "",
       rating: review.rating,
-      description: review.description,
-      status: review.status,
+      description: review.comment || review.description || "",
+      status: review.is_hidden ? "hidden" : "shown",
     });
     setShowEditModal(true);
   };
@@ -151,7 +147,7 @@ const AdminReviewsPage: React.FC = () => {
     e.preventDefault();
     if (!selectedReview) return;
     try {
-      await apiClient.put(`/reviews/${selectedReview.reviewId}`, formData);
+      await apiClient.put(`/reviews/${selectedReview.feedback_id}`, formData);
       setShowEditModal(false);
       setSelectedReview(null);
       fetchReviews();
@@ -179,6 +175,30 @@ const AdminReviewsPage: React.FC = () => {
     }
   };
 
+  if (!user) {
+    return (
+      <div className="admin-guard">
+        <ShieldAlert size={20} />
+        <div>
+          <strong>Authentication required</strong>
+          <p>Please sign in to manage reviews.</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="admin-guard">
+        <ShieldAlert size={20} />
+        <div>
+          <strong>Admin access only</strong>
+          <p>You need admin privileges to view analytics and manage reviews.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <AdminLayout currentPath="/admin/reviews" breadcrumbs={breadcrumbs}>
       <div className="admin-page-wrapper">
@@ -202,6 +222,8 @@ const AdminReviewsPage: React.FC = () => {
             </button>
           </div>
         </div>
+
+          <ReviewAnalyticsDashboard statusFilter={statusFilter} />
 
         <div className="admin-table-filters">
           <div className="admin-table-filter">
@@ -516,11 +538,11 @@ const AdminReviewsPage: React.FC = () => {
                 <div className="admin-view-details">
                   <div className="admin-view-group">
                     <div className="admin-view-label">Username</div>
-                    <div className="admin-view-value">{selectedReview.username}</div>
+                    <div className="admin-view-value">{selectedReview.user?.username || selectedReview.username}</div>
                   </div>
                   <div className="admin-view-group">
                     <div className="admin-view-label">Exhibit Name</div>
-                    <div className="admin-view-value">{selectedReview.exhibitName}</div>
+                    <div className="admin-view-value">{selectedReview.exhibit?.title || selectedReview.exhibitName}</div>
                   </div>
                   <div className="admin-view-group">
                     <div className="admin-view-label">Rating</div>
@@ -528,26 +550,26 @@ const AdminReviewsPage: React.FC = () => {
                   </div>
                   <div className="admin-view-group">
                     <div className="admin-view-label">Description</div>
-                    <div className="admin-view-value">{selectedReview.description}</div>
+                    <div className="admin-view-value">{selectedReview.comment || selectedReview.description}</div>
                   </div>
                   <div className="admin-view-group">
                     <div className="admin-view-label">Status</div>
                     <div className="admin-view-value">
-                      <span className={`admin-status-badge ${selectedReview.status}`}>
-                        {selectedReview.status}
+                      <span className={`admin-status-badge ${selectedReview.is_hidden ? "hidden" : "shown"}`}>
+                        {selectedReview.is_hidden ? "hidden" : "shown"}
                       </span>
                     </div>
                   </div>
                   <div className="admin-view-group">
                     <div className="admin-view-label">Created At</div>
                     <div className="admin-view-value">
-                      {new Date(selectedReview.createdAt).toLocaleString()}
+                      {selectedReview.created_at ? new Date(selectedReview.created_at).toLocaleString() : "-"}
                     </div>
                   </div>
                   <div className="admin-view-group">
                     <div className="admin-view-label">Updated At</div>
                     <div className="admin-view-value">
-                      {new Date(selectedReview.updatedAt).toLocaleString()}
+                      {selectedReview.updated_at ? new Date(selectedReview.updated_at).toLocaleString() : "-"}
                     </div>
                   </div>
                 </div>

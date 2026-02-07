@@ -1,9 +1,13 @@
 const express = require('express');
 const ReviewController = require('../controllers/reviewController');
+const { verifyToken, requireAdmin } = require('../middleware/jwtMiddleware');
 const router = express.Router();
 
 // GET /api/reviews - Get all reviews with pagination and filtering
 router.get('/', ReviewController.getAllReviews);
+
+// GET /api/reviews/analytics - Admin-only aggregated analytics
+router.get('/analytics', verifyToken, requireAdmin, ReviewController.getReviewAnalytics);
 
 // GET /api/reviews/exhibit/:exhibit_id/stats - Get review statistics for an exhibit
 // Note: This must come before /:id route to avoid conflicts

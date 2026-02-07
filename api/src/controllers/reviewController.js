@@ -31,6 +31,7 @@ class ReviewController {
         user_id,
         min_rating,
         max_rating,
+        status,
         search = '',
         sort_by = 'created_at',
         sort_order = 'desc'
@@ -39,7 +40,7 @@ class ReviewController {
       const skip = (parseInt(page) - 1) * parseInt(limit);
       const take = parseInt(limit);
 
-      const filters = { exhibit_id, user_id, min_rating, max_rating, search };
+      const filters = { exhibit_id, user_id, min_rating, max_rating, search, status };
       const pagination = { skip, take };
       const sorting = { sort_by, sort_order };
 
@@ -65,6 +66,42 @@ class ReviewController {
       res.status(500).json({
         success: false,
         error: 'Failed to fetch reviews'
+      });
+    }
+  }
+
+  // GET /api/reviews/analytics - Aggregate analytics for admin dashboard
+  static async getReviewAnalytics(req, res) {
+    try {
+      const {
+        start_date,
+        end_date,
+        min_rating,
+        max_rating,
+        exhibit_id,
+        status
+      } = req.query;
+
+      const filters = {
+        start_date,
+        end_date,
+        min_rating,
+        max_rating,
+        exhibit_id,
+        status
+      };
+
+      const analytics = await ReviewModel.getReviewAnalytics(filters);
+
+      res.json({
+        success: true,
+        data: analytics
+      });
+    } catch (error) {
+      console.error('Error fetching review analytics:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to fetch review analytics'
       });
     }
   }
