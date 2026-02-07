@@ -8,8 +8,8 @@ const {
   getLanguageById
 } = require('../controllers/languageController');
 
-// GET /api/language - Get all languages
-router.get('/', jwtMiddleware.verifyToken, checkPermission('read_audio'), getAllLanguages);
+// GET /api/language - Get all languages (public access for user preference)
+router.get('/', jwtMiddleware.verifyToken, getAllLanguages);
 
 // GET /api/language/:id - Get specific language by ID
 router.get('/:id', jwtMiddleware.verifyToken, checkPermission('read_audio'), getLanguageById);
