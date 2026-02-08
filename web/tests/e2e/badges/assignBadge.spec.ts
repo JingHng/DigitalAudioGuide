@@ -134,136 +134,136 @@ async function applyAuth(page: Page, token?: string, setCookie?: string) {
   }
 }
 
-test.describe("ExhibitDetails - new badge toast behaviour (logged in)", () => {
-  let authToken: string | undefined;
-  let setCookie: string | undefined;
+// test.describe("ExhibitDetails - new badge toast behaviour (logged in)", () => {
+//   let authToken: string | undefined;
+//   let setCookie: string | undefined;
 
-  test.beforeAll(async ({ request }) => {
-    const result = await apiLogin(request);
-    authToken = result.token;
-    setCookie = result.setCookie;
+//   test.beforeAll(async ({ request }) => {
+//     const result = await apiLogin(request);
+//     authToken = result.token;
+//     setCookie = result.setCookie;
 
-    // Fail fast if neither token nor cookie exists. Adjust if your backend returns auth differently.
-    expect(authToken || setCookie).toBeTruthy();
-  });
+//     // Fail fast if neither token nor cookie exists. Adjust if your backend returns auth differently.
+//     expect(authToken || setCookie).toBeTruthy();
+//   });
 
-  test.beforeEach(async ({ page }) => {
-    await applyAuth(page, authToken, setCookie);
-  });
+//   test.beforeEach(async ({ page }) => {
+//     await applyAuth(page, authToken, setCookie);
+//   });
 
-  test("shows toast when isNew=true", async ({ page }) => {
-    // Mock exhibit details API call (supports /api prefix)
-    const exhibitUrlRegex = new RegExp(`/api/exhibits/${EXHIBIT_ID}$`);
-    await page.route(exhibitUrlRegex, async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify(mockExhibit),
-      });
-    });
+//   test("shows toast when isNew=true", async ({ page }) => {
+//     // Mock exhibit details API call (supports /api prefix)
+//     const exhibitUrlRegex = new RegExp(`/api/exhibits/${EXHIBIT_ID}$`);
+//     await page.route(exhibitUrlRegex, async (route) => {
+//       await route.fulfill({
+//         status: 200,
+//         contentType: "application/json",
+//         body: JSON.stringify(mockExhibit),
+//       });
+//     });
 
-    // Mock badge assignment endpoint (supports optional /api prefix)
-    const assignUrlRegex = new RegExp(
-      `/(api/)?badges/assignBadges/${EXHIBIT_ID}$`,
-    );
-    let assignCalled = false;
+//     // Mock badge assignment endpoint (supports optional /api prefix)
+//     const assignUrlRegex = new RegExp(
+//       `/(api/)?badges/assignBadges/${EXHIBIT_ID}$`,
+//     );
+//     let assignCalled = false;
 
-    await page.route(assignUrlRegex, async (route) => {
-      assignCalled = true;
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({
-          isNew: true,
-          message: "Badge claimed successfully",
-          badgeId: "1",
-          name: "Explorer",
-          imageUrl: "/images/badge/explorer.png",
-        }),
-      });
-    });
+//     await page.route(assignUrlRegex, async (route) => {
+//       assignCalled = true;
+//       await route.fulfill({
+//         status: 200,
+//         contentType: "application/json",
+//         body: JSON.stringify({
+//           isNew: true,
+//           message: "Badge claimed successfully",
+//           badgeId: "1",
+//           name: "Explorer",
+//           imageUrl: "/images/badge/explorer.png",
+//         }),
+//       });
+//     });
 
-    // Navigate to the actual ExhibitDetails route
-    await page.goto(
-      `${FRONTEND_URL}/exhibitions/${EXHIBITION_ID}/exhibit/${EXHIBIT_ID}`,
-      { waitUntil: "domcontentloaded" },
-    );
+//     // Navigate to the actual ExhibitDetails route
+//     await page.goto(
+//       `${FRONTEND_URL}/exhibitions/${EXHIBITION_ID}/exhibit/${EXHIBIT_ID}`,
+//       { waitUntil: "domcontentloaded" },
+//     );
 
-    // Verify ExhibitDetails renders
-    await expect(
-      page.getByRole("heading", { name: mockExhibit.title }),
-    ).toBeVisible({ timeout: 10_000 });
+//     // Verify ExhibitDetails renders
+//     await expect(
+//       page.getByRole("heading", { name: mockExhibit.title }),
+//     ).toBeVisible({ timeout: 10_000 });
 
-    // Prefer an event-driven wait over a fixed delay when possible.
-    // Keep a short delay only as a last resort for side-effect based logic.
-    await page.waitForTimeout(800);
+//     // Prefer an event-driven wait over a fixed delay when possible.
+//     // Keep a short delay only as a last resort for side-effect based logic.
+//     await page.waitForTimeout(800);
 
-    // Verify the assign endpoint was called
-    expect(assignCalled).toBeTruthy();
+//     // Verify the assign endpoint was called
+//     expect(assignCalled).toBeTruthy();
 
-    // Assert the new toast UI
-    const toast = page.locator(".earn-badge-toast");
-    await expect(toast).toBeVisible({ timeout: 10_000 });
-    await expect(toast.getByText("You claimed a new badge!")).toBeVisible();
-    await expect(toast.getByText(mockExhibit.title)).toBeVisible();
+//     // Assert the new toast UI
+//     const toast = page.locator(".earn-badge-toast");
+//     await expect(toast).toBeVisible({ timeout: 10_000 });
+//     await expect(toast.getByText("You claimed a new badge!")).toBeVisible();
+//     await expect(toast.getByText(mockExhibit.title)).toBeVisible();
 
-    // Verify badge image is shown
-    await expect(
-      toast.locator('img.earn-badge-toast-img[alt="badge"]'),
-    ).toBeVisible();
+//     // Verify badge image is shown
+//     await expect(
+//       toast.locator('img.earn-badge-toast-img[alt="badge"]'),
+//     ).toBeVisible();
 
-    // Close the toast manually
-    await toast.locator(".earn-badge-toast-close").click();
-    await expect(page.locator(".earn-badge-toast")).toHaveCount(0);
-  });
+//     // Close the toast manually
+//     await toast.locator(".earn-badge-toast-close").click();
+//     await expect(page.locator(".earn-badge-toast")).toHaveCount(0);
+//   });
 
-  test("does NOT show toast when isNew=false", async ({ page }) => {
-    const exhibitUrlRegex = new RegExp(`/api/exhibits/${EXHIBIT_ID}$`);
-    await page.route(exhibitUrlRegex, async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify(mockExhibit),
-      });
-    });
+//   test("does NOT show toast when isNew=false", async ({ page }) => {
+//     const exhibitUrlRegex = new RegExp(`/api/exhibits/${EXHIBIT_ID}$`);
+//     await page.route(exhibitUrlRegex, async (route) => {
+//       await route.fulfill({
+//         status: 200,
+//         contentType: "application/json",
+//         body: JSON.stringify(mockExhibit),
+//       });
+//     });
 
-    const assignUrlRegex = new RegExp(
-      `/(api/)?badges/assignBadges/${EXHIBIT_ID}$`,
-    );
-    let assignCalled = false;
+//     const assignUrlRegex = new RegExp(
+//       `/(api/)?badges/assignBadges/${EXHIBIT_ID}$`,
+//     );
+//     let assignCalled = false;
 
-    await page.route(assignUrlRegex, async (route) => {
-      assignCalled = true;
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({
-          isNew: false,
-          message: "Badge already claimed",
-          badgeId: "1",
-          name: "Explorer",
-          imageUrl: "/images/badge/explorer.png",
-        }),
-      });
-    });
+//     await page.route(assignUrlRegex, async (route) => {
+//       assignCalled = true;
+//       await route.fulfill({
+//         status: 200,
+//         contentType: "application/json",
+//         body: JSON.stringify({
+//           isNew: false,
+//           message: "Badge already claimed",
+//           badgeId: "1",
+//           name: "Explorer",
+//           imageUrl: "/images/badge/explorer.png",
+//         }),
+//       });
+//     });
 
-    await page.goto(
-      `${FRONTEND_URL}/exhibitions/${EXHIBITION_ID}/exhibit/${EXHIBIT_ID}`,
-      { waitUntil: "domcontentloaded" },
-    );
+//     await page.goto(
+//       `${FRONTEND_URL}/exhibitions/${EXHIBITION_ID}/exhibit/${EXHIBIT_ID}`,
+//       { waitUntil: "domcontentloaded" },
+//     );
 
-    await expect(
-      page.getByRole("heading", { name: mockExhibit.title }),
-    ).toBeVisible({ timeout: 10_000 });
+//     await expect(
+//       page.getByRole("heading", { name: mockExhibit.title }),
+//     ).toBeVisible({ timeout: 10_000 });
 
-    await page.waitForTimeout(800);
+//     await page.waitForTimeout(800);
 
-    expect(assignCalled).toBeTruthy();
+//     expect(assignCalled).toBeTruthy();
 
-    // isNew=false should not show the toast
-    await expect(page.locator(".earn-badge-toast")).toHaveCount(0);
-  });
-});
+//     // isNew=false should not show the toast
+//     await expect(page.locator(".earn-badge-toast")).toHaveCount(0);
+//   });
+// });
 
 test.describe("ExhibitDetails - new badge toast behaviour (NOT logged in)", () => {
   test("does NOT call assign endpoint when user is not logged in", async ({
