@@ -1,0 +1,78 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - navigation [ref=e4]:
+      - link "Smart Exhibit" [ref=e5]:
+        - /url: /
+        - generic [ref=e6]:
+          - generic [ref=e7]: Smart
+          - generic [ref=e8]: Exhibit
+      - generic [ref=e9]:
+        - link "Home" [ref=e10]:
+          - /url: /
+        - link "Tours" [ref=e11]:
+          - /url: /exhibitions
+        - link "Reviews" [ref=e12]:
+          - /url: /reviews
+        - link "How It Works" [ref=e13]:
+          - /url: /#how-it-works
+        - generic [ref=e14]:
+          - link "Login" [ref=e15]:
+            - /url: /login
+            - img [ref=e16]
+            - generic [ref=e19]: Login
+          - link "Register" [ref=e20]:
+            - /url: /register
+            - img [ref=e21]
+            - generic [ref=e24]: Register
+  - generic [ref=e27]:
+    - generic [ref=e28]:
+      - heading "Welcome Back" [level=2] [ref=e29]
+      - paragraph [ref=e30]: Sign in to your Smart Exhibit account
+    - generic [ref=e31]:
+      - generic [ref=e32]:
+        - generic [ref=e33]:
+          - img [ref=e34]
+          - text: Username
+        - textbox "Your username" [ref=e37]
+      - generic [ref=e38]:
+        - generic [ref=e39]:
+          - img [ref=e40]
+          - text: Password
+        - generic [ref=e43]:
+          - textbox "••••••••" [ref=e44]
+          - button [ref=e45] [cursor=pointer]:
+            - img [ref=e46]
+      - link "Forgot password?" [ref=e50]:
+        - /url: /forgot-password
+      - button "Sign In" [ref=e51] [cursor=pointer]:
+        - text: Sign In
+        - img [ref=e52]
+    - paragraph [ref=e54]:
+      - text: New here?
+      - link "Create an account" [ref=e55]:
+        - /url: /register
+  - contentinfo "Public footer" [ref=e56]:
+    - generic [ref=e57]:
+      - generic [ref=e58]:
+        - generic [ref=e59]:
+          - generic [ref=e60]: SmartExhibit
+          - generic [ref=e61]:
+            - text: For inquiries, please contact us at
+            - text: https://www.sp.edu.sg/about-sp/contact-us
+          - generic [ref=e62]: SP INC project group 3
+        - generic [ref=e64]:
+          - generic [ref=e65]: Explore
+          - generic [ref=e66]:
+            - link "Exhibitions" [ref=e67]:
+              - /url: /exhibitions
+            - link "Badges" [ref=e68]:
+              - /url: /badges
+            - link "Reviews" [ref=e69]:
+              - /url: /reviews
+      - generic [ref=e70]:
+        - generic [ref=e71]: 2026 © SmartExhibit. All rights reserved.
+        - generic [ref=e72]: Built for SP INC · Project Group 3
+```

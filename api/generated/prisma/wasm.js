@@ -256,6 +256,9 @@ exports.Prisma.UserScalarFieldEnum = {
   username: 'username',
   email: 'email',
   passwordHash: 'passwordHash',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  phoneNumber: 'phoneNumber',
   profilePictureUrl: 'profilePictureUrl',
   emailVerified: 'emailVerified',
   statusId: 'statusId',
@@ -264,6 +267,9 @@ exports.Prisma.UserScalarFieldEnum = {
   updatedAt: 'updatedAt',
   gender: 'gender',
   dateOfBirth: 'dateOfBirth',
+  addressLine1: 'addressLine1',
+  addressLine2: 'addressLine2',
+  zipCode: 'zipCode',
   languageId: 'languageId'
 };
 
@@ -271,6 +277,17 @@ exports.Prisma.UserRoleScalarFieldEnum = {
   userId: 'userId',
   roleId: 'roleId',
   createdAt: 'createdAt'
+};
+
+exports.Prisma.UserConsentScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  granted: 'granted',
+  consentText: 'consentText',
+  version: 'version',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.AuditLogScalarFieldEnum = {
@@ -387,7 +404,10 @@ exports.Prisma.JsonNullValueFilter = {
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
 };
-
+exports.ConsentType = exports.$Enums.ConsentType = {
+  MARKETING: 'MARKETING',
+  PICTURE: 'PICTURE'
+};
 
 exports.Prisma.ModelName = {
   Exhibition: 'Exhibition',
@@ -406,6 +426,7 @@ exports.Prisma.ModelName = {
   Subtitle: 'Subtitle',
   User: 'User',
   UserRole: 'UserRole',
+  UserConsent: 'UserConsent',
   AuditLog: 'AuditLog',
   PasswordResetToken: 'PasswordResetToken',
   EmailVerificationToken: 'EmailVerificationToken',
