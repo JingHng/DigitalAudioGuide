@@ -40,6 +40,15 @@ async function seed() {
 
     console.log("🧨 All existing tables dropped.");
 
+    await client.query(`
+  DO $$
+  BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'ConsentType') THEN
+      CREATE TYPE "ConsentType" AS ENUM ('MARKETING', 'PICTURE');
+    END IF;
+  END$$;
+`);
+
     // 1. STATUS table (foundational)
     await client.query(`
       CREATE TABLE status (
@@ -2642,5 +2651,3 @@ async function seed() {
 }
 
 seed().catch(console.error);
-
-
