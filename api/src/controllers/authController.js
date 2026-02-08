@@ -512,6 +512,7 @@ exports.getProfile = async (req, res) => {
         addressLine2: true,
         zipCode: true,
         dateOfBirth: true,
+        languageId: true,
         createdAt: true,
         roles: {
           include: {
@@ -534,6 +535,7 @@ exports.getProfile = async (req, res) => {
       email: user.email,
       profilePictureUrl: user.profilePictureUrl,
 
+      languageId: user.languageId ? user.languageId.toString() : null,
       firstName: user.firstName ?? null,
       lastName: user.lastName ?? null,
       gender: user.gender ?? null,
@@ -1391,3 +1393,53 @@ exports.updateConsents = async (req, res) => {
   }
 };
 
+
+
+exports.updateLanguagePreference = async (req, res) => {
+  try {
+    const userId = res.locals.userId;
+    const { languageId } = req.body;
+
+    if (!languageId) {
+      return res.status(400).json({ error: "Language ID is required" });
+    }
+
+    // Validate that the language exists
+    const language = await prisma.language.findUnique({
+      where: { languageId: BigInt(languageId) }
+    });
+
+    if (!language) {
+      return res.status(404).json({ error: "Language not found" });
+    }
+
+    // Update user's language preference
+    const updatedUser = await prisma.user.update({
+      where: { userId: BigInt(userId) },
+      data: {
+        languageId: BigInt(languageId),
+        updatedAt: new Date(),
+      },
+      select: {
+        userId: true,
+        username: true,
+        languageId: true,
+        language: {
+          select: {
+            title: true,
+            code: true
+          }
+        }
+      }
+    });
+
+    res.status(200).json({
+      message: "Language preference updated successfully",
+      languageId: updatedUser.languageId.toString(),
+      language: updatedUser.language
+    });
+  } catch (err) {
+    console.error("Update Language Preference Controller Error:", err);
+    res.status(500).json({ error: "Server error while updating language preference" });
+  }
+};

@@ -3,6 +3,7 @@ import { Routes, Route, useLocation } from "react-router-dom";
 // --- Context & Utilities ---
 import { AuthProvider } from "./contexts/AuthContext";
 import Navbar from "./components/Navbar.tsx";
+import Footer from "./components/Footer";
 import Homepage from "./components/HomePage.tsx";
 
 // --- Auth & User Components ---
@@ -14,6 +15,7 @@ import EmailVerificationPage from "./routes/EmailVerificationPage";
 import ScanPage from "./components/ScanPage.tsx";
 import UserBadgePage from "./routes/userBadgePage.tsx";
 import AllBadgesShowcase from "./pages/BadgesPage.tsx";
+import AudioGuidePreferencePage from "./pages/AudioGuidePreferencePage.tsx";
 
 // --- EXHIBITIONS & TOURS ---
 import AllExhibitions from "./components/ExhibitionsPage.tsx";
@@ -105,11 +107,13 @@ function App() {
             <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
             <Route path="/profile/setup" element={<ProtectedRoute><ProfileSetupPage /></ProtectedRoute>} />
             <Route path="/edit-profile" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
+            <Route path="/dashboard" element={<ProtectedRoute><AudioGuidePreferencePage /></ProtectedRoute>} />
 
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </div>
       )}
+      <Footer />
     </AuthProvider>
   );
 }
