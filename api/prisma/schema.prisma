@@ -14,6 +14,8 @@ model Exhibition {
   title        String    @unique @db.VarChar(255)
   description  String?
   statusId     Int?      @map("status_id")
+  starts_at    DateTime? @db.Timestamptz(6)
+  ends_at      DateTime? @db.Timestamptz(6)
   createdAt    DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt    DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
   exhibits     Exhibit[]
@@ -425,18 +427,4 @@ model Message {
 
   @@index([conversationId, statusId, createdAt, senderTypeId], map: "idx_message_conversation_status")
   @@map("message")
-}
-
-model home_floating_card {
-  card_id    String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  title      String    @db.VarChar(100)
-  icon       String    @db.VarChar(50)
-  link_url   String    @db.VarChar(255)
-  position   Int
-  is_active  Boolean   @default(true)
-  created_at DateTime? @default(now()) @db.Timestamptz(6)
-  updated_at DateTime? @default(now()) @db.Timestamptz(6)
-
-  @@index([is_active], map: "idx_floating_card_active")
-  @@index([position], map: "idx_floating_card_position")
 }
