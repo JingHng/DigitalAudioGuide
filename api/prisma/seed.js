@@ -796,11 +796,14 @@ async function seed() {
 
     // Insert roles
     await client.query(`
-      INSERT INTO roles (role_name, description) VALUES
-      ('admin', 'System administrator with full access'),
-      ('moderator', 'Content moderator with limited admin access'),
-      ('visitor', 'Guest user with minimal access');
-    `);
+  INSERT INTO roles (role_name, description) VALUES
+  ('admin', 'System administrator with full access'),
+  ('moderator', 'Content moderator with limited admin access'),
+  ('visitor', 'Guest user with minimal access'),
+  ('content_manager', 'Can edit exhibitions and exhibits'),
+  ('exhibit_editor', 'Can edit exhibits only')
+  ON CONFLICT (role_name) DO NOTHING;
+`);
 
     // Insert permissions (matching the SQL schema)
     await client.query(`
@@ -810,6 +813,12 @@ async function seed() {
       ('read_user', 'View user information'),
       ('update_user', 'Modify user information'),
       ('delete_user', 'Delete user accounts'),
+
+        -- Exhibition management permissions
+  ('create_exhibition', 'Create new exhibitions'),
+  ('read_exhibition', 'View exhibition information'),
+  ('update_exhibition', 'Modify exhibition information'),
+  ('delete_exhibition', 'Remove exhibitions'),
       
       -- Content management permissions
       ('create_exhibit', 'Create new exhibits'),
@@ -1112,6 +1121,33 @@ async function seed() {
           'manage_feedback', 'reset_password', 'verify_email'
       );
     `);
+
+    // content_manager permissions
+    await client.query(`
+  INSERT INTO roles_permission (role_id, permission_id)
+  SELECT r.role_id, p.permission_id
+  FROM roles r
+  JOIN permissions p ON p.permission_name IN (
+    -- exhibitions
+    'read_exhibition', 'update_exhibition',
+    -- exhibits
+    'read_exhibit', 'update_exhibit'
+  )
+  WHERE r.role_name = 'content_manager'
+  ON CONFLICT DO NOTHING;
+`);
+
+    // exhibit_editor permissions
+    await client.query(`
+  INSERT INTO roles_permission (role_id, permission_id)
+  SELECT r.role_id, p.permission_id
+  FROM roles r
+  JOIN permissions p ON p.permission_name IN (
+    'read_exhibit', 'update_exhibit'
+  )
+  WHERE r.role_name = 'exhibit_editor'
+  ON CONFLICT DO NOTHING;
+`);
 
     await client.query(`
       -- Visitor gets minimal read permissions
