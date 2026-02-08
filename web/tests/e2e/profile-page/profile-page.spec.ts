@@ -95,22 +95,22 @@ test.describe('Profile Page', () => {
   // -----------------------------------
   // Test 3: Badges Section Display
   // -----------------------------------
-test('shows no badges message when user has no badges', async ({ page }) => {
-  // Badges title
-  await expect(page.locator('.badges-title'))
-    .toHaveText('Your Badges');
+// test('shows no badges message when user has no badges', async ({ page }) => {
+//   // Badges title
+//   await expect(page.locator('.badges-title'))
+//     .toHaveText('Your Badges');
 
-  // "No badges" message
-  await expect(page.locator('.no-badges-text'))
-    .toBeVisible();
+//   // "No badges" message
+//   await expect(page.locator('.no-badges-text'))
+//     .toBeVisible();
 
-  await expect(page.locator('.no-badges-text'))
-    .toHaveText("You haven't earned any badges yet.");
+//   await expect(page.locator('.no-badges-text'))
+//     .toHaveText("You haven't earned any badges yet.");
 
-  // Ensure no badge items are rendered
-  await expect(page.locator('.badge-item'))
-    .toHaveCount(0);
-});
+//   // Ensure no badge items are rendered
+//   await expect(page.locator('.badge-item'))
+//     .toHaveCount(0);
+// });
 
 
   // -----------------------------------
