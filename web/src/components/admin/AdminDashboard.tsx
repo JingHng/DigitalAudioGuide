@@ -59,6 +59,19 @@ interface AuditStats {
   }[];
 }
 
+interface ExhibitionVisitorStats {
+  exhibitionId: string;
+  exhibitionTitle: string;
+  uniqueVisitors: number;
+  totalVisits: number;
+  exhibitCount: number;
+}
+
+interface AllExhibitionsVisitorStats {
+  exhibitions: ExhibitionVisitorStats[];
+  dateRange: { from: string; to: string } | null;
+}
+
 const COLORS = [
   "#0088FE",
   "#00C49F",
@@ -121,6 +134,24 @@ const AdminDashboard = () => {
   const [auditStats, setAuditStats] = useState<AuditStats>({
     totalActions: 0,
     recentActions: [],
+  });
+  
+  // Visitor statistics states
+  const [visitorStats, setVisitorStats] = useState<AllExhibitionsVisitorStats | null>(null);
+  const [visitorStatsLoading, setVisitorStatsLoading] = useState(false);
+  const [selectedExhibitionIds, setSelectedExhibitionIds] = useState<string[]>([]);
+  const [exhibitionDropdownOpen, setExhibitionDropdownOpen] = useState(false);
+  
+  // Separate date filters for visitor stats
+  const [visitorFilterType, setVisitorFilterType] = useState<"period" | "dateRange">("period");
+  const [visitorPeriod, setVisitorPeriod] = useState(0); // 0 = all time
+  const [visitorDateFrom, setVisitorDateFrom] = useState(() => {
+    const date = new Date();
+    return date.toISOString().split("T")[0];
+  });
+  const [visitorDateTo, setVisitorDateTo] = useState(() => {
+    const date = new Date();
+    return date.toISOString().split("T")[0];
   });
 
   // Function to validate date range
@@ -375,10 +406,60 @@ const AdminDashboard = () => {
     }
   };
 
+  // Fetch all exhibitions for the dropdown
+  // Fetch visitor statistics for ALL exhibitions
+  const fetchVisitorStats = async () => {
+    setVisitorStatsLoading(true);
+    try {
+      const queryParams = new URLSearchParams();
+      
+      // Use visitor-specific filters
+      if (visitorFilterType === "dateRange") {
+        queryParams.append("dateFrom", visitorDateFrom);
+        queryParams.append("dateTo", visitorDateTo);
+        console.log('Visitor stats: Using custom date range', { dateFrom: visitorDateFrom, dateTo: visitorDateTo });
+      } else if (visitorPeriod > 0) {
+        // Apply period filter for specific months (1, 3, 6, 12)
+        const toDate = new Date();
+        const fromDate = new Date();
+        fromDate.setMonth(fromDate.getMonth() - visitorPeriod);
+        queryParams.append("dateFrom", fromDate.toISOString().split("T")[0]);
+        queryParams.append("dateTo", toDate.toISOString().split("T")[0]);
+        console.log('Visitor stats: Using period filter', { months: visitorPeriod, fromDate: fromDate.toISOString().split("T")[0], toDate: toDate.toISOString().split("T")[0] });
+      } else {
+        // visitorPeriod === 0 means "Overall" - don't apply any date filter
+        console.log('Visitor stats: Showing all-time data (no date filter)');
+      }
+
+      const url = `/exhibitions/visitor-stats${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
+      console.log('Fetching all exhibitions visitor stats from:', url);
+      const response = await apiClient.get(url);
+      setVisitorStats(response.data);
+      
+      // Initialize selected exhibitions to all exhibitions on first load
+      if (selectedExhibitionIds.length === 0 && response.data?.exhibitions) {
+        setSelectedExhibitionIds(response.data.exhibitions.map((ex: ExhibitionVisitorStats) => ex.exhibitionId));
+      }
+      
+      console.log('All exhibitions visitor stats response:', response.data);
+    } catch (error) {
+      console.error("Error fetching visitor stats:", error);
+      setVisitorStats(null);
+    } finally {
+      setVisitorStatsLoading(false);
+    }
+  };
+
   // Load dashboard data on component mount
   useEffect(() => {
     fetchDashboardStats();
+    fetchVisitorStats();
   }, []);
+
+  // Fetch visitor stats when date range changes
+  useEffect(() => {
+    fetchVisitorStats();
+  }, [visitorDateFrom, visitorDateTo, visitorPeriod, visitorFilterType]);
 
   // Update dates when switching to period filter (only when actually switching TO period)
   useEffect(() => {
@@ -445,211 +526,376 @@ const AdminDashboard = () => {
         </div>
 
         {/* KPI Cards */}
-        <div className="kpi-cards">
-          <div className="kpi-card">
-            <div className="kpi-icon-wrapper visitors-bg">
-              <div className="kpi-icon visitors">
-                <Users size={24} />
-              </div>
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', 
+          gap: '24px', 
+          marginBottom: '32px' 
+        }}>
+          {/* Total Users */}
+          <div style={{
+            background: 'white',
+            borderRadius: '12px',
+            padding: '24px',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+            border: '1px solid #e0e0e0',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '20px'
+          }}>
+            <div style={{
+              width: '56px',
+              height: '56px',
+              borderRadius: '16px',
+              background: '#e8f0fe',
+              color: '#1a73e8',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <Users size={28} />
             </div>
-            <div className="kpi-content">
-              <h3>Total Users</h3>
-              <div className="kpi-value">
-                <span className="value">{stats.totalUsers.total}</span>
-              </div>
-              <span className="kpi-trend positive">
-                {stats.totalUsers.trend}
-              </span>
-            </div>
-          </div>
-
-          <div className="kpi-card">
-            <div className="kpi-icon-wrapper success-bg">
-              <div className="kpi-icon sales">
-                <UserPlus size={24} />
-              </div>
-            </div>
-            <div className="kpi-content">
-              <h3>Active Users</h3>
-              <div className="kpi-value">
-                <span className="value">{stats.activeUsers.total}</span>
-              </div>
-              <span className="kpi-trend positive">
-                {stats.activeUsers.trend}
-              </span>
-            </div>
-          </div>
-
-          <div className="kpi-card">
-            <div className="kpi-icon-wrapper warning-bg">
-              <div className="kpi-icon exhibits">
-                <Eye size={24} />
-              </div>
-            </div>
-            <div className="kpi-content">
-              <h3>Total Tours</h3>
-              <div className="kpi-value">
-                <span className="value">{stats.totalExhibits.total}</span>
-              </div>
-              <span className="kpi-trend info">
-                {stats.totalExhibits.trend}
-              </span>
+            <div>
+              <div style={{ fontSize: '14px', color: '#5f6368', fontWeight: 500, marginBottom: '4px' }}>Total Users</div>
+              <div style={{ fontSize: '28px', fontWeight: 600, color: '#202124', lineHeight: 1.2 }}>{stats.totalUsers.total}</div>
             </div>
           </div>
 
-          <div className="kpi-card">
-            <div className="kpi-icon-wrapper purple-bg">
-              <div className="kpi-icon events">
-                <Headphones size={24} />
-              </div>
+          {/* Total Active Tours */}
+          <div style={{
+            background: 'white',
+            borderRadius: '12px',
+            padding: '24px',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+            border: '1px solid #e0e0e0',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '20px'
+          }}>
+            <div style={{
+              width: '56px',
+              height: '56px',
+              borderRadius: '16px',
+              background: '#fef7e0',
+              color: '#f9ab00',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <Eye size={28} />
             </div>
-            <div className="kpi-content">
-              <h3>Audio Plays</h3>
-              <div className="kpi-value">
-                <span className="value">{stats.audioPlays.total}</span>
-              </div>
-              <span className="kpi-trend positive">
-                {stats.audioPlays.trend}
-              </span>
+            <div>
+              <div style={{ fontSize: '14px', color: '#5f6368', fontWeight: 500, marginBottom: '4px' }}>Total Active Tours</div>
+              <div style={{ fontSize: '28px', fontWeight: 600, color: '#202124', lineHeight: 1.2 }}>{stats.totalExhibits.total}</div>
+            </div>
+          </div>
+
+          {/* Audio Plays */}
+          <div style={{
+            background: 'white',
+            borderRadius: '12px',
+            padding: '24px',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+            border: '1px solid #e0e0e0',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '20px'
+          }}>
+            <div style={{
+              width: '56px',
+              height: '56px',
+              borderRadius: '16px',
+              background: '#f3e8fd',
+              color: '#9334e6',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <Headphones size={28} />
+            </div>
+            <div>
+              <div style={{ fontSize: '14px', color: '#5f6368', fontWeight: 500, marginBottom: '4px' }}>Audio Plays</div>
+              <div style={{ fontSize: '28px', fontWeight: 600, color: '#202124', lineHeight: 1.2 }}>{stats.audioPlays.total}</div>
             </div>
           </div>
         </div>
 
         {/* Charts */}
         <div className="dashboard-charts">
-          <div className="chart-container users-chart">
-            <div className="chart-header">
-              <h2>User Registration Trend</h2>
-              <div className="chart-controls">
-                {/* Filter Type Toggle */}
-                <div className="filter-type-selector">
+          <div className="chart-container visitor-stats-chart" style={{ width: '100%', marginBottom: '24px', background: 'white', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: '1px solid #e0e0e0' }}>
+            <div className="chart-header" style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+              <div>
+                <h2 style={{ fontSize: '18px', color: '#202124', margin: '0 0 4px 0', fontWeight: 500, fontFamily: "'Google Sans', sans-serif" }}>Total Visitors Per Exhibition (Tour)</h2>
+                <div style={{ fontSize: '12px', color: '#5f6368' }}>Unique visitor tracking across exhibitions</div>
+              </div>
+
+              <div className="chart-controls" style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
+                
+                {/* Exhibition Multi-Select Filter - Minimal Design */}
+                {visitorStats && visitorStats.exhibitions.length > 0 && (
+                  <div className="visitor-stats-filter" style={{ position: 'relative', minWidth: '220px' }}>
+                    <button
+                      onClick={() => setExhibitionDropdownOpen(!exhibitionDropdownOpen)}
+                      disabled={visitorStatsLoading}
+                      style={{
+                        width: '100%',
+                        padding: '8px 12px',
+                        background: 'white',
+                        border: '1px solid #dadce0',
+                        borderRadius: '8px',
+                        textAlign: 'left',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        fontSize: '13px',
+                        fontWeight: 500,
+                        color: '#3c4043',
+                        transition: 'background 0.2s'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = '#f8f9fa'}
+                      onMouseLeave={(e) => e.currentTarget.style.background = 'white'}
+                    >
+                      <span>{selectedExhibitionIds.length} tours selected</span>
+                      <span style={{ fontSize: '10px', opacity: 0.6 }}>▼</span>
+                    </button>
+                    
+                    {exhibitionDropdownOpen && (
+                      <div style={{
+                        position: 'absolute',
+                        top: 'calc(100% + 4px)',
+                        left: 0,
+                        right: 0,
+                        background: 'white',
+                        border: '1px solid #dadce0',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 6px rgba(60,64,67,0.15)',
+                        zIndex: 1000,
+                        maxHeight: '300px',
+                        overflowY: 'auto'
+                      }}>
+                        <div style={{ padding: '8px', borderBottom: '1px solid #f1f3f4', display: 'flex', gap: '8px' }}>
+                          <button
+                            onClick={() => setSelectedExhibitionIds(visitorStats.exhibitions.map(ex => ex.exhibitionId))}
+                            style={{ flex: 1, padding: '6px 8px', fontSize: '12px', background: '#e8f0fe', color: '#1967d2', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 500 }}
+                          >
+                            All
+                          </button>
+                          <button
+                            onClick={() => setSelectedExhibitionIds([])}
+                            style={{ flex: 1, padding: '6px 8px', fontSize: '12px', background: '#f1f3f4', color: '#5f6368', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 500 }}
+                          >
+                            Clear
+                          </button>
+                        </div>
+                        
+                        {visitorStats.exhibitions.map((exhibition) => (
+                          <label
+                            key={exhibition.exhibitionId}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                              padding: '10px 12px',
+                              cursor: 'pointer',
+                              fontSize: '13px',
+                              borderBottom: '1px solid #f8f9fa',
+                              color: '#3c4043'
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.background = '#f8f9fa'}
+                            onMouseLeave={(e) => e.currentTarget.style.background = 'white'}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={selectedExhibitionIds.includes(exhibition.exhibitionId)}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setSelectedExhibitionIds([...selectedExhibitionIds, exhibition.exhibitionId]);
+                                } else {
+                                  setSelectedExhibitionIds(selectedExhibitionIds.filter(id => id !== exhibition.exhibitionId));
+                                }
+                              }}
+                              style={{ cursor: 'pointer', accentColor: '#1a73e8', width: '16px', height: '16px' }}
+                            />
+                            <span style={{ flex: 1 }}>{exhibition.exhibitionTitle}</span>
+                            <span style={{ color: '#5f6368', fontSize: '11px', background: '#f1f3f4', padding: '2px 8px', borderRadius: '12px', fontWeight: 500 }}>
+                              {exhibition.uniqueVisitors}
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+                
+                {/* Date Filter Type Toggle - Minimal */}
+                <div className="filter-type-selector" style={{ background: '#f1f3f4', padding: '4px', borderRadius: '8px', display: 'flex', gap: '2px' }}>
                   <button
-                    className={`filter-type-btn ${
-                      filterType === "period" ? "active" : ""
-                    }`}
-                    onClick={() => setFilterType("period")}
-                    disabled={isLoading}
+                    onClick={() => setVisitorFilterType("period")}
+                    disabled={visitorStatsLoading}
+                    style={{
+                      padding: '6px 12px',
+                      fontSize: '12px',
+                      border: 'none',
+                      borderRadius: '6px',
+                      background: visitorFilterType === "period" ? 'white' : 'transparent',
+                      color: visitorFilterType === "period" ? '#1a73e8' : '#5f6368',
+                      boxShadow: visitorFilterType === "period" ? '0 1px 2px rgba(0,0,0,0.1)' : 'none',
+                      cursor: 'pointer',
+                      fontWeight: 500,
+                      transition: 'all 0.2s'
+                    }}
                   >
                     Quick Periods
                   </button>
                   <button
-                    className={`filter-type-btn ${
-                      filterType === "dateRange" ? "active" : ""
-                    }`}
-                    onClick={() => setFilterType("dateRange")}
-                    disabled={isLoading}
+                    onClick={() => setVisitorFilterType("dateRange")}
+                    disabled={visitorStatsLoading}
+                    style={{
+                      padding: '6px 12px',
+                      fontSize: '12px',
+                      border: 'none',
+                      borderRadius: '6px',
+                      background: visitorFilterType === "dateRange" ? 'white' : 'transparent',
+                      color: visitorFilterType === "dateRange" ? '#1a73e8' : '#5f6368',
+                      boxShadow: visitorFilterType === "dateRange" ? '0 1px 2px rgba(0,0,0,0.1)' : 'none',
+                      cursor: 'pointer',
+                      fontWeight: 500,
+                      transition: 'all 0.2s'
+                    }}
                   >
                     Custom Range
                   </button>
                 </div>
 
-                {/* Period Dropdown */}
-                {filterType === "period" ? (
-                  <div className="period-filter-dropdown">
-                    <label htmlFor="periodSelect">Time Period:</label>
+                {/* Period Filter */}
+                {visitorFilterType === "period" && (
+                  <div className="visitor-stats-filter">
                     <select
-                      id="periodSelect"
-                      value={selectedPeriod}
-                      onChange={(e) =>
-                        applyPeriodFilter(parseInt(e.target.value))
-                      }
-                      className="period-select-dropdown"
-                      disabled={isLoading}
+                      id="visitorPeriodSelect"
+                      value={visitorPeriod}
+                      onChange={(e) => setVisitorPeriod(parseInt(e.target.value))}
+                      disabled={visitorStatsLoading}
+                      className="items-select"
+                      style={{ padding: '8px 24px 8px 12px', fontSize: '13px', borderRadius: '8px', border: '1px solid #dadce0', background: 'white', color: '#3c4043', outline: 'none' }}
                     >
-                      <option value={1}>Last 1 month</option>
-                      <option value={3}>Last 3 months</option>
-                      <option value={6}>Last 6 months</option>
-                      <option value={12}>Last 12 months</option>
-                      <option value={24}>Last 24 months</option>
-                      <option value={0}>Overall (All time)</option>
+                      <option value={0}>All Time</option>
+                      <option value={1}>Last Month</option>
+                      <option value={3}>Last 3 Months</option>
+                      <option value={6}>Last 6 Months</option>
+                      <option value={12}>Last Year</option>
                     </select>
-                  </div>
-                ) : (
-                  /* Date Range Inputs */
-                  <div className="date-range-filters">
-                    <div className="date-input-group">
-                      <label htmlFor="dateFrom">From:</label>
-                      <input
-                        type="date"
-                        id="dateFrom"
-                        value={dateFrom}
-                        onChange={(e) => setDateFrom(e.target.value)}
-                        className="date-input"
-                        disabled={isLoading}
-                        max={dateTo}
-                      />
-                    </div>
-                    <div className="date-input-group">
-                      <label htmlFor="dateTo">To:</label>
-                      <input
-                        type="date"
-                        id="dateTo"
-                        value={dateTo}
-                        onChange={(e) => setDateTo(e.target.value)}
-                        className="date-input"
-                        disabled={isLoading}
-                        min={dateFrom}
-                        max={new Date().toISOString().split("T")[0]}
-                      />
-                    </div>
-                    <button
-                      onClick={applyDateRangeFilter}
-                      className="apply-filter-btn"
-                      disabled={isLoading}
-                    >
-                      Apply Filter
-                    </button>
                   </div>
                 )}
 
-                <div className="chart-stats">
-                  <div className="chart-stat">
-                    <span className="chart-stat-label">Period:</span>
-                    <span className="chart-stat-value">
-                      {filterType === "period"
-                        ? selectedPeriod === 0
-                          ? "All time"
-                          : `Last ${selectedPeriod} month${
-                              selectedPeriod > 1 ? "s" : ""
-                            }`
-                        : `${dateFrom} to ${dateTo}`}
-                    </span>
+                {/* Custom Date Range */}
+                {visitorFilterType === "dateRange" && (
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <input
+                      type="date"
+                      value={visitorDateFrom}
+                      onChange={(e) => setVisitorDateFrom(e.target.value)}
+                      disabled={visitorStatsLoading}
+                      className="items-select"
+                      style={{ width: '130px', padding: '7px 10px', fontSize: '12px', borderRadius: '8px', border: '1px solid #dadce0', color: '#3c4043' }}
+                    />
+                    <span style={{color: '#9aa0a6', fontSize: '12px', fontWeight: 500}}>to</span>
+                    <input
+                      type="date"
+                      value={visitorDateTo}
+                      onChange={(e) => setVisitorDateTo(e.target.value)}
+                      disabled={visitorStatsLoading}
+                      className="items-select"
+                      style={{ width: '130px', padding: '7px 10px', fontSize: '12px', borderRadius: '8px', border: '1px solid #dadce0', color: '#3c4043' }}
+                    />
                   </div>
-                  <div className="chart-stat">
-                    <span className="chart-stat-label">Total:</span>
-                    <span className="chart-stat-value">
-                      {userStats.totalUsers} users
-                    </span>
-                  </div>
-                </div>
+                )}
               </div>
             </div>
-            {isLoading ? (
-              <div className="chart-loading">
-                <Activity className="loading-spinner" size={32} />
-                <p>Loading data...</p>
+            {visitorStatsLoading ? (
+              <div className="chart-loading" style={{ height: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '12px' }}>
+                <Activity className="loading-spinner" size={24} style={{ color: '#1a73e8' }} />
+                <p style={{ fontSize: '13px', color: '#5f6368' }}>Loading visitor data...</p>
+              </div>
+            ) : !visitorStats || visitorStats.exhibitions.length === 0 ? (
+              <div className="chart-no-data" style={{ height: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '12px' }}>
+                <Users size={32} color="#dadce0" />
+                <p style={{ color: '#5f6368', fontWeight: 500 }}>No visitor data available</p>
+                <p className="text-sm" style={{ fontSize: '12px', marginTop: '4px', color: '#9aa0a6' }}>
+                  Statistics are based on registered visitors who claimed badges
+                </p>
               </div>
             ) : (
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart
-                  data={userStats.registrationTrend}
-                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Line
-                    type="monotone"
-                    dataKey="count"
-                    stroke="#3b82f6"
-                    strokeWidth={2}
-                    activeDot={{ r: 8 }}
-                    name="New Users"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+              <>
+                {(() => {
+                  // Filter exhibitions based on selected IDs
+                  const filteredExhibitions = visitorStats.exhibitions.filter(ex => 
+                    selectedExhibitionIds.includes(ex.exhibitionId)
+                  );
+                  
+                  return (
+                    <>
+                      {filteredExhibitions.length === 0 ? (
+                        <div className="chart-no-data" style={{ padding: '60px', textAlign: 'center' }}>
+                          <Users size={40} color="#dadce0" style={{ margin: '0 auto 16px', display: 'block' }} />
+                          <p style={{ color: '#5f6368', fontSize: '14px' }}>Please select at least one exhibition to compare</p>
+                        </div>
+                      ) : (
+                        <ResponsiveContainer width="100%" height={380}>
+                          <BarChart
+                            data={filteredExhibitions}
+                            margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+                            barSize={60}
+                          >
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f3f4" />
+                            <XAxis 
+                              dataKey="exhibitionTitle" 
+                              angle={-45}
+                              textAnchor="end"
+                              height={80}
+                              interval={0}
+                              tick={{ fontSize: 12, fill: '#5f6368' }}
+                              tickLine={false}
+                              axisLine={{ stroke: '#dadce0' }}
+                              dy={10}
+                            />
+                            <YAxis 
+                              axisLine={false}
+                              tickLine={false}
+                              tick={{ fontSize: 12, fill: '#9aa0a6' }}
+                              dx={-10}
+                            />
+                            <Tooltip 
+                              cursor={{ fill: 'rgba(232, 240, 254, 0.4)' }}
+                              contentStyle={{ 
+                                borderRadius: '8px', 
+                                border: 'none', 
+                                boxShadow: '0 4px 12px rgba(60,64,67,0.15)',
+                                padding: '12px'
+                              }}
+                              itemStyle={{ fontSize: '13px', fontWeight: 500, padding: '2px 0' }}
+                              formatter={(value: number, name: string) => {
+                                if (name === "uniqueVisitors") return [value, "Unique Visitors"];
+                                return [value, name];
+                              }}
+                              labelFormatter={(label) => <span style={{ color: '#5f6368', fontSize: '12px', marginBottom: '8px', display: 'block' }}>{label}</span>}
+                            />
+                            <Legend 
+                                wrapperStyle={{ paddingTop: '20px' }} 
+                                formatter={(value) => <span style={{ color: '#5f6368', fontSize: '13px', fontWeight: 500 }}>{value}</span>}
+                            />
+                            <Bar dataKey="uniqueVisitors" name="Unique Visitors" radius={[4, 4, 0, 0]}>
+                              {filteredExhibitions.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                              ))}
+                            </Bar>
+                          </BarChart>
+                        </ResponsiveContainer>
+                      )}
+                    </>
+                  );
+                })()}
+              </>
             )}
           </div>
 

@@ -349,6 +349,17 @@ exports.Prisma.MessageScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.HomeFloatingCardScalarFieldEnum = {
+  cardId: 'cardId',
+  title: 'title',
+  icon: 'icon',
+  linkUrl: 'linkUrl',
+  position: 'position',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -405,7 +416,8 @@ exports.Prisma.ModelName = {
   Settings: 'Settings',
   SenderType: 'SenderType',
   Conversation: 'Conversation',
-  Message: 'Message'
+  Message: 'Message',
+  HomeFloatingCard: 'HomeFloatingCard'
 };
 
 /**

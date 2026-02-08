@@ -36,6 +36,7 @@ router.put("/profile", jwtMiddleware.verifyToken, authController.updateProfile);
 router.put("/change-password", jwtMiddleware.verifyToken, authController.changePassword);
 router.put("/change-email", jwtMiddleware.verifyToken, authController.changeEmail);
 router.put("/change-username", jwtMiddleware.verifyToken, authController.changeUsername);
+router.put("/language-preference", jwtMiddleware.verifyToken, authController.updateLanguagePreference);
 router.post("/upload-profile-pic", jwtMiddleware.verifyToken, uploadImage.single('profilePicture'), authController.updateProfilePicture );
 
 module.exports = router;

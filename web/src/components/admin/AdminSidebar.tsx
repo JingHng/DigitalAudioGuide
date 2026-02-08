@@ -15,7 +15,8 @@ import {
   Settings,
   Bot,
   Award,
-  Eye
+  Eye,
+  MousePointerClick
 } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -67,6 +68,10 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
     navigate('/admin/audio#add-audio');
   };
 
+  const handleAddFloatingCard = () => {
+    navigate('/admin/floating-cards#add-card');
+  };
+
   const handleLogout = () => {
     // Use the auth context's logout function
     authLogout();
@@ -93,6 +98,12 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
       label: 'Audio Analytics',
       icon: <BarChart3 size={20} />,
       path: '/admin/audio-analytics'
+    },
+    {
+      id: 'badge-analytics',
+      label: 'Badge Analytics',
+      icon: <BarChart3 size={20} />,
+      path: '/admin/badge-analytics'
     },
     {
       id: 'audit-logs',
@@ -146,14 +157,21 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
       path: '/admin/audio',
       hasAddButton: true,
       addAction: handleAddAudio
+    },
+    {
+      id: 'floating-cards',
+      label: 'Clickable Elements',
+      icon: <MousePointerClick size={20} />,
+      path: '/admin/floating-cards',
+      hasAddButton: true,
+      addAction: handleAddFloatingCard
+    },
+    {
+      id: 'reviews',
+      label: 'Reviews',
+      icon: <Eye size={20} />,
+      path: '/admin/reviews'
     }
-     ,
-     {
-       id: 'reviews',
-       label: 'Reviews',
-       icon: <Eye size={20} />,
-       path: '/admin/reviews'
-     }
   ];
 
   const bottomMenuItems: MenuItem[] = [

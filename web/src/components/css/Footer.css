@@ -1,0 +1,171 @@
+/* ---------------------------------------------------------
+   Shared footer base styles
+   --------------------------------------------------------- */
+
+/* 给 body 或 page wrapper 做 flex */
+body, html {
+  height: 100%;
+  margin: 0;
+}
+
+.page-wrapper {       /* 包裹 header + main + footer 的容器 */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;  /* 保证至少占满整个视口高度 */
+}
+
+.main-content {
+  flex: 1;            /* 占据剩余空间，把 footer 推到底 */
+}
+
+.se-footer {
+  border-top: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #6b7280;
+  position: relative;  /* 不用 fixed */
+  z-index: 1;
+}
+
+/* ---------------------------------------------------------
+   Admin footer
+   - Uses CSS variables to offset itself from the fixed sidebar
+   --------------------------------------------------------- */
+
+.footer--admin {
+  margin-left: var(--admin-sidebar-width, 0px);
+  width: calc(100% - var(--admin-sidebar-width, 0px));
+  padding: 20px 60px;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+
+.footer__container--admin {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.footer__admin-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.footer__admin-title {
+  font-weight: 700;
+  color: #111827;
+}
+
+.footer__admin-subtitle {
+  font-size: 12px;
+}
+
+.footer__admin-right {
+  font-size: 12px;
+  text-align: right;
+}
+
+.footer__admin-identity {
+  font-weight: 700;
+  color: #111827;
+}
+
+.footer__muted {
+  opacity: 0.9;
+}
+
+/* ---------------------------------------------------------
+   Public footer
+   --------------------------------------------------------- */
+
+.se-footer--public {
+  padding: 26px 20px;
+}
+
+.footer__grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 18px;
+}
+
+/* Brand block */
+.footer__brand {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer__brand-title {
+  font-weight: 800;
+  color: #111827;
+  font-size: 18px;
+}
+
+.footer__brand-desc {
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.footer__brand-meta {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+/* Spacer column */
+.footer__spacer {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Explore column aligned to the right */
+.footer__links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  justify-self: end;
+  text-align: right;
+}
+
+.footer__links-title {
+  font-weight: 700;
+  color: #111827;
+}
+
+.footer__links-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  align-items: flex-end;
+}
+
+/* Links */
+.footer__link {
+  color: #6b7280;
+  text-decoration: none;
+}
+
+.footer__link:hover {
+  color: #111827;
+  text-decoration: underline;
+}
+
+/* Bottom row */
+.footer__bottom {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid #f3f4f6;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+
+  font-size: 12px;
+  opacity: 0.95;
+}

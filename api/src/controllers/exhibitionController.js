@@ -1067,3 +1067,217 @@ exports.getExhibitionStats = async (req, res) => {
     res.status(500).json({ message: "Error fetching exhibition statistics" });
   }
 };
+
+/**
+ * @route   GET /api/exhibitions/visitor-stats/:exhibitionId
+ * @desc    Get visitor statistics per exhibit within an exhibition (based on badge claims by registered users)
+ * @access  Public
+ * @query   ?dateFrom=YYYY-MM-DD&dateTo=YYYY-MM-DD (optional date range filter)
+ */
+exports.getVisitorStatsByExhibition = async (req, res) => {
+  try {
+    const { exhibitionId } = req.params;
+    const { dateFrom, dateTo } = req.query;
+
+    console.log('Visitor Stats Request:', { exhibitionId, dateFrom, dateTo });
+
+    // Build date filter for user_badge.created_at
+    const dateFilter = {};
+    if (dateFrom && dateTo) {
+      // Make the date range inclusive: start of dateFrom to END of dateTo
+      const startDate = new Date(dateFrom);
+      startDate.setHours(0, 0, 0, 0);
+      
+      const endDate = new Date(dateTo);
+      endDate.setHours(23, 59, 59, 999); // End of day
+      
+      dateFilter.createdAt = {
+        gte: startDate,
+        lte: endDate
+      };
+      console.log('Applying date filter:', { 
+        from: startDate.toISOString(), 
+        to: endDate.toISOString() 
+      });
+    } else {
+      console.log('No date filter applied - showing all time data');
+    }
+
+    // Get all exhibits in this exhibition with their badge claims
+    const exhibits = await prisma.exhibit.findMany({
+      where: {
+        exhibitionId: BigInt(exhibitionId),
+        statusId: 1,
+        badgeId: { not: null } // Only exhibits with badges
+      },
+      select: {
+        exhibitId: true,
+        title: true,
+        sequence: true,
+        badge: {
+          select: {
+            badgeId: true,
+            userBadges: {
+              where: dateFilter,
+              select: {
+                userId: true,
+                createdAt: true
+              }
+            }
+          }
+        }
+      },
+      orderBy: { sequence: 'asc' }
+    });
+
+    console.log(`Found ${exhibits.length} exhibits with badges`);
+
+    // Calculate visitor counts per exhibit
+    const visitorStats = exhibits.map(exhibit => {
+      const userBadges = exhibit.badge?.userBadges || [];
+      const uniqueVisitors = new Set(userBadges.map(ub => ub.userId.toString())).size;
+      const totalVisits = userBadges.length;
+
+      console.log(`Exhibit: ${exhibit.title} - Unique: ${uniqueVisitors}, Total: ${totalVisits}`);
+
+      return {
+        exhibitId: exhibit.exhibitId.toString(),
+        exhibitTitle: exhibit.title,
+        sequence: exhibit.sequence,
+        uniqueVisitors,
+        totalVisits
+      };
+    });
+
+    // Get exhibition details
+    const exhibition = await prisma.exhibition.findUnique({
+      where: { exhibitionId: BigInt(exhibitionId) },
+      select: {
+        exhibitionId: true,
+        title: true
+      }
+    });
+
+    // Calculate total unique visitors across all exhibits in this exhibition
+    const allUserIds = new Set();
+    exhibits.forEach(exhibit => {
+      const userBadges = exhibit.badge?.userBadges || [];
+      userBadges.forEach(ub => allUserIds.add(ub.userId.toString()));
+    });
+
+    console.log(`Total unique visitors for exhibition: ${allUserIds.size}`);
+
+    res.status(200).json({
+      exhibition: {
+        id: exhibition?.exhibitionId.toString(),
+        title: exhibition?.title
+      },
+      totalUniqueVisitors: allUserIds.size,
+      exhibits: visitorStats,
+      dateRange: dateFrom && dateTo ? { from: dateFrom, to: dateTo } : null
+    });
+  } catch (err) {
+    console.error("Error fetching visitor stats by exhibition:", err);
+    res.status(500).json({ message: "Error fetching visitor statistics", error: err.message });
+  }
+};
+
+/**
+ * Get visitor stats for ALL exhibitions (comparing all exhibitions)
+ */
+exports.getAllExhibitionsVisitorStats = async (req, res) => {
+  try {
+    const { dateFrom, dateTo } = req.query;
+
+    console.log('All Exhibitions Visitor Stats Request:', { dateFrom, dateTo });
+
+    // Build date filter for user_badge.created_at
+    const dateFilter = {};
+    if (dateFrom && dateTo) {
+      const startDate = new Date(dateFrom);
+      startDate.setHours(0, 0, 0, 0);
+      
+      const endDate = new Date(dateTo);
+      endDate.setHours(23, 59, 59, 999);
+      
+      dateFilter.createdAt = {
+        gte: startDate,
+        lte: endDate
+      };
+      console.log('Applying date filter:', { 
+        from: startDate.toISOString(), 
+        to: endDate.toISOString() 
+      });
+    }
+
+    // Get all active exhibitions with their exhibits and badges
+    const exhibitions = await prisma.exhibition.findMany({
+      where: {
+        statusId: { in: [1, 2] } // Active or Published
+      },
+      select: {
+        exhibitionId: true,
+        title: true,
+        exhibits: {
+          where: {
+            statusId: 1,
+            badgeId: { not: null }
+          },
+          select: {
+            exhibitId: true,
+            badge: {
+              select: {
+                badgeId: true,
+                userBadges: {
+                  where: dateFilter,
+                  select: {
+                    userId: true,
+                    createdAt: true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      orderBy: { exhibitionId: 'asc' }
+    });
+
+    console.log(`Found ${exhibitions.length} exhibitions`);
+
+    // Calculate unique visitors per exhibition
+    const exhibitionStats = exhibitions.map(exhibition => {
+      // Collect all unique user IDs who visited ANY exhibit in this exhibition
+      const uniqueUserIds = new Set();
+      let totalBadgeClaims = 0;
+
+      exhibition.exhibits.forEach(exhibit => {
+        const userBadges = exhibit.badge?.userBadges || [];
+        userBadges.forEach(ub => {
+          uniqueUserIds.add(ub.userId.toString());
+        });
+        totalBadgeClaims += userBadges.length;
+      });
+
+      const uniqueVisitors = uniqueUserIds.size;
+      
+      console.log(`Exhibition: ${exhibition.title} - Unique Visitors: ${uniqueVisitors}, Total Badge Claims: ${totalBadgeClaims}, Exhibits: ${exhibition.exhibits.length}`);
+
+      return {
+        exhibitionId: exhibition.exhibitionId.toString(),
+        exhibitionTitle: exhibition.title,
+        uniqueVisitors,
+        totalVisits: totalBadgeClaims,
+        exhibitCount: exhibition.exhibits.length
+      };
+    });
+
+    res.status(200).json({
+      exhibitions: exhibitionStats,
+      dateRange: dateFrom && dateTo ? { from: dateFrom, to: dateTo } : null
+    });
+  } catch (err) {
+    console.error("Error fetching all exhibitions visitor stats:", err);
+    res.status(500).json({ message: "Error fetching visitor statistics", error: err.message });
+  }
+};

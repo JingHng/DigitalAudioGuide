@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { QrCode, Building2, Sparkles, ArrowRight, MapPin } from 'lucide-react';
+import { QrCode, Building2, Sparkles, ArrowRight, MapPin, Award, Music, Image, Users, Settings, Eye, Heart, Star, Bell } from 'lucide-react';
 // import '../styles/SmartExhibit.css'; // Temporarily commented to fix deployment issue
 
 // --- Constants for API and Default Image ---
@@ -24,33 +24,75 @@ interface Tour {
   };
 }
 
+interface FloatingCard {
+  cardId: string;
+  title: string;
+  icon: string;
+  linkUrl: string;
+  position: number;
+  isActive: boolean;
+}
+
 const Homepage: React.FC = () => {
   const navigate = useNavigate();
   const [tours, setTours] = useState<Tour[]>([]);
+  const [floatingCards, setFloatingCards] = useState<FloatingCard[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchTours = async () => {
+    const fetchData = async () => {
       try {
-        // Fetch tours from the API
-        const response = await fetch('/api/exhibitions');
-        if (response.ok) {
-          const data = await response.json();
-          setTours(data);
+        // Fetch tours and floating cards in parallel
+        const [toursResponse, cardsResponse] = await Promise.all([
+          fetch('/api/exhibitions'),
+          fetch('/api/home/floating-cards/active')
+        ]);
+
+        if (toursResponse.ok) {
+          const toursData = await toursResponse.json();
+          setTours(toursData);
         } else {
           console.error('Failed to fetch tours');
           setTours([]);
         }
+
+        if (cardsResponse.ok) {
+          const cardsData = await cardsResponse.json();
+          setFloatingCards(cardsData);
+        } else {
+          console.error('Failed to fetch floating cards');
+          setFloatingCards([]);
+        }
       } catch (err: any) {
-        console.error('Error fetching tours:', err);
+        console.error('Error fetching data:', err);
         setTours([]);
+        setFloatingCards([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchTours();
+    fetchData();
   }, []);
+
+  // Helper function to get icon component by name
+  const getIconComponent = (iconName: string) => {
+    const icons: { [key: string]: React.ReactNode } = {
+      QrCode: <QrCode size={24} />,
+      MapPin: <MapPin size={24} />,
+      Sparkles: <Sparkles size={24} />,
+      Award: <Award size={24} />,
+      Music: <Music size={24} />,
+      Image: <Image size={24} />,
+      Users: <Users size={24} />,
+      Settings: <Settings size={24} />,
+      Eye: <Eye size={24} />,
+      Heart: <Heart size={24} />,
+      Star: <Star size={24} />,
+      Bell: <Bell size={24} />,
+    };
+    return icons[iconName] || <QrCode size={24} />;
+  };
 
   // Helper function to construct the correct image URL
   const getImageUrl = (fileUrl: string | null): string => {
@@ -119,18 +161,17 @@ const Homepage: React.FC = () => {
                 className="hero-image"
               />
               <div className="floating-elements">
-                <div className="float-card card-1">
-                  <QrCode size={24} />
-                  <span>Interactive Scanning</span>
-                </div>
-                <div className="float-card card-2">
-                  <MapPin size={24} />
-                  <span>Smart Navigation</span>
-                </div>
-                <div className="float-card card-3">
-                  <Sparkles size={24} />
-                  <span>AI-Powered Insights</span>
-                </div>
+                {floatingCards.map((card, index) => (
+                  <div 
+                    key={card.cardId} 
+                    className={`float-card card-${index + 1}`}
+                    onClick={() => navigate(card.linkUrl)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    {getIconComponent(card.icon)}
+                    <span>{card.title}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

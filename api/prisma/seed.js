@@ -366,6 +366,20 @@ async function seed() {
       );
     `);
 
+    // 20. HOME_FLOATING_CARD table
+    await client.query(`
+      CREATE TABLE home_floating_card (
+        card_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        title VARCHAR(100) NOT NULL,
+        icon VARCHAR(50) NOT NULL,
+        link_url VARCHAR(255) NOT NULL,
+        position INTEGER NOT NULL,
+        is_active BOOLEAN NOT NULL DEFAULT true,
+        created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
     // Add comprehensive performance indexes
     await client.query(`
       -- User table indexes
@@ -465,6 +479,10 @@ async function seed() {
       -- AI Assistant (Omnie) indexes
       CREATE INDEX idx_message_conversation_status ON message(conversation_id, status_id, created_at, sender_type_id);
       CREATE INDEX idx_conversation_user_status ON conversation(user_id, status_id, created_at);
+
+      -- Home floating card indexes
+      CREATE INDEX idx_floating_card_position ON home_floating_card(position);
+      CREATE INDEX idx_floating_card_active ON home_floating_card(is_active);
 
       -- Composite indexes for common queries
       CREATE INDEX idx_user_email_status ON "user"(email, status_id);
@@ -806,8 +824,8 @@ async function seed() {
     // Generate hash for admin123 password
     const adminHash = await bcrypt.hash('admin123', 12);
     const moderatorHash = await bcrypt.hash('moderator123', 12);
-    // Generate hash for User123$% password (used for all generated users)
-    const userHash = await bcrypt.hash('User123$%', 12);
+    // Generate hash for 123123 password (used for all test users)
+    const testUserHash = await bcrypt.hash('123123', 12);
     
     await client.query(`
       INSERT INTO "user" (username, email, password_hash, email_verified, status_id, last_login_at, gender, date_of_birth, language_id) VALUES
@@ -815,117 +833,47 @@ async function seed() {
       ($4, $5, $6, true, 1, CURRENT_TIMESTAMP - INTERVAL '1 day', 'Female', '1985-01-01', 1)
     `, ['admin', 'admin@audiomuseum.com', adminHash, 'moderator', 'moderator@audiomuseum.com', moderatorHash]);
 
-    // Generate 100+ users with varying registration dates for trend analysis
-    const users = [];
-    const usernames = [];
-    const emails = [];
-    const statuses = [1, 1, 1, 1, 2, 3]; // Mostly active, some inactive/suspended
-    const firstNames = [
-      "Alex",
-      "Sam",
-      "Jordan",
-      "Taylor",
-      "Casey",
-      "Morgan",
-      "Riley",
-      "Avery",
-      "Quinn",
-      "Blake",
-      "Cameron",
-      "Devon",
-      "Emery",
-      "Harper",
-      "Hayden",
-      "Jamie",
-      "Kennedy",
-      "Logan",
-      "Madison",
-      "Parker",
-    ];
-    const lastNames = [
-      "Smith",
-      "Johnson",
-      "Williams",
-      "Brown",
-      "Jones",
-      "Garcia",
-      "Miller",
-      "Davis",
-      "Rodriguez",
-      "Martinez",
-      "Hernandez",
-      "Lopez",
-      "Gonzalez",
-      "Wilson",
-      "Anderson",
-      "Thomas",
-      "Taylor",
-      "Moore",
-      "Jackson",
-      "Martin",
-      "Lee",
-      "Perez",
-      "Thompson",
-      "White",
-      "Harris",
-    ];
-
-    // Create users spanning the last 12 months with realistic distribution
-    for (let i = 1; i <= 120; i++) {
-      const firstName =
-        firstNames[Math.floor(Math.random() * firstNames.length)];
-      const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
-      const username = `${firstName.toLowerCase()}_${lastName.toLowerCase()}_${i}`;
-      const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${i}@example.com`;
+    // Create 10 test users (test1 to test10) with password 123123
+    console.log("Creating 10 test users (test1-test10)...");
+    const testUsers = [];
+    for (let i = 1; i <= 10; i++) {
+      const username = `test${i}`;
+      const email = `test${i}@test.com`;
       const genders = ['Male', 'Female', 'Non-binary'];
       const randomGender = genders[Math.floor(Math.random() * genders.length)];
-      const randomDOB = `19${Math.floor(Math.random() * 40 + 60)}-01-01`;
-      const languageId = 1; 
+      const randomDOB = `19${Math.floor(Math.random() * 30 + 70)}-${String(Math.floor(Math.random() * 12) + 1).padStart(2, '0')}-${String(Math.floor(Math.random() * 28) + 1).padStart(2, '0')}`;
+      const languageId = Math.random() > 0.5 ? 1 : 7; // 50% English, 50% Chinese
 
-      // Distribute registrations over past 12 months with higher activity in recent months
-      const daysAgo = Math.floor(Math.random() * 365);
-      const weight = Math.max(0.1, 1 - daysAgo / 365); // More users in recent months
-      const adjustedDaysAgo =
-        Math.random() < weight ? Math.floor(Math.random() * 90) : daysAgo;
+      // Create varied registration dates over the past 6 months
+      const daysAgo = Math.floor(Math.random() * 180);
+      const createdAt = `CURRENT_TIMESTAMP - INTERVAL '${daysAgo} days' - INTERVAL '${Math.floor(Math.random() * 24)} hours'`;
+      
+      // All test users are active and email verified
+      const statusId = 1;
+      const emailVerified = true;
+      const lastLoginAt = `CURRENT_TIMESTAMP - INTERVAL '${Math.floor(Math.random() * Math.min(daysAgo, 30) + 1)} days'`;
 
-      const createdAt = `CURRENT_TIMESTAMP - INTERVAL '${adjustedDaysAgo} days' - INTERVAL '${Math.floor(
-        Math.random() * 24
-      )} hours'`;
-      const statusId = statuses[Math.floor(Math.random() * statuses.length)];
-      const emailVerified = Math.random() > 0.1; // 90% email verified
-      const hasLoggedIn = Math.random() > 0.2; // 80% have logged in
-      const lastLoginAt = hasLoggedIn
-        ? `CURRENT_TIMESTAMP - INTERVAL '${Math.floor(
-            Math.random() * adjustedDaysAgo + 1
-          )} days'`
-        : "NULL";
-
-      users.push(`('${username}', '${email}', '${userHash}', ${emailVerified}, ${statusId}, ${lastLoginAt}, '${randomGender}', '${randomDOB}', ${languageId}, ${createdAt})`);      usernames.push(username);
-      emails.push(email);
+      testUsers.push(`('${username}', '${email}', '${testUserHash}', ${emailVerified}, ${statusId}, ${lastLoginAt}, '${randomGender}', '${randomDOB}', ${languageId}, ${createdAt})`);
     }
 
-    // Insert users in batches to avoid query size limits
-    const batchSize = 50;
-    for (let i = 0; i < users.length; i += batchSize) {
-      const batch = users.slice(i, i + batchSize);
+    // Insert test users
     await client.query(`
-  INSERT INTO "user" (
-    username, 
-    email, 
-    password_hash, 
-    email_verified, 
-    status_id, 
-    last_login_at, 
-    gender, 
-    date_of_birth,
-    language_id,    -- Add this!
-    created_at
-  ) VALUES ${batch.join(", ")};
-`);
-    }
+      INSERT INTO "user" (
+        username, 
+        email, 
+        password_hash, 
+        email_verified, 
+        status_id, 
+        last_login_at, 
+        gender, 
+        date_of_birth,
+        language_id,
+        created_at
+      ) VALUES ${testUsers.join(", ")};
+    `);
 
     console.log(
-      `Inserted ${users.length + 2} users total (including admin, moderator and ${users.length} test users)`
+      `Inserted ${testUsers.length + 2} users total (admin, moderator, and ${testUsers.length} test users)`
     );
 
     // Assign roles to users - admin and moderator first
@@ -1021,10 +969,10 @@ await client.query(`
     // Insert badges first (25 badges)
    await client.query(`
     INSERT INTO badge (badge_id, name, description, style, image_url) VALUES
-    (1, 'Enter The Sandbox', 'We have witnessed Singapore''s journey to nationhood... Leave your unique imprint on our present and future here in the Sandbox today.', 'cool', '/images/badge/Enter_The_Sandbox.png'),
-    (2, 'Particles of Change', 'Immerse in an experience where play meets inspiration.', 'cool', '/images/badge/Particles_of_Change.png'),
-    (3, 'Strength of Our Nation', 'The peace we experience in Singapore today is in no small part due to our men and women in uniform...', 'cool', '/images/badge/Strength_of_Our_Nation.png'),
-    (4, 'Staying Resilient Amid Tough Times', 'Singaporeans have shown resilience amid challenges...', 'cool', '/images/badge/Staying_Resilient_Amid_Tough_Times.png'),
+    (1, 'Enter The Sandbox', 'We have witnessed Singapore''s journey to nationhood... Leave your unique imprint on our present and future here in the Sandbox today.', 'medal', '/images/badge/Enter_The_Sandbox.png'),
+    (2, 'Particles of Change', 'Immerse in an experience where play meets inspiration.', 'medal', '/images/badge/Particles_of_Change.png'),
+    (3, 'Strength of Our Nation', 'The peace we experience in Singapore today is in no small part due to our men and women in uniform...', 'silver', '/images/badge/Strength_of_Our_Nation.png'),
+    (4, 'Staying Resilient Amid Tough Times', 'Singaporeans have shown resilience amid challenges...', 'silver', '/images/badge/Staying_Resilient_Amid_Tough_Times.png'),
     (5, 'Special Badge Number 5', 'Malaysians have shown resilience amid challenges...', 'cool', '/images/badge/Staying_Resilient_Amid_Tough_Times.png'),
     (6, 'School of Computing Explorer', 'Scan here to discover the exciting world of computing at Singapore Polytechnic!', 'cool', '/images/badge/Our_Milestones.png'),
     (7, 'SP Counselling Guide', 'Learn about course counselling and find your perfect program at Singapore Polytechnic.', 'cool', '/images/badge/Relentless_Sabotage.png'),
@@ -1202,114 +1150,135 @@ await client.query(`
       (12, NULL, 1, 'user', 'login', '{"message":"User logged in, status set to Active"}', NULL, '2025-11-17 07:46:10.958+00');
     `);
 
+    // Assign random badges to test users (user_id 3-12) with weighted distribution
+    console.log("📛 Assigning badges to test users with varied popularity...");
+    const badgeAssignments = [];
+    
+    // Create weighted badge distribution for more realistic visitor stats
+    // SoC Tour exhibits: Badge 5 (Project INC) - very popular, Badge 6 (Registration) - popular, Badge 7 (Counselling) - moderate
+    const badgeWeights = {
+      1: 0.6,  // Maritime Roots - moderate popularity
+      2: 0.5,  // Ancient Map - moderate
+      3: 0.4,  // Wartime Bunker - less popular
+      4: 0.4,  // Faces of Occupation - less popular
+      5: 0.9,  // Project INC - VERY popular (SoC Tour)
+      6: 0.7,  // Registration Booth - popular (SoC Tour)
+      7: 0.4,  // Course Counselling - moderate (SoC Tour)
+      8: 0.3,  // CLS Counselling - less popular
+      9: 0.3   // SOB Counselling - less popular
+    };
+    
+    for (let userId = 3; userId <= 12; userId++) {
+      // Each badge has a weighted chance to be assigned
+      Object.keys(badgeWeights).forEach(badgeId => {
+        const weight = badgeWeights[badgeId];
+        
+        // Random chance based on weight (higher weight = more likely to be assigned)
+        if (Math.random() < weight) {
+          // Create timestamp - badges earned over past 2 months
+          const daysAgo = Math.floor(Math.random() * 60);
+          const hoursAgo = Math.floor(Math.random() * 24);
+          const createdAt = `CURRENT_TIMESTAMP - INTERVAL '${daysAgo} days' - INTERVAL '${hoursAgo} hours'`;
+          
+          badgeAssignments.push(`(${userId}, ${badgeId}, ${createdAt})`);
+        }
+      });
+    }
+    
+    if (badgeAssignments.length > 0) {
+      await client.query(`
+        INSERT INTO user_badge (user_id, badge_id, created_at) 
+        VALUES ${badgeAssignments.join(", ")};
+      `);
+      console.log(`Assigned ${badgeAssignments.length} badges to test users`);
+    }
+
+    // Create audio playback logs for test users in both English and Chinese
+    console.log("🎧 Creating audio playback logs for test users...");
+    const audioPlaybackLogs = [];
+    const englishAudioIds = [804, 805, 806, 807, 809, 810, 811]; // English audios
+    const chineseAudioIds = [812, 813, 814]; // Chinese audios
+    
+    for (let userId = 3; userId <= 12; userId++) {
+      // Each user listens to 5-10 English audios
+      const numEnglishPlays = Math.floor(Math.random() * 6) + 5; // 5 to 10
+      for (let i = 0; i < numEnglishPlays; i++) {
+        const audioId = englishAudioIds[Math.floor(Math.random() * englishAudioIds.length)];
+        const daysAgo = Math.floor(Math.random() * 60);
+        const hoursAgo = Math.floor(Math.random() * 24);
+        
+        // Random duration between 20-60 seconds (simulating partial or full listen)
+        const duration = Math.floor(Math.random() * 40) + 20;
+        
+        const audioStart = `CURRENT_TIMESTAMP - INTERVAL '${daysAgo} days' - INTERVAL '${hoursAgo} hours'`;
+        const audioEnd = `CURRENT_TIMESTAMP - INTERVAL '${daysAgo} days' - INTERVAL '${hoursAgo} hours' + INTERVAL '${duration} seconds'`;
+        
+        audioPlaybackLogs.push(`(${userId}, ${audioId}, ${audioStart}, ${audioEnd}, ${duration}, ${audioStart})`);
+      }
+      
+      // Each user listens to 2-4 Chinese audios
+      const numChinesePlays = Math.floor(Math.random() * 3) + 2; // 2 to 4
+      for (let i = 0; i < numChinesePlays; i++) {
+        const audioId = chineseAudioIds[Math.floor(Math.random() * chineseAudioIds.length)];
+        const daysAgo = Math.floor(Math.random() * 60);
+        const hoursAgo = Math.floor(Math.random() * 24);
+        
+        // Random duration between 15-50 seconds
+        const duration = Math.floor(Math.random() * 35) + 15;
+        
+        const audioStart = `CURRENT_TIMESTAMP - INTERVAL '${daysAgo} days' - INTERVAL '${hoursAgo} hours'`;
+        const audioEnd = `CURRENT_TIMESTAMP - INTERVAL '${daysAgo} days' - INTERVAL '${hoursAgo} hours' + INTERVAL '${duration} seconds'`;
+        
+        audioPlaybackLogs.push(`(${userId}, ${audioId}, ${audioStart}, ${audioEnd}, ${duration}, ${audioStart})`);
+      }
+    }
+    
+    if (audioPlaybackLogs.length > 0) {
+      await client.query(`
+        INSERT INTO audio_playback_logs (user_id, audio_id, audio_start, audio_end, duration_listened, created_at) 
+        VALUES ${audioPlaybackLogs.join(", ")};
+      `);
+      console.log(`Created ${audioPlaybackLogs.length} audio playback logs for test users`);
+    }
+
     // Insert feedback/reviews for exhibits (2 reviews per exhibit)
     await client.query(`
       INSERT INTO feedback (user_id, exhibit_id, rating, description, is_hidden, created_at) VALUES
       -- Exhibit 1: Maritime Roots Interactive Gallery
       (3, 1, 5, 'Absolutely fascinating! The interactive projections really brought Singapore''s maritime history to life. I loved being able to tap on the artifacts and learn about their significance in trade.', false, CURRENT_TIMESTAMP - INTERVAL '5 days'),
-      (15, 1, 4, 'Great exhibit! The AR stations were impressive and the authentic artifacts made me appreciate how Singapore became such an important trading hub. Would have loved more information about the specific trade routes.', false, CURRENT_TIMESTAMP - INTERVAL '3 days'),
+      (4, 1, 4, 'Great exhibit! The AR stations were impressive and the authentic artifacts made me appreciate how Singapore became such an important trading hub. Would have loved more information about the specific trade routes.', false, CURRENT_TIMESTAMP - INTERVAL '3 days'),
       
       -- Exhibit 2: Ancient Singapore Map Table
-      (7, 2, 5, 'The illuminated map table is incredible! Being able to see how Singapore evolved through different time periods with gesture controls was mind-blowing. This is definitely a must-see.', false, CURRENT_TIMESTAMP - INTERVAL '7 days'),
-      (22, 2, 5, 'Wow! The level of detail in the historical maps is amazing. I spent over 20 minutes exploring different regions and learning about the Johor-Riau Sultanate. Very educational and engaging.', false, CURRENT_TIMESTAMP - INTERVAL '2 days'),
+      (5, 2, 5, 'The illuminated map table is incredible! Being able to see how Singapore evolved through different time periods with gesture controls was mind-blowing. This is definitely a must-see.', false, CURRENT_TIMESTAMP - INTERVAL '7 days'),
+      (6, 2, 5, 'Wow! The level of detail in the historical maps is amazing. I spent over 20 minutes exploring different regions and learning about the Johor-Riau Sultanate. Very educational and engaging.', false, CURRENT_TIMESTAMP - INTERVAL '2 days'),
       
       -- Exhibit 3: Wartime Bunker Immersion Room
-      (11, 3, 5, 'This exhibit gave me chills. The recreation of the WWII bunker with authentic sounds and period equipment really transported me back to 1942. A powerful and moving experience.', false, CURRENT_TIMESTAMP - INTERVAL '6 days'),
-      (28, 3, 4, 'Very immersive and historically accurate. The ambient effects really captured the tension of that era. Could use a bit more lighting in some areas, but overall an excellent exhibit.', false, CURRENT_TIMESTAMP - INTERVAL '4 days'),
+      (7, 3, 5, 'This exhibit gave me chills. The recreation of the WWII bunker with authentic sounds and period equipment really transported me back to 1942. A powerful and moving experience.', false, CURRENT_TIMESTAMP - INTERVAL '6 days'),
+      (8, 3, 4, 'Very immersive and historically accurate. The ambient effects really captured the tension of that era. Could use a bit more lighting in some areas, but overall an excellent exhibit.', false, CURRENT_TIMESTAMP - INTERVAL '4 days'),
       
       -- Exhibit 4: Faces of the Occupation Story Wall
       (9, 4, 5, 'Deeply moving. Reading the personal stories and seeing actual photos from families during the Japanese Occupation made history feel so much more real and personal. An important exhibit.', false, CURRENT_TIMESTAMP - INTERVAL '8 days'),
-      (19, 4, 5, 'The digital wall is beautifully done. Each story is carefully researched and the dramatic readings of diary entries brought tears to my eyes. This is how history should be taught.', false, CURRENT_TIMESTAMP - INTERVAL '1 day'),
+      (10, 4, 5, 'The digital wall is beautifully done. Each story is carefully researched and the dramatic readings of diary entries brought tears to my eyes. This is how history should be taught.', false, CURRENT_TIMESTAMP - INTERVAL '1 day'),
       
       -- Exhibit 5: Project INC
-      (5, 5, 5, 'As a tech enthusiast, this exhibit blew my mind! Learning about how SP students work on real client projects is incredible. The hands-on approach to learning is exactly what the industry needs.', false, CURRENT_TIMESTAMP - INTERVAL '4 days'),
-      (24, 5, 4, 'Very impressive program! The fact that students get to work with real clients like SLA and CleoSpa shows how seriously SP takes industry preparation. Definitely considering applying now.', false, CURRENT_TIMESTAMP - INTERVAL '2 days'),
+      (11, 5, 5, 'As a tech enthusiast, this exhibit blew my mind! Learning about how SP students work on real client projects is incredible. The hands-on approach to learning is exactly what the industry needs.', false, CURRENT_TIMESTAMP - INTERVAL '4 days'),
+      (12, 5, 4, 'Very impressive program! The fact that students get to work with real clients like SLA and CleoSpa shows how seriously SP takes industry preparation. Definitely considering applying now.', false, CURRENT_TIMESTAMP - INTERVAL '2 days'),
       
       -- Exhibit 6: Registration Booth
-      (12, 6, 4, 'Great introduction to the School of Computing! The staff were friendly and knowledgeable. Got all my questions answered about the different specializations available.', false, CURRENT_TIMESTAMP - INTERVAL '5 days'),
-      (30, 6, 5, 'The computing labs look amazing! I''m particularly interested in Cybersecurity and Game Development. The QR code made it easy to get more information. Very organized booth.', false, CURRENT_TIMESTAMP - INTERVAL '3 days'),
+      (3, 6, 4, 'Great introduction to the School of Computing! The staff were friendly and knowledgeable. Got all my questions answered about the different specializations available.', false, CURRENT_TIMESTAMP - INTERVAL '5 days'),
+      (4, 6, 5, 'The computing labs look amazing! I''m particularly interested in Cybersecurity and Game Development. The QR code made it easy to get more information. Very organized booth.', false, CURRENT_TIMESTAMP - INTERVAL '3 days'),
       
       -- Exhibit 7: Course Counselling
-      (8, 7, 5, 'The counsellor was extremely helpful in guiding me through the different diploma programs. They took time to understand my interests and helped me choose the right path. Highly recommend!', false, CURRENT_TIMESTAMP - INTERVAL '6 days'),
-      (17, 7, 5, 'Excellent counselling service! Got clear information about entry requirements, scholarships, and career pathways. The one-on-one session really helped clarify my educational goals.', false, CURRENT_TIMESTAMP - INTERVAL '4 days'),
+      (5, 7, 5, 'The counsellor was extremely helpful in guiding me through the different diploma programs. They took time to understand my interests and helped me choose the right path. Highly recommend!', false, CURRENT_TIMESTAMP - INTERVAL '6 days'),
+      (6, 7, 5, 'Excellent counselling service! Got clear information about entry requirements, scholarships, and career pathways. The one-on-one session really helped clarify my educational goals.', false, CURRENT_TIMESTAMP - INTERVAL '4 days'),
       
       -- Exhibit 8: Course Counselling (CLS)
-      (14, 8, 4, 'Good counselling session for CLS courses. The counsellor explained the application timeline clearly and helped me understand which courses would be best for my career aspirations.', false, CURRENT_TIMESTAMP - INTERVAL '7 days'),
-      (26, 8, 5, 'Very informative! The counsellor was patient and answered all my questions about CLS programs. I feel much more confident about my application now.', false, CURRENT_TIMESTAMP - INTERVAL '2 days'),
+      (7, 8, 4, 'Good counselling session for CLS courses. The counsellor explained the application timeline clearly and helped me understand which courses would be best for my career aspirations.', false, CURRENT_TIMESTAMP - INTERVAL '7 days'),
+      (8, 8, 5, 'Very informative! The counsellor was patient and answered all my questions about CLS programs. I feel much more confident about my application now.', false, CURRENT_TIMESTAMP - INTERVAL '2 days'),
       
       -- Exhibit 9: Course Counselling (SOB)
-      (10, 9, 5, 'Amazing guidance for SOB courses! The counsellor helped me understand the different business diploma options and how they align with industry needs. Very professional service.', false, CURRENT_TIMESTAMP - INTERVAL '5 days'),
-      (20, 9, 4, 'Helpful counselling session. Got good insights into the School of Business programs and the various career paths available after graduation. Would recommend to prospective students.', false, CURRENT_TIMESTAMP - INTERVAL '3 days')
-    `);
-
-    // Insert audio playback logs (simulating users listening to audio guides)
-    console.log("📻 Inserting audio playback logs...");
-    await client.query(`
-      INSERT INTO audio_playback_logs (user_id, audio_id, audio_start, audio_end, duration_listened, created_at) VALUES
-      -- Exhibit 1 audio plays (Maritime Roots)
-      (5, 804, CURRENT_TIMESTAMP - INTERVAL '2 days', CURRENT_TIMESTAMP - INTERVAL '2 days' + INTERVAL '34 seconds', 34, CURRENT_TIMESTAMP - INTERVAL '2 days'),
-      (12, 804, CURRENT_TIMESTAMP - INTERVAL '4 days', CURRENT_TIMESTAMP - INTERVAL '4 days' + INTERVAL '34 seconds', 34, CURRENT_TIMESTAMP - INTERVAL '4 days'),
-      (18, 804, CURRENT_TIMESTAMP - INTERVAL '6 days', CURRENT_TIMESTAMP - INTERVAL '6 days' + INTERVAL '30 seconds', 30, CURRENT_TIMESTAMP - INTERVAL '6 days'),
-      (25, 804, CURRENT_TIMESTAMP - INTERVAL '1 day', CURRENT_TIMESTAMP - INTERVAL '1 day' + INTERVAL '34 seconds', 34, CURRENT_TIMESTAMP - INTERVAL '1 day'),
-      (30, 804, CURRENT_TIMESTAMP - INTERVAL '3 days', CURRENT_TIMESTAMP - INTERVAL '3 days' + INTERVAL '28 seconds', 28, CURRENT_TIMESTAMP - INTERVAL '3 days'),
-      (7, 804, CURRENT_TIMESTAMP - INTERVAL '5 days', CURRENT_TIMESTAMP - INTERVAL '5 days' + INTERVAL '34 seconds', 34, CURRENT_TIMESTAMP - INTERVAL '5 days'),
-      (22, 804, CURRENT_TIMESTAMP - INTERVAL '7 days', CURRENT_TIMESTAMP - INTERVAL '7 days' + INTERVAL '34 seconds', 34, CURRENT_TIMESTAMP - INTERVAL '7 days'),
-      (14, 804, CURRENT_TIMESTAMP - INTERVAL '2 hours', CURRENT_TIMESTAMP - INTERVAL '2 hours' + INTERVAL '32 seconds', 32, CURRENT_TIMESTAMP - INTERVAL '2 hours'),
-      
-      -- Exhibit 2 audio plays (Ancient Map Table)
-      (8, 805, CURRENT_TIMESTAMP - INTERVAL '3 days', CURRENT_TIMESTAMP - INTERVAL '3 days' + INTERVAL '37 seconds', 37, CURRENT_TIMESTAMP - INTERVAL '3 days'),
-      (15, 805, CURRENT_TIMESTAMP - INTERVAL '5 days', CURRENT_TIMESTAMP - INTERVAL '5 days' + INTERVAL '37 seconds', 37, CURRENT_TIMESTAMP - INTERVAL '5 days'),
-      (21, 805, CURRENT_TIMESTAMP - INTERVAL '1 day', CURRENT_TIMESTAMP - INTERVAL '1 day' + INTERVAL '35 seconds', 35, CURRENT_TIMESTAMP - INTERVAL '1 day'),
-      (28, 805, CURRENT_TIMESTAMP - INTERVAL '6 days', CURRENT_TIMESTAMP - INTERVAL '6 days' + INTERVAL '37 seconds', 37, CURRENT_TIMESTAMP - INTERVAL '6 days'),
-      (11, 805, CURRENT_TIMESTAMP - INTERVAL '4 days', CURRENT_TIMESTAMP - INTERVAL '4 days' + INTERVAL '37 seconds', 37, CURRENT_TIMESTAMP - INTERVAL '4 days'),
-      (19, 805, CURRENT_TIMESTAMP - INTERVAL '8 hours', CURRENT_TIMESTAMP - INTERVAL '8 hours' + INTERVAL '33 seconds', 33, CURRENT_TIMESTAMP - INTERVAL '8 hours'),
-      
-      -- Exhibit 3 audio plays (Wartime Bunker)
-      (9, 806, CURRENT_TIMESTAMP - INTERVAL '4 days', CURRENT_TIMESTAMP - INTERVAL '4 days' + INTERVAL '33 seconds', 33, CURRENT_TIMESTAMP - INTERVAL '4 days'),
-      (16, 806, CURRENT_TIMESTAMP - INTERVAL '2 days', CURRENT_TIMESTAMP - INTERVAL '2 days' + INTERVAL '33 seconds', 33, CURRENT_TIMESTAMP - INTERVAL '2 days'),
-      (23, 806, CURRENT_TIMESTAMP - INTERVAL '7 days', CURRENT_TIMESTAMP - INTERVAL '7 days' + INTERVAL '33 seconds', 33, CURRENT_TIMESTAMP - INTERVAL '7 days'),
-      (13, 806, CURRENT_TIMESTAMP - INTERVAL '1 day', CURRENT_TIMESTAMP - INTERVAL '1 day' + INTERVAL '30 seconds', 30, CURRENT_TIMESTAMP - INTERVAL '1 day'),
-      (27, 806, CURRENT_TIMESTAMP - INTERVAL '5 days', CURRENT_TIMESTAMP - INTERVAL '5 days' + INTERVAL '33 seconds', 33, CURRENT_TIMESTAMP - INTERVAL '5 days'),
-      
-      -- Exhibit 4 audio plays (Faces of Occupation)
-      (10, 807, CURRENT_TIMESTAMP - INTERVAL '3 days', CURRENT_TIMESTAMP - INTERVAL '3 days' + INTERVAL '35 seconds', 35, CURRENT_TIMESTAMP - INTERVAL '3 days'),
-      (17, 807, CURRENT_TIMESTAMP - INTERVAL '6 days', CURRENT_TIMESTAMP - INTERVAL '6 days' + INTERVAL '35 seconds', 35, CURRENT_TIMESTAMP - INTERVAL '6 days'),
-      (24, 807, CURRENT_TIMESTAMP - INTERVAL '2 days', CURRENT_TIMESTAMP - INTERVAL '2 days' + INTERVAL '35 seconds', 35, CURRENT_TIMESTAMP - INTERVAL '2 days'),
-      (29, 807, CURRENT_TIMESTAMP - INTERVAL '8 days', CURRENT_TIMESTAMP - INTERVAL '8 days' + INTERVAL '35 seconds', 35, CURRENT_TIMESTAMP - INTERVAL '8 days'),
-      
-      -- Exhibit 5 audio plays (Project INC) - Most popular!
-      (6, 809, CURRENT_TIMESTAMP - INTERVAL '1 day', CURRENT_TIMESTAMP - INTERVAL '1 day' + INTERVAL '54 seconds', 54, CURRENT_TIMESTAMP - INTERVAL '1 day'),
-      (12, 809, CURRENT_TIMESTAMP - INTERVAL '2 days', CURRENT_TIMESTAMP - INTERVAL '2 days' + INTERVAL '54 seconds', 54, CURRENT_TIMESTAMP - INTERVAL '2 days'),
-      (18, 809, CURRENT_TIMESTAMP - INTERVAL '3 days', CURRENT_TIMESTAMP - INTERVAL '3 days' + INTERVAL '50 seconds', 50, CURRENT_TIMESTAMP - INTERVAL '3 days'),
-      (25, 809, CURRENT_TIMESTAMP - INTERVAL '4 days', CURRENT_TIMESTAMP - INTERVAL '4 days' + INTERVAL '54 seconds', 54, CURRENT_TIMESTAMP - INTERVAL '4 days'),
-      (30, 809, CURRENT_TIMESTAMP - INTERVAL '5 days', CURRENT_TIMESTAMP - INTERVAL '5 days' + INTERVAL '54 seconds', 54, CURRENT_TIMESTAMP - INTERVAL '5 days'),
-      (11, 809, CURRENT_TIMESTAMP - INTERVAL '6 days', CURRENT_TIMESTAMP - INTERVAL '6 days' + INTERVAL '54 seconds', 54, CURRENT_TIMESTAMP - INTERVAL '6 days'),
-      (22, 809, CURRENT_TIMESTAMP - INTERVAL '7 days', CURRENT_TIMESTAMP - INTERVAL '7 days' + INTERVAL '54 seconds', 54, CURRENT_TIMESTAMP - INTERVAL '7 days'),
-      (14, 809, CURRENT_TIMESTAMP - INTERVAL '8 days', CURRENT_TIMESTAMP - INTERVAL '8 days' + INTERVAL '48 seconds', 48, CURRENT_TIMESTAMP - INTERVAL '8 days'),
-      (20, 809, CURRENT_TIMESTAMP - INTERVAL '4 hours', CURRENT_TIMESTAMP - INTERVAL '4 hours' + INTERVAL '54 seconds', 54, CURRENT_TIMESTAMP - INTERVAL '4 hours'),
-      (26, 809, CURRENT_TIMESTAMP - INTERVAL '12 hours', CURRENT_TIMESTAMP - INTERVAL '12 hours' + INTERVAL '52 seconds', 52, CURRENT_TIMESTAMP - INTERVAL '12 hours'),
-      (8, 809, CURRENT_TIMESTAMP - INTERVAL '1 day' - INTERVAL '6 hours', CURRENT_TIMESTAMP - INTERVAL '1 day' - INTERVAL '6 hours' + INTERVAL '54 seconds', 54, CURRENT_TIMESTAMP - INTERVAL '1 day' - INTERVAL '6 hours'),
-      (15, 809, CURRENT_TIMESTAMP - INTERVAL '2 days' - INTERVAL '3 hours', CURRENT_TIMESTAMP - INTERVAL '2 days' - INTERVAL '3 hours' + INTERVAL '54 seconds', 54, CURRENT_TIMESTAMP - INTERVAL '2 days' - INTERVAL '3 hours'),
-      
-      -- Exhibit 6 audio plays (Registration Booth)
-      (7, 810, CURRENT_TIMESTAMP - INTERVAL '2 days', CURRENT_TIMESTAMP - INTERVAL '2 days' + INTERVAL '38 seconds', 38, CURRENT_TIMESTAMP - INTERVAL '2 days'),
-      (19, 810, CURRENT_TIMESTAMP - INTERVAL '5 days', CURRENT_TIMESTAMP - INTERVAL '5 days' + INTERVAL '38 seconds', 38, CURRENT_TIMESTAMP - INTERVAL '5 days'),
-      (28, 810, CURRENT_TIMESTAMP - INTERVAL '3 days', CURRENT_TIMESTAMP - INTERVAL '3 days' + INTERVAL '38 seconds', 38, CURRENT_TIMESTAMP - INTERVAL '3 days'),
-      (13, 810, CURRENT_TIMESTAMP - INTERVAL '7 days', CURRENT_TIMESTAMP - INTERVAL '7 days' + INTERVAL '38 seconds', 38, CURRENT_TIMESTAMP - INTERVAL '7 days'),
-      (21, 810, CURRENT_TIMESTAMP - INTERVAL '1 day', CURRENT_TIMESTAMP - INTERVAL '1 day' + INTERVAL '35 seconds', 35, CURRENT_TIMESTAMP - INTERVAL '1 day'),
-      (4, 810, CURRENT_TIMESTAMP - INTERVAL '6 hours', CURRENT_TIMESTAMP - INTERVAL '6 hours' + INTERVAL '38 seconds', 38, CURRENT_TIMESTAMP - INTERVAL '6 hours'),
-      
-      -- Exhibit 7 audio plays (Course Counselling)
-      (9, 811, CURRENT_TIMESTAMP - INTERVAL '4 days', CURRENT_TIMESTAMP - INTERVAL '4 days' + INTERVAL '66 seconds', 66, CURRENT_TIMESTAMP - INTERVAL '4 days'),
-      (16, 811, CURRENT_TIMESTAMP - INTERVAL '2 days', CURRENT_TIMESTAMP - INTERVAL '2 days' + INTERVAL '66 seconds', 66, CURRENT_TIMESTAMP - INTERVAL '2 days'),
-      (23, 811, CURRENT_TIMESTAMP - INTERVAL '6 days', CURRENT_TIMESTAMP - INTERVAL '6 days' + INTERVAL '62 seconds', 62, CURRENT_TIMESTAMP - INTERVAL '6 days'),
-      (27, 811, CURRENT_TIMESTAMP - INTERVAL '1 day', CURRENT_TIMESTAMP - INTERVAL '1 day' + INTERVAL '66 seconds', 66, CURRENT_TIMESTAMP - INTERVAL '1 day'),
-      (10, 811, CURRENT_TIMESTAMP - INTERVAL '8 days', CURRENT_TIMESTAMP - INTERVAL '8 days' + INTERVAL '66 seconds', 66, CURRENT_TIMESTAMP - INTERVAL '8 days'),
-      
-      -- Chinese audio plays
-      (3, 812, CURRENT_TIMESTAMP - INTERVAL '3 days', CURRENT_TIMESTAMP - INTERVAL '3 days' + INTERVAL '22 seconds', 22, CURRENT_TIMESTAMP - INTERVAL '3 days'),
-      (5, 813, CURRENT_TIMESTAMP - INTERVAL '5 days', CURRENT_TIMESTAMP - INTERVAL '5 days' + INTERVAL '52 seconds', 52, CURRENT_TIMESTAMP - INTERVAL '5 days'),
-      (17, 814, CURRENT_TIMESTAMP - INTERVAL '2 days', CURRENT_TIMESTAMP - INTERVAL '2 days' + INTERVAL '45 seconds', 45, CURRENT_TIMESTAMP - INTERVAL '2 days')
+      (9, 9, 5, 'Amazing guidance for SOB courses! The counsellor helped me understand the different business diploma options and how they align with industry needs. Very professional service.', false, CURRENT_TIMESTAMP - INTERVAL '5 days'),
+      (10, 9, 4, 'Helpful counselling session. Got good insights into the School of Business programs and the various career paths available after graduation. Would recommend to prospective students.', false, CURRENT_TIMESTAMP - INTERVAL '3 days')
     `);
 
     // Reset audit_logs sequence after inserting the first 12 with explicit IDs
@@ -1330,9 +1299,9 @@ await client.query(`
       (1, NULL, 'exhibit', 'update', '{"exhibit_id": "2", "field": "description", "change": "Added more details"}', NULL, CURRENT_TIMESTAMP - INTERVAL '1 day'),
       
       -- User management activities
-      (1, 15, 'user', 'create', '{"username": "user15", "email": "user15@example.com", "role": "user"}', NULL, CURRENT_TIMESTAMP - INTERVAL '4 days'),
-      (1, 28, 'user', 'update', '{"user_id": "28", "field": "status", "new_value": "active"}', NULL, CURRENT_TIMESTAMP - INTERVAL '12 hours'),
-      (2, 22, 'user', 'password_reset', '{"user_id": "22", "method": "admin_initiated"}', NULL, CURRENT_TIMESTAMP - INTERVAL '2 days'),
+      (1, 3, 'user', 'create', '{"username": "test1", "email": "test1@test.com", "role": "user"}', NULL, CURRENT_TIMESTAMP - INTERVAL '4 days'),
+      (1, 4, 'user', 'update', '{"user_id": "4", "field": "status", "new_value": "active"}', NULL, CURRENT_TIMESTAMP - INTERVAL '12 hours'),
+      (2, 5, 'user', 'password_reset', '{"user_id": "5", "method": "admin_initiated"}', NULL, CURRENT_TIMESTAMP - INTERVAL '2 days'),
       
       -- Exhibition management
       (1, NULL, 'exhibition', 'update', '{"exhibition_id": "6", "field": "title", "change": "Updated description"}', NULL, CURRENT_TIMESTAMP - INTERVAL '3 days'),
@@ -1355,6 +1324,15 @@ await client.query(`
       (1, NULL, 'feedback', 'moderate', '{"feedback_id": "8", "action": "approved", "exhibit_id": "4"}', NULL, CURRENT_TIMESTAMP - INTERVAL '2 days')
     `);
 
+    // Seed home floating cards
+    console.log("🎯 Seeding homepage floating cards...");
+    await client.query(`
+      INSERT INTO home_floating_card (title, icon, link_url, position, is_active) VALUES
+      ('Interactive Scanning', 'QrCode', '/scan', 1, true),
+      ('Tour Navigation', 'MapPin', '/exhibitions', 2, true),
+      ('Badge Collection', 'Settings', '/badges', 3, true)
+    `);
+
     // Update sequences to match inserted IDs
     await client.query(`
       SELECT setval('exhibitions_exhibition_id_seq', (SELECT MAX(exhibition_id) FROM exhibitions));
@@ -1375,22 +1353,21 @@ await client.query(`
     console.log("✅ Seeding complete!");
     console.log("📊 Database ready with:");
     console.log(
-      "   - 122 users (admin, moderator + 120 test users with varied registration dates)"
+      "   - 12 users total (admin, moderator, + 10 test users: test1-test10 with password 123123)"
     );
     console.log(
       "   - 3 roles with proper permissions (including password reset & email verification)"
     );
     console.log("   - 10 languages with English as default");
-    console.log("   - 2 exhibitions (IDs 6 & 7) with 9 exhibits (IDs 1-9)");
+    console.log("   - 5 exhibitions with 9 exhibits");
     console.log(
-      "   - 25 badges created, each linked uniquely to an exhibit (with name and description)"
+      "   - 9 badges created and randomly assigned to test users (3-7 badges per user)"
     );
-    console.log("   - 4 badges are given to admin1");
-    console.log("   - 10 audio records with 10 subtitle records (JSONB)");
-    console.log("   - 6 images (2 exhibition covers + 4 exhibit images)");
+    console.log("   - 10 audio records with 10 subtitle records (JSONB) - English and Chinese");
+    console.log("   - Multiple images (exhibition covers + exhibit images)");
     console.log("   - 9 QR codes");
-    console.log("   - 18 feedback/reviews (2 per exhibit from various users)");
-    console.log("   - 56 audio playback logs from 30+ different users");
+    console.log("   - 18 feedback/reviews (2 per exhibit from test users)");
+    console.log("   - Audio playback logs for all test users in both English and Chinese");
     console.log("   - 30 audit log entries (admin activities, user management, etc.)");
     console.log("   - Settings table with inactivity threshold");
     console.log("   - Password reset and email verification token tables");
@@ -1401,13 +1378,12 @@ await client.query(`
       "   - Comprehensive performance indexes and constraints applied"
     );
     console.log("   - Automatic token cleanup function available");
-    console.log(
-      "   - User registration data distributed over 12 months for trend analysis"
-    );
     console.log("   - 2 sender types (user, assistant) for AI Assistant");
     console.log("   - Conversation and message tables for AI Assistant (Omnie)");
     console.log("   - 🎧 Audio analytics ready: Popular exhibits tracked by playback count");
     console.log("   - 📋 Recent admin actions logged and visible on dashboard");
+    console.log("   - 🎯 Test users have realistic badge unlocks and audio listening history");
+    console.log("   - 🖱️ 3 homepage floating cards (Interactive Scanning, Smart Navigation, AI Insights)");
   } catch (err) {
     console.error("❌ Error during seeding:", err);
     throw err;
