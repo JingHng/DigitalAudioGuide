@@ -8,26 +8,15 @@ import "../css/ManageBadge.css";
 const BACKEND_URL = import.meta.env.VITE_API_TARGET || "";
 const DEFAULT_IMAGE_URL = `${BACKEND_URL}/public/images/Badge.jpg`;
 
-// Convert stored imageUrl to actual browser URL
-const getImageUrl = (imageUrl: string | null): string => {
-  if (!imageUrl) return DEFAULT_IMAGE_URL;
+const getBadgeImageUrl = (imageUrl?: string | null) => {
+  const raw = (imageUrl ?? "").trim();
+  if (!raw) return DEFAULT_IMAGE_URL;
 
-  const trimmed = imageUrl.trim();
-  if (!trimmed) return DEFAULT_IMAGE_URL;
+  if (raw.startsWith("http://") || raw.startsWith("https://")) return raw;
 
-  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) return trimmed;
+  const path = raw.startsWith("/") ? raw : `/${raw}`;
 
-  const cleanedPath = trimmed.replace(/\\/g, "/");
-  const imagePrefix = "/images/";
-  const idx = cleanedPath.indexOf(imagePrefix);
-
-  if (idx !== -1) {
-    const filename = cleanedPath.substring(idx + imagePrefix.length);
-    const backendUrl = import.meta.env.VITE_API_TARGET || "http://localhost:3000";
-    return `${backendUrl}/public/images/${filename}`;
-  }
-
-  return DEFAULT_IMAGE_URL;
+  return `${BACKEND_URL}/public${path}`;
 };
 
 // ---------- Types ----------
@@ -401,7 +390,7 @@ const BadgeManagement: React.FC = () => {
                 {group.badges.map((badge) => {
                   const badgeTitle = badge.name || "Untitled Badge";
                   const exhibitTitle = badge.exhibit?.title || "Unknown Exhibit";
-                  const img = getImageUrl(badge.imageUrl || null);
+                  const img = getBadgeImageUrl(badge.imageUrl);
 
                   return (
                     <div key={badge.badgeId} className="exhibit-card-manage">
