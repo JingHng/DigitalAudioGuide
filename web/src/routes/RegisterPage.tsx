@@ -4,8 +4,10 @@ import toast from "react-hot-toast";
 import apiClient from "../utils/apiClient";
 import "../css/RegisterPage.css";
 
+
 const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
+
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -20,14 +22,25 @@ const RegisterPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const { firstName: _firstName, lastName:_lastName, username, email, password, confirmPassword } =
-    formData;
+
+  const {
+    firstName,
+    lastName,
+    username,
+    email,
+    password,
+    confirmPassword,
+  } = formData;
+
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+
   const validateForm = () => {
+    if (!formData.firstName.trim()) return "First name is required";
+    if (!formData.lastName.trim()) return "Last name is required";
     if (!username.trim()) return "Username is required";
     if (!email.trim()) return "Email is required";
     if (!password) return "Password is required";
@@ -35,17 +48,21 @@ const RegisterPage: React.FC = () => {
       return "Password must be at least 6 characters long";
     if (password !== confirmPassword) return "Passwords do not match";
 
+
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) return "Please enter a valid email address";
 
+
     return null;
   };
 
+
   const handleRegisterSubmit = async (
-    event: React.FormEvent<HTMLFormElement>
+    event: React.FormEvent<HTMLFormElement>,
   ) => {
     event.preventDefault();
+
 
     const validationError = validateForm();
     if (validationError) {
@@ -53,58 +70,71 @@ const RegisterPage: React.FC = () => {
       return;
     }
 
+
     setLoading(true);
     setError("");
 
+
     try {
       const response = await apiClient.post("/auth/register", {
+        firstName,
+        lastName,
         username,
         email,
         password,
       });
 
+
       // Store token if provided (backend may return token even for unverified users)
       if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
+        localStorage.setItem("token", response.data.token);
       }
+
 
       // Show email preview URL if available (for development/testing with Ethereal Email)
       if (response.data.emailPreviewUrl) {
-        console.log('\n' + '='.repeat(80));
-        console.log('📧 EMAIL VERIFICATION PREVIEW URL');
-        console.log('='.repeat(80));
-        console.log('⚠️  IMPORTANT: Using Ethereal Email (TEST SERVICE)');
-        console.log('⚠️  No real email was sent to your inbox!');
-        console.log('⚠️  Click the URL below to view and verify your email:');
-        console.log('🔗', response.data.emailPreviewUrl);
-        console.log('='.repeat(80) + '\n');
-        
+        console.log("\n" + "=".repeat(80));
+        console.log("📧 EMAIL VERIFICATION PREVIEW URL");
+        console.log("=".repeat(80));
+        console.log("⚠️  IMPORTANT: Using Ethereal Email (TEST SERVICE)");
+        console.log("⚠️  No real email was sent to your inbox!");
+        console.log("⚠️  Click the URL below to view and verify your email:");
+        console.log("🔗", response.data.emailPreviewUrl);
+        console.log("=".repeat(80) + "\n");
+
+
         toast.success(
           `Registration successful! Click the preview URL in the console to verify your email.`,
-          { 
+          {
             duration: 20000,
-            icon: '📧'
-          }
+            icon: "📧",
+          },
         );
-        
+
+
         // Also show in an alert for better visibility
         setTimeout(() => {
-          alert(`⚠️ TEST EMAIL SERVICE\n\nNo real email was sent!\n\nView your verification email at:\n${response.data.emailPreviewUrl}\n\nCheck the browser console for the link.`);
+          alert(
+            `⚠️ TEST EMAIL SERVICE\n\nNo real email was sent!\n\nView your verification email at:\n${response.data.emailPreviewUrl}\n\nCheck the browser console for the link.`,
+          );
         }, 500);
       } else {
-        toast.success("Registration successful! Please check your email inbox to verify your account.");
+        toast.success(
+          "Registration successful! Please check your email inbox to verify your account.",
+        );
       }
-      
+
+
       // Redirect to email verification page with user's email
-      navigate("/verify-email", { 
-        state: { 
-          message: response.data.emailPreviewUrl 
+      navigate("/verify-email", {
+        state: {
+          message: response.data.emailPreviewUrl
             ? `Registration successful! Check the email preview URL in the console or toast.`
             : "Registration successful! We've sent a verification email to your address.",
           email: email,
           justRegistered: true,
-          emailPreviewUrl: response.data.emailPreviewUrl
-        }
+          emailPreviewUrl: response.data.emailPreviewUrl,
+        },
       });
     } catch (err: any) {
       const errorMessage =
@@ -116,13 +146,48 @@ const RegisterPage: React.FC = () => {
     }
   };
 
+
   return (
     <div className="register-page-container">
       <div className="form-wrapper">
         <h2 className="form-title">Create Account</h2>
 
+
         <form onSubmit={handleRegisterSubmit}>
           {error && <p className="register-error-message">{error}</p>}
+
+
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="firstName">First Name</label>
+              <input
+                type="text"
+                id="firstName"
+                name="firstName"
+                value={formData.firstName}
+                onChange={onChange}
+                className="form-input"
+                placeholder="First name"
+                required
+              />
+            </div>
+
+
+            <div className="form-group">
+              <label htmlFor="lastName">Last Name</label>
+              <input
+                type="text"
+                id="lastName"
+                name="lastName"
+                value={formData.lastName}
+                onChange={onChange}
+                className="form-input"
+                placeholder="Last name"
+                required
+              />
+            </div>
+          </div>
+
 
           <div className="form-group">
             <label htmlFor="username">Username</label>
@@ -138,6 +203,7 @@ const RegisterPage: React.FC = () => {
             />
           </div>
 
+
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
@@ -151,6 +217,7 @@ const RegisterPage: React.FC = () => {
               required
             />
           </div>
+
 
           <div className="form-group">
             <label htmlFor="password">Password</label>
@@ -214,6 +281,7 @@ const RegisterPage: React.FC = () => {
               </button>
             </div>
           </div>
+
 
           <div className="form-group">
             <label htmlFor="confirmPassword">Confirm Password</label>
@@ -280,6 +348,7 @@ const RegisterPage: React.FC = () => {
             </div>
           </div>
 
+
           <button type="submit" className="submit-button" disabled={loading}>
             {loading ? "Creating Account..." : "Create Account"}
           </button>
@@ -289,4 +358,8 @@ const RegisterPage: React.FC = () => {
   );
 };
 
+
 export default RegisterPage;
+
+
+

@@ -35,9 +35,9 @@ const EmailVerificationPage: React.FC = () => {
       setVerificationStatus('success');
       toast.success('Email verified successfully!');
       
-      // Redirect to home after 2 seconds
+      // Redirect to profile setup after 2 seconds
       setTimeout(() => {
-        navigate('/');
+        navigate('/profile/setup');
       }, 2000);
 
     } catch (error: any) {
@@ -229,7 +229,7 @@ const EmailVerificationPage: React.FC = () => {
                   marginTop: '1rem',
                   fontSize: '0.875rem'
                 }}>
-                  Redirecting to home page...
+                  Redirecting to profile setup...
                 </p>
               </>
             )}
