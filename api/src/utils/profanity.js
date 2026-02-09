@@ -2,7 +2,7 @@
 // Profanity detection and filtering utility using leo-profanity
 
 const filter = require('leo-profanity');
-const profanityConfig = require('../../config/profanity.config');
+const profanityConfig = require('../../config/profanity.config.js');
 
 // leo-profanity comes with a default English dictionary already loaded
 // No need to explicitly load dictionaries unless switching languages
