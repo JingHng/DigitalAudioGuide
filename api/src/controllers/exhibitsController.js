@@ -887,7 +887,6 @@ exports.generateExhibitTTS = async (req, res) => {
 // Get QR code for an exhibit
 exports.getExhibitQRCode = async (req, res) => {
   try {
-    console.log(`🔍 QR Code request for exhibit ID: ${req.params.id}`);
     const exhibitId = BigInt(req.params.id);
 
     // Directly query the QRCode model for the qrUrl
@@ -899,7 +898,6 @@ exports.getExhibitQRCode = async (req, res) => {
     });
 
     if (!qrCode) {
-      console.log(`❌ No QR code found for exhibit ID: ${req.params.id}`);
       return res
         .status(404)
         .json({ message: "QR code not found for this exhibit" });
@@ -915,9 +913,6 @@ exports.getExhibitQRCode = async (req, res) => {
     const qrCodeBase64 = `data:image/png;base64,${qrCodeImage.toString(
       "base64",
     )}`;
-
-    console.log(`✅ QR code generated for exhibit ID: ${req.params.id}`);
-    console.log(`QR URL: ${qrCode.qrUrl}`);
 
     res.status(200).json({
       qrUrl: qrCode.qrUrl,

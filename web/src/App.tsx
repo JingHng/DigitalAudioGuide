@@ -19,12 +19,12 @@ import AudioGuidePreferencePage from "./pages/AudioGuidePreferencePage.tsx";
 
 // --- EXHIBITIONS & TOURS ---
 import AllExhibitions from "./components/ExhibitionsPage.tsx";
-import ExhibitionDetails from "./components/ExhibitionDetailsPage.tsx"; 
+import ExhibitionDetails from "./components/ExhibitionDetailsPage.tsx";
 import ExhibitDetails from "./components/ExhibitDetails.tsx";
 import ARPhotobooth from "./components/ARPhotobooth.tsx";
-import TourView from "./components/TourView.tsx"; 
-import TourSummary from "./components/TourSummary.tsx"; 
-import ReviewsPage from "./pages/ReviewsPage"; 
+import TourView from "./components/TourView.tsx";
+import TourSummary from "./components/TourSummary.tsx";
+import ReviewsPage from "./pages/ReviewsPage";
 
 // --- Admin Components ---
 import ProtectedRoute, { AdminRoute } from "./components/ProtectedRoute";
@@ -46,6 +46,8 @@ import AdminFloatingCards from "./components/admin/AdminFloatingCards";
 import NotFoundPage from "./components/NotFoundPage.tsx";
 import ProfilePage from "./components/ProfilePage.tsx";
 import EditProfilePage from "./components/EditProfilePage.tsx";
+import ProfileSetupPage from "./components/ProfileSetupPage.tsx";
+import HowItWorksPage from "./pages/HowItWorksPage.tsx";
 
 function App() {
   const location = useLocation();
@@ -58,20 +60,114 @@ function App() {
       {/* Admin routes */}
       {isAdminRoute ? (
         <Routes>
-          <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
-          <Route path="/admin/assistant" element={<AdminRoute><AssistantPage /></AdminRoute>} />
-          <Route path="/admin/assistant/history" element={<AdminRoute><AssistantHistoryPage /></AdminRoute>} />
-          <Route path="/admin/exhibits" element={<AdminRoute><ExhibitsPage /></AdminRoute>} />
-          <Route path="/admin/badges" element={<AdminRoute><BadgesPage /></AdminRoute>} />
-          <Route path="/admin/badge-analytics" element={<BadgeAnalyticsPage />} />
-          <Route path="/admin/audio" element={<AdminRoute><AudioManagement /></AdminRoute>} />
-          <Route path="/admin/reviews" element={<AdminRoute><AdminReviewsPage /></AdminRoute>} />
-          <Route path="/admin/floating-cards" element={<AdminRoute><AdminFloatingCards /></AdminRoute>} />
-          <Route path="/admin/roles" element={<AdminRoute><RolesPage /></AdminRoute>} />
-          <Route path="/admin/users" element={<AdminRoute><UsersPage /></AdminRoute>} />
-          <Route path="/admin/audit-logs" element={<AdminRoute><AuditLogsPage /></AdminRoute>} />
-          <Route path="/admin/audio-analytics" element={<AdminRoute><AudioAnalyticsPage /></AdminRoute>} />
-          <Route path="/admin/settings" element={<AdminRoute><SettingsPage /></AdminRoute>} />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <AdminRoute>
+                <AdminDashboard />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/assistant"
+            element={
+              <AdminRoute>
+                <AssistantPage />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/assistant/history"
+            element={
+              <AdminRoute>
+                <AssistantHistoryPage />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/exhibits"
+            element={
+              <AdminRoute>
+                <ExhibitsPage />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/badges"
+            element={
+              <AdminRoute>
+                <BadgesPage />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/badge-analytics"
+            element={<BadgeAnalyticsPage />}
+          />
+          <Route
+            path="/admin/audio"
+            element={
+              <AdminRoute>
+                <AudioManagement />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/reviews"
+            element={
+              <AdminRoute>
+                <AdminReviewsPage />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/floating-cards"
+            element={
+              <AdminRoute>
+                <AdminFloatingCards />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/roles"
+            element={
+              <AdminRoute>
+                <RolesPage />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <AdminRoute>
+                <UsersPage />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/audit-logs"
+            element={
+              <AdminRoute>
+                <AuditLogsPage />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/audio-analytics"
+            element={
+              <AdminRoute>
+                <AudioAnalyticsPage />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/settings"
+            element={
+              <AdminRoute>
+                <SettingsPage />
+              </AdminRoute>
+            }
+          />
           <Route path="/admin/*" element={<NotFoundPage />} />
         </Routes>
       ) : (
@@ -79,20 +175,34 @@ function App() {
           <Routes>
             <Route path="/" element={<Homepage />} />
 
+            <Route path="/how-it-works" element={<HowItWorksPage />} />
+
             {/* --- Public Exhibition & Tour Routes --- */}
             <Route path="/exhibitions" element={<AllExhibitions />} />
             <Route path="/exhibitions/:id" element={<ExhibitionDetails />} />
             <Route path="/exhibitions/:id/tour" element={<TourView />} />
-            <Route path="/exhibitions/:id/tour/summary" element={<TourSummary />} />
-            <Route path="/exhibitions/:id/ar-photobooth" element={<ARPhotobooth />} />
+            <Route
+              path="/exhibitions/:id/tour/summary"
+              element={<TourSummary />}
+            />
+            <Route
+              path="/exhibitions/:id/ar-photobooth"
+              element={<ARPhotobooth />}
+            />
             <Route path="/exhibit/:id" element={<ExhibitDetails />} />
-            
+
             {/* TOUR PROGRESSION */}
-            <Route path="/exhibitions/:exhibitionId/exhibit/:id" element={<ExhibitDetails />} />
+            <Route
+              path="/exhibitions/:exhibitionId/exhibit/:id"
+              element={<ExhibitDetails />}
+            />
 
             {/* --- REVIEWS (From Development - Owen Part) --- */}
             <Route path="/reviews" element={<ReviewsPage />} />
-            <Route path="/exhibits/:exhibitId/reviews" element={<ReviewsPage />} />
+            <Route
+              path="/exhibits/:exhibitId/reviews"
+              element={<ReviewsPage />}
+            />
 
             {/* --- Auth Routes --- */}
             <Route path="/login" element={<LoginPage />} />
@@ -103,9 +213,38 @@ function App() {
             <Route path="/scan" element={<ScanPage />} />
             <Route path="/badges" element={<AllBadgesShowcase />} />
             <Route path="/user-badge" element={<UserBadgePage />} />
-            <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-            <Route path="/edit-profile" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
-            <Route path="/dashboard" element={<ProtectedRoute><AudioGuidePreferencePage /></ProtectedRoute>} />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <ProfilePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile/setup"
+              element={
+                <ProtectedRoute>
+                  <ProfileSetupPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/edit-profile"
+              element={
+                <ProtectedRoute>
+                  <EditProfilePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <AudioGuidePreferencePage />
+                </ProtectedRoute>
+              }
+            />
 
             <Route path="*" element={<NotFoundPage />} />
           </Routes>

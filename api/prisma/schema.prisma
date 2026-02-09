@@ -9,6 +9,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ConsentType {
+  MARKETING
+  PICTURE
+}
+
 model Exhibition {
   exhibitionId BigInt    @id @default(autoincrement()) @map("exhibition_id")
   title        String    @unique @db.VarChar(255)
@@ -165,7 +170,7 @@ model Language {
   audio      Audio[]
   status     Status?    @relation(fields: [statusId], references: [statusId], onUpdate: NoAction)
   subtitles  Subtitle[]
-  users      User[]
+  users         User[]
 
   @@index([statusId], map: "idx_language_status")
   @@index([code], map: "idx_language_code")
@@ -264,11 +269,22 @@ model User {
   languageId              BigInt?                  @map("language_id")
   profilePictureUrl       String?                  @map("profile_picture_url") @db.VarChar(255)
   passwordHash            String                   @map("password_hash") @db.VarChar(72)
+  firstName               String                   @map("first_name") @db.VarChar(100)
+  lastName                String                   @map("last_name") @db.VarChar(100)
+  phoneNumber             String?                  @map("phone_number") @db.Char(8)
+  profilePictureUrl       String?                  @map("profile_picture_url") @db.VarChar(255)
   emailVerified           Boolean?                 @default(false) @map("email_verified")
   statusId                Int?                     @map("status_id")
   lastLoginAt             DateTime?                @map("last_login_at") @db.Timestamptz(6)
   createdAt               DateTime?                @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt               DateTime?                @default(now()) @map("updated_at") @db.Timestamptz(6)
+  gender                  String?                  @db.VarChar(10)
+  dateOfBirth             DateTime?                @map("date_of_birth") @db.Date
+  addressLine1            String?                  @map("address_line1") @db.VarChar(255)
+  addressLine2            String?                  @map("address_line2") @db.VarChar(255)
+  zipCode                 BigInt?                  @map("zip_code")
+  languageId              BigInt?                  @map("language_id")
+  language                Language?                @relation(fields: [languageId], references: [languageId])
   playbackLogs            AudioPlaybackLog[]
   adminAudits             AuditLog[]               @relation("AdminUserAudits")
   targetAudits            AuditLog[]               @relation("TargetUserAudits")
@@ -282,6 +298,8 @@ model User {
   status                  Status?                  @relation(fields: [statusId], references: [statusId], onUpdate: NoAction)
   userBadges              UserBadge[]
   roles                   UserRole[]
+  conversations           Conversation[]
+  UserConsent             UserConsent[]
 
   @@index([statusId], map: "idx_user_status")
   @@index([username], map: "idx_user_username")
@@ -303,6 +321,24 @@ model UserRole {
   @@index([userId], map: "idx_userroles_user_id")
   @@index([roleId], map: "idx_userroles_role_id")
   @@map("userroles")
+}
+
+model UserConsent {
+  id      BigInt      @id @default(autoincrement())
+  userId  BigInt      @map("user_id")
+  type    ConsentType
+  granted Boolean     @default(false)
+
+  consentText String? // optional snapshot, or store version id instead
+  version     String? // e.g. "2026-02-04-v1"
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [userId])
+
+  @@unique([userId, type])
+  @@index([userId])
 }
 
 model AuditLog {

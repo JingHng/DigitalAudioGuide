@@ -257,7 +257,7 @@ const Navbar: React.FC = () => {
           <a href="/">Home</a>
           <a href="/exhibitions">Tours</a>
           <a href="/reviews">Reviews</a>
-          <a href="/#how-it-works">How It Works</a>
+          <a href="/how-it-works">How It Works</a>
 
           {isAuthenticated ? (
             <div className="user-menu-desktop">

@@ -1,6 +1,24 @@
 const ReviewModel = require('../models/reviewModel');
 
 class ReviewController {
+  // PATCH /api/reviews/:id/toggle-hidden - Toggle is_hidden for a review
+  static async toggleReviewHidden(req, res) {
+    try {
+      const { id } = req.params;
+      const updated = await ReviewModel.toggleReviewHidden(id);
+      res.json({
+        success: true,
+        data: updated,
+        message: `Review is now ${updated.is_hidden ? 'HIDDEN' : 'SHOWN'}`
+      });
+    } catch (error) {
+      console.error('Error toggling review hidden:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to toggle review hidden',
+      });
+    }
+  }
   
   // GET /api/reviews - Get all reviews with pagination and filtering
   static async getAllReviews(req, res) {
@@ -12,6 +30,7 @@ class ReviewController {
         user_id,
         min_rating,
         max_rating,
+        status,
         search = '',
         sort_by = 'created_at',
         sort_order = 'desc'
@@ -20,7 +39,7 @@ class ReviewController {
       const skip = (parseInt(page) - 1) * parseInt(limit);
       const take = parseInt(limit);
 
-      const filters = { exhibit_id, user_id, min_rating, max_rating, search };
+      const filters = { exhibit_id, user_id, min_rating, max_rating, search, status };
       const pagination = { skip, take };
       const sorting = { sort_by, sort_order };
 
@@ -46,6 +65,42 @@ class ReviewController {
       res.status(500).json({
         success: false,
         error: 'Failed to fetch reviews'
+      });
+    }
+  }
+
+  // GET /api/reviews/analytics - Aggregate analytics for admin dashboard
+  static async getReviewAnalytics(req, res) {
+    try {
+      const {
+        start_date,
+        end_date,
+        min_rating,
+        max_rating,
+        exhibit_id,
+        status
+      } = req.query;
+
+      const filters = {
+        start_date,
+        end_date,
+        min_rating,
+        max_rating,
+        exhibit_id,
+        status
+      };
+
+      const analytics = await ReviewModel.getReviewAnalytics(filters);
+
+      res.json({
+        success: true,
+        data: analytics
+      });
+    } catch (error) {
+      console.error('Error fetching review analytics:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to fetch review analytics'
       });
     }
   }
@@ -98,6 +153,10 @@ class ReviewController {
         });
       }
 
+      // Use comment as-is
+      const processedComment = comment || '';
+      const isFlagged = false;
+
       // Check if user and exhibit exist
       const [userExists, exhibitExists] = await Promise.all([
         ReviewModel.userExists(user_id),
@@ -120,12 +179,24 @@ class ReviewController {
 
       // Allow multiple reviews per user per exhibit (no uniqueness restriction)
 
-      const review = await ReviewModel.createReview({ user_id, exhibit_id, rating, comment });
+      const review = await ReviewModel.createReview({ 
+        user_id, 
+        exhibit_id, 
+        rating, 
+        comment: processedComment 
+      });
+
+      // Add flagged status if profanity was detected in 'flag' mode
+      if (isFlagged) {
+        review.flagged_for_moderation = true;
+      }
 
       res.status(201).json({
         success: true,
         data: review,
-        message: 'Review created successfully'
+        message: isFlagged 
+          ? 'Review created successfully. Your review has been flagged for moderation.'
+          : 'Review created successfully'
       });
     } catch (error) {
       console.error('Error creating review:', error);
@@ -170,7 +241,11 @@ class ReviewController {
       // Build update data
       const updateData = {};
       if (rating !== undefined) updateData.rating = rating;
-      if (comment !== undefined) updateData.comment = comment;
+      
+      // Update comment if provided
+      if (comment !== undefined) {
+        updateData.comment = comment;
+      }
 
       const updatedReview = await ReviewModel.updateReview(id, updateData);
 

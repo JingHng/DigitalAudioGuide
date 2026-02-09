@@ -37,11 +37,7 @@ test.describe('Scan Page Functionality and QR Code Scanner', () => {
         const scannerElements = page.locator('#reader *');
         const elementCount = await scannerElements.count();
         
-        if (elementCount > 0) {
-            console.log('✓ QR scanner interface initialized successfully');
-        } else {
-            console.log('⚠ QR scanner interface may not have initialized yet');
-        }
+        // Scanner interface check (logs removed for cleaner test output)
     });
 
     test('should display clear usage instructions', async ({ page }) => {
@@ -212,8 +208,6 @@ test.describe('Scan Page Functionality and QR Code Scanner', () => {
         
         const navigation = page.locator('.scan-navigation');
         await expect(navigation).toBeVisible();
-        
-        console.log('✓ Page is responsive on mobile viewport');
     });
 
     test('should be responsive on tablet devices', async ({ page }) => {
@@ -224,8 +218,6 @@ test.describe('Scan Page Functionality and QR Code Scanner', () => {
         
         const mainContent = page.locator('.scan-main-content');
         await expect(mainContent).toBeVisible();
-        
-        console.log('✓ Page is responsive on tablet viewport');
     });
 
     test('should be accessible via homepage CTA button', async ({ page }) => {
@@ -245,8 +237,6 @@ test.describe('Scan Page Functionality and QR Code Scanner', () => {
         const scanTitle = page.locator('.scan-title');
         await expect(scanTitle).toBeVisible();
         await expect(scanTitle).toHaveText('Scan QR Code');
-        
-        console.log('✓ Navigation from homepage to scan page works');
     });
 
     test('should load quickly and initialize scanner in reasonable time', async ({ page }) => {
@@ -256,17 +246,14 @@ test.describe('Scan Page Functionality and QR Code Scanner', () => {
         await page.waitForSelector('.scan-page', { state: 'visible', timeout: 15000 });
         
         const loadTime = Date.now() - startTime;
-        console.log(`Page load time: ${loadTime}ms`);
         
         await page.waitForTimeout(process.env.CI ? 8000 : 5000); // Allow more time for CI and Firefox
         
         const totalInitTime = Date.now() - startTime;
-        console.log(`Total initialization time: ${totalInitTime}ms`);
         
         // More lenient timing for CI environments (increased to 15 seconds for Firefox)
         const timeLimit = process.env.CI ? 15000 : 10000;
         expect(loadTime).toBeLessThan(timeLimit);
-        console.log('✓ Page loads within acceptable time limits for CI environment');
     });
     
 

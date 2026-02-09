@@ -42,8 +42,8 @@ test.describe("Exhibition Statistics Admin UI - Comprehensive Tests", () => {
   });
 
   test("should load admin dashboard with exhibition statistics chart", async ({ page }) => {
-    await page.goto(`${FRONTEND_URL}/admin/dashboard`, { waitUntil: "load" });
-    await page.waitForSelector(".admin-dashboard", { timeout: 20000 });
+    await page.goto(`${FRONTEND_URL}/admin/dashboard`, { waitUntil: "domcontentloaded" });
+    await expect(page.locator(".admin-dashboard")).toBeVisible({ timeout: 20000 });
 
     await expect(page.locator('h1:has-text("Dashboard")')).toBeVisible();
     await expect(page.locator(".chart-container.visitor-stats-chart")).toBeVisible();

@@ -40,6 +40,15 @@ async function seed() {
 
     console.log("🧨 All existing tables dropped.");
 
+    await client.query(`
+  DO $$
+  BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'ConsentType') THEN
+      CREATE TYPE "ConsentType" AS ENUM ('MARKETING', 'PICTURE');
+    END IF;
+  END$$;
+`);
+
     // 1. STATUS table (foundational)
     await client.query(`
       CREATE TABLE status (
@@ -124,22 +133,37 @@ async function seed() {
 
     // 7. USER table
     await client.query(`
-      CREATE TABLE "user" (
-        user_id BIGSERIAL PRIMARY KEY,
-        username VARCHAR(100) UNIQUE NOT NULL,
-        email VARCHAR(100) UNIQUE NOT NULL,
-        gender VARCHAR(20),          
-        date_of_birth DATE,        
-        language_id BIGINT REFERENCES language(language_id),   
-        profile_picture_url VARCHAR(255) NULL,
-        password_hash VARCHAR(72) NOT NULL,
-        email_verified BOOLEAN DEFAULT FALSE,
-        status_id INTEGER REFERENCES status(status_id) ON DELETE SET NULL,
-        last_login_at TIMESTAMPTZ,
-        created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
+  CREATE TABLE "user" (
+    user_id BIGSERIAL PRIMARY KEY,
+    username VARCHAR(100) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+
+    password_hash VARCHAR(72) NOT NULL,
+
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+
+    phone_number CHAR(8) NULL,
+    profile_picture_url VARCHAR(255) NULL,
+
+    email_verified BOOLEAN NOT NULL DEFAULT FALSE,
+    status_id INTEGER REFERENCES status(status_id) ON DELETE SET NULL,
+
+    last_login_at TIMESTAMPTZ,
+
+    gender VARCHAR(10) NULL,
+    date_of_birth DATE,
+
+    address_line1 VARCHAR(255) NULL,
+    address_line2 VARCHAR(255) NULL,
+    zip_code BIGINT NULL,
+
+    language_id BIGINT REFERENCES language(language_id),
+
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+  );
+`);
 
     // 8. USER_BADGE table
     await client.query(`
@@ -377,6 +401,22 @@ async function seed() {
         is_active BOOLEAN NOT NULL DEFAULT true,
         created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    // user consent tab;e
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS "UserConsent" (
+        id BIGSERIAL PRIMARY KEY,
+        "user_id" BIGINT NOT NULL,
+        "type" "ConsentType" NOT NULL,
+        granted BOOLEAN NOT NULL DEFAULT FALSE,
+        "consentText" TEXT,
+        version TEXT,
+        "createdAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+        "updatedAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+        CONSTRAINT "fk_user_consent_user" FOREIGN KEY ("user_id") REFERENCES "user"(user_id) ON DELETE CASCADE,
+        CONSTRAINT "unique_user_consent" UNIQUE ("user_id", "type")
       );
     `);
 
@@ -758,11 +798,14 @@ async function seed() {
 
     // Insert roles
     await client.query(`
-      INSERT INTO roles (role_name, description) VALUES
-      ('admin', 'System administrator with full access'),
-      ('moderator', 'Content moderator with limited admin access'),
-      ('visitor', 'Guest user with minimal access');
-    `);
+  INSERT INTO roles (role_name, description) VALUES
+  ('admin', 'System administrator with full access'),
+  ('moderator', 'Content moderator with limited admin access'),
+  ('visitor', 'Guest user with minimal access'),
+  ('content_manager', 'Can edit exhibitions and exhibits'),
+  ('exhibit_editor', 'Can edit exhibits only')
+  ON CONFLICT (role_name) DO NOTHING;
+`);
 
     // Insert permissions (matching the SQL schema)
     await client.query(`
@@ -772,6 +815,12 @@ async function seed() {
       ('read_user', 'View user information'),
       ('update_user', 'Modify user information'),
       ('delete_user', 'Delete user accounts'),
+
+        -- Exhibition management permissions
+  ('create_exhibition', 'Create new exhibitions'),
+  ('read_exhibition', 'View exhibition information'),
+  ('update_exhibition', 'Modify exhibition information'),
+  ('delete_exhibition', 'Remove exhibitions'),
       
       -- Content management permissions
       ('create_exhibit', 'Create new exhibits'),
@@ -822,38 +871,197 @@ async function seed() {
     // Insert admin user first
     // Admin password: admin123
     // Generate hash for admin123 password
-    const adminHash = await bcrypt.hash('admin123', 12);
-    const moderatorHash = await bcrypt.hash('moderator123', 12);
+    const adminHash = await bcrypt.hash("admin123", 12);
+    const moderatorHash = await bcrypt.hash("moderator123", 12);
     // Generate hash for 123123 password (used for all test users)
-    const testUserHash = await bcrypt.hash('123123', 12);
-    
-    await client.query(`
-      INSERT INTO "user" (username, email, password_hash, email_verified, status_id, last_login_at, gender, date_of_birth, language_id) VALUES
-      ($1, $2, $3, true, 1, CURRENT_TIMESTAMP - INTERVAL '2 hours', 'Male', '1980-01-01', 1),
-      ($4, $5, $6, true, 1, CURRENT_TIMESTAMP - INTERVAL '1 day', 'Female', '1985-01-01', 1)
-    `, ['admin', 'admin@audiomuseum.com', adminHash, 'moderator', 'moderator@audiomuseum.com', moderatorHash]);
+    const testUserHash = await bcrypt.hash("123123", 12);
+
+    await client.query(
+      `
+  INSERT INTO "user" (
+    username,
+    email,
+    password_hash,
+    first_name,
+    last_name,
+    phone_number,
+    profile_picture_url,
+    email_verified,
+    status_id,
+    last_login_at,
+    gender,
+    date_of_birth,
+    address_line1,
+    address_line2,
+    zip_code,
+    language_id
+  ) VALUES
+  (
+    $1, $2, $3,
+    $4, $5,
+    $6, $7,
+    true, 1, CURRENT_TIMESTAMP - INTERVAL '2 hours',
+    $8, $9,
+    $10, $11, $12,
+    $13
+  ),
+  (
+    $14, $15, $16,
+    $17, $18,
+    $19, $20,
+    true, 1, CURRENT_TIMESTAMP - INTERVAL '1 day',
+    $21, $22,
+    $23, $24, $25,
+    $26
+  );
+  `,
+      [
+        // admin
+        "admin",
+        "admin@audiomuseum.com",
+        adminHash,
+        "System",
+        "Admin",
+        "81234567",
+        null,
+        "Male",
+        "1980-01-01",
+        "1 Admin Street",
+        "Level 1",
+        123456,
+        1,
+
+        // moderator
+        "moderator",
+        "moderator@audiomuseum.com",
+        moderatorHash,
+        "Content",
+        "Moderator",
+        "81234568",
+        null,
+        "Female",
+        "1985-01-01",
+        "2 Moderator Ave",
+        "Level 2",
+        234567,
+        1,
+      ],
+    );
 
     // Create 10 test users (test1 to test10) with password 123123
     console.log("Creating 10 test users (test1-test10)...");
     const testUsers = [];
+
+    const firstNames = [
+      "Alex",
+      "Sam",
+      "Jordan",
+      "Taylor",
+      "Casey",
+      "Morgan",
+      "Riley",
+      "Avery",
+      "Quinn",
+      "Blake",
+      "Cameron",
+      "Devon",
+      "Emery",
+      "Harper",
+      "Hayden",
+      "Jamie",
+      "Kennedy",
+      "Logan",
+      "Madison",
+      "Parker",
+    ];
+    const lastNames = [
+      "Smith",
+      "Johnson",
+      "Williams",
+      "Brown",
+      "Jones",
+      "Garcia",
+      "Miller",
+      "Davis",
+      "Rodriguez",
+      "Martinez",
+      "Hernandez",
+      "Lopez",
+      "Gonzalez",
+      "Wilson",
+      "Anderson",
+      "Thomas",
+      "Taylor",
+      "Moore",
+      "Jackson",
+      "Martin",
+      "Lee",
+      "Perez",
+      "Thompson",
+      "White",
+      "Harris",
+    ];
+
     for (let i = 1; i <= 10; i++) {
       const username = `test${i}`;
       const email = `test${i}@test.com`;
-      const genders = ['Male', 'Female', 'Non-binary'];
+      const genders = ["Male", "Female", "Non-binary"];
       const randomGender = genders[Math.floor(Math.random() * genders.length)];
-      const randomDOB = `19${Math.floor(Math.random() * 30 + 70)}-${String(Math.floor(Math.random() * 12) + 1).padStart(2, '0')}-${String(Math.floor(Math.random() * 28) + 1).padStart(2, '0')}`;
+      const randomDOB = `19${Math.floor(Math.random() * 30 + 70)}-${String(Math.floor(Math.random() * 12) + 1).padStart(2, "0")}-${String(Math.floor(Math.random() * 28) + 1).padStart(2, "0")}`;
       const languageId = Math.random() > 0.5 ? 1 : 7; // 50% English, 50% Chinese
+
+      const firstName =
+        firstNames[Math.floor(Math.random() * firstNames.length)];
+      const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
 
       // Create varied registration dates over the past 6 months
       const daysAgo = Math.floor(Math.random() * 180);
       const createdAt = `CURRENT_TIMESTAMP - INTERVAL '${daysAgo} days' - INTERVAL '${Math.floor(Math.random() * 24)} hours'`;
-      
+
       // All test users are active and email verified
       const statusId = 1;
       const emailVerified = true;
       const lastLoginAt = `CURRENT_TIMESTAMP - INTERVAL '${Math.floor(Math.random() * Math.min(daysAgo, 30) + 1)} days'`;
 
-      testUsers.push(`('${username}', '${email}', '${testUserHash}', ${emailVerified}, ${statusId}, ${lastLoginAt}, '${randomGender}', '${randomDOB}', ${languageId}, ${createdAt})`);
+      // Optional-ish values (keep simple / realistic)
+      const phoneNumber =
+        Math.random() > 0.35
+          ? `8${Math.floor(1000000 + Math.random() * 9000000)}` // 8-digit SG-style starting with 8
+          : "NULL";
+
+      const profilePictureUrl = "NULL"; // or set a default URL if you want
+      const addressLine1 =
+        Math.random() > 0.6
+          ? `'${Math.floor(Math.random() * 200) + 1} Sample Street'`
+          : "NULL";
+      const addressLine2 =
+        Math.random() > 0.8
+          ? `'Unit #${Math.floor(Math.random() * 30) + 1}-${Math.floor(Math.random() * 30) + 1}'`
+          : "NULL";
+      const zipCode =
+        Math.random() > 0.6
+          ? `${Math.floor(100000 + Math.random() * 900000)}`
+          : "NULL";
+
+      testUsers.push(`(
+  '${username}',
+  '${email}',
+  '${testUserHash}',
+  '${firstName}',
+  '${lastName}',
+  ${phoneNumber},
+  ${profilePictureUrl},
+  ${emailVerified},
+  ${statusId},
+  ${lastLoginAt},
+  '${randomGender}',
+  '${randomDOB}',
+  ${addressLine1},
+  ${addressLine2},
+  ${zipCode},
+  ${languageId},
+  ${createdAt}
+)`);
     }
 
     // Insert test users
@@ -861,19 +1069,26 @@ async function seed() {
       INSERT INTO "user" (
         username, 
         email, 
-        password_hash, 
+        password_hash,
+        first_name,
+        last_name,
+        phone_number,
+        profile_picture_url,
         email_verified, 
         status_id, 
         last_login_at, 
         gender, 
         date_of_birth,
+        address_line1,
+        address_line2,
+        zip_code,
         language_id,
         created_at
       ) VALUES ${testUsers.join(", ")};
     `);
 
     console.log(
-      `Inserted ${testUsers.length + 2} users total (admin, moderator, and ${testUsers.length} test users)`
+      `Inserted ${testUsers.length + 2} users total (admin, moderator, and ${testUsers.length} test users)`,
     );
 
     // Assign roles to users - admin and moderator first
@@ -908,6 +1123,33 @@ async function seed() {
           'manage_feedback', 'reset_password', 'verify_email'
       );
     `);
+
+    // content_manager permissions
+    await client.query(`
+  INSERT INTO roles_permission (role_id, permission_id)
+  SELECT r.role_id, p.permission_id
+  FROM roles r
+  JOIN permissions p ON p.permission_name IN (
+    -- exhibitions
+    'read_exhibition', 'update_exhibition',
+    -- exhibits
+    'read_exhibit', 'update_exhibit'
+  )
+  WHERE r.role_name = 'content_manager'
+  ON CONFLICT DO NOTHING;
+`);
+
+    // exhibit_editor permissions
+    await client.query(`
+  INSERT INTO roles_permission (role_id, permission_id)
+  SELECT r.role_id, p.permission_id
+  FROM roles r
+  JOIN permissions p ON p.permission_name IN (
+    'read_exhibit', 'update_exhibit'
+  )
+  WHERE r.role_name = 'exhibit_editor'
+  ON CONFLICT DO NOTHING;
+`);
 
     await client.query(`
       -- Visitor gets minimal read permissions
@@ -967,7 +1209,7 @@ await client.query(`
 
 
     // Insert badges first (25 badges)
-   await client.query(`
+    await client.query(`
     INSERT INTO badge (badge_id, name, description, style, image_url) VALUES
     (1, 'Enter The Sandbox', 'We have witnessed Singapore''s journey to nationhood... Leave your unique imprint on our present and future here in the Sandbox today.', 'medal', '/images/badge/Enter_The_Sandbox.png'),
     (2, 'Particles of Change', 'Immerse in an experience where play meets inspiration.', 'medal', '/images/badge/Particles_of_Change.png'),
@@ -982,7 +1224,7 @@ await client.query(`
 `);
 
     // Insert exhibits from seed data (exhibit_ids 1, 2, 3, 4, 5, 6)
-await client.query(`
+    await client.query(`
       INSERT INTO exhibit (exhibit_id, exhibition_id, badge_id, title, description, additional_description, status_id, sequence, is_ar_enabled) VALUES
       (1, 1, 1, 'Maritime Roots Interactive Gallery', 'This exhibit recreates early Singapore as a bustling maritime hub. Visitors walk through a curved projection wall showing trading ships arriving from the region, bustling markets, and cultural exchanges. Interactive hotspots allow visitors to tap on historical objects—such as spices, pottery, and navigational tools—to learn how these items shaped Singapore''s early importance in regional trade.', 'Dive deeper into Singapore''s maritime heritage through immersive storytelling. This gallery features authentic artifacts recovered from archaeological sites, including ancient coins, ceramics, and navigation instruments. Advanced augmented reality stations let visitors virtually handle historical trading goods and understand their significance in Southeast Asian commerce. The exhibit showcases how Singapore''s strategic location attracted merchants from China, India, the Malay world, and beyond, creating the multicultural foundation that defines Singapore today.', 1, 1, false),
       (2, 1, 2, 'Ancient Singapore Map Table', 'This exhibit features a large illuminated table displaying an animated map of early Singapore and the surrounding region. As visitors move their hands over different areas, sensors highlight ancient trade routes, regional kingdoms, and important geographic features. The map shows how Singapore''s location made it a natural meeting point for merchants, sailors, and explorers. Visitors can select specific time periods to see how the island evolved before colonisation.', 'Experience 14th-century Singapore through cutting-edge cartographic technology. The interactive table combines historical maps from the British Library, National Archives of Singapore, and regional museums to create an unprecedented view of pre-colonial Southeast Asia. Gesture-controlled interfaces allow visitors to zoom from satellite views down to village level, revealing settlement patterns, monsoon trading cycles, and the rise and fall of maritime empires. Special focus is given to the Johor-Riau Sultanate and the role of Temasek in regional politics.', 1, 2, false),
@@ -997,8 +1239,10 @@ await client.query(`
       `);
 
     // Clean up any existing QR codes first to prevent duplicates
-    await client.query(`DELETE FROM qr_code WHERE qr_id IN (1, 2, 3, 4, 5, 6, 7);`);
-    
+    await client.query(
+      `DELETE FROM qr_code WHERE qr_id IN (1, 2, 3, 4, 5, 6, 7);`,
+    );
+
     // Insert QR codes for exhibits (matching updated exhibit IDs)
     await client.query(`
       INSERT INTO qr_code (qr_id, exhibit_id, qr_url) VALUES
@@ -1060,29 +1304,1083 @@ await client.query(`
 
       `);
 
-     // Insert subtitle records (matching seed data with JSONB)
-    const subtitle1 = JSON.stringify([{"end": 0.79999995, "word": "Welcome", "start": 0.39999998}, {"end": 0.96, "word": "to", "start": 0.79999995}, {"end": 1.1999999, "word": "the", "start": 0.96}, {"end": 1.6999999, "word": "beginnings.", "start": 1.1999999}, {"end": 2.6399999, "word": "Long", "start": 2.32}, {"end": 3.12, "word": "before", "start": 2.6399999}, {"end": 3.62, "word": "Singapore", "start": 3.12}, {"end": 4.08, "word": "became", "start": 3.84}, {"end": 4.24, "word": "a", "start": 4.08}, {"end": 4.72, "word": "modern", "start": 4.24}, {"end": 5.22, "word": "nation,", "start": 4.72}, {"end": 5.68, "word": "it", "start": 5.44}, {"end": 5.92, "word": "was", "start": 5.68}, {"end": 6.3999996, "word": "already", "start": 5.92}, {"end": 6.64, "word": "a", "start": 6.3999996}, {"end": 7.14, "word": "vibrant", "start": 6.64}, {"end": 7.7, "word": "crossroads", "start": 7.2}, {"end": 8.08, "word": "for", "start": 7.8399997}, {"end": 8.559999, "word": "traders", "start": 8.08}, {"end": 8.8, "word": "from", "start": 8.559999}, {"end": 9.28, "word": "across", "start": 8.8}, {"end": 9.78, "word": "Asia.", "start": 9.28}, {"end": 10.48, "word": "As", "start": 10.32}, {"end": 10.8, "word": "you", "start": 10.48}, {"end": 11.2, "word": "explore", "start": 10.8}, {"end": 11.44, "word": "this", "start": 11.2}, {"end": 11.94, "word": "gallery,", "start": 11.44}, {"end": 12.719999, "word": "notice", "start": 12.4}, {"end": 12.96, "word": "the", "start": 12.719999}, {"end": 13.46, "word": "ships,", "start": 12.96}, {"end": 14.179999, "word": "markets,", "start": 13.679999}, {"end": 14.9, "word": "and", "start": 14.4}, {"end": 15.554999, "word": "artifacts", "start": 15.235}, {"end": 15.875, "word": "that", "start": 15.554999}, {"end": 16.275, "word": "reveal", "start": 15.875}, {"end": 16.515, "word": "how", "start": 16.275}, {"end": 16.994999, "word": "people", "start": 16.515}, {"end": 17.235, "word": "from", "start": 16.994999}, {"end": 17.635, "word": "different", "start": 17.235}, {"end": 18.135, "word": "cultures", "start": 17.635}, {"end": 18.695, "word": "met,", "start": 18.195}, {"end": 19.414999, "word": "traded,", "start": 18.914999}, {"end": 19.875, "word": "and", "start": 19.635}, {"end": 20.275, "word": "shared", "start": 19.875}, {"end": 20.775, "word": "ideas.", "start": 20.275}, {"end": 21.795, "word": "These", "start": 21.555}, {"end": 22.195, "word": "early", "start": 21.795}, {"end": 22.695, "word": "exchanges", "start": 22.195}, {"end": 23.235, "word": "laid", "start": 22.994999}, {"end": 23.395, "word": "the", "start": 23.235}, {"end": 23.895, "word": "foundations", "start": 23.395}, {"end": 24.435, "word": "for", "start": 24.275}, {"end": 24.935, "word": "Singapore's", "start": 24.435}, {"end": 25.474998, "word": "growth", "start": 25.154999}, {"end": 25.634998, "word": "as", "start": 25.474998}, {"end": 25.875, "word": "a", "start": 25.634998}, {"end": 26.375, "word": "strategic", "start": 25.875}, {"end": 26.935, "word": "maritime", "start": 26.435}, {"end": 27.654999, "word": "port.", "start": 27.154999}, {"end": 28.480936, "word": "Tap", "start": 28.240936}, {"end": 28.800936, "word": "on", "start": 28.480936}, {"end": 29.120937, "word": "any", "start": 28.800936}, {"end": 29.620937, "word": "highlighted", "start": 29.120937}, {"end": 30.160936, "word": "object", "start": 29.680937}, {"end": 30.320936, "word": "to", "start": 30.160936}, {"end": 30.560936, "word": "hear", "start": 30.320936}, {"end": 30.960938, "word": "more", "start": 30.560936}, {"end": 31.280937, "word": "about", "start": 30.960938}, {"end": 31.520937, "word": "its", "start": 31.280937}, {"end": 31.920937, "word": "role", "start": 31.520937}, {"end": 32.080936, "word": "in", "start": 31.920937}, {"end": 32.560936, "word": "shaping", "start": 32.080936}, {"end": 32.720936, "word": "our", "start": 32.560936}, {"end": 33.220936, "word": "island's", "start": 32.720936}, {"end": 33.680935, "word": "early", "start": 33.280937}, {"end": 34.180935, "word": "history.", "start": 33.680935}]);
-    
-    const subtitle2 = JSON.stringify([{"end": 0.32, "word": "You", "start": 0.16}, {"end": 0.48, "word": "are", "start": 0.32}, {"end": 0.88, "word": "now", "start": 0.48}, {"end": 1.28, "word": "viewing", "start": 0.88}, {"end": 1.4399999, "word": "the", "start": 1.28}, {"end": 1.8399999, "word": "ancient", "start": 1.4399999}, {"end": 2.34, "word": "Singapore", "start": 1.8399999}, {"end": 3.06, "word": "map.", "start": 2.56}, {"end": 3.76, "word": "Over", "start": 3.36}, {"end": 4.08, "word": "seven", "start": 3.76}, {"end": 4.48, "word": "hundred", "start": 4.08}, {"end": 4.7999997, "word": "years", "start": 4.48}, {"end": 5.2999997, "word": "ago,", "start": 4.7999997}, {"end": 6.02, "word": "Singapore's", "start": 5.52}, {"end": 6.74, "word": "location", "start": 6.24}, {"end": 7.2, "word": "placed", "start": 6.8799996}, {"end": 7.44, "word": "it", "start": 7.2}, {"end": 7.6, "word": "at", "start": 7.44}, {"end": 7.7599998, "word": "the", "start": 7.6}, {"end": 8.08, "word": "heart", "start": 7.7599998}, {"end": 8.24, "word": "of", "start": 8.08}, {"end": 8.72, "word": "major", "start": 8.24}, {"end": 9.22, "word": "regional", "start": 8.72}, {"end": 9.679999, "word": "trade", "start": 9.28}, {"end": 10.179999, "word": "routes.", "start": 9.679999}, {"end": 11.219999, "word": "Merchants", "start": 10.719999}, {"end": 11.5199995, "word": "from", "start": 11.28}, {"end": 11.679999, "word": "the", "start": 11.5199995}, {"end": 12.16, "word": "Malay", "start": 11.679999}, {"end": 12.66, "word": "Archipelago,", "start": 12.16}, {"end": 14.255, "word": "China,", "start": 13.755}, {"end": 14.975, "word": "India,", "start": 14.475}, {"end": 15.355, "word": "and", "start": 15.115}, {"end": 15.855, "word": "beyond", "start": 15.355}, {"end": 16.155, "word": "pass", "start": 15.915}, {"end": 16.475, "word": "through", "start": 16.155}, {"end": 16.795, "word": "these", "start": 16.475}, {"end": 17.295, "word": "waters,", "start": 16.795}, {"end": 18.095, "word": "carrying", "start": 17.595}, {"end": 18.654999, "word": "goods,", "start": 18.154999}, {"end": 19.455, "word": "culture,", "start": 18.955}, {"end": 19.994999, "word": "and", "start": 19.675}, {"end": 20.494999, "word": "knowledge.", "start": 19.994999}, {"end": 21.275, "word": "As", "start": 21.035}, {"end": 21.515, "word": "you", "start": 21.275}, {"end": 21.994999, "word": "explore", "start": 21.515}, {"end": 22.075, "word": "the", "start": 21.994999}, {"end": 22.575, "word": "map,", "start": 22.075}, {"end": 23.115, "word": "watch", "start": 22.795}, {"end": 23.355, "word": "how", "start": 23.115}, {"end": 23.515, "word": "the", "start": 23.355}, {"end": 23.994999, "word": "island", "start": 23.515}, {"end": 24.494999, "word": "transforms", "start": 23.994999}, {"end": 25.195, "word": "across", "start": 24.715}, {"end": 25.595, "word": "different", "start": 25.195}, {"end": 26.095, "word": "eras,", "start": 25.595}, {"end": 26.895, "word": "revealing", "start": 26.395}, {"end": 27.535, "word": "Singapore's", "start": 27.035}, {"end": 27.994999, "word": "early", "start": 27.675}, {"end": 28.41, "word": "role", "start": 27.994999}, {"end": 28.57, "word": "as", "start": 28.41}, {"end": 28.81, "word": "a", "start": 28.57}, {"end": 29.21, "word": "vital", "start": 28.81}, {"end": 29.71, "word": "maritime", "start": 29.21}, {"end": 30.43, "word": "crossroads.", "start": 29.93}, {"end": 31.77, "word": "Select", "start": 31.289999}, {"end": 32.09, "word": "any", "start": 31.77}, {"end": 32.59, "word": "highlighted", "start": 32.09}, {"end": 33.23, "word": "region", "start": 32.73}, {"end": 33.45, "word": "to", "start": 33.29}, {"end": 33.93, "word": "discover", "start": 33.45}, {"end": 34.25, "word": "more", "start": 33.93}, {"end": 34.57, "word": "about", "start": 34.25}, {"end": 34.73, "word": "the", "start": 34.57}, {"end": 35.21, "word": "traders", "start": 34.73}, {"end": 35.45, "word": "and", "start": 35.21}, {"end": 35.95, "word": "kingdoms", "start": 35.45}, {"end": 36.25, "word": "that", "start": 36.01}, {"end": 36.57, "word": "once", "start": 36.25}, {"end": 36.89, "word": "shaped", "start": 36.57}, {"end": 37.13, "word": "our", "start": 36.89}, {"end": 37.63, "word": "shores.", "start": 37.13}]);
-    
-    const subtitle3 = JSON.stringify([{"end": 0.39999998, "word": "You", "start": 0.16}, {"end": 0.48, "word": "are", "start": 0.39999998}, {"end": 0.88, "word": "now", "start": 0.48}, {"end": 1.28, "word": "entering", "start": 0.88}, {"end": 1.52, "word": "the", "start": 1.28}, {"end": 2.02, "word": "wartime", "start": 1.52}, {"end": 2.58, "word": "bunker.", "start": 2.08}, {"end": 3.4399998, "word": "In", "start": 3.04}, {"end": 3.9399998, "word": "nineteen", "start": 3.4399998}, {"end": 4.3199997, "word": "forty", "start": 4}, {"end": 4.8199997, "word": "two,", "start": 4.3199997}, {"end": 5.54, "word": "Singapore", "start": 5.04}, {"end": 6.08, "word": "faced", "start": 5.7599998}, {"end": 6.24, "word": "one", "start": 6.08}, {"end": 6.3999996, "word": "of", "start": 6.24}, {"end": 6.72, "word": "its", "start": 6.3999996}, {"end": 7.2, "word": "darkest", "start": 6.72}, {"end": 7.7, "word": "chapters", "start": 7.2}, {"end": 7.9199996, "word": "as", "start": 7.8399997}, {"end": 8.16, "word": "the", "start": 7.9199996}, {"end": 8.66, "word": "Japanese", "start": 8.16}, {"end": 9.22, "word": "invasion", "start": 8.72}, {"end": 10.099999, "word": "intensified.", "start": 9.599999}, {"end": 11.5199995, "word": "Within", "start": 11.04}, {"end": 12.0199995, "word": "bunkers", "start": 11.5199995}, {"end": 12.24, "word": "like", "start": 12.08}, {"end": 12.74, "word": "this,", "start": 12.24}, {"end": 13.395, "word": "soldiers", "start": 12.96}, {"end": 14.135, "word": "coordinated", "start": 13.635}, {"end": 14.8550005, "word": "defenses,", "start": 14.3550005}, {"end": 15.975, "word": "civilians", "start": 15.475}, {"end": 16.515, "word": "sought", "start": 16.275}, {"end": 17.015, "word": "shelter,", "start": 16.515}, {"end": 17.555, "word": "and", "start": 17.235}, {"end": 18.055, "word": "uncertainty", "start": 17.555}, {"end": 18.675, "word": "filled", "start": 18.355}, {"end": 18.755001, "word": "the", "start": 18.675}, {"end": 19.255001, "word": "air.", "start": 18.755001}, {"end": 19.875, "word": "As", "start": 19.635}, {"end": 20.035, "word": "you", "start": 19.875}, {"end": 20.275, "word": "look", "start": 20.035}, {"end": 20.775, "word": "around,", "start": 20.275}, {"end": 21.475, "word": "take", "start": 21.155}, {"end": 21.715, "word": "note", "start": 21.475}, {"end": 21.875, "word": "of", "start": 21.715}, {"end": 22.035, "word": "the", "start": 21.875}, {"end": 22.535, "word": "messages,", "start": 22.035}, {"end": 23.575, "word": "maps,", "start": 23.075}, {"end": 24.035, "word": "and", "start": 23.715}, {"end": 24.515, "word": "equipment", "start": 24.035}, {"end": 24.755001, "word": "that", "start": 24.515}, {"end": 25.235, "word": "reveal", "start": 24.755001}, {"end": 25.395, "word": "the", "start": 25.235}, {"end": 25.895, "word": "difficult", "start": 25.395}, {"end": 26.455, "word": "decisions", "start": 25.955}, {"end": 26.994999, "word": "made", "start": 26.595001}, {"end": 27.315, "word": "during", "start": 26.994999}, {"end": 27.555, "word": "this", "start": 27.315}, {"end": 28.055, "word": "time.", "start": 27.555}, {"end": 28.924936, "word": "Tap", "start": 28.684937}, {"end": 29.324936, "word": "any", "start": 28.924936}, {"end": 29.824936, "word": "highlighted", "start": 29.324936}, {"end": 30.364937, "word": "panel", "start": 29.884937}, {"end": 30.524937, "word": "to", "start": 30.364937}, {"end": 31.024937, "word": "discover", "start": 30.524937}, {"end": 31.404938, "word": "key", "start": 31.084936}, {"end": 31.884937, "word": "events", "start": 31.404938}, {"end": 32.044937, "word": "that", "start": 31.884937}, {"end": 32.364937, "word": "shaped", "start": 32.044937}, {"end": 32.44494, "word": "the", "start": 32.364937}, {"end": 32.844936, "word": "battle", "start": 32.44494}, {"end": 33.084938, "word": "for", "start": 32.844936}, {"end": 33.584938, "word": "Singapore.", "start": 33.084938}]);
-    
-    const subtitle4 = JSON.stringify([{"end": 0.48, "word": "This", "start": 0.24}, {"end": 0.71999997, "word": "is", "start": 0.48}, {"end": 0.88, "word": "the", "start": 0.71999997}, {"end": 1.28, "word": "faces", "start": 0.88}, {"end": 1.52, "word": "of", "start": 1.28}, {"end": 1.76, "word": "the", "start": 1.52}, {"end": 2.26, "word": "occupation", "start": 1.76}, {"end": 3.06, "word": "story", "start": 2.56}, {"end": 3.62, "word": "wall.", "start": 3.12}, {"end": 4.24, "word": "During", "start": 3.9199998}, {"end": 4.48, "word": "the", "start": 4.24}, {"end": 4.98, "word": "Japanese", "start": 4.48}, {"end": 5.7, "word": "occupation,", "start": 5.2}, {"end": 6.8799996, "word": "ordinary", "start": 6.3999996}, {"end": 7.3599997, "word": "people", "start": 6.8799996}, {"end": 7.8599997, "word": "endured", "start": 7.3599997}, {"end": 8.42, "word": "hardship,", "start": 7.9199996}, {"end": 9.38, "word": "loss,", "start": 8.88}, {"end": 9.92, "word": "and", "start": 9.44}, {"end": 10.42, "word": "uncertainty.", "start": 9.92}, {"end": 11.679999, "word": "Each", "start": 11.36}, {"end": 12.179999, "word": "portrait", "start": 11.679999}, {"end": 12.48, "word": "you", "start": 12.32}, {"end": 12.799999, "word": "see", "start": 12.48}, {"end": 13.299999, "word": "represents", "start": 12.799999}, {"end": 13.575, "word": "a", "start": 13.415}, {"end": 13.815, "word": "real", "start": 13.575}, {"end": 14.315, "word": "individual", "start": 13.815}, {"end": 14.855, "word": "whose", "start": 14.535}, {"end": 15.175, "word": "life", "start": 14.855}, {"end": 15.415, "word": "was", "start": 15.175}, {"end": 15.915, "word": "transformed", "start": 15.415}, {"end": 16.375, "word": "by", "start": 16.055}, {"end": 16.875, "word": "war.", "start": 16.375}, {"end": 17.895, "word": "Select", "start": 17.415}, {"end": 18.135, "word": "any", "start": 17.895}, {"end": 18.455, "word": "face", "start": 18.135}, {"end": 18.695, "word": "to", "start": 18.455}, {"end": 18.935, "word": "hear", "start": 18.695}, {"end": 19.255001, "word": "their", "start": 18.935}, {"end": 19.755001, "word": "story,", "start": 19.255001}, {"end": 20.135, "word": "how", "start": 19.895}, {"end": 20.455, "word": "they", "start": 20.135}, {"end": 20.955, "word": "lived,", "start": 20.455}, {"end": 21.595, "word": "adapted,", "start": 21.095}, {"end": 22.295, "word": "and", "start": 21.895}, {"end": 22.694937, "word": "persevere", "start": 22.295}, {"end": 23.334936, "word": "during", "start": 23.014936}, {"end": 23.494936, "word": "one", "start": 23.334936}, {"end": 23.814938, "word": "of", "start": 23.494936}, {"end": 24.314938, "word": "Singapore's", "start": 23.814938}, {"end": 24.694937, "word": "most", "start": 24.374937}, {"end": 25.194937, "word": "challenging", "start": 24.694937}, {"end": 25.834936, "word": "periods.", "start": 25.334936}, {"end": 26.934937, "word": "These", "start": 26.614937}, {"end": 27.414936, "word": "personal", "start": 26.934937}, {"end": 27.914936, "word": "accounts", "start": 27.414936}, {"end": 28.294937, "word": "remind", "start": 27.974937}, {"end": 28.534937, "word": "us", "start": 28.294937}, {"end": 28.854937, "word": "that", "start": 28.534937}, {"end": 29.254936, "word": "history", "start": 28.854937}, {"end": 29.414936, "word": "is", "start": 29.254936}, {"end": 29.654938, "word": "not", "start": 29.414936}, {"end": 29.974937, "word": "just", "start": 29.654938}, {"end": 30.294937, "word": "dates", "start": 29.974937}, {"end": 30.534937, "word": "and", "start": 30.294937}, {"end": 31.034937, "word": "events,", "start": 30.534937}, {"end": 31.654938, "word": "but", "start": 31.414936}, {"end": 32.054935, "word": "the", "start": 31.654938}, {"end": 32.554935, "word": "experiences", "start": 32.054935}, {"end": 32.934937, "word": "of", "start": 32.774937}, {"end": 33.254936, "word": "people", "start": 32.934937}, {"end": 33.494938, "word": "who", "start": 33.254936}, {"end": 33.814938, "word": "lived", "start": 33.494938}, {"end": 34.054935, "word": "through", "start": 33.814938}, {"end": 34.554935, "word": "them.", "start": 34.054935}]);
-    
-    const subtitle5 = JSON.stringify([{"end": 0.71999997, "word": "Welcome", "start": 0.32}, {"end": 0.88, "word": "to", "start": 0.71999997}, {"end": 1.38, "word": "Project", "start": 0.88}, {"end": 1.9399999, "word": "INC.", "start": 1.4399999}, {"end": 2.98, "word": "Industry", "start": 2.48}, {"end": 3.4399998, "word": "Now", "start": 3.04}, {"end": 3.9399998, "word": "Curriculum.", "start": 3.4399998}, {"end": 4.7999997, "word": "You", "start": 4.56}, {"end": 4.96, "word": "are", "start": 4.7999997}, {"end": 5.3599997, "word": "now", "start": 4.96}, {"end": 5.8399997, "word": "standing", "start": 5.3599997}, {"end": 6, "word": "in", "start": 5.8399997}, {"end": 6.16, "word": "the", "start": 6}, {"end": 6.66, "word": "heartbeat", "start": 6.16}, {"end": 6.8799996, "word": "of", "start": 6.72}, {"end": 7.04, "word": "the", "start": 6.8799996}, {"end": 7.44, "word": "School", "start": 7.04}, {"end": 7.68, "word": "of", "start": 7.44}, {"end": 8.18, "word": "Computing's", "start": 7.68}, {"end": 8.82, "word": "practical", "start": 8.32}, {"end": 9.38, "word": "training.", "start": 8.88}, {"end": 10.16, "word": "This", "start": 9.92}, {"end": 10.4, "word": "is", "start": 10.16}, {"end": 10.639999, "word": "not", "start": 10.4}, {"end": 10.8, "word": "a", "start": 10.639999}, {"end": 11.28, "word": "typical", "start": 10.8}, {"end": 11.78, "word": "classroom.", "start": 11.28}, {"end": 12.825, "word": "It's", "start": 12.585}, {"end": 13.065001, "word": "a", "start": 12.825}, {"end": 13.565001, "word": "simulated", "start": 13.065001}, {"end": 14.365, "word": "software", "start": 13.865}, {"end": 14.925, "word": "house,", "start": 14.425}, {"end": 15.305, "word": "designed", "start": 14.985001}, {"end": 15.465, "word": "to", "start": 15.305}, {"end": 15.705, "word": "turn", "start": 15.465}, {"end": 15.945, "word": "you", "start": 15.705}, {"end": 16.185, "word": "from", "start": 15.945}, {"end": 16.345001, "word": "a", "start": 16.185}, {"end": 16.825, "word": "student", "start": 16.345001}, {"end": 17.065, "word": "into", "start": 16.825}, {"end": 17.225, "word": "a", "start": 17.065}, {"end": 17.725, "word": "professional", "start": 17.225}, {"end": 18.525, "word": "software", "start": 18.025}, {"end": 19.085, "word": "developer.", "start": 18.585}, {"end": 20.265, "word": "Forget", "start": 19.785}, {"end": 20.765, "word": "hypothetical", "start": 20.265}, {"end": 21.805, "word": "assignments.", "start": 21.305}, {"end": 23.005001, "word": "Project", "start": 22.505001}, {"end": 23.865, "word": "INC", "start": 23.465}, {"end": 24.025, "word": "is", "start": 23.865}, {"end": 24.265, "word": "where", "start": 24.025}, {"end": 24.425, "word": "you", "start": 24.265}, {"end": 24.744999, "word": "work", "start": 24.425}, {"end": 24.904999, "word": "on", "start": 24.744999}, {"end": 25.404999, "word": "real,", "start": 24.904999}, {"end": 26.025, "word": "client-paid", "start": 25.705}, {"end": 26.845001, "word": "projects,", "start": 26.345001}, {"end": 27.87, "word": "solutions", "start": 27.385}, {"end": 28.35, "word": "for", "start": 28.19}, {"end": 28.83, "word": "actual", "start": 28.35}, {"end": 29.33, "word": "industry", "start": 28.83}, {"end": 29.890001, "word": "partners,", "start": 29.390001}, {"end": 30.75, "word": "government", "start": 30.35}, {"end": 31.25, "word": "agencies", "start": 30.75}, {"end": 31.710001, "word": "like", "start": 31.470001}, {"end": 32.21, "word": "GovTech,", "start": 31.710001}, {"end": 32.91, "word": "and", "start": 32.59}, {"end": 33.39, "word": "major", "start": 32.91}, {"end": 33.63, "word": "tech", "start": 33.39}, {"end": 34.13, "word": "companies.", "start": 33.63}, {"end": 35.15, "word": "Sound", "start": 34.99}, {"end": 35.39, "word": "of", "start": 35.15}, {"end": 35.89, "word": "light,", "start": 35.39}, {"end": 36.85, "word": "fast", "start": 36.35}, {"end": 37.39, "word": "keyboard", "start": 36.91}, {"end": 37.89, "word": "typing.", "start": 37.39}, {"end": 38.510002, "word": "We", "start": 38.35}, {"end": 38.75, "word": "don't", "start": 38.510002}, {"end": 39.07, "word": "just", "start": 38.75}, {"end": 39.31, "word": "teach", "start": 39.07}, {"end": 39.63, "word": "you", "start": 39.31}, {"end": 40.13, "word": "skills.", "start": 39.63}, {"end": 40.83, "word": "We", "start": 40.59}, {"end": 41.07, "word": "give", "start": 40.83}, {"end": 41.23, "word": "you", "start": 41.07}, {"end": 41.39, "word": "a", "start": 41.23}, {"end": 41.89, "word": "job.", "start": 41.39}, {"end": 42.475002, "word": "You", "start": 42.235}, {"end": 42.715, "word": "will", "start": 42.475002}, {"end": 43.195, "word": "apply", "start": 42.715}, {"end": 43.695, "word": "Agile", "start": 43.195}, {"end": 44.255, "word": "methodologies,", "start": 43.755}, {"end": 45.435, "word": "manage", "start": 44.955}, {"end": 45.935, "word": "timelines,", "start": 45.435}, {"end": 46.555, "word": "and", "start": 46.315002}, {"end": 47.055, "word": "engage", "start": 46.555}, {"end": 47.675, "word": "directly", "start": 47.195}, {"end": 47.915, "word": "with", "start": 47.675}, {"end": 48.415, "word": "clients,", "start": 47.915}, {"end": 49.115, "word": "just", "start": 48.875}, {"end": 49.355, "word": "like", "start": 49.115}, {"end": 49.515, "word": "you", "start": 49.355}, {"end": 49.755, "word": "would", "start": 49.515}, {"end": 49.915, "word": "in", "start": 49.755}, {"end": 49.995, "word": "a", "start": 49.915}, {"end": 50.395, "word": "real", "start": 49.995}, {"end": 50.895, "word": "company.", "start": 50.395}, {"end": 51.595, "word": "It's", "start": 51.355}, {"end": 51.835, "word": "the", "start": 51.595}, {"end": 52.315002, "word": "ultimate", "start": 51.835}, {"end": 52.795, "word": "proving", "start": 52.315002}, {"end": 53.115, "word": "ground", "start": 52.795}, {"end": 53.275, "word": "for", "start": 53.115}, {"end": 53.515, "word": "your", "start": 53.275}, {"end": 53.915, "word": "tech", "start": 53.515}, {"end": 54.415, "word": "career.", "start": 53.915}])
-    
-    const subtitle6 = JSON.stringify([{"end":0.71999997,"word":"Welcome","start":0.32},{"end":0.88,"word":"to","start":0.71999997},{"end":1.12,"word":"the","start":0.88},{"end":1.4399999,"word":"School","start":1.12},{"end":1.68,"word":"of","start":1.4399999},{"end":2.1799998,"word":"Computing","start":1.68},{"end":2.82,"word":"registration","start":2.32},{"end":3.62,"word":"booth.","start":3.12},{"end":4.34,"word":"Here,","start":3.84},{"end":4.88,"word":"you'll","start":4.48},{"end":5.38,"word":"discover","start":4.88},{"end":5.92,"word":"everything","start":5.52},{"end":6.08,"word":"that","start":5.92},{"end":6.48,"word":"makes","start":6.08},{"end":6.98,"word":"Singapore","start":6.48},{"end":7.62,"word":"Polytechnic","start":7.12},{"end":8.08,"word":"a","start":7.9199996},{"end":8.48,"word":"leader","start":8.08},{"end":8.72,"word":"in","start":8.48},{"end":9.22,"word":"technology","start":8.72},{"end":9.94,"word":"education.","start":9.44},{"end":11.2,"word":"Learn","start":10.88},{"end":11.5199995,"word":"about","start":11.2},{"end":11.84,"word":"our","start":11.5199995},{"end":12.08,"word":"state","start":11.84},{"end":12.24,"word":"of","start":12.08},{"end":12.4,"word":"the","start":12.24},{"end":12.719999,"word":"art","start":12.4},{"end":12.975,"word":"labs,","start":12.719999},{"end":13.935,"word":"hands","start":13.535001},{"end":14.175,"word":"on","start":13.935},{"end":14.675,"word":"learning","start":14.175},{"end":15.235001,"word":"environment,","start":14.735001},{"end":15.935,"word":"and","start":15.695001},{"end":16.175,"word":"the","start":15.935},{"end":16.675,"word":"exciting","start":16.175},{"end":17.295,"word":"diploma","start":16.815},{"end":17.795,"word":"programs","start":17.295},{"end":18.095001,"word":"we","start":17.935001},{"end":18.595001,"word":"offer.","start":18.095001},{"end":19.375,"word":"From","start":19.055},{"end":19.875,"word":"artificial","start":19.375},{"end":20.595001,"word":"intelligence","start":20.095001},{"end":20.975,"word":"and","start":20.735},{"end":21.475,"word":"cybersecurity","start":20.975},{"end":22.335,"word":"to","start":22.175},{"end":22.835,"word":"software","start":22.335},{"end":23.455,"word":"development","start":22.975},{"end":23.695,"word":"and","start":23.455},{"end":24.195,"word":"immersive","start":23.695},{"end":24.835,"word":"media,","start":24.335},{"end":25.295,"word":"our","start":25.135},{"end":25.775,"word":"courses","start":25.295},{"end":25.935001,"word":"are","start":25.775},{"end":26.335,"word":"designed","start":25.935001},{"end":26.494999,"word":"to","start":26.335},{"end":26.895,"word":"prepare","start":26.494999},{"end":27.135,"word":"you","start":26.895},{"end":27.375,"word":"for","start":27.135},{"end":27.535,"word":"the","start":27.375},{"end":27.935001,"word":"future","start":27.535},{"end":28.175,"word":"of","start":27.935001},{"end":28.675,"word":"tech.","start":28.175},{"end":29.43,"word":"Find","start":29.27},{"end":29.67,"word":"out","start":29.43},{"end":30.070002,"word":"more","start":29.67},{"end":30.470001,"word":"about","start":30.070002},{"end":30.79,"word":"our","start":30.470001},{"end":31.27,"word":"industry","start":30.79},{"end":31.77,"word":"partnerships,","start":31.27},{"end":32.71,"word":"real","start":32.39},{"end":33.190002,"word":"world","start":32.71},{"end":33.690002,"word":"projects,","start":33.190002},{"end":34.31,"word":"and","start":33.99},{"end":34.81,"word":"internship","start":34.31},{"end":35.53,"word":"opportunities","start":35.03},{"end":35.99,"word":"that","start":35.75},{"end":36.31,"word":"help","start":35.99},{"end":36.47,"word":"our","start":36.31},{"end":36.95,"word":"students","start":36.47},{"end":37.27,"word":"gain","start":36.95},{"end":37.77,"word":"valuable","start":37.27},{"end":38.49,"word":"experience.","start":37.99}]);
+    // Insert subtitle records (matching seed data with JSONB)
+    const subtitle1 = JSON.stringify([
+      { end: 0.79999995, word: "Welcome", start: 0.39999998 },
+      { end: 0.96, word: "to", start: 0.79999995 },
+      { end: 1.1999999, word: "the", start: 0.96 },
+      { end: 1.6999999, word: "beginnings.", start: 1.1999999 },
+      { end: 2.6399999, word: "Long", start: 2.32 },
+      { end: 3.12, word: "before", start: 2.6399999 },
+      { end: 3.62, word: "Singapore", start: 3.12 },
+      { end: 4.08, word: "became", start: 3.84 },
+      { end: 4.24, word: "a", start: 4.08 },
+      { end: 4.72, word: "modern", start: 4.24 },
+      { end: 5.22, word: "nation,", start: 4.72 },
+      { end: 5.68, word: "it", start: 5.44 },
+      { end: 5.92, word: "was", start: 5.68 },
+      { end: 6.3999996, word: "already", start: 5.92 },
+      { end: 6.64, word: "a", start: 6.3999996 },
+      { end: 7.14, word: "vibrant", start: 6.64 },
+      { end: 7.7, word: "crossroads", start: 7.2 },
+      { end: 8.08, word: "for", start: 7.8399997 },
+      { end: 8.559999, word: "traders", start: 8.08 },
+      { end: 8.8, word: "from", start: 8.559999 },
+      { end: 9.28, word: "across", start: 8.8 },
+      { end: 9.78, word: "Asia.", start: 9.28 },
+      { end: 10.48, word: "As", start: 10.32 },
+      { end: 10.8, word: "you", start: 10.48 },
+      { end: 11.2, word: "explore", start: 10.8 },
+      { end: 11.44, word: "this", start: 11.2 },
+      { end: 11.94, word: "gallery,", start: 11.44 },
+      { end: 12.719999, word: "notice", start: 12.4 },
+      { end: 12.96, word: "the", start: 12.719999 },
+      { end: 13.46, word: "ships,", start: 12.96 },
+      { end: 14.179999, word: "markets,", start: 13.679999 },
+      { end: 14.9, word: "and", start: 14.4 },
+      { end: 15.554999, word: "artifacts", start: 15.235 },
+      { end: 15.875, word: "that", start: 15.554999 },
+      { end: 16.275, word: "reveal", start: 15.875 },
+      { end: 16.515, word: "how", start: 16.275 },
+      { end: 16.994999, word: "people", start: 16.515 },
+      { end: 17.235, word: "from", start: 16.994999 },
+      { end: 17.635, word: "different", start: 17.235 },
+      { end: 18.135, word: "cultures", start: 17.635 },
+      { end: 18.695, word: "met,", start: 18.195 },
+      { end: 19.414999, word: "traded,", start: 18.914999 },
+      { end: 19.875, word: "and", start: 19.635 },
+      { end: 20.275, word: "shared", start: 19.875 },
+      { end: 20.775, word: "ideas.", start: 20.275 },
+      { end: 21.795, word: "These", start: 21.555 },
+      { end: 22.195, word: "early", start: 21.795 },
+      { end: 22.695, word: "exchanges", start: 22.195 },
+      { end: 23.235, word: "laid", start: 22.994999 },
+      { end: 23.395, word: "the", start: 23.235 },
+      { end: 23.895, word: "foundations", start: 23.395 },
+      { end: 24.435, word: "for", start: 24.275 },
+      { end: 24.935, word: "Singapore's", start: 24.435 },
+      { end: 25.474998, word: "growth", start: 25.154999 },
+      { end: 25.634998, word: "as", start: 25.474998 },
+      { end: 25.875, word: "a", start: 25.634998 },
+      { end: 26.375, word: "strategic", start: 25.875 },
+      { end: 26.935, word: "maritime", start: 26.435 },
+      { end: 27.654999, word: "port.", start: 27.154999 },
+      { end: 28.480936, word: "Tap", start: 28.240936 },
+      { end: 28.800936, word: "on", start: 28.480936 },
+      { end: 29.120937, word: "any", start: 28.800936 },
+      { end: 29.620937, word: "highlighted", start: 29.120937 },
+      { end: 30.160936, word: "object", start: 29.680937 },
+      { end: 30.320936, word: "to", start: 30.160936 },
+      { end: 30.560936, word: "hear", start: 30.320936 },
+      { end: 30.960938, word: "more", start: 30.560936 },
+      { end: 31.280937, word: "about", start: 30.960938 },
+      { end: 31.520937, word: "its", start: 31.280937 },
+      { end: 31.920937, word: "role", start: 31.520937 },
+      { end: 32.080936, word: "in", start: 31.920937 },
+      { end: 32.560936, word: "shaping", start: 32.080936 },
+      { end: 32.720936, word: "our", start: 32.560936 },
+      { end: 33.220936, word: "island's", start: 32.720936 },
+      { end: 33.680935, word: "early", start: 33.280937 },
+      { end: 34.180935, word: "history.", start: 33.680935 },
+    ]);
 
-    const subtitle7 = JSON.stringify([{"end":0.56,"word":"Welcome","start":0.24},{"end":0.79999995,"word":"to","start":0.56},{"end":1.04,"word":"the","start":0.79999995},{"end":1.4399999,"word":"course","start":1.04},{"end":1.9399999,"word":"counseling","start":1.4399999},{"end":2.32,"word":"booth","start":2},{"end":2.56,"word":"at","start":2.32},{"end":3.06,"word":"Singapore","start":2.56},{"end":3.6999998,"word":"Polytechnic.","start":3.1999998},{"end":4.96,"word":"Learn","start":4.64},{"end":5.2799997,"word":"more","start":4.96},{"end":5.7599998,"word":"about","start":5.2799997},{"end":6,"word":"our","start":5.7599998},{"end":6.5,"word":"counseling","start":6},{"end":7.12,"word":"options","start":6.64},{"end":7.3599997,"word":"and","start":7.12},{"end":7.68,"word":"get","start":7.3599997},{"end":8.18,"word":"personalized","start":7.68},{"end":8.98,"word":"guidance","start":8.48},{"end":9.28,"word":"on","start":9.04},{"end":9.679999,"word":"choosing","start":9.28},{"end":9.84,"word":"the","start":9.679999},{"end":10.16,"word":"right","start":9.84},{"end":10.66,"word":"diploma","start":10.16},{"end":11.3,"word":"program","start":10.8},{"end":11.86,"word":"that","start":11.36},{"end":12.895,"word":"matches","start":12.415},{"end":13.215,"word":"your","start":12.895},{"end":13.695001,"word":"interests","start":13.215},{"end":14.015,"word":"and","start":13.695001},{"end":14.415,"word":"career","start":14.015},{"end":14.915,"word":"goals.","start":14.415},{"end":15.695,"word":"Our","start":15.375},{"end":16.195,"word":"experienced","start":15.695},{"end":16.995,"word":"counselors","start":16.495},{"end":17.295,"word":"are","start":17.135},{"end":17.535,"word":"here","start":17.295},{"end":17.615,"word":"to","start":17.535},{"end":17.855,"word":"help","start":17.615},{"end":18.095001,"word":"you","start":17.855},{"end":18.595001,"word":"navigate","start":18.095001},{"end":19.135,"word":"course","start":18.655},{"end":19.635,"word":"requirements,","start":19.135},{"end":20.755001,"word":"application","start":20.255001},{"end":21.555,"word":"processes,","start":21.055},{"end":22.175,"word":"and","start":21.935001},{"end":22.675,"word":"scholarship","start":22.175},{"end":23.395,"word":"opportunities.","start":22.895},{"end":25.05,"word":"Singapore","start":24.55},{"end":25.689999,"word":"Polytechnic","start":25.189999},{"end":26.47,"word":"course","start":25.99},{"end":26.829998,"word":"counseling","start":26.47},{"end":27.189999,"word":"is","start":26.829998},{"end":27.43,"word":"your","start":27.189999},{"end":27.67,"word":"guide","start":27.43},{"end":27.91,"word":"to","start":27.67},{"end":28.41,"word":"success.","start":27.91},{"end":29.349998,"word":"Our","start":29.029999},{"end":29.849998,"word":"dedicated","start":29.349998},{"end":30.65,"word":"counseling","start":30.15},{"end":31.189999,"word":"team","start":30.789999},{"end":31.689999,"word":"provides","start":31.189999},{"end":32.25,"word":"comprehensive","start":31.75},{"end":33.11,"word":"support","start":32.629997},{"end":33.35,"word":"for","start":33.11},{"end":33.85,"word":"prospective","start":33.35},{"end":34.65,"word":"students.","start":34.15},{"end":35.67,"word":"Learn","start":35.35},{"end":36.07,"word":"about","start":35.67},{"end":36.47,"word":"entry","start":36.07},{"end":36.97,"word":"requirements","start":36.47},{"end":37.35,"word":"for","start":37.11},{"end":37.75,"word":"different","start":37.35},{"end":38.25,"word":"diploma","start":37.75},{"end":38.89,"word":"courses,","start":38.39},{"end":39.705,"word":"understand","start":39.27},{"end":40.185,"word":"the","start":40.105003},{"end":40.685,"word":"application","start":40.185},{"end":41.405003,"word":"timeline,","start":40.905003},{"end":42.445004,"word":"explore","start":41.945004},{"end":43.005,"word":"financial","start":42.505},{"end":43.305,"word":"aid","start":43.065002},{"end":43.805,"word":"options,","start":43.305},{"end":44.345,"word":"and","start":44.025},{"end":44.845,"word":"discover","start":44.345},{"end":45.405003,"word":"career","start":44.905003},{"end":45.965,"word":"pathways","start":45.465},{"end":46.425003,"word":"after","start":46.025},{"end":46.925003,"word":"graduation.","start":46.425003},{"end":48.105003,"word":"Whether","start":47.785004},{"end":48.265,"word":"you","start":48.105003},{"end":48.505,"word":"are","start":48.265},{"end":49.005,"word":"interested","start":48.505},{"end":49.305,"word":"in","start":49.065002},{"end":49.805,"word":"engineering,","start":49.305},{"end":51.005,"word":"business,","start":50.505},{"end":51.965,"word":"design,","start":51.465},{"end":52.745003,"word":"health","start":52.345},{"end":53.245003,"word":"sciences,","start":52.745003},{"end":53.945,"word":"or","start":53.625},{"end":54.445,"word":"computing,","start":53.945},{"end":55.38,"word":"our","start":55.140003},{"end":55.88,"word":"counselors","start":55.38},{"end":56.18,"word":"will","start":55.940002},{"end":56.420002,"word":"help","start":56.18},{"end":56.58,"word":"you","start":56.420002},{"end":56.9,"word":"make","start":56.58},{"end":57.38,"word":"informed","start":56.9},{"end":57.88,"word":"decisions","start":57.38},{"end":58.34,"word":"about","start":58.02},{"end":58.58,"word":"your","start":58.34},{"end":59.08,"word":"educational","start":58.58},{"end":59.88,"word":"journey.","start":59.38},{"end":60.82,"word":"Book","start":60.34},{"end":61.06,"word":"a","start":60.82},{"end":61.38,"word":"one","start":61.06},{"end":61.620003,"word":"on","start":61.38},{"end":61.940002,"word":"one","start":61.620003},{"end":62.34,"word":"session","start":61.940002},{"end":62.82,"word":"today","start":62.34},{"end":62.980003,"word":"to","start":62.82},{"end":63.38,"word":"discuss","start":62.980003},{"end":63.780003,"word":"your","start":63.38},{"end":64.28,"word":"aspirations","start":63.780003},{"end":64.82,"word":"and","start":64.58},{"end":65.14,"word":"find","start":64.82},{"end":65.3,"word":"the","start":65.14},{"end":65.78,"word":"perfect","start":65.3},{"end":66.18,"word":"course","start":65.78},{"end":66.42,"word":"for","start":66.18},{"end":66.92,"word":"you.","start":66.42}]);
-    
-    const subtitle8 = JSON.stringify([{"start":0.08,"end":0.16,"word":"欢"},{"start":0.24,"end":0.39999998,"word":"迎"},{"start":0.52,"end":0.64,"word":"来"},{"start":0.84,"end":1.04,"word":"到"},{"start":1.12,"end":1.36,"word":"新"},{"start":1.4399999,"end":1.5999999,"word":"加"},{"start":1.68,"end":1.8,"word":"坡"},{"start":1.92,"end":2.04,"word":"理"},{"start":2.1599998,"end":2.2799997,"word":"工"},{"start":2.3999999,"end":2.52,"word":"学"},{"start":2.6399999,"end":2.8,"word":"院"},{"start":2.8799999,"end":3,"word":"的"},{"start":3.12,"end":3.36,"word":"课"},{"start":3.4399998,"end":3.56,"word":"程"},{"start":3.6799998,"end":3.84,"word":"咨"},{"start":3.9199998,"end":4.16,"word":"询"},{"start":4.24,"end":4.98,"word":"展位"},{"start":5.3599997,"end":5.4399996,"word":"在"},{"start":5.52,"end":5.68,"word":"这"},{"start":5.8399997,"end":6.3399997,"word":"里"},{"start":6.56,"end":6.7999997,"word":"您"},{"start":6.8799996,"end":7.04,"word":"可"},{"start":7.12,"end":7.2799997,"word":"以"},{"start":7.3599997,"end":7.4399996,"word":"了"},{"start":7.52,"end":7.7599998,"word":"解"},{"start":7.8399997,"end":8.08,"word":"我"},{"start":8,"end":8.16,"word":"们"},{"start":8.32,"end":8.44,"word":"的"},{"start":8.559999,"end":8.88,"word":"课程"},{"start":8.96,"end":9.08,"word":"咨"},{"start":9.2,"end":9.36,"word":"询"},{"start":9.5199995,"end":9.599999,"word":"服"},{"start":9.679999,"end":10.039999,"word":"务"},{"start":10.4,"end":10.639999,"word":"并"},{"start":10.719999,"end":10.84,"word":"获"},{"start":10.96,"end":11.2,"word":"得"},{"start":11.28,"end":11.44,"word":"个"},{"start":11.5199995,"end":11.599999,"word":"性"},{"start":11.679999,"end":11.92,"word":"化"},{"start":12,"end":12.08,"word":"的"},{"start":12.16,"end":12.32,"word":"指导"},{"start":12.4,"end":12.795,"word":"帮助"},{"start":13.275,"end":13.435,"word":"您"},{"start":13.515,"end":13.835,"word":"选择"},{"start":13.915,"end":14.035,"word":"最"},{"start":14.155,"end":14.395,"word":"适"},{"start":14.475,"end":14.715,"word":"合"},{"start":15.035,"end":15.515,"word":"您"},{"start":15.275,"end":15.715,"word":"兴趣"},{"start":15.835,"end":16.155,"word":"和"},{"start":16.235,"end":16.355,"word":"未来"},{"start":16.475,"end":16.595001,"word":"职业"},{"start":16.715,"end":16.955,"word":"发展"},{"start":17.035,"end":17.115,"word":"的"},{"start":17.154999,"end":18.315,"word":"文凭课程"},{"start":18.955,"end":20.235,"word":"我们的专业课程顾问将协助您了解课程要求申请流程以及奖学金机会"},{"start":20.635,"end":21.755001,"word":"并提供全方位支持"}]);
+    const subtitle2 = JSON.stringify([
+      { end: 0.32, word: "You", start: 0.16 },
+      { end: 0.48, word: "are", start: 0.32 },
+      { end: 0.88, word: "now", start: 0.48 },
+      { end: 1.28, word: "viewing", start: 0.88 },
+      { end: 1.4399999, word: "the", start: 1.28 },
+      { end: 1.8399999, word: "ancient", start: 1.4399999 },
+      { end: 2.34, word: "Singapore", start: 1.8399999 },
+      { end: 3.06, word: "map.", start: 2.56 },
+      { end: 3.76, word: "Over", start: 3.36 },
+      { end: 4.08, word: "seven", start: 3.76 },
+      { end: 4.48, word: "hundred", start: 4.08 },
+      { end: 4.7999997, word: "years", start: 4.48 },
+      { end: 5.2999997, word: "ago,", start: 4.7999997 },
+      { end: 6.02, word: "Singapore's", start: 5.52 },
+      { end: 6.74, word: "location", start: 6.24 },
+      { end: 7.2, word: "placed", start: 6.8799996 },
+      { end: 7.44, word: "it", start: 7.2 },
+      { end: 7.6, word: "at", start: 7.44 },
+      { end: 7.7599998, word: "the", start: 7.6 },
+      { end: 8.08, word: "heart", start: 7.7599998 },
+      { end: 8.24, word: "of", start: 8.08 },
+      { end: 8.72, word: "major", start: 8.24 },
+      { end: 9.22, word: "regional", start: 8.72 },
+      { end: 9.679999, word: "trade", start: 9.28 },
+      { end: 10.179999, word: "routes.", start: 9.679999 },
+      { end: 11.219999, word: "Merchants", start: 10.719999 },
+      { end: 11.5199995, word: "from", start: 11.28 },
+      { end: 11.679999, word: "the", start: 11.5199995 },
+      { end: 12.16, word: "Malay", start: 11.679999 },
+      { end: 12.66, word: "Archipelago,", start: 12.16 },
+      { end: 14.255, word: "China,", start: 13.755 },
+      { end: 14.975, word: "India,", start: 14.475 },
+      { end: 15.355, word: "and", start: 15.115 },
+      { end: 15.855, word: "beyond", start: 15.355 },
+      { end: 16.155, word: "pass", start: 15.915 },
+      { end: 16.475, word: "through", start: 16.155 },
+      { end: 16.795, word: "these", start: 16.475 },
+      { end: 17.295, word: "waters,", start: 16.795 },
+      { end: 18.095, word: "carrying", start: 17.595 },
+      { end: 18.654999, word: "goods,", start: 18.154999 },
+      { end: 19.455, word: "culture,", start: 18.955 },
+      { end: 19.994999, word: "and", start: 19.675 },
+      { end: 20.494999, word: "knowledge.", start: 19.994999 },
+      { end: 21.275, word: "As", start: 21.035 },
+      { end: 21.515, word: "you", start: 21.275 },
+      { end: 21.994999, word: "explore", start: 21.515 },
+      { end: 22.075, word: "the", start: 21.994999 },
+      { end: 22.575, word: "map,", start: 22.075 },
+      { end: 23.115, word: "watch", start: 22.795 },
+      { end: 23.355, word: "how", start: 23.115 },
+      { end: 23.515, word: "the", start: 23.355 },
+      { end: 23.994999, word: "island", start: 23.515 },
+      { end: 24.494999, word: "transforms", start: 23.994999 },
+      { end: 25.195, word: "across", start: 24.715 },
+      { end: 25.595, word: "different", start: 25.195 },
+      { end: 26.095, word: "eras,", start: 25.595 },
+      { end: 26.895, word: "revealing", start: 26.395 },
+      { end: 27.535, word: "Singapore's", start: 27.035 },
+      { end: 27.994999, word: "early", start: 27.675 },
+      { end: 28.41, word: "role", start: 27.994999 },
+      { end: 28.57, word: "as", start: 28.41 },
+      { end: 28.81, word: "a", start: 28.57 },
+      { end: 29.21, word: "vital", start: 28.81 },
+      { end: 29.71, word: "maritime", start: 29.21 },
+      { end: 30.43, word: "crossroads.", start: 29.93 },
+      { end: 31.77, word: "Select", start: 31.289999 },
+      { end: 32.09, word: "any", start: 31.77 },
+      { end: 32.59, word: "highlighted", start: 32.09 },
+      { end: 33.23, word: "region", start: 32.73 },
+      { end: 33.45, word: "to", start: 33.29 },
+      { end: 33.93, word: "discover", start: 33.45 },
+      { end: 34.25, word: "more", start: 33.93 },
+      { end: 34.57, word: "about", start: 34.25 },
+      { end: 34.73, word: "the", start: 34.57 },
+      { end: 35.21, word: "traders", start: 34.73 },
+      { end: 35.45, word: "and", start: 35.21 },
+      { end: 35.95, word: "kingdoms", start: 35.45 },
+      { end: 36.25, word: "that", start: 36.01 },
+      { end: 36.57, word: "once", start: 36.25 },
+      { end: 36.89, word: "shaped", start: 36.57 },
+      { end: 37.13, word: "our", start: 36.89 },
+      { end: 37.63, word: "shores.", start: 37.13 },
+    ]);
 
-    const subtitle9 = JSON.stringify([{"end": 0.19999999, "word": "欢", "start": 0.16}, {"end": 0.35999998, "word": "迎", "start": 0.24}, {"end": 0.79999995, "word": "来", "start": 0.48}, {"end": 0.96, "word": "到", "start": 0.88}, {"end": 1.36, "word": "课", "start": 1.12}, {"end": 1.56, "word": "程", "start": 1.4399999}, {"end": 1.92, "word": "业", "start": 1.68}, {"end": 2.1599998, "word": "界", "start": 2}, {"end": 2.56, "word": "当", "start": 2.32}, {"end": 2.7599998, "word": "下", "start": 2.6399999}, {"end": 3.12, "word": "课", "start": 2.8799999}, {"end": 3.3199997, "word": "程", "start": 3.1999998}, {"end": 3.56, "word": "项", "start": 3.4399998}, {"end": 3.84, "word": "目", "start": 3.6799998}, {"end": 4.24, "word": "你", "start": 4}, {"end": 4.3999996, "word": "现", "start": 4.3199997}, {"end": 4.7999997, "word": "在", "start": 4.48}, {"end": 5.04, "word": "正", "start": 4.88}, {"end": 5.2799997, "word": "站", "start": 5.12}, {"end": 5.6, "word": "在", "start": 5.3599997}, {"end": 5.7599998, "word": "计", "start": 5.68}, {"end": 6.08, "word": "算", "start": 5.8399997}, {"end": 6.3199997, "word": "机", "start": 6.16}, {"end": 6.4799995, "word": "学", "start": 6.3999996}, {"end": 6.7999997, "word": "院", "start": 6.56}, {"end": 7.12, "word": "实", "start": 6.8799996}, {"end": 7.3199997, "word": "践", "start": 7.2}, {"end": 7.56, "word": "培", "start": 7.44}, {"end": 7.8399997, "word": "训", "start": 7.68}, {"end": 8.04, "word": "的", "start": 7.9199996}, {"end": 8.4, "word": "心", "start": 8.16}, {"end": 8.72, "word": "跳", "start": 8.48}, {"end": 9.04, "word": "中", "start": 8.8}, {"end": 9.24, "word": "这", "start": 9.2}, {"end": 9.44, "word": "不", "start": 9.28}, {"end": 9.599999, "word": "是", "start": 9.5199995}, {"end": 9.84, "word": "一", "start": 9.679999}, {"end": 10.08, "word": "个", "start": 9.92}, {"end": 10.32, "word": "典", "start": 10.16}, {"end": 10.559999, "word": "型", "start": 10.48}, {"end": 10.8, "word": "的", "start": 10.639999}, {"end": 11, "word": "教", "start": 10.88}, {"end": 11.28, "word": "室", "start": 11.12}, {"end": 11.599999, "word": "这", "start": 11.44}, {"end": 11.84, "word": "是", "start": 11.679999}, {"end": 12, "word": "一", "start": 11.92}, {"end": 12.24, "word": "个", "start": 12.08}, {"end": 12.48, "word": "模", "start": 12.32}, {"end": 12.719999, "word": "拟", "start": 12.559999}, {"end": 13.04, "word": "软", "start": 12.799999}, {"end": 13.28, "word": "体", "start": 13.12}, {"end": 13.605, "word": "公", "start": 13.36}, {"end": 13.891071, "word": "司", "start": 13.748035}, {"end": 14.177142, "word": "旨", "start": 14.034107}, {"end": 14.463214, "word": "在", "start": 14.320178}, {"end": 14.749286, "word": "将", "start": 14.60625}, {"end": 15.0353565, "word": "您", "start": 14.892321}, {"end": 15.321428, "word": "从", "start": 15.178392}, {"end": 15.6075, "word": "学", "start": 15.464464}, {"end": 15.893571, "word": "生", "start": 15.750536}, {"end": 16.179642, "word": "转", "start": 16.036606}, {"end": 16.465714, "word": "变", "start": 16.322678}, {"end": 16.751785, "word": "为", "start": 16.60875}, {"end": 17.037857, "word": "专", "start": 16.894821}, {"end": 17.323929, "word": "业", "start": 17.180893}, {"end": 17.61, "word": "软", "start": 17.466965}, {"end": 17.896072, "word": "体", "start": 17.753036}, {"end": 18.182142, "word": "开", "start": 18.039106}, {"end": 18.468214, "word": "发", "start": 18.325178}, {"end": 18.754286, "word": "人", "start": 18.61125}, {"end": 19.040358, "word": "员", "start": 18.897322}, {"end": 19.326427, "word": "忘", "start": 19.183393}, {"end": 19.6125, "word": "记", "start": 19.469463}, {"end": 19.898571, "word": "假", "start": 19.755535}, {"end": 20.184643, "word": "设", "start": 20.041607}, {"end": 20.470715, "word": "的", "start": 20.327679}, {"end": 20.756786, "word": "任", "start": 20.61375}, {"end": 21.042858, "word": "务", "start": 20.899822}, {"end": 21.328928, "word": "是", "start": 21.185894}, {"end": 21.615, "word": "您", "start": 21.471964}, {"end": 21.901072, "word": "从", "start": 21.758036}, {"end": 22.187143, "word": "事", "start": 22.044107}, {"end": 22.473213, "word": "真", "start": 22.33018}, {"end": 22.759285, "word": "实", "start": 22.61625}, {"end": 23.045357, "word": "客", "start": 22.90232}, {"end": 23.331429, "word": "户", "start": 23.188393}, {"end": 23.6175, "word": "付", "start": 23.474464}, {"end": 23.903572, "word": "费", "start": 23.760536}, {"end": 24.189644, "word": "项", "start": 24.046608}, {"end": 24.475716, "word": "目", "start": 24.33268}, {"end": 24.761787, "word": "的", "start": 24.618752}, {"end": 25.047857, "word": "地", "start": 24.904821}, {"end": 25.33393, "word": "方", "start": 25.190893}, {"end": 25.62, "word": "为", "start": 25.476965}, {"end": 25.877813, "word": "实", "start": 25.748907}, {"end": 26.135626, "word": "际", "start": 26.00672}, {"end": 26.393438, "word": "的", "start": 26.264532}, {"end": 26.65125, "word": "行", "start": 26.522345}, {"end": 26.909063, "word": "业", "start": 26.780157}, {"end": 27.166876, "word": "合", "start": 27.03797}, {"end": 27.424688, "word": "作", "start": 27.295782}, {"end": 27.6825, "word": "伙", "start": 27.553595}, {"end": 27.940313, "word": "伴", "start": 27.811407}, {"end": 28.198126, "word": "政", "start": 28.06922}, {"end": 28.455938, "word": "府", "start": 28.327032}, {"end": 28.71375, "word": "机", "start": 28.584845}, {"end": 28.971563, "word": "构", "start": 28.842657}, {"end": 29.229376, "word": "和", "start": 29.10047}, {"end": 29.487188, "word": "大", "start": 29.358282}, {"end": 29.745, "word": "型", "start": 29.616095}, {"end": 30.002813, "word": "科", "start": 29.873907}, {"end": 30.260626, "word": "技", "start": 30.13172}, {"end": 30.518438, "word": "公", "start": 30.389532}, {"end": 30.77625, "word": "司", "start": 30.647345}, {"end": 31.034063, "word": "提", "start": 30.905157}, {"end": 31.291876, "word": "供", "start": 31.16297}, {"end": 31.549688, "word": "解", "start": 31.420782}, {"end": 31.807499, "word": "决", "start": 31.678595}, {"end": 32.06531, "word": "方", "start": 31.936405}, {"end": 32.323124, "word": "案", "start": 32.194218}, {"end": 32.580936, "word": "轻", "start": 32.45203}, {"end": 32.83875, "word": "快", "start": 32.709843}, {"end": 33.09656, "word": "的", "start": 32.967655}, {"end": 33.354374, "word": "声", "start": 33.225468}, {"end": 33.612186, "word": "音", "start": 33.48328}, {"end": 33.87, "word": "快", "start": 33.741093}, {"end": 34.12781, "word": "速", "start": 33.998905}, {"end": 34.385624, "word": "键", "start": 34.256718}, {"end": 34.643436, "word": "盘", "start": 34.51453}, {"end": 34.90125, "word": "打", "start": 34.772343}, {"end": 35.15906, "word": "字", "start": 35.030155}, {"end": 35.416874, "word": "我", "start": 35.287968}, {"end": 35.674686, "word": "们", "start": 35.54578}, {"end": 35.9325, "word": "不", "start": 35.803593}, {"end": 36.19031, "word": "只", "start": 36.061405}, {"end": 36.448124, "word": "是", "start": 36.319218}, {"end": 36.705936, "word": "教", "start": 36.57703}, {"end": 36.96375, "word": "你", "start": 36.834843}, {"end": 37.22156, "word": "技", "start": 37.092655}, {"end": 37.479374, "word": "巧", "start": 37.350468}, {"end": 37.737186, "word": "我", "start": 37.60828}, {"end": 37.995, "word": "们", "start": 37.866093}, {"end": 40.625202, "word": "给", "start": 40.550102}, {"end": 40.775406, "word": "你", "start": 40.700306}, {"end": 40.92561, "word": "一", "start": 40.85051}, {"end": 41.075813, "word": "份", "start": 41.000713}, {"end": 41.22602, "word": "工", "start": 41.150917}, {"end": 41.376225, "word": "作", "start": 41.30112}, {"end": 41.52643, "word": "您", "start": 41.451324}, {"end": 41.676632, "word": "将", "start": 41.60153}, {"end": 41.826836, "word": "应", "start": 41.75173}, {"end": 41.97704, "word": "用", "start": 41.901936}, {"end": 42.127243, "word": "敏", "start": 42.052143}, {"end": 42.277447, "word": "捷", "start": 42.202347}, {"end": 42.42765, "word": "方", "start": 42.35255}, {"end": 42.577854, "word": "法", "start": 42.502754}, {"end": 42.728058, "word": "管", "start": 42.652958}, {"end": 42.878265, "word": "理", "start": 42.80316}, {"end": 43.02847, "word": "时", "start": 42.953365}, {"end": 43.178673, "word": "间", "start": 43.10357}, {"end": 43.328876, "word": "表", "start": 43.253773}, {"end": 43.47908, "word": "并", "start": 43.403976}, {"end": 43.629284, "word": "直", "start": 43.554184}, {"end": 43.779488, "word": "接", "start": 43.704388}, {"end": 43.92969, "word": "与", "start": 43.85459}, {"end": 44.079895, "word": "客", "start": 44.004795}, {"end": 44.315, "word": "户", "start": 44.155}, {"end": 44.635, "word": "互", "start": 44.475}, {"end": 44.954998, "word": "动", "start": 44.715}, {"end": 45.274998, "word": "就", "start": 45.114998}, {"end": 45.475, "word": "像", "start": 45.355}, {"end": 45.835, "word": "在", "start": 45.594997}, {"end": 46.074997, "word": "真", "start": 45.914997}, {"end": 46.235, "word": "正", "start": 46.155}, {"end": 46.475, "word": "的", "start": 46.315}, {"end": 46.635002, "word": "公", "start": 46.555}, {"end": 46.835, "word": "司", "start": 46.715}, {"end": 47.114998, "word": "中", "start": 46.954998}, {"end": 47.354996, "word": "一", "start": 47.274998}, {"end": 47.934998, "word": "样", "start": 47.434998}, {"end": 48.635, "word": "这", "start": 48.394997}, {"end": 48.875, "word": "是", "start": 48.714996}, {"end": 49.274998, "word": "您", "start": 48.954998}, {"end": 49.515, "word": "技", "start": 49.355}, {"end": 49.754997, "word": "术", "start": 49.594997}, {"end": 49.995, "word": "职", "start": 49.835}, {"end": 50.235, "word": "业", "start": 50.074997}, {"end": 50.555, "word": "生", "start": 50.315}, {"end": 50.795, "word": "涯", "start": 50.635}, {"end": 50.955, "word": "的", "start": 50.875}, {"end": 51.274998, "word": "终", "start": 51.035}, {"end": 51.515, "word": "极", "start": 51.355}, {"end": 51.835, "word": "试", "start": 51.675}, {"end": 52.155, "word": "验", "start": 51.915}, {"end": 52.735, "word": "场", "start": 52.235}])
-    
-    const subtitle10 = JSON.stringify([{"end":0.16,"word":"欢","start":0.08},{"end":0.39999998,"word":"迎","start":0.24},{"end":0.6742857,"word":"来","start":0.5371429},{"end":0.94857144,"word":"到","start":0.81142855},{"end":1.2228572,"word":"计","start":1.0857143},{"end":1.52,"word":"算","start":1.36},{"end":1.8399999,"word":"机","start":1.5999999},{"end":2.1599998,"word":"学","start":1.92},{"end":2.48,"word":"院","start":2.24},{"end":2.8,"word":"报","start":2.56},{"end":3.04,"word":"名","start":2.8799999},{"end":3.2399998,"word":"咨","start":3.12},{"end":3.52,"word":"询","start":3.36},{"end":4.16,"word":"台","start":3.6799998},{"end":4.7999997,"word":"在","start":4.64},{"end":5,"word":"这","start":4.88},{"end":5.62,"word":"里","start":5.12},{"end":5.92,"word":"您","start":5.7599998},{"end":6.3199997,"word":"将","start":6.08},{"end":6.4799995,"word":"了","start":6.3999996},{"end":6.72,"word":"解","start":6.56},{"end":7.2,"word":"让","start":6.8799996},{"end":7.44,"word":"新","start":7.2799997},{"end":7.68,"word":"加","start":7.52},{"end":7.9199996,"word":"坡","start":7.7599998},{"end":8.16,"word":"理","start":8},{"end":8.48,"word":"工","start":8.24},{"end":8.72,"word":"学","start":8.559999},{"end":9.04,"word":"院","start":8.8},{"end":9.28,"word":"成","start":9.12},{"end":9.5199995,"word":"为","start":9.36},{"end":9.76,"word":"科","start":9.599999},{"end":10,"word":"技","start":9.84},{"end":10.24,"word":"教","start":10.08},{"end":10.48,"word":"育","start":10.32},{"end":10.719999,"word":"领","start":10.559999},{"end":11.04,"word":"先","start":10.8},{"end":11.2,"word":"者","start":11.12},{"end":11.44,"word":"的","start":11.28},{"end":11.759999,"word":"一","start":11.5199995},{"end":12.509999,"word":"切","start":12.009999},{"end":13.045,"word":"了","start":12.965},{"end":13.285001,"word":"解","start":13.125},{"end":13.6050005,"word":"我","start":13.365001},{"end":13.765,"word":"们","start":13.685},{"end":14.005001,"word":"最","start":13.845},{"end":14.285001,"word":"先","start":14.165001},{"end":14.565001,"word":"进","start":14.405001},{"end":14.725,"word":"的","start":14.645},{"end":15.045,"word":"实","start":14.805},{"end":15.285,"word":"验","start":15.125},{"end":16.085001,"word":"室","start":16.005001},{"end":16.245,"word":"实","start":16.165},{"end":16.565,"word":"践","start":16.325},{"end":16.765,"word":"操","start":16.645},{"end":17.045,"word":"作","start":16.885},{"end":17.205,"word":"的","start":17.125},{"end":17.525002,"word":"学","start":17.285},{"end":17.765,"word":"习","start":17.605},{"end":18.085001,"word":"环","start":17.845001},{"end":18.485,"word":"境","start":18.165},{"end":19.045,"word":"以","start":18.805},{"end":19.205,"word":"及","start":19.125},{"end":19.404999,"word":"我","start":19.285},{"end":19.645,"word":"们","start":19.525},{"end":19.925,"word":"提","start":19.765},{"end":20.085001,"word":"供","start":20.005001},{"end":20.405,"word":"的","start":20.165},{"end":20.605,"word":"精","start":20.485},{"end":20.965,"word":"彩","start":20.725},{"end":21.205,"word":"文","start":21.045},{"end":21.525002,"word":"凭","start":21.285},{"end":21.845001,"word":"课","start":21.605},{"end":22.425,"word":"程","start":21.925},{"end":23.365,"word":"从","start":23.125},{"end":23.605,"word":"人","start":23.445},{"end":23.925,"word":"工","start":23.685001},{"end":24.165,"word":"智","start":24.005001},{"end":24.485,"word":"能","start":24.244999},{"end":24.725,"word":"和","start":24.565},{"end":24.965,"word":"网","start":24.805},{"end":25.32,"word":"路","start":25.045},{"end":25.48,"word":"安","start":25.4},{"end":25.72,"word":"全","start":25.56},{"end":25.919998,"word":"到","start":25.8},{"end":26.16,"word":"软","start":26.039999},{"end":26.44,"word":"体","start":26.279999},{"end":26.76,"word":"开","start":26.6},{"end":27,"word":"发","start":26.84},{"end":27.32,"word":"和","start":27.16},{"end":27.72,"word":"陈","start":27.48},{"end":27.88,"word":"进","start":27.8},{"end":28.199999,"word":"士","start":27.96},{"end":28.4,"word":"媒","start":28.279999},{"end":29.02,"word":"体","start":28.52},{"end":29.4,"word":"我","start":29.32},{"end":29.56,"word":"们","start":29.48},{"end":29.72,"word":"的","start":29.64},{"end":29.919998,"word":"课","start":29.8},{"end":30.36,"word":"程","start":30.039999},{"end":30.519999,"word":"旨","start":30.439999},{"end":30.84,"word":"在","start":30.599998},{"end":31.04,"word":"为","start":30.92},{"end":31.279999,"word":"您","start":31.16},{"end":31.56,"word":"未","start":31.4},{"end":31.72,"word":"来","start":31.64},{"end":31.92,"word":"的","start":31.8},{"end":32.28,"word":"科","start":32.04},{"end":32.52,"word":"技","start":32.36},{"end":32.76,"word":"职","start":32.6},{"end":33,"word":"业","start":32.84},{"end":33.32,"word":"做","start":33.16},{"end":33.52,"word":"好","start":33.4},{"end":33.879997,"word":"准","start":33.64},{"end":34.46,"word":"备","start":33.96},{"end":35.239998,"word":"了","start":35.08},{"end":35.559998,"word":"解","start":35.32},{"end":35.72,"word":"我","start":35.64},{"end":35.879997,"word":"们","start":35.8},{"end":36.12,"word":"的","start":35.96},{"end":36.32,"word":"行","start":36.2},{"end":36.68,"word":"业","start":36.44},{"end":36.839996,"word":"合","start":36.76},{"end":37.239998,"word":"作","start":36.92},{"end":37.4,"word":"伙","start":37.32},{"end":37.64,"word":"伴","start":37.48},{"end":37.84,"word":"关","start":37.72},{"end":38.46,"word":"系","start":37.96},{"end":38.84,"word":"真","start":38.68},{"end":39.079998,"word":"实","start":39},{"end":39.32,"word":"项","start":39.16},{"end":39.559998,"word":"目","start":39.4},{"end":39.879997,"word":"经","start":39.64},{"end":40.574875,"word":"验","start":40.129997},{"end":40.734875,"word":"以","start":40.654877},{"end":40.974876,"word":"及","start":40.814877},{"end":41.191345,"word":"帮","start":41.054874},{"end":41.464287,"word":"助","start":41.327816},{"end":41.73723,"word":"学","start":41.600758},{"end":42.01017,"word":"生","start":41.8737},{"end":42.283108,"word":"积","start":42.14664},{"end":42.55605,"word":"累","start":42.41958},{"end":42.82899,"word":"宝","start":42.69252},{"end":43.101933,"word":"贵","start":42.96546},{"end":43.374874,"word":"经","start":43.238403},{"end":43.614876,"word":"验","start":43.534874},{"end":43.934875,"word":"的","start":43.694874},{"end":44.094875,"word":"实","start":44.014874},{"end":44.294876,"word":"习","start":44.174873},{"end":44.654877,"word":"机","start":44.414875},{"end":45.234875,"word":"会","start":44.734875}]);
+    const subtitle3 = JSON.stringify([
+      { end: 0.39999998, word: "You", start: 0.16 },
+      { end: 0.48, word: "are", start: 0.39999998 },
+      { end: 0.88, word: "now", start: 0.48 },
+      { end: 1.28, word: "entering", start: 0.88 },
+      { end: 1.52, word: "the", start: 1.28 },
+      { end: 2.02, word: "wartime", start: 1.52 },
+      { end: 2.58, word: "bunker.", start: 2.08 },
+      { end: 3.4399998, word: "In", start: 3.04 },
+      { end: 3.9399998, word: "nineteen", start: 3.4399998 },
+      { end: 4.3199997, word: "forty", start: 4 },
+      { end: 4.8199997, word: "two,", start: 4.3199997 },
+      { end: 5.54, word: "Singapore", start: 5.04 },
+      { end: 6.08, word: "faced", start: 5.7599998 },
+      { end: 6.24, word: "one", start: 6.08 },
+      { end: 6.3999996, word: "of", start: 6.24 },
+      { end: 6.72, word: "its", start: 6.3999996 },
+      { end: 7.2, word: "darkest", start: 6.72 },
+      { end: 7.7, word: "chapters", start: 7.2 },
+      { end: 7.9199996, word: "as", start: 7.8399997 },
+      { end: 8.16, word: "the", start: 7.9199996 },
+      { end: 8.66, word: "Japanese", start: 8.16 },
+      { end: 9.22, word: "invasion", start: 8.72 },
+      { end: 10.099999, word: "intensified.", start: 9.599999 },
+      { end: 11.5199995, word: "Within", start: 11.04 },
+      { end: 12.0199995, word: "bunkers", start: 11.5199995 },
+      { end: 12.24, word: "like", start: 12.08 },
+      { end: 12.74, word: "this,", start: 12.24 },
+      { end: 13.395, word: "soldiers", start: 12.96 },
+      { end: 14.135, word: "coordinated", start: 13.635 },
+      { end: 14.8550005, word: "defenses,", start: 14.3550005 },
+      { end: 15.975, word: "civilians", start: 15.475 },
+      { end: 16.515, word: "sought", start: 16.275 },
+      { end: 17.015, word: "shelter,", start: 16.515 },
+      { end: 17.555, word: "and", start: 17.235 },
+      { end: 18.055, word: "uncertainty", start: 17.555 },
+      { end: 18.675, word: "filled", start: 18.355 },
+      { end: 18.755001, word: "the", start: 18.675 },
+      { end: 19.255001, word: "air.", start: 18.755001 },
+      { end: 19.875, word: "As", start: 19.635 },
+      { end: 20.035, word: "you", start: 19.875 },
+      { end: 20.275, word: "look", start: 20.035 },
+      { end: 20.775, word: "around,", start: 20.275 },
+      { end: 21.475, word: "take", start: 21.155 },
+      { end: 21.715, word: "note", start: 21.475 },
+      { end: 21.875, word: "of", start: 21.715 },
+      { end: 22.035, word: "the", start: 21.875 },
+      { end: 22.535, word: "messages,", start: 22.035 },
+      { end: 23.575, word: "maps,", start: 23.075 },
+      { end: 24.035, word: "and", start: 23.715 },
+      { end: 24.515, word: "equipment", start: 24.035 },
+      { end: 24.755001, word: "that", start: 24.515 },
+      { end: 25.235, word: "reveal", start: 24.755001 },
+      { end: 25.395, word: "the", start: 25.235 },
+      { end: 25.895, word: "difficult", start: 25.395 },
+      { end: 26.455, word: "decisions", start: 25.955 },
+      { end: 26.994999, word: "made", start: 26.595001 },
+      { end: 27.315, word: "during", start: 26.994999 },
+      { end: 27.555, word: "this", start: 27.315 },
+      { end: 28.055, word: "time.", start: 27.555 },
+      { end: 28.924936, word: "Tap", start: 28.684937 },
+      { end: 29.324936, word: "any", start: 28.924936 },
+      { end: 29.824936, word: "highlighted", start: 29.324936 },
+      { end: 30.364937, word: "panel", start: 29.884937 },
+      { end: 30.524937, word: "to", start: 30.364937 },
+      { end: 31.024937, word: "discover", start: 30.524937 },
+      { end: 31.404938, word: "key", start: 31.084936 },
+      { end: 31.884937, word: "events", start: 31.404938 },
+      { end: 32.044937, word: "that", start: 31.884937 },
+      { end: 32.364937, word: "shaped", start: 32.044937 },
+      { end: 32.44494, word: "the", start: 32.364937 },
+      { end: 32.844936, word: "battle", start: 32.44494 },
+      { end: 33.084938, word: "for", start: 32.844936 },
+      { end: 33.584938, word: "Singapore.", start: 33.084938 },
+    ]);
 
-    
-    await client.query(`
+    const subtitle4 = JSON.stringify([
+      { end: 0.48, word: "This", start: 0.24 },
+      { end: 0.71999997, word: "is", start: 0.48 },
+      { end: 0.88, word: "the", start: 0.71999997 },
+      { end: 1.28, word: "faces", start: 0.88 },
+      { end: 1.52, word: "of", start: 1.28 },
+      { end: 1.76, word: "the", start: 1.52 },
+      { end: 2.26, word: "occupation", start: 1.76 },
+      { end: 3.06, word: "story", start: 2.56 },
+      { end: 3.62, word: "wall.", start: 3.12 },
+      { end: 4.24, word: "During", start: 3.9199998 },
+      { end: 4.48, word: "the", start: 4.24 },
+      { end: 4.98, word: "Japanese", start: 4.48 },
+      { end: 5.7, word: "occupation,", start: 5.2 },
+      { end: 6.8799996, word: "ordinary", start: 6.3999996 },
+      { end: 7.3599997, word: "people", start: 6.8799996 },
+      { end: 7.8599997, word: "endured", start: 7.3599997 },
+      { end: 8.42, word: "hardship,", start: 7.9199996 },
+      { end: 9.38, word: "loss,", start: 8.88 },
+      { end: 9.92, word: "and", start: 9.44 },
+      { end: 10.42, word: "uncertainty.", start: 9.92 },
+      { end: 11.679999, word: "Each", start: 11.36 },
+      { end: 12.179999, word: "portrait", start: 11.679999 },
+      { end: 12.48, word: "you", start: 12.32 },
+      { end: 12.799999, word: "see", start: 12.48 },
+      { end: 13.299999, word: "represents", start: 12.799999 },
+      { end: 13.575, word: "a", start: 13.415 },
+      { end: 13.815, word: "real", start: 13.575 },
+      { end: 14.315, word: "individual", start: 13.815 },
+      { end: 14.855, word: "whose", start: 14.535 },
+      { end: 15.175, word: "life", start: 14.855 },
+      { end: 15.415, word: "was", start: 15.175 },
+      { end: 15.915, word: "transformed", start: 15.415 },
+      { end: 16.375, word: "by", start: 16.055 },
+      { end: 16.875, word: "war.", start: 16.375 },
+      { end: 17.895, word: "Select", start: 17.415 },
+      { end: 18.135, word: "any", start: 17.895 },
+      { end: 18.455, word: "face", start: 18.135 },
+      { end: 18.695, word: "to", start: 18.455 },
+      { end: 18.935, word: "hear", start: 18.695 },
+      { end: 19.255001, word: "their", start: 18.935 },
+      { end: 19.755001, word: "story,", start: 19.255001 },
+      { end: 20.135, word: "how", start: 19.895 },
+      { end: 20.455, word: "they", start: 20.135 },
+      { end: 20.955, word: "lived,", start: 20.455 },
+      { end: 21.595, word: "adapted,", start: 21.095 },
+      { end: 22.295, word: "and", start: 21.895 },
+      { end: 22.694937, word: "persevere", start: 22.295 },
+      { end: 23.334936, word: "during", start: 23.014936 },
+      { end: 23.494936, word: "one", start: 23.334936 },
+      { end: 23.814938, word: "of", start: 23.494936 },
+      { end: 24.314938, word: "Singapore's", start: 23.814938 },
+      { end: 24.694937, word: "most", start: 24.374937 },
+      { end: 25.194937, word: "challenging", start: 24.694937 },
+      { end: 25.834936, word: "periods.", start: 25.334936 },
+      { end: 26.934937, word: "These", start: 26.614937 },
+      { end: 27.414936, word: "personal", start: 26.934937 },
+      { end: 27.914936, word: "accounts", start: 27.414936 },
+      { end: 28.294937, word: "remind", start: 27.974937 },
+      { end: 28.534937, word: "us", start: 28.294937 },
+      { end: 28.854937, word: "that", start: 28.534937 },
+      { end: 29.254936, word: "history", start: 28.854937 },
+      { end: 29.414936, word: "is", start: 29.254936 },
+      { end: 29.654938, word: "not", start: 29.414936 },
+      { end: 29.974937, word: "just", start: 29.654938 },
+      { end: 30.294937, word: "dates", start: 29.974937 },
+      { end: 30.534937, word: "and", start: 30.294937 },
+      { end: 31.034937, word: "events,", start: 30.534937 },
+      { end: 31.654938, word: "but", start: 31.414936 },
+      { end: 32.054935, word: "the", start: 31.654938 },
+      { end: 32.554935, word: "experiences", start: 32.054935 },
+      { end: 32.934937, word: "of", start: 32.774937 },
+      { end: 33.254936, word: "people", start: 32.934937 },
+      { end: 33.494938, word: "who", start: 33.254936 },
+      { end: 33.814938, word: "lived", start: 33.494938 },
+      { end: 34.054935, word: "through", start: 33.814938 },
+      { end: 34.554935, word: "them.", start: 34.054935 },
+    ]);
+
+    const subtitle5 = JSON.stringify([
+      { end: 0.71999997, word: "Welcome", start: 0.32 },
+      { end: 0.88, word: "to", start: 0.71999997 },
+      { end: 1.38, word: "Project", start: 0.88 },
+      { end: 1.9399999, word: "INC.", start: 1.4399999 },
+      { end: 2.98, word: "Industry", start: 2.48 },
+      { end: 3.4399998, word: "Now", start: 3.04 },
+      { end: 3.9399998, word: "Curriculum.", start: 3.4399998 },
+      { end: 4.7999997, word: "You", start: 4.56 },
+      { end: 4.96, word: "are", start: 4.7999997 },
+      { end: 5.3599997, word: "now", start: 4.96 },
+      { end: 5.8399997, word: "standing", start: 5.3599997 },
+      { end: 6, word: "in", start: 5.8399997 },
+      { end: 6.16, word: "the", start: 6 },
+      { end: 6.66, word: "heartbeat", start: 6.16 },
+      { end: 6.8799996, word: "of", start: 6.72 },
+      { end: 7.04, word: "the", start: 6.8799996 },
+      { end: 7.44, word: "School", start: 7.04 },
+      { end: 7.68, word: "of", start: 7.44 },
+      { end: 8.18, word: "Computing's", start: 7.68 },
+      { end: 8.82, word: "practical", start: 8.32 },
+      { end: 9.38, word: "training.", start: 8.88 },
+      { end: 10.16, word: "This", start: 9.92 },
+      { end: 10.4, word: "is", start: 10.16 },
+      { end: 10.639999, word: "not", start: 10.4 },
+      { end: 10.8, word: "a", start: 10.639999 },
+      { end: 11.28, word: "typical", start: 10.8 },
+      { end: 11.78, word: "classroom.", start: 11.28 },
+      { end: 12.825, word: "It's", start: 12.585 },
+      { end: 13.065001, word: "a", start: 12.825 },
+      { end: 13.565001, word: "simulated", start: 13.065001 },
+      { end: 14.365, word: "software", start: 13.865 },
+      { end: 14.925, word: "house,", start: 14.425 },
+      { end: 15.305, word: "designed", start: 14.985001 },
+      { end: 15.465, word: "to", start: 15.305 },
+      { end: 15.705, word: "turn", start: 15.465 },
+      { end: 15.945, word: "you", start: 15.705 },
+      { end: 16.185, word: "from", start: 15.945 },
+      { end: 16.345001, word: "a", start: 16.185 },
+      { end: 16.825, word: "student", start: 16.345001 },
+      { end: 17.065, word: "into", start: 16.825 },
+      { end: 17.225, word: "a", start: 17.065 },
+      { end: 17.725, word: "professional", start: 17.225 },
+      { end: 18.525, word: "software", start: 18.025 },
+      { end: 19.085, word: "developer.", start: 18.585 },
+      { end: 20.265, word: "Forget", start: 19.785 },
+      { end: 20.765, word: "hypothetical", start: 20.265 },
+      { end: 21.805, word: "assignments.", start: 21.305 },
+      { end: 23.005001, word: "Project", start: 22.505001 },
+      { end: 23.865, word: "INC", start: 23.465 },
+      { end: 24.025, word: "is", start: 23.865 },
+      { end: 24.265, word: "where", start: 24.025 },
+      { end: 24.425, word: "you", start: 24.265 },
+      { end: 24.744999, word: "work", start: 24.425 },
+      { end: 24.904999, word: "on", start: 24.744999 },
+      { end: 25.404999, word: "real,", start: 24.904999 },
+      { end: 26.025, word: "client-paid", start: 25.705 },
+      { end: 26.845001, word: "projects,", start: 26.345001 },
+      { end: 27.87, word: "solutions", start: 27.385 },
+      { end: 28.35, word: "for", start: 28.19 },
+      { end: 28.83, word: "actual", start: 28.35 },
+      { end: 29.33, word: "industry", start: 28.83 },
+      { end: 29.890001, word: "partners,", start: 29.390001 },
+      { end: 30.75, word: "government", start: 30.35 },
+      { end: 31.25, word: "agencies", start: 30.75 },
+      { end: 31.710001, word: "like", start: 31.470001 },
+      { end: 32.21, word: "GovTech,", start: 31.710001 },
+      { end: 32.91, word: "and", start: 32.59 },
+      { end: 33.39, word: "major", start: 32.91 },
+      { end: 33.63, word: "tech", start: 33.39 },
+      { end: 34.13, word: "companies.", start: 33.63 },
+      { end: 35.15, word: "Sound", start: 34.99 },
+      { end: 35.39, word: "of", start: 35.15 },
+      { end: 35.89, word: "light,", start: 35.39 },
+      { end: 36.85, word: "fast", start: 36.35 },
+      { end: 37.39, word: "keyboard", start: 36.91 },
+      { end: 37.89, word: "typing.", start: 37.39 },
+      { end: 38.510002, word: "We", start: 38.35 },
+      { end: 38.75, word: "don't", start: 38.510002 },
+      { end: 39.07, word: "just", start: 38.75 },
+      { end: 39.31, word: "teach", start: 39.07 },
+      { end: 39.63, word: "you", start: 39.31 },
+      { end: 40.13, word: "skills.", start: 39.63 },
+      { end: 40.83, word: "We", start: 40.59 },
+      { end: 41.07, word: "give", start: 40.83 },
+      { end: 41.23, word: "you", start: 41.07 },
+      { end: 41.39, word: "a", start: 41.23 },
+      { end: 41.89, word: "job.", start: 41.39 },
+      { end: 42.475002, word: "You", start: 42.235 },
+      { end: 42.715, word: "will", start: 42.475002 },
+      { end: 43.195, word: "apply", start: 42.715 },
+      { end: 43.695, word: "Agile", start: 43.195 },
+      { end: 44.255, word: "methodologies,", start: 43.755 },
+      { end: 45.435, word: "manage", start: 44.955 },
+      { end: 45.935, word: "timelines,", start: 45.435 },
+      { end: 46.555, word: "and", start: 46.315002 },
+      { end: 47.055, word: "engage", start: 46.555 },
+      { end: 47.675, word: "directly", start: 47.195 },
+      { end: 47.915, word: "with", start: 47.675 },
+      { end: 48.415, word: "clients,", start: 47.915 },
+      { end: 49.115, word: "just", start: 48.875 },
+      { end: 49.355, word: "like", start: 49.115 },
+      { end: 49.515, word: "you", start: 49.355 },
+      { end: 49.755, word: "would", start: 49.515 },
+      { end: 49.915, word: "in", start: 49.755 },
+      { end: 49.995, word: "a", start: 49.915 },
+      { end: 50.395, word: "real", start: 49.995 },
+      { end: 50.895, word: "company.", start: 50.395 },
+      { end: 51.595, word: "It's", start: 51.355 },
+      { end: 51.835, word: "the", start: 51.595 },
+      { end: 52.315002, word: "ultimate", start: 51.835 },
+      { end: 52.795, word: "proving", start: 52.315002 },
+      { end: 53.115, word: "ground", start: 52.795 },
+      { end: 53.275, word: "for", start: 53.115 },
+      { end: 53.515, word: "your", start: 53.275 },
+      { end: 53.915, word: "tech", start: 53.515 },
+      { end: 54.415, word: "career.", start: 53.915 },
+    ]);
+
+    const subtitle6 = JSON.stringify([
+      { end: 0.71999997, word: "Welcome", start: 0.32 },
+      { end: 0.88, word: "to", start: 0.71999997 },
+      { end: 1.12, word: "the", start: 0.88 },
+      { end: 1.4399999, word: "School", start: 1.12 },
+      { end: 1.68, word: "of", start: 1.4399999 },
+      { end: 2.1799998, word: "Computing", start: 1.68 },
+      { end: 2.82, word: "registration", start: 2.32 },
+      { end: 3.62, word: "booth.", start: 3.12 },
+      { end: 4.34, word: "Here,", start: 3.84 },
+      { end: 4.88, word: "you'll", start: 4.48 },
+      { end: 5.38, word: "discover", start: 4.88 },
+      { end: 5.92, word: "everything", start: 5.52 },
+      { end: 6.08, word: "that", start: 5.92 },
+      { end: 6.48, word: "makes", start: 6.08 },
+      { end: 6.98, word: "Singapore", start: 6.48 },
+      { end: 7.62, word: "Polytechnic", start: 7.12 },
+      { end: 8.08, word: "a", start: 7.9199996 },
+      { end: 8.48, word: "leader", start: 8.08 },
+      { end: 8.72, word: "in", start: 8.48 },
+      { end: 9.22, word: "technology", start: 8.72 },
+      { end: 9.94, word: "education.", start: 9.44 },
+      { end: 11.2, word: "Learn", start: 10.88 },
+      { end: 11.5199995, word: "about", start: 11.2 },
+      { end: 11.84, word: "our", start: 11.5199995 },
+      { end: 12.08, word: "state", start: 11.84 },
+      { end: 12.24, word: "of", start: 12.08 },
+      { end: 12.4, word: "the", start: 12.24 },
+      { end: 12.719999, word: "art", start: 12.4 },
+      { end: 12.975, word: "labs,", start: 12.719999 },
+      { end: 13.935, word: "hands", start: 13.535001 },
+      { end: 14.175, word: "on", start: 13.935 },
+      { end: 14.675, word: "learning", start: 14.175 },
+      { end: 15.235001, word: "environment,", start: 14.735001 },
+      { end: 15.935, word: "and", start: 15.695001 },
+      { end: 16.175, word: "the", start: 15.935 },
+      { end: 16.675, word: "exciting", start: 16.175 },
+      { end: 17.295, word: "diploma", start: 16.815 },
+      { end: 17.795, word: "programs", start: 17.295 },
+      { end: 18.095001, word: "we", start: 17.935001 },
+      { end: 18.595001, word: "offer.", start: 18.095001 },
+      { end: 19.375, word: "From", start: 19.055 },
+      { end: 19.875, word: "artificial", start: 19.375 },
+      { end: 20.595001, word: "intelligence", start: 20.095001 },
+      { end: 20.975, word: "and", start: 20.735 },
+      { end: 21.475, word: "cybersecurity", start: 20.975 },
+      { end: 22.335, word: "to", start: 22.175 },
+      { end: 22.835, word: "software", start: 22.335 },
+      { end: 23.455, word: "development", start: 22.975 },
+      { end: 23.695, word: "and", start: 23.455 },
+      { end: 24.195, word: "immersive", start: 23.695 },
+      { end: 24.835, word: "media,", start: 24.335 },
+      { end: 25.295, word: "our", start: 25.135 },
+      { end: 25.775, word: "courses", start: 25.295 },
+      { end: 25.935001, word: "are", start: 25.775 },
+      { end: 26.335, word: "designed", start: 25.935001 },
+      { end: 26.494999, word: "to", start: 26.335 },
+      { end: 26.895, word: "prepare", start: 26.494999 },
+      { end: 27.135, word: "you", start: 26.895 },
+      { end: 27.375, word: "for", start: 27.135 },
+      { end: 27.535, word: "the", start: 27.375 },
+      { end: 27.935001, word: "future", start: 27.535 },
+      { end: 28.175, word: "of", start: 27.935001 },
+      { end: 28.675, word: "tech.", start: 28.175 },
+      { end: 29.43, word: "Find", start: 29.27 },
+      { end: 29.67, word: "out", start: 29.43 },
+      { end: 30.070002, word: "more", start: 29.67 },
+      { end: 30.470001, word: "about", start: 30.070002 },
+      { end: 30.79, word: "our", start: 30.470001 },
+      { end: 31.27, word: "industry", start: 30.79 },
+      { end: 31.77, word: "partnerships,", start: 31.27 },
+      { end: 32.71, word: "real", start: 32.39 },
+      { end: 33.190002, word: "world", start: 32.71 },
+      { end: 33.690002, word: "projects,", start: 33.190002 },
+      { end: 34.31, word: "and", start: 33.99 },
+      { end: 34.81, word: "internship", start: 34.31 },
+      { end: 35.53, word: "opportunities", start: 35.03 },
+      { end: 35.99, word: "that", start: 35.75 },
+      { end: 36.31, word: "help", start: 35.99 },
+      { end: 36.47, word: "our", start: 36.31 },
+      { end: 36.95, word: "students", start: 36.47 },
+      { end: 37.27, word: "gain", start: 36.95 },
+      { end: 37.77, word: "valuable", start: 37.27 },
+      { end: 38.49, word: "experience.", start: 37.99 },
+    ]);
+
+    const subtitle7 = JSON.stringify([
+      { end: 0.56, word: "Welcome", start: 0.24 },
+      { end: 0.79999995, word: "to", start: 0.56 },
+      { end: 1.04, word: "the", start: 0.79999995 },
+      { end: 1.4399999, word: "course", start: 1.04 },
+      { end: 1.9399999, word: "counseling", start: 1.4399999 },
+      { end: 2.32, word: "booth", start: 2 },
+      { end: 2.56, word: "at", start: 2.32 },
+      { end: 3.06, word: "Singapore", start: 2.56 },
+      { end: 3.6999998, word: "Polytechnic.", start: 3.1999998 },
+      { end: 4.96, word: "Learn", start: 4.64 },
+      { end: 5.2799997, word: "more", start: 4.96 },
+      { end: 5.7599998, word: "about", start: 5.2799997 },
+      { end: 6, word: "our", start: 5.7599998 },
+      { end: 6.5, word: "counseling", start: 6 },
+      { end: 7.12, word: "options", start: 6.64 },
+      { end: 7.3599997, word: "and", start: 7.12 },
+      { end: 7.68, word: "get", start: 7.3599997 },
+      { end: 8.18, word: "personalized", start: 7.68 },
+      { end: 8.98, word: "guidance", start: 8.48 },
+      { end: 9.28, word: "on", start: 9.04 },
+      { end: 9.679999, word: "choosing", start: 9.28 },
+      { end: 9.84, word: "the", start: 9.679999 },
+      { end: 10.16, word: "right", start: 9.84 },
+      { end: 10.66, word: "diploma", start: 10.16 },
+      { end: 11.3, word: "program", start: 10.8 },
+      { end: 11.86, word: "that", start: 11.36 },
+      { end: 12.895, word: "matches", start: 12.415 },
+      { end: 13.215, word: "your", start: 12.895 },
+      { end: 13.695001, word: "interests", start: 13.215 },
+      { end: 14.015, word: "and", start: 13.695001 },
+      { end: 14.415, word: "career", start: 14.015 },
+      { end: 14.915, word: "goals.", start: 14.415 },
+      { end: 15.695, word: "Our", start: 15.375 },
+      { end: 16.195, word: "experienced", start: 15.695 },
+      { end: 16.995, word: "counselors", start: 16.495 },
+      { end: 17.295, word: "are", start: 17.135 },
+      { end: 17.535, word: "here", start: 17.295 },
+      { end: 17.615, word: "to", start: 17.535 },
+      { end: 17.855, word: "help", start: 17.615 },
+      { end: 18.095001, word: "you", start: 17.855 },
+      { end: 18.595001, word: "navigate", start: 18.095001 },
+      { end: 19.135, word: "course", start: 18.655 },
+      { end: 19.635, word: "requirements,", start: 19.135 },
+      { end: 20.755001, word: "application", start: 20.255001 },
+      { end: 21.555, word: "processes,", start: 21.055 },
+      { end: 22.175, word: "and", start: 21.935001 },
+      { end: 22.675, word: "scholarship", start: 22.175 },
+      { end: 23.395, word: "opportunities.", start: 22.895 },
+      { end: 25.05, word: "Singapore", start: 24.55 },
+      { end: 25.689999, word: "Polytechnic", start: 25.189999 },
+      { end: 26.47, word: "course", start: 25.99 },
+      { end: 26.829998, word: "counseling", start: 26.47 },
+      { end: 27.189999, word: "is", start: 26.829998 },
+      { end: 27.43, word: "your", start: 27.189999 },
+      { end: 27.67, word: "guide", start: 27.43 },
+      { end: 27.91, word: "to", start: 27.67 },
+      { end: 28.41, word: "success.", start: 27.91 },
+      { end: 29.349998, word: "Our", start: 29.029999 },
+      { end: 29.849998, word: "dedicated", start: 29.349998 },
+      { end: 30.65, word: "counseling", start: 30.15 },
+      { end: 31.189999, word: "team", start: 30.789999 },
+      { end: 31.689999, word: "provides", start: 31.189999 },
+      { end: 32.25, word: "comprehensive", start: 31.75 },
+      { end: 33.11, word: "support", start: 32.629997 },
+      { end: 33.35, word: "for", start: 33.11 },
+      { end: 33.85, word: "prospective", start: 33.35 },
+      { end: 34.65, word: "students.", start: 34.15 },
+      { end: 35.67, word: "Learn", start: 35.35 },
+      { end: 36.07, word: "about", start: 35.67 },
+      { end: 36.47, word: "entry", start: 36.07 },
+      { end: 36.97, word: "requirements", start: 36.47 },
+      { end: 37.35, word: "for", start: 37.11 },
+      { end: 37.75, word: "different", start: 37.35 },
+      { end: 38.25, word: "diploma", start: 37.75 },
+      { end: 38.89, word: "courses,", start: 38.39 },
+      { end: 39.705, word: "understand", start: 39.27 },
+      { end: 40.185, word: "the", start: 40.105003 },
+      { end: 40.685, word: "application", start: 40.185 },
+      { end: 41.405003, word: "timeline,", start: 40.905003 },
+      { end: 42.445004, word: "explore", start: 41.945004 },
+      { end: 43.005, word: "financial", start: 42.505 },
+      { end: 43.305, word: "aid", start: 43.065002 },
+      { end: 43.805, word: "options,", start: 43.305 },
+      { end: 44.345, word: "and", start: 44.025 },
+      { end: 44.845, word: "discover", start: 44.345 },
+      { end: 45.405003, word: "career", start: 44.905003 },
+      { end: 45.965, word: "pathways", start: 45.465 },
+      { end: 46.425003, word: "after", start: 46.025 },
+      { end: 46.925003, word: "graduation.", start: 46.425003 },
+      { end: 48.105003, word: "Whether", start: 47.785004 },
+      { end: 48.265, word: "you", start: 48.105003 },
+      { end: 48.505, word: "are", start: 48.265 },
+      { end: 49.005, word: "interested", start: 48.505 },
+      { end: 49.305, word: "in", start: 49.065002 },
+      { end: 49.805, word: "engineering,", start: 49.305 },
+      { end: 51.005, word: "business,", start: 50.505 },
+      { end: 51.965, word: "design,", start: 51.465 },
+      { end: 52.745003, word: "health", start: 52.345 },
+      { end: 53.245003, word: "sciences,", start: 52.745003 },
+      { end: 53.945, word: "or", start: 53.625 },
+      { end: 54.445, word: "computing,", start: 53.945 },
+      { end: 55.38, word: "our", start: 55.140003 },
+      { end: 55.88, word: "counselors", start: 55.38 },
+      { end: 56.18, word: "will", start: 55.940002 },
+      { end: 56.420002, word: "help", start: 56.18 },
+      { end: 56.58, word: "you", start: 56.420002 },
+      { end: 56.9, word: "make", start: 56.58 },
+      { end: 57.38, word: "informed", start: 56.9 },
+      { end: 57.88, word: "decisions", start: 57.38 },
+      { end: 58.34, word: "about", start: 58.02 },
+      { end: 58.58, word: "your", start: 58.34 },
+      { end: 59.08, word: "educational", start: 58.58 },
+      { end: 59.88, word: "journey.", start: 59.38 },
+      { end: 60.82, word: "Book", start: 60.34 },
+      { end: 61.06, word: "a", start: 60.82 },
+      { end: 61.38, word: "one", start: 61.06 },
+      { end: 61.620003, word: "on", start: 61.38 },
+      { end: 61.940002, word: "one", start: 61.620003 },
+      { end: 62.34, word: "session", start: 61.940002 },
+      { end: 62.82, word: "today", start: 62.34 },
+      { end: 62.980003, word: "to", start: 62.82 },
+      { end: 63.38, word: "discuss", start: 62.980003 },
+      { end: 63.780003, word: "your", start: 63.38 },
+      { end: 64.28, word: "aspirations", start: 63.780003 },
+      { end: 64.82, word: "and", start: 64.58 },
+      { end: 65.14, word: "find", start: 64.82 },
+      { end: 65.3, word: "the", start: 65.14 },
+      { end: 65.78, word: "perfect", start: 65.3 },
+      { end: 66.18, word: "course", start: 65.78 },
+      { end: 66.42, word: "for", start: 66.18 },
+      { end: 66.92, word: "you.", start: 66.42 },
+    ]);
+
+    const subtitle8 = JSON.stringify([
+      { start: 0.08, end: 0.16, word: "欢" },
+      { start: 0.24, end: 0.39999998, word: "迎" },
+      { start: 0.52, end: 0.64, word: "来" },
+      { start: 0.84, end: 1.04, word: "到" },
+      { start: 1.12, end: 1.36, word: "新" },
+      { start: 1.4399999, end: 1.5999999, word: "加" },
+      { start: 1.68, end: 1.8, word: "坡" },
+      { start: 1.92, end: 2.04, word: "理" },
+      { start: 2.1599998, end: 2.2799997, word: "工" },
+      { start: 2.3999999, end: 2.52, word: "学" },
+      { start: 2.6399999, end: 2.8, word: "院" },
+      { start: 2.8799999, end: 3, word: "的" },
+      { start: 3.12, end: 3.36, word: "课" },
+      { start: 3.4399998, end: 3.56, word: "程" },
+      { start: 3.6799998, end: 3.84, word: "咨" },
+      { start: 3.9199998, end: 4.16, word: "询" },
+      { start: 4.24, end: 4.98, word: "展位" },
+      { start: 5.3599997, end: 5.4399996, word: "在" },
+      { start: 5.52, end: 5.68, word: "这" },
+      { start: 5.8399997, end: 6.3399997, word: "里" },
+      { start: 6.56, end: 6.7999997, word: "您" },
+      { start: 6.8799996, end: 7.04, word: "可" },
+      { start: 7.12, end: 7.2799997, word: "以" },
+      { start: 7.3599997, end: 7.4399996, word: "了" },
+      { start: 7.52, end: 7.7599998, word: "解" },
+      { start: 7.8399997, end: 8.08, word: "我" },
+      { start: 8, end: 8.16, word: "们" },
+      { start: 8.32, end: 8.44, word: "的" },
+      { start: 8.559999, end: 8.88, word: "课程" },
+      { start: 8.96, end: 9.08, word: "咨" },
+      { start: 9.2, end: 9.36, word: "询" },
+      { start: 9.5199995, end: 9.599999, word: "服" },
+      { start: 9.679999, end: 10.039999, word: "务" },
+      { start: 10.4, end: 10.639999, word: "并" },
+      { start: 10.719999, end: 10.84, word: "获" },
+      { start: 10.96, end: 11.2, word: "得" },
+      { start: 11.28, end: 11.44, word: "个" },
+      { start: 11.5199995, end: 11.599999, word: "性" },
+      { start: 11.679999, end: 11.92, word: "化" },
+      { start: 12, end: 12.08, word: "的" },
+      { start: 12.16, end: 12.32, word: "指导" },
+      { start: 12.4, end: 12.795, word: "帮助" },
+      { start: 13.275, end: 13.435, word: "您" },
+      { start: 13.515, end: 13.835, word: "选择" },
+      { start: 13.915, end: 14.035, word: "最" },
+      { start: 14.155, end: 14.395, word: "适" },
+      { start: 14.475, end: 14.715, word: "合" },
+      { start: 15.035, end: 15.515, word: "您" },
+      { start: 15.275, end: 15.715, word: "兴趣" },
+      { start: 15.835, end: 16.155, word: "和" },
+      { start: 16.235, end: 16.355, word: "未来" },
+      { start: 16.475, end: 16.595001, word: "职业" },
+      { start: 16.715, end: 16.955, word: "发展" },
+      { start: 17.035, end: 17.115, word: "的" },
+      { start: 17.154999, end: 18.315, word: "文凭课程" },
+      {
+        start: 18.955,
+        end: 20.235,
+        word: "我们的专业课程顾问将协助您了解课程要求申请流程以及奖学金机会",
+      },
+      { start: 20.635, end: 21.755001, word: "并提供全方位支持" },
+    ]);
+
+    const subtitle9 = JSON.stringify([
+      { end: 0.19999999, word: "欢", start: 0.16 },
+      { end: 0.35999998, word: "迎", start: 0.24 },
+      { end: 0.79999995, word: "来", start: 0.48 },
+      { end: 0.96, word: "到", start: 0.88 },
+      { end: 1.36, word: "课", start: 1.12 },
+      { end: 1.56, word: "程", start: 1.4399999 },
+      { end: 1.92, word: "业", start: 1.68 },
+      { end: 2.1599998, word: "界", start: 2 },
+      { end: 2.56, word: "当", start: 2.32 },
+      { end: 2.7599998, word: "下", start: 2.6399999 },
+      { end: 3.12, word: "课", start: 2.8799999 },
+      { end: 3.3199997, word: "程", start: 3.1999998 },
+      { end: 3.56, word: "项", start: 3.4399998 },
+      { end: 3.84, word: "目", start: 3.6799998 },
+      { end: 4.24, word: "你", start: 4 },
+      { end: 4.3999996, word: "现", start: 4.3199997 },
+      { end: 4.7999997, word: "在", start: 4.48 },
+      { end: 5.04, word: "正", start: 4.88 },
+      { end: 5.2799997, word: "站", start: 5.12 },
+      { end: 5.6, word: "在", start: 5.3599997 },
+      { end: 5.7599998, word: "计", start: 5.68 },
+      { end: 6.08, word: "算", start: 5.8399997 },
+      { end: 6.3199997, word: "机", start: 6.16 },
+      { end: 6.4799995, word: "学", start: 6.3999996 },
+      { end: 6.7999997, word: "院", start: 6.56 },
+      { end: 7.12, word: "实", start: 6.8799996 },
+      { end: 7.3199997, word: "践", start: 7.2 },
+      { end: 7.56, word: "培", start: 7.44 },
+      { end: 7.8399997, word: "训", start: 7.68 },
+      { end: 8.04, word: "的", start: 7.9199996 },
+      { end: 8.4, word: "心", start: 8.16 },
+      { end: 8.72, word: "跳", start: 8.48 },
+      { end: 9.04, word: "中", start: 8.8 },
+      { end: 9.24, word: "这", start: 9.2 },
+      { end: 9.44, word: "不", start: 9.28 },
+      { end: 9.599999, word: "是", start: 9.5199995 },
+      { end: 9.84, word: "一", start: 9.679999 },
+      { end: 10.08, word: "个", start: 9.92 },
+      { end: 10.32, word: "典", start: 10.16 },
+      { end: 10.559999, word: "型", start: 10.48 },
+      { end: 10.8, word: "的", start: 10.639999 },
+      { end: 11, word: "教", start: 10.88 },
+      { end: 11.28, word: "室", start: 11.12 },
+      { end: 11.599999, word: "这", start: 11.44 },
+      { end: 11.84, word: "是", start: 11.679999 },
+      { end: 12, word: "一", start: 11.92 },
+      { end: 12.24, word: "个", start: 12.08 },
+      { end: 12.48, word: "模", start: 12.32 },
+      { end: 12.719999, word: "拟", start: 12.559999 },
+      { end: 13.04, word: "软", start: 12.799999 },
+      { end: 13.28, word: "体", start: 13.12 },
+      { end: 13.605, word: "公", start: 13.36 },
+      { end: 13.891071, word: "司", start: 13.748035 },
+      { end: 14.177142, word: "旨", start: 14.034107 },
+      { end: 14.463214, word: "在", start: 14.320178 },
+      { end: 14.749286, word: "将", start: 14.60625 },
+      { end: 15.0353565, word: "您", start: 14.892321 },
+      { end: 15.321428, word: "从", start: 15.178392 },
+      { end: 15.6075, word: "学", start: 15.464464 },
+      { end: 15.893571, word: "生", start: 15.750536 },
+      { end: 16.179642, word: "转", start: 16.036606 },
+      { end: 16.465714, word: "变", start: 16.322678 },
+      { end: 16.751785, word: "为", start: 16.60875 },
+      { end: 17.037857, word: "专", start: 16.894821 },
+      { end: 17.323929, word: "业", start: 17.180893 },
+      { end: 17.61, word: "软", start: 17.466965 },
+      { end: 17.896072, word: "体", start: 17.753036 },
+      { end: 18.182142, word: "开", start: 18.039106 },
+      { end: 18.468214, word: "发", start: 18.325178 },
+      { end: 18.754286, word: "人", start: 18.61125 },
+      { end: 19.040358, word: "员", start: 18.897322 },
+      { end: 19.326427, word: "忘", start: 19.183393 },
+      { end: 19.6125, word: "记", start: 19.469463 },
+      { end: 19.898571, word: "假", start: 19.755535 },
+      { end: 20.184643, word: "设", start: 20.041607 },
+      { end: 20.470715, word: "的", start: 20.327679 },
+      { end: 20.756786, word: "任", start: 20.61375 },
+      { end: 21.042858, word: "务", start: 20.899822 },
+      { end: 21.328928, word: "是", start: 21.185894 },
+      { end: 21.615, word: "您", start: 21.471964 },
+      { end: 21.901072, word: "从", start: 21.758036 },
+      { end: 22.187143, word: "事", start: 22.044107 },
+      { end: 22.473213, word: "真", start: 22.33018 },
+      { end: 22.759285, word: "实", start: 22.61625 },
+      { end: 23.045357, word: "客", start: 22.90232 },
+      { end: 23.331429, word: "户", start: 23.188393 },
+      { end: 23.6175, word: "付", start: 23.474464 },
+      { end: 23.903572, word: "费", start: 23.760536 },
+      { end: 24.189644, word: "项", start: 24.046608 },
+      { end: 24.475716, word: "目", start: 24.33268 },
+      { end: 24.761787, word: "的", start: 24.618752 },
+      { end: 25.047857, word: "地", start: 24.904821 },
+      { end: 25.33393, word: "方", start: 25.190893 },
+      { end: 25.62, word: "为", start: 25.476965 },
+      { end: 25.877813, word: "实", start: 25.748907 },
+      { end: 26.135626, word: "际", start: 26.00672 },
+      { end: 26.393438, word: "的", start: 26.264532 },
+      { end: 26.65125, word: "行", start: 26.522345 },
+      { end: 26.909063, word: "业", start: 26.780157 },
+      { end: 27.166876, word: "合", start: 27.03797 },
+      { end: 27.424688, word: "作", start: 27.295782 },
+      { end: 27.6825, word: "伙", start: 27.553595 },
+      { end: 27.940313, word: "伴", start: 27.811407 },
+      { end: 28.198126, word: "政", start: 28.06922 },
+      { end: 28.455938, word: "府", start: 28.327032 },
+      { end: 28.71375, word: "机", start: 28.584845 },
+      { end: 28.971563, word: "构", start: 28.842657 },
+      { end: 29.229376, word: "和", start: 29.10047 },
+      { end: 29.487188, word: "大", start: 29.358282 },
+      { end: 29.745, word: "型", start: 29.616095 },
+      { end: 30.002813, word: "科", start: 29.873907 },
+      { end: 30.260626, word: "技", start: 30.13172 },
+      { end: 30.518438, word: "公", start: 30.389532 },
+      { end: 30.77625, word: "司", start: 30.647345 },
+      { end: 31.034063, word: "提", start: 30.905157 },
+      { end: 31.291876, word: "供", start: 31.16297 },
+      { end: 31.549688, word: "解", start: 31.420782 },
+      { end: 31.807499, word: "决", start: 31.678595 },
+      { end: 32.06531, word: "方", start: 31.936405 },
+      { end: 32.323124, word: "案", start: 32.194218 },
+      { end: 32.580936, word: "轻", start: 32.45203 },
+      { end: 32.83875, word: "快", start: 32.709843 },
+      { end: 33.09656, word: "的", start: 32.967655 },
+      { end: 33.354374, word: "声", start: 33.225468 },
+      { end: 33.612186, word: "音", start: 33.48328 },
+      { end: 33.87, word: "快", start: 33.741093 },
+      { end: 34.12781, word: "速", start: 33.998905 },
+      { end: 34.385624, word: "键", start: 34.256718 },
+      { end: 34.643436, word: "盘", start: 34.51453 },
+      { end: 34.90125, word: "打", start: 34.772343 },
+      { end: 35.15906, word: "字", start: 35.030155 },
+      { end: 35.416874, word: "我", start: 35.287968 },
+      { end: 35.674686, word: "们", start: 35.54578 },
+      { end: 35.9325, word: "不", start: 35.803593 },
+      { end: 36.19031, word: "只", start: 36.061405 },
+      { end: 36.448124, word: "是", start: 36.319218 },
+      { end: 36.705936, word: "教", start: 36.57703 },
+      { end: 36.96375, word: "你", start: 36.834843 },
+      { end: 37.22156, word: "技", start: 37.092655 },
+      { end: 37.479374, word: "巧", start: 37.350468 },
+      { end: 37.737186, word: "我", start: 37.60828 },
+      { end: 37.995, word: "们", start: 37.866093 },
+      { end: 40.625202, word: "给", start: 40.550102 },
+      { end: 40.775406, word: "你", start: 40.700306 },
+      { end: 40.92561, word: "一", start: 40.85051 },
+      { end: 41.075813, word: "份", start: 41.000713 },
+      { end: 41.22602, word: "工", start: 41.150917 },
+      { end: 41.376225, word: "作", start: 41.30112 },
+      { end: 41.52643, word: "您", start: 41.451324 },
+      { end: 41.676632, word: "将", start: 41.60153 },
+      { end: 41.826836, word: "应", start: 41.75173 },
+      { end: 41.97704, word: "用", start: 41.901936 },
+      { end: 42.127243, word: "敏", start: 42.052143 },
+      { end: 42.277447, word: "捷", start: 42.202347 },
+      { end: 42.42765, word: "方", start: 42.35255 },
+      { end: 42.577854, word: "法", start: 42.502754 },
+      { end: 42.728058, word: "管", start: 42.652958 },
+      { end: 42.878265, word: "理", start: 42.80316 },
+      { end: 43.02847, word: "时", start: 42.953365 },
+      { end: 43.178673, word: "间", start: 43.10357 },
+      { end: 43.328876, word: "表", start: 43.253773 },
+      { end: 43.47908, word: "并", start: 43.403976 },
+      { end: 43.629284, word: "直", start: 43.554184 },
+      { end: 43.779488, word: "接", start: 43.704388 },
+      { end: 43.92969, word: "与", start: 43.85459 },
+      { end: 44.079895, word: "客", start: 44.004795 },
+      { end: 44.315, word: "户", start: 44.155 },
+      { end: 44.635, word: "互", start: 44.475 },
+      { end: 44.954998, word: "动", start: 44.715 },
+      { end: 45.274998, word: "就", start: 45.114998 },
+      { end: 45.475, word: "像", start: 45.355 },
+      { end: 45.835, word: "在", start: 45.594997 },
+      { end: 46.074997, word: "真", start: 45.914997 },
+      { end: 46.235, word: "正", start: 46.155 },
+      { end: 46.475, word: "的", start: 46.315 },
+      { end: 46.635002, word: "公", start: 46.555 },
+      { end: 46.835, word: "司", start: 46.715 },
+      { end: 47.114998, word: "中", start: 46.954998 },
+      { end: 47.354996, word: "一", start: 47.274998 },
+      { end: 47.934998, word: "样", start: 47.434998 },
+      { end: 48.635, word: "这", start: 48.394997 },
+      { end: 48.875, word: "是", start: 48.714996 },
+      { end: 49.274998, word: "您", start: 48.954998 },
+      { end: 49.515, word: "技", start: 49.355 },
+      { end: 49.754997, word: "术", start: 49.594997 },
+      { end: 49.995, word: "职", start: 49.835 },
+      { end: 50.235, word: "业", start: 50.074997 },
+      { end: 50.555, word: "生", start: 50.315 },
+      { end: 50.795, word: "涯", start: 50.635 },
+      { end: 50.955, word: "的", start: 50.875 },
+      { end: 51.274998, word: "终", start: 51.035 },
+      { end: 51.515, word: "极", start: 51.355 },
+      { end: 51.835, word: "试", start: 51.675 },
+      { end: 52.155, word: "验", start: 51.915 },
+      { end: 52.735, word: "场", start: 52.235 },
+    ]);
+
+    const subtitle10 = JSON.stringify([
+      { end: 0.16, word: "欢", start: 0.08 },
+      { end: 0.39999998, word: "迎", start: 0.24 },
+      { end: 0.6742857, word: "来", start: 0.5371429 },
+      { end: 0.94857144, word: "到", start: 0.81142855 },
+      { end: 1.2228572, word: "计", start: 1.0857143 },
+      { end: 1.52, word: "算", start: 1.36 },
+      { end: 1.8399999, word: "机", start: 1.5999999 },
+      { end: 2.1599998, word: "学", start: 1.92 },
+      { end: 2.48, word: "院", start: 2.24 },
+      { end: 2.8, word: "报", start: 2.56 },
+      { end: 3.04, word: "名", start: 2.8799999 },
+      { end: 3.2399998, word: "咨", start: 3.12 },
+      { end: 3.52, word: "询", start: 3.36 },
+      { end: 4.16, word: "台", start: 3.6799998 },
+      { end: 4.7999997, word: "在", start: 4.64 },
+      { end: 5, word: "这", start: 4.88 },
+      { end: 5.62, word: "里", start: 5.12 },
+      { end: 5.92, word: "您", start: 5.7599998 },
+      { end: 6.3199997, word: "将", start: 6.08 },
+      { end: 6.4799995, word: "了", start: 6.3999996 },
+      { end: 6.72, word: "解", start: 6.56 },
+      { end: 7.2, word: "让", start: 6.8799996 },
+      { end: 7.44, word: "新", start: 7.2799997 },
+      { end: 7.68, word: "加", start: 7.52 },
+      { end: 7.9199996, word: "坡", start: 7.7599998 },
+      { end: 8.16, word: "理", start: 8 },
+      { end: 8.48, word: "工", start: 8.24 },
+      { end: 8.72, word: "学", start: 8.559999 },
+      { end: 9.04, word: "院", start: 8.8 },
+      { end: 9.28, word: "成", start: 9.12 },
+      { end: 9.5199995, word: "为", start: 9.36 },
+      { end: 9.76, word: "科", start: 9.599999 },
+      { end: 10, word: "技", start: 9.84 },
+      { end: 10.24, word: "教", start: 10.08 },
+      { end: 10.48, word: "育", start: 10.32 },
+      { end: 10.719999, word: "领", start: 10.559999 },
+      { end: 11.04, word: "先", start: 10.8 },
+      { end: 11.2, word: "者", start: 11.12 },
+      { end: 11.44, word: "的", start: 11.28 },
+      { end: 11.759999, word: "一", start: 11.5199995 },
+      { end: 12.509999, word: "切", start: 12.009999 },
+      { end: 13.045, word: "了", start: 12.965 },
+      { end: 13.285001, word: "解", start: 13.125 },
+      { end: 13.6050005, word: "我", start: 13.365001 },
+      { end: 13.765, word: "们", start: 13.685 },
+      { end: 14.005001, word: "最", start: 13.845 },
+      { end: 14.285001, word: "先", start: 14.165001 },
+      { end: 14.565001, word: "进", start: 14.405001 },
+      { end: 14.725, word: "的", start: 14.645 },
+      { end: 15.045, word: "实", start: 14.805 },
+      { end: 15.285, word: "验", start: 15.125 },
+      { end: 16.085001, word: "室", start: 16.005001 },
+      { end: 16.245, word: "实", start: 16.165 },
+      { end: 16.565, word: "践", start: 16.325 },
+      { end: 16.765, word: "操", start: 16.645 },
+      { end: 17.045, word: "作", start: 16.885 },
+      { end: 17.205, word: "的", start: 17.125 },
+      { end: 17.525002, word: "学", start: 17.285 },
+      { end: 17.765, word: "习", start: 17.605 },
+      { end: 18.085001, word: "环", start: 17.845001 },
+      { end: 18.485, word: "境", start: 18.165 },
+      { end: 19.045, word: "以", start: 18.805 },
+      { end: 19.205, word: "及", start: 19.125 },
+      { end: 19.404999, word: "我", start: 19.285 },
+      { end: 19.645, word: "们", start: 19.525 },
+      { end: 19.925, word: "提", start: 19.765 },
+      { end: 20.085001, word: "供", start: 20.005001 },
+      { end: 20.405, word: "的", start: 20.165 },
+      { end: 20.605, word: "精", start: 20.485 },
+      { end: 20.965, word: "彩", start: 20.725 },
+      { end: 21.205, word: "文", start: 21.045 },
+      { end: 21.525002, word: "凭", start: 21.285 },
+      { end: 21.845001, word: "课", start: 21.605 },
+      { end: 22.425, word: "程", start: 21.925 },
+      { end: 23.365, word: "从", start: 23.125 },
+      { end: 23.605, word: "人", start: 23.445 },
+      { end: 23.925, word: "工", start: 23.685001 },
+      { end: 24.165, word: "智", start: 24.005001 },
+      { end: 24.485, word: "能", start: 24.244999 },
+      { end: 24.725, word: "和", start: 24.565 },
+      { end: 24.965, word: "网", start: 24.805 },
+      { end: 25.32, word: "路", start: 25.045 },
+      { end: 25.48, word: "安", start: 25.4 },
+      { end: 25.72, word: "全", start: 25.56 },
+      { end: 25.919998, word: "到", start: 25.8 },
+      { end: 26.16, word: "软", start: 26.039999 },
+      { end: 26.44, word: "体", start: 26.279999 },
+      { end: 26.76, word: "开", start: 26.6 },
+      { end: 27, word: "发", start: 26.84 },
+      { end: 27.32, word: "和", start: 27.16 },
+      { end: 27.72, word: "陈", start: 27.48 },
+      { end: 27.88, word: "进", start: 27.8 },
+      { end: 28.199999, word: "士", start: 27.96 },
+      { end: 28.4, word: "媒", start: 28.279999 },
+      { end: 29.02, word: "体", start: 28.52 },
+      { end: 29.4, word: "我", start: 29.32 },
+      { end: 29.56, word: "们", start: 29.48 },
+      { end: 29.72, word: "的", start: 29.64 },
+      { end: 29.919998, word: "课", start: 29.8 },
+      { end: 30.36, word: "程", start: 30.039999 },
+      { end: 30.519999, word: "旨", start: 30.439999 },
+      { end: 30.84, word: "在", start: 30.599998 },
+      { end: 31.04, word: "为", start: 30.92 },
+      { end: 31.279999, word: "您", start: 31.16 },
+      { end: 31.56, word: "未", start: 31.4 },
+      { end: 31.72, word: "来", start: 31.64 },
+      { end: 31.92, word: "的", start: 31.8 },
+      { end: 32.28, word: "科", start: 32.04 },
+      { end: 32.52, word: "技", start: 32.36 },
+      { end: 32.76, word: "职", start: 32.6 },
+      { end: 33, word: "业", start: 32.84 },
+      { end: 33.32, word: "做", start: 33.16 },
+      { end: 33.52, word: "好", start: 33.4 },
+      { end: 33.879997, word: "准", start: 33.64 },
+      { end: 34.46, word: "备", start: 33.96 },
+      { end: 35.239998, word: "了", start: 35.08 },
+      { end: 35.559998, word: "解", start: 35.32 },
+      { end: 35.72, word: "我", start: 35.64 },
+      { end: 35.879997, word: "们", start: 35.8 },
+      { end: 36.12, word: "的", start: 35.96 },
+      { end: 36.32, word: "行", start: 36.2 },
+      { end: 36.68, word: "业", start: 36.44 },
+      { end: 36.839996, word: "合", start: 36.76 },
+      { end: 37.239998, word: "作", start: 36.92 },
+      { end: 37.4, word: "伙", start: 37.32 },
+      { end: 37.64, word: "伴", start: 37.48 },
+      { end: 37.84, word: "关", start: 37.72 },
+      { end: 38.46, word: "系", start: 37.96 },
+      { end: 38.84, word: "真", start: 38.68 },
+      { end: 39.079998, word: "实", start: 39 },
+      { end: 39.32, word: "项", start: 39.16 },
+      { end: 39.559998, word: "目", start: 39.4 },
+      { end: 39.879997, word: "经", start: 39.64 },
+      { end: 40.574875, word: "验", start: 40.129997 },
+      { end: 40.734875, word: "以", start: 40.654877 },
+      { end: 40.974876, word: "及", start: 40.814877 },
+      { end: 41.191345, word: "帮", start: 41.054874 },
+      { end: 41.464287, word: "助", start: 41.327816 },
+      { end: 41.73723, word: "学", start: 41.600758 },
+      { end: 42.01017, word: "生", start: 41.8737 },
+      { end: 42.283108, word: "积", start: 42.14664 },
+      { end: 42.55605, word: "累", start: 42.41958 },
+      { end: 42.82899, word: "宝", start: 42.69252 },
+      { end: 43.101933, word: "贵", start: 42.96546 },
+      { end: 43.374874, word: "经", start: 43.238403 },
+      { end: 43.614876, word: "验", start: 43.534874 },
+      { end: 43.934875, word: "的", start: 43.694874 },
+      { end: 44.094875, word: "实", start: 44.014874 },
+      { end: 44.294876, word: "习", start: 44.174873 },
+      { end: 44.654877, word: "机", start: 44.414875 },
+      { end: 45.234875, word: "会", start: 44.734875 },
+    ]);
+
+    await client.query(
+      `
       INSERT INTO subtitle (subtitle_id, audio_id, language_id, text, created_by) VALUES
       (4, 804, 1, $1::jsonb, NULL),
       (5, 805, 1, $2::jsonb, NULL),
@@ -1097,8 +2395,20 @@ await client.query(`
 
 
 
-    `, [subtitle1, subtitle2, subtitle3, subtitle4, subtitle5, subtitle6, subtitle7, subtitle8, subtitle9, subtitle10]);
-
+    `,
+      [
+        subtitle1,
+        subtitle2,
+        subtitle3,
+        subtitle4,
+        subtitle5,
+        subtitle6,
+        subtitle7,
+        subtitle8,
+        subtitle9,
+        subtitle10,
+      ],
+    );
 
     // Insert sessions (matching seed data with specific UUIDs)
     await client.query(`
@@ -1132,7 +2442,7 @@ await client.query(`
 
     // Clear existing audit logs and insert fresh data
     await client.query(`DELETE FROM audit_logs;`);
-    
+
     // Insert audit logs (first 12 from original seed data)
     await client.query(`
       INSERT INTO audit_logs (audit_log_id, admin_user_id, target_user_id, resource, action, changes, metadata, timestamp) VALUES
@@ -1153,38 +2463,38 @@ await client.query(`
     // Assign random badges to test users (user_id 3-12) with weighted distribution
     console.log("📛 Assigning badges to test users with varied popularity...");
     const badgeAssignments = [];
-    
+
     // Create weighted badge distribution for more realistic visitor stats
     // SoC Tour exhibits: Badge 5 (Project INC) - very popular, Badge 6 (Registration) - popular, Badge 7 (Counselling) - moderate
     const badgeWeights = {
-      1: 0.6,  // Maritime Roots - moderate popularity
-      2: 0.5,  // Ancient Map - moderate
-      3: 0.4,  // Wartime Bunker - less popular
-      4: 0.4,  // Faces of Occupation - less popular
-      5: 0.9,  // Project INC - VERY popular (SoC Tour)
-      6: 0.7,  // Registration Booth - popular (SoC Tour)
-      7: 0.4,  // Course Counselling - moderate (SoC Tour)
-      8: 0.3,  // CLS Counselling - less popular
-      9: 0.3   // SOB Counselling - less popular
+      1: 0.6, // Maritime Roots - moderate popularity
+      2: 0.5, // Ancient Map - moderate
+      3: 0.4, // Wartime Bunker - less popular
+      4: 0.4, // Faces of Occupation - less popular
+      5: 0.9, // Project INC - VERY popular (SoC Tour)
+      6: 0.7, // Registration Booth - popular (SoC Tour)
+      7: 0.4, // Course Counselling - moderate (SoC Tour)
+      8: 0.3, // CLS Counselling - less popular
+      9: 0.3, // SOB Counselling - less popular
     };
-    
+
     for (let userId = 3; userId <= 12; userId++) {
       // Each badge has a weighted chance to be assigned
-      Object.keys(badgeWeights).forEach(badgeId => {
+      Object.keys(badgeWeights).forEach((badgeId) => {
         const weight = badgeWeights[badgeId];
-        
+
         // Random chance based on weight (higher weight = more likely to be assigned)
         if (Math.random() < weight) {
           // Create timestamp - badges earned over past 2 months
           const daysAgo = Math.floor(Math.random() * 60);
           const hoursAgo = Math.floor(Math.random() * 24);
           const createdAt = `CURRENT_TIMESTAMP - INTERVAL '${daysAgo} days' - INTERVAL '${hoursAgo} hours'`;
-          
+
           badgeAssignments.push(`(${userId}, ${badgeId}, ${createdAt})`);
         }
       });
     }
-    
+
     if (badgeAssignments.length > 0) {
       await client.query(`
         INSERT INTO user_badge (user_id, badge_id, created_at) 
@@ -1198,47 +2508,55 @@ await client.query(`
     const audioPlaybackLogs = [];
     const englishAudioIds = [804, 805, 806, 807, 809, 810, 811]; // English audios
     const chineseAudioIds = [812, 813, 814]; // Chinese audios
-    
+
     for (let userId = 3; userId <= 12; userId++) {
       // Each user listens to 5-10 English audios
       const numEnglishPlays = Math.floor(Math.random() * 6) + 5; // 5 to 10
       for (let i = 0; i < numEnglishPlays; i++) {
-        const audioId = englishAudioIds[Math.floor(Math.random() * englishAudioIds.length)];
+        const audioId =
+          englishAudioIds[Math.floor(Math.random() * englishAudioIds.length)];
         const daysAgo = Math.floor(Math.random() * 60);
         const hoursAgo = Math.floor(Math.random() * 24);
-        
+
         // Random duration between 20-60 seconds (simulating partial or full listen)
         const duration = Math.floor(Math.random() * 40) + 20;
-        
+
         const audioStart = `CURRENT_TIMESTAMP - INTERVAL '${daysAgo} days' - INTERVAL '${hoursAgo} hours'`;
         const audioEnd = `CURRENT_TIMESTAMP - INTERVAL '${daysAgo} days' - INTERVAL '${hoursAgo} hours' + INTERVAL '${duration} seconds'`;
-        
-        audioPlaybackLogs.push(`(${userId}, ${audioId}, ${audioStart}, ${audioEnd}, ${duration}, ${audioStart})`);
+
+        audioPlaybackLogs.push(
+          `(${userId}, ${audioId}, ${audioStart}, ${audioEnd}, ${duration}, ${audioStart})`,
+        );
       }
-      
+
       // Each user listens to 2-4 Chinese audios
       const numChinesePlays = Math.floor(Math.random() * 3) + 2; // 2 to 4
       for (let i = 0; i < numChinesePlays; i++) {
-        const audioId = chineseAudioIds[Math.floor(Math.random() * chineseAudioIds.length)];
+        const audioId =
+          chineseAudioIds[Math.floor(Math.random() * chineseAudioIds.length)];
         const daysAgo = Math.floor(Math.random() * 60);
         const hoursAgo = Math.floor(Math.random() * 24);
-        
+
         // Random duration between 15-50 seconds
         const duration = Math.floor(Math.random() * 35) + 15;
-        
+
         const audioStart = `CURRENT_TIMESTAMP - INTERVAL '${daysAgo} days' - INTERVAL '${hoursAgo} hours'`;
         const audioEnd = `CURRENT_TIMESTAMP - INTERVAL '${daysAgo} days' - INTERVAL '${hoursAgo} hours' + INTERVAL '${duration} seconds'`;
-        
-        audioPlaybackLogs.push(`(${userId}, ${audioId}, ${audioStart}, ${audioEnd}, ${duration}, ${audioStart})`);
+
+        audioPlaybackLogs.push(
+          `(${userId}, ${audioId}, ${audioStart}, ${audioEnd}, ${duration}, ${audioStart})`,
+        );
       }
     }
-    
+
     if (audioPlaybackLogs.length > 0) {
       await client.query(`
         INSERT INTO audio_playback_logs (user_id, audio_id, audio_start, audio_end, duration_listened, created_at) 
         VALUES ${audioPlaybackLogs.join(", ")};
       `);
-      console.log(`Created ${audioPlaybackLogs.length} audio playback logs for test users`);
+      console.log(
+        `Created ${audioPlaybackLogs.length} audio playback logs for test users`,
+      );
     }
 
     // Insert feedback/reviews for exhibits (2 reviews per exhibit)
@@ -1282,7 +2600,9 @@ await client.query(`
     `);
 
     // Reset audit_logs sequence after inserting the first 12 with explicit IDs
-    await client.query(`SELECT setval('audit_logs_audit_log_id_seq', (SELECT MAX(audit_log_id) FROM audit_logs));`);
+    await client.query(
+      `SELECT setval('audit_logs_audit_log_id_seq', (SELECT MAX(audit_log_id) FROM audit_logs));`,
+    );
 
     // Insert more admin audit logs for recent activity
     console.log("📋 Inserting additional audit logs...");
@@ -1353,37 +2673,51 @@ await client.query(`
     console.log("✅ Seeding complete!");
     console.log("📊 Database ready with:");
     console.log(
-      "   - 12 users total (admin, moderator, + 10 test users: test1-test10 with password 123123)"
+      "   - 12 users total (admin, moderator, + 10 test users: test1-test10 with password 123123)",
     );
     console.log(
-      "   - 3 roles with proper permissions (including password reset & email verification)"
+      "   - 3 roles with proper permissions (including password reset & email verification)",
     );
     console.log("   - 10 languages with English as default");
     console.log("   - 5 exhibitions with 9 exhibits");
     console.log(
-      "   - 9 badges created and randomly assigned to test users (3-7 badges per user)"
+      "   - 9 badges created and randomly assigned to test users (3-7 badges per user)",
     );
-    console.log("   - 10 audio records with 10 subtitle records (JSONB) - English and Chinese");
+    console.log(
+      "   - 10 audio records with 10 subtitle records (JSONB) - English and Chinese",
+    );
     console.log("   - Multiple images (exhibition covers + exhibit images)");
     console.log("   - 9 QR codes");
     console.log("   - 18 feedback/reviews (2 per exhibit from test users)");
-    console.log("   - Audio playback logs for all test users in both English and Chinese");
-    console.log("   - 30 audit log entries (admin activities, user management, etc.)");
+    console.log(
+      "   - Audio playback logs for all test users in both English and Chinese",
+    );
+    console.log(
+      "   - 30 audit log entries (admin activities, user management, etc.)",
+    );
     console.log("   - Settings table with inactivity threshold");
     console.log("   - Password reset and email verification token tables");
     console.log(
-      "   - Sample tokens for testing (1 expired, cleaned up automatically)"
+      "   - Sample tokens for testing (1 expired, cleaned up automatically)",
     );
     console.log(
-      "   - Comprehensive performance indexes and constraints applied"
+      "   - Comprehensive performance indexes and constraints applied",
     );
     console.log("   - Automatic token cleanup function available");
     console.log("   - 2 sender types (user, assistant) for AI Assistant");
-    console.log("   - Conversation and message tables for AI Assistant (Omnie)");
-    console.log("   - 🎧 Audio analytics ready: Popular exhibits tracked by playback count");
+    console.log(
+      "   - Conversation and message tables for AI Assistant (Omnie)",
+    );
+    console.log(
+      "   - 🎧 Audio analytics ready: Popular exhibits tracked by playback count",
+    );
     console.log("   - 📋 Recent admin actions logged and visible on dashboard");
-    console.log("   - 🎯 Test users have realistic badge unlocks and audio listening history");
-    console.log("   - 🖱️ 3 homepage floating cards (Interactive Scanning, Smart Navigation, AI Insights)");
+    console.log(
+      "   - 🎯 Test users have realistic badge unlocks and audio listening history",
+    );
+    console.log(
+      "   - 🖱️ 3 homepage floating cards (Interactive Scanning, Smart Navigation, AI Insights)",
+    );
   } catch (err) {
     console.error("❌ Error during seeding:", err);
     throw err;

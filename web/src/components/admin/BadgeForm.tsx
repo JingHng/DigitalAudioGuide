@@ -6,29 +6,15 @@ const BACKEND_URL = import.meta.env.VITE_API_TARGET || "";
 const DEFAULT_BADGE_IMAGE_URL = `${BACKEND_URL}/public/images/Badge.jpg`;
 
 // Convert stored imageUrl to browser-usable URL
-const getBadgeImageUrl = (imageUrl: string | null | undefined): string => {
+const getBadgeImageUrl  = (imageUrl: string | null): string => {
   if (!imageUrl) return DEFAULT_BADGE_IMAGE_URL;
-
-  const trimmed = imageUrl.trim();
-  if (!trimmed) return DEFAULT_BADGE_IMAGE_URL;
-
-  // absolute URL
-  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
-    return trimmed;
-  }
-
-  // local stored path: "/images/xxx" or "\images\xxx"
-  const cleanedPath = trimmed.replace(/\\/g, "/");
+  const cleanedPath = imageUrl.replace(/\\/g, "/");
   const imagePrefix = "/images/";
-  const idx = cleanedPath.indexOf(imagePrefix);
-
-  if (idx !== -1) {
-    // IMPORTANT: your backend serves images from /public/images
-    // If stored path is "/images/badge/xxx.png" => filename is "badge/xxx.png"
-    const filename = cleanedPath.substring(idx + imagePrefix.length);
+  const pathIndex = cleanedPath.indexOf(imagePrefix);
+  if (pathIndex !== -1) {
+    const filename = cleanedPath.substring(pathIndex + imagePrefix.length);
     return `${BACKEND_URL}/public/images/${filename}`;
   }
-
   return DEFAULT_BADGE_IMAGE_URL;
 };
 
