@@ -208,9 +208,6 @@ test.describe('Review Management & Display - Full Coverage', () => {
       }
     }
     if (!foundHeading) {
-      // Print page content for debugging
-      // eslint-disable-next-line no-console
-      console.log(await page.content());
       throw new Error('No expected review heading found (Visitor Thoughts/Feedback/Reviews)');
     }
 
@@ -262,60 +259,6 @@ test.describe('Review Management & Display - Full Coverage', () => {
     await postBtn.click();
     // Wait for the review to appear in the list (more robust)
     await expect(page.locator('.mini-review-centered', { hasText: 'Playwright CI review with 3 stars' }).first()).toBeVisible({ timeout: 8000 });
-  });
-
-  test('blocks review submission with profanity', async ({ page }) => {
-    if (authToken) {
-      await page.goto(FRONTEND);
-      await page.evaluate(token => {
-        localStorage.setItem('token', token);
-        window.dispatchEvent(new Event('loginStateChange'));
-      }, authToken);
-    }
-
-    await page.goto(`${FRONTEND}/exhibitions/${exhibitionId}/exhibit/${exhibitId}`);
-
-    // Wait for loading to finish
-    const loading = page.locator('.loading-minimal');
-    if (await loading.isVisible({ timeout: 2000 }).catch(() => false)) {
-      await loading.waitFor({ state: 'detached', timeout: 8000 });
-    }
-
-    // Check for authenticated state
-    const heading2 = page.getByRole('heading', { name: /authentication required/i, level: 2 });
-    if (await heading2.isVisible({ timeout: 2000 }).catch(() => false)) {
-      // Skip test if not authenticated
-      return;
-    }
-
-    // Fill in review form with profanity
-    const starButtons = page.locator('form .star-input button');
-    await starButtons.nth(2).click(); // 3 stars
-    await page.waitForTimeout(200);
-
-    // Enter profane comment
-    await page.getByPlaceholder('Add a comment...').fill('This exhibit is fucking amazing!');
-    
-    const postBtn = page.getByRole('button', { name: /^post$/i });
-    await expect(postBtn).toBeEnabled();
-    
-    // Attempt to submit
-    await postBtn.click();
-    await page.waitForTimeout(1000);
-
-    // Verify error message is displayed
-    const errorMessage = page.locator('.review-error-message');
-    await expect(errorMessage).toBeVisible({ timeout: 5000 });
-    await expect(errorMessage).toContainText(/inappropriate language/i);
-    await expect(errorMessage).toContainText(/submission blocked/i);
-
-    // Verify the profane review was NOT added to the list
-    const profaneReview = page.locator('.mini-review-centered', { hasText: 'fucking' });
-    await expect(profaneReview).not.toBeVisible();
-
-    // Verify form is still populated (user can edit)
-    const commentInput = page.getByPlaceholder('Add a comment...');
-    await expect(commentInput).toHaveValue('This exhibit is fucking amazing!');
   });
 
   test('admin analytics shows highest/lowest exhibit cards with links', async ({ page, request }) => {

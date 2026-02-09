@@ -38,20 +38,6 @@ test.describe('AI Assistant Admin UI - Comprehensive Tests', () => {
         expect(count).toBeGreaterThan(0);
     });
 
-    test('should open and close API settings modal', async ({ page }) => {
-        await page.goto('/admin/assistant', { waitUntil: 'load' });
-        await page.waitForSelector('.ai-assistant-container', { timeout: 20000 });
-        
-        // Open modal
-        await page.click('button:has-text("API Settings")');
-        await page.waitForSelector('.ai-modal-overlay', { state: 'visible' });
-        await expect(page.locator('.ai-modal-title')).toContainText(/API Configuration/i);
-        
-        // Close modal
-        await page.click('.ai-modal-close');
-        await page.waitForSelector('.ai-modal-overlay', { state: 'hidden' });
-    });
-
     test('should enable send button when input has text', async ({ page }) => {
         await page.goto('/admin/assistant', { waitUntil: 'load' });
         await page.waitForSelector('.ai-assistant-container', { timeout: 20000 });

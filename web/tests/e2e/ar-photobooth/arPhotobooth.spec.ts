@@ -35,7 +35,7 @@ test.describe('AR Photobooth Page', () => {
         try {
             await page.waitForSelector('.ar-photobooth-container', { state: 'visible', timeout: 10000 });
         } catch (e) {
-            console.log('AR Photobooth page timeout');
+            // AR Photobooth page timeout - continuing with tests
         }
     });
 
