@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - admin/badge
+      - feature/exhibitionSchedule
     paths-ignore:
       - "modules/**"
       - "**/*.md"
@@ -179,7 +180,7 @@ jobs:
     needs: build
 
     # Deploy only for admin/badge branch
-    if: github.ref == 'refs/heads/admin/badge'
+    if: github.ref == 'refs/heads/feature/exhibitionSchedule' || github.ref == 'refs/heads/admin/badge'
 
     permissions:
       id-token: write
