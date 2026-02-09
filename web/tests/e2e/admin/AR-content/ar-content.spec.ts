@@ -38,6 +38,11 @@ test.describe("Exhibit AR Experience Toggle", () => {
         headers: { Authorization: `Bearer ${authToken}` },
       });
     }
+    if (authToken && exhibitionId) {
+      await request.delete(`${API_URL}/api/exhibitions/${exhibitionId}`, {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
+    }
   });
 
   test("should create a new exhibit", async ({ request }) => {
