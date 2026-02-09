@@ -63,15 +63,17 @@ async function seed() {
 
     // 2. EXHIBITIONS table
     await client.query(`
-  CREATE TABLE exhibitions (
-    exhibition_id BIGSERIAL PRIMARY KEY,
-    title VARCHAR(255) UNIQUE NOT NULL,
-    description TEXT,
-    status_id INTEGER REFERENCES status(status_id) ON DELETE SET NULL,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
-  );
-`);
+    CREATE TABLE exhibitions (
+      exhibition_id BIGSERIAL PRIMARY KEY,
+      title VARCHAR(255) UNIQUE NOT NULL,
+      description TEXT,
+      status_id INTEGER REFERENCES status(status_id) ON DELETE SET NULL,
+      starts_at TIMESTAMPTZ,
+      ends_at TIMESTAMPTZ,
+      created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
 
     // 3. badge table
     await client.query(`
@@ -1159,14 +1161,52 @@ async function seed() {
     `);
 
     // Insert exhibitions (matching seed data IDs 6 and 7)
-    await client.query(`
-    INSERT INTO exhibitions (exhibition_id, title, description, status_id) VALUES
-    (1, 'Through the Lens of Time', 'Through the Lens of Time is a permanent, immersive gallery at the Singapore Discovery Centre that takes visitors on a multi-sensory journey through roughly 700 years of Singapore''s history. Designed in collaboration with experiential agency Pico, the exhibition uses a mix of theatrical settings, lights, sound, props, augmented reality (AR), and interactive multimedia to tell the story of Singapore from its early days to modern times', 2),
-    (2, 'The Beginning', 'The Beginnings introduces visitors to Singapore''s early history, long before modern nationhood. This immersive zone uses large-scale projections, soundscapes, and theatrical lighting to recreate Singapore as a thriving maritime hub. It highlights early trade networks, cultural exchanges, and the island''s strategic importance, setting the foundation for understanding how Singapore evolved into a colonial port and eventually a modern nation.', 2),
-    (3, 'SoC Tour', 'Join us for the SoC Tour, an exclusive opportunity to explore our cutting-edge facilities, meet our passionate faculty, and see firsthand how we''re shaping the next generation of tech innovators. Whether you''re curious about Artificial Intelligence (AI), Cybersecurity, Data Science, or Game Development, this tour is your gateway to understanding the diverse career pathways in the computing industry.', 1),
-    (4, 'CLS Tour', 'School of Chemical & Life Sciences Tour - Explore cutting-edge laboratories, innovative programmes, and student research projects at Singapore Polytechnic. Discover how we prepare the next generation of scientists and life science professionals through hands-on learning and industry partnerships.', 1),
-    (5, 'SoB Tour', 'School of Business Tour - Discover business-related diploma programmes, industry partnerships, and career pathways at the School of Business, Singapore Polytechnic. Learn about entrepreneurship, marketing, accounting, and business analytics in our modern learning facilities.', 1)
-    `);
+await client.query(`
+  INSERT INTO exhibitions 
+    (exhibition_id, title, description, status_id, starts_at, ends_at) 
+  VALUES
+    (
+      1,
+      'Through the Lens of Time',
+      'Through the Lens of Time is a permanent, immersive gallery at the Singapore Discovery Centre that takes visitors on a multi-sensory journey through roughly 700 years of Singapore''s history. Designed in collaboration with experiential agency Pico, the exhibition uses a mix of theatrical settings, lights, sound, props, augmented reality (AR), and interactive multimedia to tell the story of Singapore from its early days to modern times',
+      2,
+      '2025-01-01',
+      '2026-01-31'
+    ),
+    (
+      2,
+      'The Beginning',
+      'The Beginnings introduces visitors to Singapore''s early history, long before modern nationhood. This immersive zone uses large-scale projections, soundscapes, and theatrical lighting to recreate Singapore as a thriving maritime hub. It highlights early trade networks, cultural exchanges, and the island''s strategic importance, setting the foundation for understanding how Singapore evolved into a colonial port and eventually a modern nation.',
+      2,
+      '2025-06-01',
+      '2026-01-31'
+    ),
+    (
+      3,
+      'SoC Tour',
+      'Join us for the SoC Tour, an exclusive opportunity to explore our cutting-edge facilities, meet our passionate faculty, and see firsthand how we''re shaping the next generation of tech innovators. Whether you''re curious about Artificial Intelligence (AI), Cybersecurity, Data Science, or Game Development, this tour is your gateway to understanding the diverse career pathways in the computing industry.',
+      1,
+      '2025-09-01',
+      '2026-02-28'
+    ),
+    (
+      4,
+      'CLS Tour',
+      'School of Chemical & Life Sciences Tour - Explore cutting-edge laboratories, innovative programmes, and student research projects at Singapore Polytechnic. Discover how we prepare the next generation of scientists and life science professionals through hands-on learning and industry partnerships.',
+      1,
+      '2025-10-01',
+      '2026-02-28'
+    ),
+    (
+      5,
+      'SoB Tour',
+      'School of Business Tour - Discover business-related diploma programmes, industry partnerships, and career pathways at the School of Business, Singapore Polytechnic. Learn about entrepreneurship, marketing, accounting, and business analytics in our modern learning facilities.',
+      1,
+      '2025-11-01',
+      '2026-02-28'
+    );
+`);
+
 
     // Insert badges first (25 badges)
     await client.query(`

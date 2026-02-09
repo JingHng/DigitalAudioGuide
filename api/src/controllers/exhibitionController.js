@@ -1,6 +1,4 @@
-
 const prisma = require('../db/prisma');
-
 const { logAuditAction } = require("./auditLogsController");
 
 // Simple in-memory cache for exhibitions list (public endpoint)
@@ -12,6 +10,55 @@ const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 let adminExhibitionsCache = null;
 let adminExhibitionsCacheTime = null;
 const ADMIN_CACHE_DURATION = 2 * 60 * 1000; // 2 minutes for admin (shorter for fresher data)
+
+// =====================================================
+// Auto active/inactive based on startsAt/endsAt
+// =====================================================
+const ACTIVE_STATUS_ID = 1;
+const INACTIVE_STATUS_ID = 2;
+
+// Helper to compute statusId based on start and end dates
+function computeStatusIdFromWindow(startsAt, endsAt, now = new Date()) {
+  // Empty window means no auto-change
+  if (!startsAt && !endsAt) return null;
+
+  const startOk = startsAt ? now >= new Date(startsAt) : true;
+  const endOk = endsAt ? now <= new Date(endsAt) : true;
+
+  return (startOk && endOk) ? ACTIVE_STATUS_ID : INACTIVE_STATUS_ID;
+}
+
+// Sync only exhibitions that have time windows (performance-friendly)
+async function syncExhibitionStatuses() {
+  try {
+    const now = new Date();
+
+    const exhibitions = await prisma.exhibition.findMany({
+      where: {
+        OR: [{ startsAt: { not: null } }, { endsAt: { not: null } }],
+      },
+      select: { exhibitionId: true, startsAt: true, endsAt: true, statusId: true },
+    });
+
+    const updates = [];
+    for (const ex of exhibitions) {
+      const desired = computeStatusIdFromWindow(ex.startsAt, ex.endsAt, now);
+      if (desired !== null && desired !== ex.statusId) {
+        updates.push(
+          prisma.exhibition.update({
+            where: { exhibitionId: ex.exhibitionId },
+            data: { statusId: desired },
+          })
+        );
+      }
+    }
+
+    if (updates.length) await prisma.$transaction(updates);
+  } catch (err) {
+    // Don't block API if sync fails; just log it.
+    console.error("Error syncing exhibition statuses:", err);
+  }
+}
 
 // Helper to clear cache when data changes
 exports.clearExhibitionsCache = function clearExhibitionsCache() {
@@ -28,6 +75,8 @@ exports.clearExhibitionsCache = function clearExhibitionsCache() {
  */
 exports.getAllExhibitions = async (req, res) => {
   try {
+    await syncExhibitionStatuses();
+
     // Check cache first
     const now = Date.now();
     if (exhibitionsCache && exhibitionsCacheTime && (now - exhibitionsCacheTime < CACHE_DURATION)) {
@@ -35,14 +84,14 @@ exports.getAllExhibitions = async (req, res) => {
     }
 
     const exhibitions = await prisma.exhibition.findMany({
-      where: { statusId: 1 },
+      where: { statusId: ACTIVE_STATUS_ID },
       select: {
         exhibitionId: true,
         title: true,
         description: true,
-        _count: { select: { exhibits: { where: { statusId: 1 } } } },
-        images: { 
-          where: { isPrimary: true }, 
+        _count: { select: { exhibits: { where: { statusId: ACTIVE_STATUS_ID } } } },
+        images: {
+          where: { isPrimary: true },
           take: 1,
           select: {
             imageId: true,
@@ -53,11 +102,11 @@ exports.getAllExhibitions = async (req, res) => {
       },
       orderBy: { title: 'asc' },
     });
-    
+
     // Update cache
     exhibitionsCache = exhibitions;
     exhibitionsCacheTime = now;
-    
+
     res.status(200).json(exhibitions);
   } catch (err) {
     console.error("Error fetching exhibitions:", err);
@@ -72,19 +121,21 @@ exports.getAllExhibitions = async (req, res) => {
  */
 exports.getExhibitionById = async (req, res) => {
   try {
+    await syncExhibitionStatuses();
+
     const exhibitionId = BigInt(req.params.id);
-    
-    const exhibition = await prisma.exhibition.findFirst({ 
+
+    const exhibition = await prisma.exhibition.findFirst({
       where: {
         exhibitionId: exhibitionId,
-        statusId: 1, 
+        statusId: ACTIVE_STATUS_ID,
       },
       select: {
         exhibitionId: true,
         title: true,
         description: true,
         exhibits: {
-          where: { statusId: 1 },
+          where: { statusId: ACTIVE_STATUS_ID },
           select: {
             exhibitId: true,
             title: true,
@@ -95,8 +146,8 @@ exports.getExhibitionById = async (req, res) => {
                 isPrimary: true,
               },
               orderBy: [
-                { isPrimary: 'desc' }, // Primary images first
-                { imageId: 'asc' }     // Then by imageId
+                { isPrimary: 'desc' },
+                { imageId: 'asc' }
               ],
               take: 1,
             },
@@ -109,9 +160,9 @@ exports.getExhibitionById = async (req, res) => {
     });
 
     if (!exhibition) {
-
       return res.status(404).json({ message: "Active exhibition not found" });
     }
+
     res.status(200).json(exhibition);
   } catch (err) {
     console.error("Error fetching exhibition by ID:", err);
@@ -127,26 +178,31 @@ exports.getExhibitionById = async (req, res) => {
  */
 exports.createExhibition = async (req, res) => {
   try {
-    const { title, description } = req.body;
+    const { title, description, startsAt, endsAt } = req.body;
     const file = req.file;
     const adminUserId = req.user?.userId;
+
+    if (startsAt && endsAt && new Date(startsAt) > new Date(endsAt)) {
+      return res.status(400).json({ message: "startsAt must be earlier than endsAt." });
+    }
 
     if (!title) {
       return res.status(400).json({ error: 'Exhibition title is required.' });
     }
 
-    //Use a Transaction to create the exhibition and the image together
     const newExhibition = await prisma.$transaction(async (tx) => {
-      // Create the exhibition
+      const desiredStatusId = computeStatusIdFromWindow(startsAt, endsAt);
+
       const exhibition = await tx.exhibition.create({
         data: {
           title,
           description,
-          statusId: 1, // Default to Active
+          startsAt: startsAt ? new Date(startsAt) : null,
+          endsAt: endsAt ? new Date(endsAt) : null,
+          statusId: desiredStatusId ?? ACTIVE_STATUS_ID,
         },
       });
 
-      //If an image was uploaded, create the image record linked to this exhibition
       if (file) {
         await tx.image.create({
           data: {
@@ -161,31 +217,28 @@ exports.createExhibition = async (req, res) => {
       return exhibition;
     });
 
-    //Log the action
     await logAuditAction(
       adminUserId, null, "exhibition", "create",
-      { 
-        exhibitionId: newExhibition.exhibitionId.toString(), 
-        title: newExhibition.title, 
-        hasCoverImage: !!file 
+      {
+        exhibitionId: newExhibition.exhibitionId.toString(),
+        title: newExhibition.title,
+        hasCoverImage: !!file
       },
       { ip_address: req.ip, user_agent: req.get("User-Agent") }
     );
 
-    // Clear cache after modification
     exports.clearExhibitionsCache();
 
-    // Return the ID as a string to avoid BigInt serialization issues
-    res.status(201).json({ 
-      message: "Exhibition created successfully", 
-      exhibitionId: newExhibition.exhibitionId.toString() 
+    res.status(201).json({
+      message: "Exhibition created successfully",
+      exhibitionId: newExhibition.exhibitionId.toString()
     });
 
   } catch (err) {
     console.error("Detailed Server Error:", err);
-    res.status(500).json({ 
-      message: "Failed to create exhibition", 
-      error: err.message 
+    res.status(500).json({
+      message: "Failed to create exhibition",
+      error: err.message
     });
   }
 };
@@ -199,9 +252,13 @@ exports.createExhibition = async (req, res) => {
 exports.updateExhibition = async (req, res) => {
   try {
     const exhibitionId = BigInt(req.params.id);
-    const { title, description } = req.body;
+    const { title, description, startsAt, endsAt } = req.body;
     const file = req.file;
     const adminUserId = req.user?.userId;
+
+    if (startsAt && endsAt && new Date(startsAt) > new Date(endsAt)) {
+      return res.status(400).json({ message: "startsAt must be earlier than endsAt." });
+    }
 
     const originalExhibition = await prisma.exhibition.findUnique({ where: { exhibitionId } });
     if (!originalExhibition) {
@@ -209,36 +266,39 @@ exports.updateExhibition = async (req, res) => {
     }
 
     await prisma.$transaction(async (tx) => {
-        // 1. Update the exhibition's text data
-        await tx.exhibition.update({
-            where: { exhibitionId },
-            data: { title, description },
+      const desiredStatusId = computeStatusIdFromWindow(startsAt, endsAt);
+
+      await tx.exhibition.update({
+        where: { exhibitionId },
+        data: {
+          title,
+          description,
+          startsAt: startsAt === undefined ? undefined : (startsAt ? new Date(startsAt) : null),
+          endsAt: endsAt === undefined ? undefined : (endsAt ? new Date(endsAt) : null),
+          ...(desiredStatusId !== null ? { statusId: desiredStatusId } : {}),
+        },
+      });
+
+      if (file) {
+        await tx.image.deleteMany({
+          where: {
+            exhibitionId: exhibitionId,
+            isPrimary: true,
+          }
         });
 
-        // 2. If a new cover image was uploaded, handle it
-        if (file) {
-            // Optional: Delete the old primary image first
-            await tx.image.deleteMany({
-                where: {
-                    exhibitionId: exhibitionId,
-                    isPrimary: true,
-                }
-            });
-
-            // Create the new primary image record
-            await tx.image.create({
-                data: {
-                    fileUrl: `/images/${file.filename}`,
-                    title: `Cover for ${title}`,
-                    exhibitionId: exhibitionId,
-                    isPrimary: true,
-                }
-            });
-        }
+        await tx.image.create({
+          data: {
+            fileUrl: `/images/${file.filename}`,
+            title: `Cover for ${title}`,
+            exhibitionId: exhibitionId,
+            isPrimary: true,
+          }
+        });
+      }
     });
 
     const updatedExhibition = await prisma.exhibition.findUnique({ where: { exhibitionId } });
-
 
     await logAuditAction(
       adminUserId,
@@ -250,12 +310,14 @@ exports.updateExhibition = async (req, res) => {
         changes: {
           title: { from: originalExhibition.title, to: updatedExhibition.title },
           description: { from: originalExhibition.description, to: updatedExhibition.description },
+          startsAt: { from: originalExhibition.startsAt, to: updatedExhibition.startsAt },
+          endsAt: { from: originalExhibition.endsAt, to: updatedExhibition.endsAt },
+          statusId: { from: originalExhibition.statusId, to: updatedExhibition.statusId },
         },
       },
       { ip_address: req.ip, user_agent: req.get("User-Agent") }
     );
 
-    // Clear cache after modification
     exports.clearExhibitionsCache();
 
     res.status(200).json(updatedExhibition);
@@ -275,7 +337,6 @@ exports.deleteExhibition = async (req, res) => {
     const exhibitionId = BigInt(req.params.id);
     const adminUserId = req.user?.userId;
 
-    // 1. Check if it exists and get exhibit count for auditing
     const exhibitionToDeactivate = await prisma.exhibition.findUnique({
       where: { exhibitionId },
       include: { _count: { select: { exhibits: true } } },
@@ -285,24 +346,21 @@ exports.deleteExhibition = async (req, res) => {
       return res.status(404).json({ message: "Exhibition not found." });
     }
 
-    // 2. Run deactivation in a transaction
     await prisma.$transaction(async (tx) => {
-      // Deactivate the parent exhibition (assuming statusId 2 is 'Inactive')
+      // IMPORTANT: also clear time window so auto-sync won't reactivate it
       await tx.exhibition.update({
         where: { exhibitionId },
-        data: { statusId: 2 }, 
+        data: { statusId: INACTIVE_STATUS_ID, startsAt: null, endsAt: null },
       });
 
-      // Deactivate all exhibits inside this exhibition
       await tx.exhibit.updateMany({
         where: { exhibitionId },
-        data: { statusId: 2 },
+        data: { statusId: INACTIVE_STATUS_ID },
       });
     });
 
-    // 3. Log the action (Converting IDs to string for JSON safety)
     await logAuditAction(
-      adminUserId, null, "exhibition", "deactivate", 
+      adminUserId, null, "exhibition", "deactivate",
       {
         exhibitionId: exhibitionId.toString(),
         title: exhibitionToDeactivate.title,
@@ -311,15 +369,14 @@ exports.deleteExhibition = async (req, res) => {
       { ip_address: req.ip, user_agent: req.get("User-Agent") }
     );
 
-    // Clear cache after modification
     exports.clearExhibitionsCache();
 
     res.status(200).json({ message: "Exhibition and its exhibits were marked as inactive." });
   } catch (err) {
     console.error("Error deactivating exhibition:", err);
-    res.status(500).json({ 
-      message: "Failed to deactivate exhibition", 
-      error: err.message 
+    res.status(500).json({
+      message: "Failed to deactivate exhibition",
+      error: err.message
     });
   }
 };
@@ -331,19 +388,21 @@ exports.deleteExhibition = async (req, res) => {
  * @access  Private (Admin)
  */
 exports.getAllExhibitionsWithExhibits = async (req, res) => {
- try {
-    // Check cache first
+  try {
+    await syncExhibitionStatuses();
+
     const now = Date.now();
     if (adminExhibitionsCache && adminExhibitionsCacheTime && (now - adminExhibitionsCacheTime < ADMIN_CACHE_DURATION)) {
       return res.status(200).json(adminExhibitionsCache);
     }
 
-    // Optimized query - fetch only necessary fields
     const exhibitionsWithExhibits = await prisma.exhibition.findMany({
       select: {
         exhibitionId: true,
         title: true,
         description: true,
+        startsAt: true,
+        endsAt: true,
         status: {
           select: {
             statusId: true,
@@ -363,12 +422,11 @@ exports.getAllExhibitionsWithExhibits = async (req, res) => {
               }
             },
             _count: {
-              select: { 
-                images: true, 
-                audio: true 
+              select: {
+                images: true,
+                audio: true
               },
             },
-            // Only fetch primary image for performance
             images: {
               where: {
                 isPrimary: true
@@ -392,13 +450,12 @@ exports.getAllExhibitionsWithExhibits = async (req, res) => {
       },
     });
 
-    // Update cache
     adminExhibitionsCache = exhibitionsWithExhibits;
     adminExhibitionsCacheTime = now;
 
     res.status(200).json(exhibitionsWithExhibits);
   } catch (err) {
-    console.error("Error fetching exhibitions for admin:", err); 
+    console.error("Error fetching exhibitions for admin:", err);
     res.status(500).json({ message: "Error fetching data for admin panel" });
   }
 };
@@ -418,21 +475,27 @@ exports.reactivateExhibition = async (req, res) => {
       return res.status(404).json({ message: "Exhibition not found." });
     }
 
-    // Standard Prisma Transaction to set everything back to Active (statusId 1)
+    // IMPORTANT: use time window rule if time window exists, otherwise set Active.
+    const desiredStatusId = computeStatusIdFromWindow(
+      exhibitionToReactivate.startsAt,
+      exhibitionToReactivate.endsAt
+    );
+
     await prisma.$transaction(async (tx) => {
       await tx.exhibition.update({
         where: { exhibitionId },
-        data: { statusId: 1 }, 
+        data: { statusId: desiredStatusId ?? ACTIVE_STATUS_ID },
       });
 
+      // Keep your original behavior (reactivate all exhibits)
       await tx.exhibit.updateMany({
         where: { exhibitionId },
-        data: { statusId: 1 },
+        data: { statusId: ACTIVE_STATUS_ID },
       });
     });
 
     await logAuditAction(
-      adminUserId, null, "exhibition", "reactivate", 
+      adminUserId, null, "exhibition", "reactivate",
       {
         exhibitionId: exhibitionId.toString(),
         title: exhibitionToReactivate.title,
@@ -441,7 +504,6 @@ exports.reactivateExhibition = async (req, res) => {
       { ip_address: req.ip, user_agent: req.get("User-Agent") }
     );
 
-    // Clear cache after modification
     exports.clearExhibitionsCache();
 
     res.status(200).json({ message: "Exhibition and its exhibits were reactivated." });
@@ -462,14 +524,16 @@ exports.reactivateExhibition = async (req, res) => {
  */
 exports.getExhibitionTour = async (req, res) => {
   try {
+    await syncExhibitionStatuses();
+
     console.log('🎯 getExhibitionTour called with ID:', req.params.id);
     const exhibitionId = BigInt(req.params.id);
     console.log('🎯 Converted to BigInt:', exhibitionId);
-    
-    const exhibition = await prisma.exhibition.findFirst({ 
+
+    const exhibition = await prisma.exhibition.findFirst({
       where: {
         exhibitionId: exhibitionId,
-        statusId: 1, 
+        statusId: ACTIVE_STATUS_ID,
       },
       select: {
         exhibitionId: true,
@@ -484,7 +548,7 @@ exports.getExhibitionTour = async (req, res) => {
           take: 1,
         },
         exhibits: {
-          where: { statusId: 1 },
+          where: { statusId: ACTIVE_STATUS_ID },
           select: {
             exhibitId: true,
             title: true,
@@ -525,7 +589,7 @@ exports.getExhibitionTour = async (req, res) => {
                   },
                 },
               },
-              where: { languageId: 1 }, // Default to English
+              where: { languageId: 1 },
               take: 1,
             },
             qrCodes: {
@@ -537,7 +601,7 @@ exports.getExhibitionTour = async (req, res) => {
             },
           },
           orderBy: {
-            sequence: 'asc', // Order by sequence for tour flow
+            sequence: 'asc',
           },
         },
       },
@@ -552,16 +616,13 @@ exports.getExhibitionTour = async (req, res) => {
       return res.status(404).json({ message: "Active exhibition not found" });
     }
 
-    // Add totalStops count and current position metadata
     const totalStops = exhibition.exhibits.length;
     const exhibitsWithPosition = exhibition.exhibits.map((exhibit, index) => {
-      // Convert badge object to badges array for frontend consistency
       const badges = exhibit.badge ? [exhibit.badge] : [];
-      
       return {
         ...exhibit,
-        badge: undefined, // Remove singular badge
-        badges: badges,   // Add badges array
+        badge: undefined,
+        badges: badges,
         currentStop: index + 1,
         totalStops: totalStops,
         isFirst: index === 0,
@@ -591,7 +652,6 @@ exports.getNextExhibit = async (req, res) => {
   try {
     const exhibitId = BigInt(req.params.id);
 
-    // Get current exhibit with its sequence
     const currentExhibit = await prisma.exhibit.findUnique({
       where: { exhibitId: exhibitId },
       select: {
@@ -604,12 +664,11 @@ exports.getNextExhibit = async (req, res) => {
       return res.status(404).json({ message: "Current exhibit not found or not part of a tour" });
     }
 
-    // Find next exhibit in sequence
     const nextExhibit = await prisma.exhibit.findFirst({
       where: {
         exhibitionId: currentExhibit.exhibitionId,
         sequence: { gt: currentExhibit.sequence },
-        statusId: 1,
+        statusId: ACTIVE_STATUS_ID,
       },
       select: {
         exhibitId: true,
@@ -662,26 +721,22 @@ exports.getNextExhibit = async (req, res) => {
       return res.status(404).json({ message: "No next exhibit found. Tour complete!" });
     }
 
-    // Get total exhibits count for position metadata
     const totalExhibits = await prisma.exhibit.count({
       where: {
         exhibitionId: currentExhibit.exhibitionId,
-        statusId: 1,
+        statusId: ACTIVE_STATUS_ID,
       },
     });
 
-    // Find the position of this exhibit
     const exhibitsBeforeThis = await prisma.exhibit.count({
       where: {
         exhibitionId: currentExhibit.exhibitionId,
         sequence: { lt: nextExhibit.sequence },
-        statusId: 1,
+        statusId: ACTIVE_STATUS_ID,
       },
     });
 
     const currentStop = exhibitsBeforeThis + 1;
-    
-    // Convert badge to badges array
     const badges = nextExhibit.badge ? [nextExhibit.badge] : [];
 
     res.status(200).json({
@@ -708,7 +763,6 @@ exports.getPreviousExhibit = async (req, res) => {
   try {
     const exhibitId = BigInt(req.params.id);
 
-    // Get current exhibit with its sequence
     const currentExhibit = await prisma.exhibit.findUnique({
       where: { exhibitId: exhibitId },
       select: {
@@ -721,12 +775,11 @@ exports.getPreviousExhibit = async (req, res) => {
       return res.status(404).json({ message: "Current exhibit not found or not part of a tour" });
     }
 
-    // Find previous exhibit in sequence
     const previousExhibit = await prisma.exhibit.findFirst({
       where: {
         exhibitionId: currentExhibit.exhibitionId,
         sequence: { lt: currentExhibit.sequence },
-        statusId: 1,
+        statusId: ACTIVE_STATUS_ID,
       },
       select: {
         exhibitId: true,
@@ -779,26 +832,22 @@ exports.getPreviousExhibit = async (req, res) => {
       return res.status(404).json({ message: "No previous exhibit found. This is the first stop!" });
     }
 
-    // Get total exhibits count for position metadata
     const totalExhibits = await prisma.exhibit.count({
       where: {
         exhibitionId: currentExhibit.exhibitionId,
-        statusId: 1,
+        statusId: ACTIVE_STATUS_ID,
       },
     });
 
-    // Find the position of this exhibit
     const exhibitsBeforeThis = await prisma.exhibit.count({
       where: {
         exhibitionId: currentExhibit.exhibitionId,
         sequence: { lt: previousExhibit.sequence },
-        statusId: 1,
+        statusId: ACTIVE_STATUS_ID,
       },
     });
 
     const currentStop = exhibitsBeforeThis + 1;
-    
-    // Convert badge to badges array
     const badges = previousExhibit.badge ? [previousExhibit.badge] : [];
 
     res.status(200).json({
@@ -831,7 +880,6 @@ exports.updateExhibitSequence = async (req, res) => {
       return res.status(400).json({ error: 'Sequence number is required.' });
     }
 
-    // Use a transaction for better performance and consistency
     const result = await prisma.$transaction(async (tx) => {
       const exhibit = await tx.exhibit.findUnique({
         where: { exhibitId: exhibitId },
@@ -842,7 +890,6 @@ exports.updateExhibitSequence = async (req, res) => {
         throw new Error('Exhibit not found');
       }
 
-      // Update the sequence
       const updatedExhibit = await tx.exhibit.update({
         where: { exhibitId: exhibitId },
         data: { sequence: parseInt(sequence) },
@@ -857,9 +904,8 @@ exports.updateExhibitSequence = async (req, res) => {
       return { exhibit, updatedExhibit };
     });
 
-    // Log audit action outside transaction for better performance
     await logAuditAction(
-      adminUserId, null, "exhibit", "update_sequence", 
+      adminUserId, null, "exhibit", "update_sequence",
       {
         exhibitId: exhibitId.toString(),
         title: result.exhibit.title,
@@ -869,27 +915,25 @@ exports.updateExhibitSequence = async (req, res) => {
       { ip_address: req.ip, user_agent: req.get("User-Agent") }
     );
 
-    // Clear cache after reordering
     exports.clearExhibitionsCache();
 
-    res.status(200).json({ 
+    res.status(200).json({
       message: "Exhibit sequence updated successfully.",
-      exhibit: result.updatedExhibit 
+      exhibit: result.updatedExhibit
     });
   } catch (err) {
     console.error("Error updating exhibit sequence:", err);
-    
+
     if (err.message === 'Exhibit not found') {
       return res.status(404).json({ message: "Exhibit not found." });
     }
-    
-    // Handle unique constraint violation
+
     if (err.code === 'P2002') {
-      return res.status(400).json({ 
-        message: "Sequence number already exists for this exhibition. Please choose a different number." 
+      return res.status(400).json({
+        message: "Sequence number already exists for this exhibition. Please choose a different number."
       });
     }
-    
+
     res.status(500).json({ message: "Failed to update exhibit sequence" });
   }
 };
@@ -902,48 +946,43 @@ exports.updateExhibitSequence = async (req, res) => {
 exports.batchUpdateExhibitSequences = async (req, res) => {
   try {
     const exhibitionId = BigInt(req.params.exhibitionId);
-    const { exhibits } = req.body; // Array of { exhibitId, sequence }
+    const { exhibits } = req.body;
     const adminUserId = req.user?.userId;
 
     if (!Array.isArray(exhibits) || exhibits.length === 0) {
       return res.status(400).json({ error: 'Exhibits array is required.' });
     }
 
-    // Validate all exhibits belong to the same exhibition and data is valid
     for (const item of exhibits) {
       if (!item.exhibitId || item.sequence === undefined || item.sequence === null) {
-        return res.status(400).json({ 
-          error: 'Each exhibit must have exhibitId and sequence.' 
+        return res.status(400).json({
+          error: 'Each exhibit must have exhibitId and sequence.'
         });
       }
     }
 
-    // Two-step raw SQL approach to avoid unique constraint issues
-    // Step 1: Set all to negative values (fast, no conflicts)
     const exhibitIds = exhibits.map(item => `'${item.exhibitId}'`).join(', ');
-    
+
     await prisma.$executeRawUnsafe(`
-      UPDATE exhibit 
+      UPDATE exhibit
       SET sequence = -sequence - 1000
       WHERE exhibit_id::text IN (${exhibitIds})
       AND exhibition_id = ${exhibitionId}
     `);
 
-    // Step 2: Update to final values using CASE statement
-    const caseStatements = exhibits.map(item => 
+    const caseStatements = exhibits.map(item =>
       `WHEN '${item.exhibitId}' THEN ${parseInt(item.sequence)}`
     ).join(' ');
 
     await prisma.$executeRawUnsafe(`
-      UPDATE exhibit 
-      SET sequence = CASE exhibit_id::text 
+      UPDATE exhibit
+      SET sequence = CASE exhibit_id::text
         ${caseStatements}
       END
       WHERE exhibit_id::text IN (${exhibitIds})
       AND exhibition_id = ${exhibitionId}
     `);
 
-    // Fetch updated exhibits for response
     const updatedExhibits = await prisma.exhibit.findMany({
       where: {
         exhibitId: { in: exhibits.map(e => BigInt(e.exhibitId)) },
@@ -957,9 +996,8 @@ exports.batchUpdateExhibitSequences = async (req, res) => {
       orderBy: { sequence: 'asc' }
     });
 
-    // Log audit action
     await logAuditAction(
-      adminUserId, null, "exhibition", "batch_reorder_exhibits", 
+      adminUserId, null, "exhibition", "batch_reorder_exhibits",
       {
         exhibitionId: exhibitionId.toString(),
         exhibitsCount: exhibits.length,
@@ -968,23 +1006,21 @@ exports.batchUpdateExhibitSequences = async (req, res) => {
       { ip_address: req.ip, user_agent: req.get("User-Agent") }
     );
 
-    // Clear cache after reordering
     exports.clearExhibitionsCache();
 
-    res.status(200).json({ 
+    res.status(200).json({
       message: `Successfully reordered ${updatedExhibits.length} exhibits.`,
-      exhibits: updatedExhibits 
+      exhibits: updatedExhibits
     });
   } catch (err) {
     console.error("Error batch updating exhibit sequences:", err);
-    
-    // Handle unique constraint violation
+
     if (err.code === 'P2002') {
-      return res.status(400).json({ 
-        message: "Duplicate sequence numbers detected. Each exhibit must have a unique sequence." 
+      return res.status(400).json({
+        message: "Duplicate sequence numbers detected. Each exhibit must have a unique sequence."
       });
     }
-    
+
     res.status(500).json({ message: "Failed to update exhibit sequences" });
   }
 };
@@ -996,21 +1032,21 @@ exports.batchUpdateExhibitSequences = async (req, res) => {
  */
 exports.getExhibitionStats = async (req, res) => {
   try {
-    // Get total count of active exhibitions
+    await syncExhibitionStatuses();
+
     const totalExhibitions = await prisma.exhibition.count({
-      where: { statusId: 1 }
+      where: { statusId: ACTIVE_STATUS_ID }
     });
 
-    // Get top 6 exhibitions for dashboard display (ordered by most recently created)
     const topExhibitions = await prisma.exhibition.findMany({
-      where: { statusId: 1 },
+      where: { statusId: ACTIVE_STATUS_ID },
       select: {
         exhibitionId: true,
         title: true,
         createdAt: true,
         _count: {
           select: {
-            exhibits: { where: { statusId: 1 } }
+            exhibits: { where: { statusId: ACTIVE_STATUS_ID } }
           }
         }
       },

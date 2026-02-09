@@ -43,6 +43,8 @@ test.describe('Tours Admin UI - Comprehensive Tests', () => {
         // Verify form fields exist
         await expect(page.locator('#exhibitionTitle')).toBeVisible();
         await expect(page.locator('#exhibitionDescription')).toBeVisible();
+        await expect(page.locator('#exhibitionStartsAt')).toBeVisible();
+        await expect(page.locator('#exhibitionEndsAt')).toBeVisible();
         await expect(page.locator('button:has-text("Create Tour")')).toBeVisible();
         await expect(page.locator('button:has-text("Cancel")')).toBeVisible();
         
