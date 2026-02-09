@@ -307,7 +307,7 @@ async function generateConversationTitle(firstMessage) {
     return words.length > 40 ? words.substring(0, 37) + '...' : words;
   }
 }
-
+ 
 module.exports = {
   generateAIResponse,
   generateConversationTitle
