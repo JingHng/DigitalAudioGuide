@@ -1,5 +1,4 @@
 const ReviewModel = require('../models/reviewModel');
-const { checkProfanity } = require('../utils/profanity');
 
 class ReviewController {
   // PATCH /api/reviews/:id/toggle-hidden - Toggle is_hidden for a review
@@ -154,26 +153,9 @@ class ReviewController {
         });
       }
 
-      // Check for profanity in comment if comment exists
-      let processedComment = comment;
-      let isFlagged = false;
-      
-      if (comment && comment.trim() !== '') {
-        const profanityCheck = checkProfanity(comment);
-        
-        if (!profanityCheck.passed) {
-          // Profanity detected and mode is 'reject'
-          return res.status(400).json({
-            success: false,
-            error: profanityCheck.message,
-            profaneWords: profanityCheck.profaneWords
-          });
-        }
-        
-        // Use processed text (censored if mode is 'censor')
-        processedComment = profanityCheck.text;
-        isFlagged = profanityCheck.flagged;
-      }
+      // Use comment as-is
+      const processedComment = comment || '';
+      const isFlagged = false;
 
       // Check if user and exhibit exist
       const [userExists, exhibitExists] = await Promise.all([
@@ -260,26 +242,9 @@ class ReviewController {
       const updateData = {};
       if (rating !== undefined) updateData.rating = rating;
       
-      // Check for profanity in comment if comment is being updated
+      // Update comment if provided
       if (comment !== undefined) {
-        let processedComment = comment;
-        
-        if (comment && comment.trim() !== '') {
-          const profanityCheck = checkProfanity(comment);
-          
-          if (!profanityCheck.passed) {
-            // Profanity detected and mode is 'reject'
-            return res.status(400).json({
-              success: false,
-              error: profanityCheck.message,
-              profaneWords: profanityCheck.profaneWords
-            });
-          }
-          
-          processedComment = profanityCheck.text;
-        }
-        
-        updateData.comment = processedComment;
+        updateData.comment = comment;
       }
 
       const updatedReview = await ReviewModel.updateReview(id, updateData);

@@ -37,7 +37,6 @@
     "express": "^5.1.0",
     "google-tts-api": "^2.0.2",
     "jsonwebtoken": "^9.0.2",
-    "leo-profanity": "^1.9.0",
     "lucide-react": "^0.553.0",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^7.0.10",
