@@ -2503,6 +2503,86 @@ await client.query(`
       console.log(`Assigned ${badgeAssignments.length} badges to test users`);
     }
 
+    // Add historical visitor statistics data for analytics (past 12 months)
+    console.log("📊 Creating historical visitor statistics for exhibitions...");
+    const historicalVisits = [];
+    
+    // Define time periods for statistics with realistic visitor patterns
+    const timeDistribution = {
+      lastMonth: { startDay: 0, endDay: 30, visitorsPerDay: 15 },      // Last 30 days - most active
+      months2to3: { startDay: 31, endDay: 90, visitorsPerDay: 10 },    // 1-3 months ago
+      months4to6: { startDay: 91, endDay: 180, visitorsPerDay: 7 },    // 3-6 months ago
+      months7to12: { startDay: 181, endDay: 365, visitorsPerDay: 5 }   // 6-12 months ago
+    };
+
+    // Exhibition-specific visit patterns (based on badges which are tied to exhibits)
+    // Exhibition 1 (Through the Lens) - Badges 1-4
+    // Exhibition 2 (SoC Tour) - Badges 5-9
+    const exhibitionBadges = {
+      1: [1, 2, 3, 4],      // Through the Lens of Time exhibits
+      2: [5, 6, 7, 8, 9]    // SoC Tour exhibits
+    };
+
+    // Generate historical visitor data with realistic patterns
+    for (const [periodName, period] of Object.entries(timeDistribution)) {
+      const { startDay, endDay, visitorsPerDay } = period;
+      const daysInPeriod = endDay - startDay;
+      
+      for (let day = 0; day < daysInPeriod; day++) {
+        // Add some randomness to daily visitor count (+/- 50%)
+        const dailyVisitors = Math.floor(visitorsPerDay * (0.5 + Math.random()));
+        
+        for (let v = 0; v < dailyVisitors; v++) {
+          // Random user between existing test users (3-12)
+          const userId = Math.floor(Math.random() * 10) + 3;
+          
+          // Exhibition popularity: 60% Exhibition 1 (History), 40% Exhibition 2 (SoC)
+          const exhibitionId = Math.random() < 0.6 ? 1 : 2;
+          const badges = exhibitionBadges[exhibitionId];
+          
+          // Each visitor typically collects 1-3 badges from an exhibition
+          const badgesCollected = Math.floor(Math.random() * 3) + 1;
+          
+          for (let b = 0; b < badgesCollected; b++) {
+            const badgeId = badges[Math.floor(Math.random() * badges.length)];
+            
+            // Calculate timestamp: days ago from current date
+            const daysAgo = startDay + day;
+            const hoursAgo = Math.floor(Math.random() * 24);
+            const minutesAgo = Math.floor(Math.random() * 60);
+            
+            const createdAt = `CURRENT_TIMESTAMP - INTERVAL '${daysAgo} days' - INTERVAL '${hoursAgo} hours' - INTERVAL '${minutesAgo} minutes'`;
+            
+            // Add visit record
+            historicalVisits.push(`(${userId}, ${badgeId}, ${createdAt})`);
+          }
+        }
+      }
+      console.log(`  ✓ Generated ${periodName} visitor data (days ${startDay}-${endDay})`);
+    }
+
+    if (historicalVisits.length > 0) {
+      // Insert in batches to avoid SQL query size limits
+      const batchSize = 500;
+      let insertedCount = 0;
+      
+      for (let i = 0; i < historicalVisits.length; i += batchSize) {
+        const batch = historicalVisits.slice(i, i + batchSize);
+        try {
+          await client.query(`
+            INSERT INTO user_badge (user_id, badge_id, created_at) 
+            VALUES ${batch.join(", ")};
+          `);
+          insertedCount += batch.length;
+        } catch (err) {
+          // Skip duplicates but continue with next batch
+          console.log(`  ⚠ Skipped batch ${Math.floor(i / batchSize) + 1} due to duplicates`);
+        }
+      }
+      console.log(`📈 Added ${insertedCount} historical visitor records spanning 12 months`);
+      console.log(`   - Data available for filtering by: Last Month, Last 3 Months, Last 6 Months, Last Year`);
+    }
+
     // Create audio playback logs for test users in both English and Chinese
     console.log("🎧 Creating audio playback logs for test users...");
     const audioPlaybackLogs = [];
