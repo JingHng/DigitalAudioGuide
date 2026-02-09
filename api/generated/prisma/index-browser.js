@@ -127,8 +127,8 @@ exports.Prisma.ExhibitionScalarFieldEnum = {
   title: 'title',
   description: 'description',
   statusId: 'statusId',
-  startsAt: 'startsAt',
-  endsAt: 'endsAt',
+  starts_at: 'starts_at',
+  ends_at: 'ends_at',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

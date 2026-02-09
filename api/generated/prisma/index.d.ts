@@ -3679,8 +3679,8 @@ export namespace Prisma {
     title: string | null
     description: string | null
     statusId: number | null
-    startsAt: Date | null
-    endsAt: Date | null
+    starts_at: Date | null
+    ends_at: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -3690,8 +3690,8 @@ export namespace Prisma {
     title: string | null
     description: string | null
     statusId: number | null
-    startsAt: Date | null
-    endsAt: Date | null
+    starts_at: Date | null
+    ends_at: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -3701,8 +3701,8 @@ export namespace Prisma {
     title: number
     description: number
     statusId: number
-    startsAt: number
-    endsAt: number
+    starts_at: number
+    ends_at: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -3724,8 +3724,8 @@ export namespace Prisma {
     title?: true
     description?: true
     statusId?: true
-    startsAt?: true
-    endsAt?: true
+    starts_at?: true
+    ends_at?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -3735,8 +3735,8 @@ export namespace Prisma {
     title?: true
     description?: true
     statusId?: true
-    startsAt?: true
-    endsAt?: true
+    starts_at?: true
+    ends_at?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -3746,8 +3746,8 @@ export namespace Prisma {
     title?: true
     description?: true
     statusId?: true
-    startsAt?: true
-    endsAt?: true
+    starts_at?: true
+    ends_at?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -3844,8 +3844,8 @@ export namespace Prisma {
     title: string
     description: string | null
     statusId: number | null
-    startsAt: Date | null
-    endsAt: Date | null
+    starts_at: Date | null
+    ends_at: Date | null
     createdAt: Date | null
     updatedAt: Date | null
     _count: ExhibitionCountAggregateOutputType | null
@@ -3874,8 +3874,8 @@ export namespace Prisma {
     title?: boolean
     description?: boolean
     statusId?: boolean
-    startsAt?: boolean
-    endsAt?: boolean
+    starts_at?: boolean
+    ends_at?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     exhibits?: boolean | Exhibition$exhibitsArgs<ExtArgs>
@@ -3889,8 +3889,8 @@ export namespace Prisma {
     title?: boolean
     description?: boolean
     statusId?: boolean
-    startsAt?: boolean
-    endsAt?: boolean
+    starts_at?: boolean
+    ends_at?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     status?: boolean | Exhibition$statusArgs<ExtArgs>
@@ -3901,8 +3901,8 @@ export namespace Prisma {
     title?: boolean
     description?: boolean
     statusId?: boolean
-    startsAt?: boolean
-    endsAt?: boolean
+    starts_at?: boolean
+    ends_at?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
@@ -3929,8 +3929,8 @@ export namespace Prisma {
       title: string
       description: string | null
       statusId: number | null
-      startsAt: Date | null
-      endsAt: Date | null
+      starts_at: Date | null
+      ends_at: Date | null
       createdAt: Date | null
       updatedAt: Date | null
     }, ExtArgs["result"]["exhibition"]>
@@ -4333,8 +4333,8 @@ export namespace Prisma {
     readonly title: FieldRef<"Exhibition", 'String'>
     readonly description: FieldRef<"Exhibition", 'String'>
     readonly statusId: FieldRef<"Exhibition", 'Int'>
-    readonly startsAt: FieldRef<"Exhibition", 'DateTime'>
-    readonly endsAt: FieldRef<"Exhibition", 'DateTime'>
+    readonly starts_at: FieldRef<"Exhibition", 'DateTime'>
+    readonly ends_at: FieldRef<"Exhibition", 'DateTime'>
     readonly createdAt: FieldRef<"Exhibition", 'DateTime'>
     readonly updatedAt: FieldRef<"Exhibition", 'DateTime'>
   }
@@ -31446,8 +31446,8 @@ export namespace Prisma {
     title: 'title',
     description: 'description',
     statusId: 'statusId',
-    startsAt: 'startsAt',
-    endsAt: 'endsAt',
+    starts_at: 'starts_at',
+    ends_at: 'ends_at',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -31939,8 +31939,8 @@ export namespace Prisma {
     title?: StringFilter<"Exhibition"> | string
     description?: StringNullableFilter<"Exhibition"> | string | null
     statusId?: IntNullableFilter<"Exhibition"> | number | null
-    startsAt?: DateTimeNullableFilter<"Exhibition"> | Date | string | null
-    endsAt?: DateTimeNullableFilter<"Exhibition"> | Date | string | null
+    starts_at?: DateTimeNullableFilter<"Exhibition"> | Date | string | null
+    ends_at?: DateTimeNullableFilter<"Exhibition"> | Date | string | null
     createdAt?: DateTimeNullableFilter<"Exhibition"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Exhibition"> | Date | string | null
     exhibits?: ExhibitListRelationFilter
@@ -31953,8 +31953,8 @@ export namespace Prisma {
     title?: SortOrder
     description?: SortOrderInput | SortOrder
     statusId?: SortOrderInput | SortOrder
-    startsAt?: SortOrderInput | SortOrder
-    endsAt?: SortOrderInput | SortOrder
+    starts_at?: SortOrderInput | SortOrder
+    ends_at?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrderInput | SortOrder
     exhibits?: ExhibitOrderByRelationAggregateInput
@@ -31970,8 +31970,8 @@ export namespace Prisma {
     NOT?: ExhibitionWhereInput | ExhibitionWhereInput[]
     description?: StringNullableFilter<"Exhibition"> | string | null
     statusId?: IntNullableFilter<"Exhibition"> | number | null
-    startsAt?: DateTimeNullableFilter<"Exhibition"> | Date | string | null
-    endsAt?: DateTimeNullableFilter<"Exhibition"> | Date | string | null
+    starts_at?: DateTimeNullableFilter<"Exhibition"> | Date | string | null
+    ends_at?: DateTimeNullableFilter<"Exhibition"> | Date | string | null
     createdAt?: DateTimeNullableFilter<"Exhibition"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Exhibition"> | Date | string | null
     exhibits?: ExhibitListRelationFilter
@@ -31984,8 +31984,8 @@ export namespace Prisma {
     title?: SortOrder
     description?: SortOrderInput | SortOrder
     statusId?: SortOrderInput | SortOrder
-    startsAt?: SortOrderInput | SortOrder
-    endsAt?: SortOrderInput | SortOrder
+    starts_at?: SortOrderInput | SortOrder
+    ends_at?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrderInput | SortOrder
     _count?: ExhibitionCountOrderByAggregateInput
@@ -32003,8 +32003,8 @@ export namespace Prisma {
     title?: StringWithAggregatesFilter<"Exhibition"> | string
     description?: StringNullableWithAggregatesFilter<"Exhibition"> | string | null
     statusId?: IntNullableWithAggregatesFilter<"Exhibition"> | number | null
-    startsAt?: DateTimeNullableWithAggregatesFilter<"Exhibition"> | Date | string | null
-    endsAt?: DateTimeNullableWithAggregatesFilter<"Exhibition"> | Date | string | null
+    starts_at?: DateTimeNullableWithAggregatesFilter<"Exhibition"> | Date | string | null
+    ends_at?: DateTimeNullableWithAggregatesFilter<"Exhibition"> | Date | string | null
     createdAt?: DateTimeNullableWithAggregatesFilter<"Exhibition"> | Date | string | null
     updatedAt?: DateTimeNullableWithAggregatesFilter<"Exhibition"> | Date | string | null
   }
@@ -33807,8 +33807,8 @@ export namespace Prisma {
     exhibitionId?: bigint | number
     title: string
     description?: string | null
-    startsAt?: Date | string | null
-    endsAt?: Date | string | null
+    starts_at?: Date | string | null
+    ends_at?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     exhibits?: ExhibitCreateNestedManyWithoutExhibitionInput
@@ -33821,8 +33821,8 @@ export namespace Prisma {
     title: string
     description?: string | null
     statusId?: number | null
-    startsAt?: Date | string | null
-    endsAt?: Date | string | null
+    starts_at?: Date | string | null
+    ends_at?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     exhibits?: ExhibitUncheckedCreateNestedManyWithoutExhibitionInput
@@ -33833,8 +33833,8 @@ export namespace Prisma {
     exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    startsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    starts_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    ends_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     exhibits?: ExhibitUpdateManyWithoutExhibitionNestedInput
@@ -33847,8 +33847,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
-    startsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    starts_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    ends_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     exhibits?: ExhibitUncheckedUpdateManyWithoutExhibitionNestedInput
@@ -33860,8 +33860,8 @@ export namespace Prisma {
     title: string
     description?: string | null
     statusId?: number | null
-    startsAt?: Date | string | null
-    endsAt?: Date | string | null
+    starts_at?: Date | string | null
+    ends_at?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
   }
@@ -33870,8 +33870,8 @@ export namespace Prisma {
     exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    startsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    starts_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    ends_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -33881,8 +33881,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
-    startsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    starts_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    ends_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -35774,8 +35774,8 @@ export namespace Prisma {
     title?: SortOrder
     description?: SortOrder
     statusId?: SortOrder
-    startsAt?: SortOrder
-    endsAt?: SortOrder
+    starts_at?: SortOrder
+    ends_at?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -35790,8 +35790,8 @@ export namespace Prisma {
     title?: SortOrder
     description?: SortOrder
     statusId?: SortOrder
-    startsAt?: SortOrder
-    endsAt?: SortOrder
+    starts_at?: SortOrder
+    ends_at?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -35801,8 +35801,8 @@ export namespace Prisma {
     title?: SortOrder
     description?: SortOrder
     statusId?: SortOrder
-    startsAt?: SortOrder
-    endsAt?: SortOrder
+    starts_at?: SortOrder
+    ends_at?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -40123,8 +40123,8 @@ export namespace Prisma {
     exhibitionId?: bigint | number
     title: string
     description?: string | null
-    startsAt?: Date | string | null
-    endsAt?: Date | string | null
+    starts_at?: Date | string | null
+    ends_at?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     status?: StatusCreateNestedOneWithoutExhibitionsInput
@@ -40136,8 +40136,8 @@ export namespace Prisma {
     title: string
     description?: string | null
     statusId?: number | null
-    startsAt?: Date | string | null
-    endsAt?: Date | string | null
+    starts_at?: Date | string | null
+    ends_at?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     images?: ImageUncheckedCreateNestedManyWithoutExhibitionInput
@@ -40335,8 +40335,8 @@ export namespace Prisma {
     exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    startsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    starts_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    ends_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StatusUpdateOneWithoutExhibitionsNestedInput
@@ -40348,8 +40348,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
-    startsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    starts_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    ends_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     images?: ImageUncheckedUpdateManyWithoutExhibitionNestedInput
@@ -41217,8 +41217,8 @@ export namespace Prisma {
     exhibitionId?: bigint | number
     title: string
     description?: string | null
-    startsAt?: Date | string | null
-    endsAt?: Date | string | null
+    starts_at?: Date | string | null
+    ends_at?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     exhibits?: ExhibitCreateNestedManyWithoutExhibitionInput
@@ -41230,8 +41230,8 @@ export namespace Prisma {
     title: string
     description?: string | null
     statusId?: number | null
-    startsAt?: Date | string | null
-    endsAt?: Date | string | null
+    starts_at?: Date | string | null
+    ends_at?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     exhibits?: ExhibitUncheckedCreateNestedManyWithoutExhibitionInput
@@ -41304,8 +41304,8 @@ export namespace Prisma {
     exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    startsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    starts_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    ends_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     exhibits?: ExhibitUpdateManyWithoutExhibitionNestedInput
@@ -41317,8 +41317,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: NullableIntFieldUpdateOperationsInput | number | null
-    startsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    starts_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    ends_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     exhibits?: ExhibitUncheckedUpdateManyWithoutExhibitionNestedInput
@@ -42091,8 +42091,8 @@ export namespace Prisma {
     exhibitionId?: bigint | number
     title: string
     description?: string | null
-    startsAt?: Date | string | null
-    endsAt?: Date | string | null
+    starts_at?: Date | string | null
+    ends_at?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     exhibits?: ExhibitCreateNestedManyWithoutExhibitionInput
@@ -42103,8 +42103,8 @@ export namespace Prisma {
     exhibitionId?: bigint | number
     title: string
     description?: string | null
-    startsAt?: Date | string | null
-    endsAt?: Date | string | null
+    starts_at?: Date | string | null
+    ends_at?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
     exhibits?: ExhibitUncheckedCreateNestedManyWithoutExhibitionInput
@@ -42327,8 +42327,8 @@ export namespace Prisma {
     title?: StringFilter<"Exhibition"> | string
     description?: StringNullableFilter<"Exhibition"> | string | null
     statusId?: IntNullableFilter<"Exhibition"> | number | null
-    startsAt?: DateTimeNullableFilter<"Exhibition"> | Date | string | null
-    endsAt?: DateTimeNullableFilter<"Exhibition"> | Date | string | null
+    starts_at?: DateTimeNullableFilter<"Exhibition"> | Date | string | null
+    ends_at?: DateTimeNullableFilter<"Exhibition"> | Date | string | null
     createdAt?: DateTimeNullableFilter<"Exhibition"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Exhibition"> | Date | string | null
   }
@@ -45694,8 +45694,8 @@ export namespace Prisma {
     exhibitionId?: bigint | number
     title: string
     description?: string | null
-    startsAt?: Date | string | null
-    endsAt?: Date | string | null
+    starts_at?: Date | string | null
+    ends_at?: Date | string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
   }
@@ -45801,8 +45801,8 @@ export namespace Prisma {
     exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    startsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    starts_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    ends_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     exhibits?: ExhibitUpdateManyWithoutExhibitionNestedInput
@@ -45813,8 +45813,8 @@ export namespace Prisma {
     exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    startsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    starts_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    ends_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     exhibits?: ExhibitUncheckedUpdateManyWithoutExhibitionNestedInput
@@ -45825,8 +45825,8 @@ export namespace Prisma {
     exhibitionId?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    startsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    endsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    starts_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    ends_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }

@@ -112,7 +112,7 @@ model Feedback {
   exhibitId   BigInt?   @map("exhibit_id")
   rating      Int?
   description String?
-  isHidden    Boolean?  @default(false) @map("is_hidden")
+  isHidden    Boolean   @default(false) @map("is_hidden")
   createdAt   DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt   DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
   exhibit     Exhibit?  @relation(fields: [exhibitId], references: [exhibitId], onDelete: Cascade, onUpdate: NoAction)
@@ -170,7 +170,7 @@ model Language {
   audio      Audio[]
   status     Status?    @relation(fields: [statusId], references: [statusId], onUpdate: NoAction)
   subtitles  Subtitle[]
-  users         User[]
+  users      User[]
 
   @@index([statusId], map: "idx_language_status")
   @@index([code], map: "idx_language_code")
@@ -230,12 +230,12 @@ model Session {
 model Status {
   statusId      Int            @id @default(autoincrement()) @map("status_id")
   statusName    String         @unique @map("status_name") @db.VarChar(30)
-  conversations Conversation[]
   exhibits      Exhibit[]
   exhibitions   Exhibition[]
   languages     Language[]
-  messages      Message[]
   users         User[]
+  conversations Conversation[]
+  messages      Message[]
 
   @@map("status")
 }
@@ -264,10 +264,6 @@ model User {
   userId                  BigInt                   @id @default(autoincrement()) @map("user_id")
   username                String                   @unique @db.VarChar(100)
   email                   String                   @unique @db.VarChar(100)
-  gender                  String?                  @db.VarChar(20)
-  dateOfBirth             DateTime?                @map("date_of_birth") @db.Date
-  languageId              BigInt?                  @map("language_id")
-  profilePictureUrl       String?                  @map("profile_picture_url") @db.VarChar(255)
   passwordHash            String                   @map("password_hash") @db.VarChar(72)
   firstName               String                   @map("first_name") @db.VarChar(100)
   lastName                String                   @map("last_name") @db.VarChar(100)
@@ -288,13 +284,11 @@ model User {
   playbackLogs            AudioPlaybackLog[]
   adminAudits             AuditLog[]               @relation("AdminUserAudits")
   targetAudits            AuditLog[]               @relation("TargetUserAudits")
-  conversations           Conversation[]
   emailVerificationTokens EmailVerificationToken[]
   feedbacks               Feedback[]
   passwordResetTokens     PasswordResetToken[]
   sessions                Session[]
   subtitles               Subtitle[]
-  language                Language?                @relation(fields: [languageId], references: [languageId], onDelete: NoAction, onUpdate: NoAction)
   status                  Status?                  @relation(fields: [statusId], references: [statusId], onUpdate: NoAction)
   userBadges              UserBadge[]
   roles                   UserRole[]
@@ -395,14 +389,13 @@ model Badge {
   badgeId     BigInt      @id @default(autoincrement()) @map("badge_id")
   name        String?
   description String?
-  style       String?     @db.VarChar(100)
+  style       String?
   imageUrl    String?     @map("image_url") @db.VarChar(512)
   createdAt   DateTime?   @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt   DateTime?   @default(now()) @map("updated_at") @db.Timestamptz(6)
   exhibit     Exhibit?    @relation("ExhibitToBadge")
   userBadges  UserBadge[]
 
-  @@index([createdAt], map: "idx_badge_created_at")
   @@map("badge")
 }
 
@@ -428,7 +421,7 @@ model Settings {
 
 model SenderType {
   senderTypeId Int       @id @default(autoincrement()) @map("sender_type_id")
-  senderType   String    @unique @map("sender_type") @db.VarChar(50)
+  senderType   String    @unique @map("sender_type") @db.VarChar(20)
   messages     Message[]
 
   @@map("sender_type")
@@ -437,15 +430,15 @@ model SenderType {
 model Conversation {
   conversationId String    @id @default(dbgenerated("gen_random_uuid()")) @map("conversation_id") @db.Uuid
   userId         BigInt    @map("user_id")
-  title          String?
-  statusId       Int?      @default(1) @map("status_id")
-  createdAt      DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
-  modifiedAt     DateTime? @default(now()) @map("modified_at") @db.Timestamptz(6)
-  status         Status?   @relation(fields: [statusId], references: [statusId], onUpdate: NoAction)
-  user           User      @relation(fields: [userId], references: [userId], onDelete: Cascade, onUpdate: NoAction)
+  title          String?   @db.VarChar(100)
+  statusId       Int       @map("status_id")
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  modifiedAt     DateTime  @default(now()) @map("modified_at") @db.Timestamptz(6)
+  user           User      @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  status         Status    @relation(fields: [statusId], references: [statusId])
   messages       Message[]
 
-  @@index([userId, statusId, createdAt], map: "idx_conversation_user_status")
+  @@index([userId, statusId], map: "idx_conversation_user_status")
   @@map("conversation")
 }
 
@@ -454,12 +447,12 @@ model Message {
   conversationId String       @map("conversation_id") @db.Uuid
   senderTypeId   Int          @map("sender_type_id")
   content        String
-  metadata       Json?
-  statusId       Int          @default(1) @map("status_id")
-  createdAt      DateTime?    @default(now()) @map("created_at") @db.Timestamptz(6)
-  conversation   Conversation @relation(fields: [conversationId], references: [conversationId], onDelete: Cascade, onUpdate: NoAction)
-  senderType     SenderType   @relation(fields: [senderTypeId], references: [senderTypeId], onUpdate: NoAction)
-  status         Status       @relation(fields: [statusId], references: [statusId], onDelete: SetNull, onUpdate: NoAction)
+  metadata       Json?        @db.JsonB
+  statusId       Int          @map("status_id")
+  createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  senderType     SenderType   @relation(fields: [senderTypeId], references: [senderTypeId], onDelete: Cascade)
+  conversation   Conversation @relation(fields: [conversationId], references: [conversationId], onDelete: Cascade)
+  status         Status       @relation(fields: [statusId], references: [statusId])
 
   @@index([conversationId, statusId, createdAt, senderTypeId], map: "idx_message_conversation_status")
   @@map("message")
