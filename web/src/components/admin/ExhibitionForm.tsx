@@ -9,6 +9,8 @@ interface Exhibition {
   exhibitionId: string;
   title: string;
   description: string;
+  startsAt?: string | null; // NEW
+  endsAt?: string | null;   // NEW
 }
 
 // Describes the props the component receives
@@ -23,6 +25,8 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ exhibitionToEdit, onSav
   // --- State Declarations ---
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [startsAt, setStartsAt] = useState(''); // NEW
+  const [endsAt, setEndsAt] = useState('');     // NEW
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -35,11 +39,15 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ exhibitionToEdit, onSav
       // --- EDIT MODE ---
       setTitle(exhibitionToEdit.title);
       setDescription(exhibitionToEdit.description || '');
+      setStartsAt(exhibitionToEdit.startsAt ? exhibitionToEdit.startsAt.slice(0, 16) : ''); // NEW
+      setEndsAt(exhibitionToEdit.endsAt ? exhibitionToEdit.endsAt.slice(0, 16) : '');       // NEW
       setImageFile(null); // Reset file input when opening the modal for editing
     } else {
       // --- CREATE MODE ---
       setTitle('');
       setDescription('');
+      setStartsAt(''); // NEW
+      setEndsAt('');   // NEW
       setImageFile(null);
     }
   }, [exhibitionToEdit]);
@@ -65,6 +73,10 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ exhibitionToEdit, onSav
       const formData = new FormData();
       formData.append('title', title);
       formData.append('description', description);
+
+      // NEW: startsAt/endsAt
+      formData.append('startsAt', startsAt || '');
+      formData.append('endsAt', endsAt || '');
 
       if (imageFile) {
         formData.append('image', imageFile); 
@@ -120,6 +132,27 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ exhibitionToEdit, onSav
               onChange={(e) => setDescription(e.target.value)}
               rows={5}
               placeholder="A brief summary of what this tour is about."
+            />
+          </div>
+
+          {/* NEW: startsAt / endsAt */}
+          <div className="exhibit-input-field">
+            <label htmlFor="startsAt">Starts At (optional)</label>
+            <input
+              id="startsAt"
+              type="datetime-local"
+              value={startsAt}
+              onChange={(e) => setStartsAt(e.target.value)}
+            />
+          </div>
+
+          <div className="exhibit-input-field">
+            <label htmlFor="endsAt">Ends At (optional)</label>
+            <input
+              id="endsAt"
+              type="datetime-local"
+              value={endsAt}
+              onChange={(e) => setEndsAt(e.target.value)}
             />
           </div>
 
