@@ -8,3 +8,8 @@ logs/
 # Test artifacts
 playwright-report/
 test-results/
+
+# Backup files
+*.backup
+*.bak
+*.new

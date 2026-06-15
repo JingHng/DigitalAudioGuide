@@ -22,7 +22,10 @@ const { getPaginatedEventLogs } = require('../models/eventLogModel');
 const { getAllUsers } = require('../models/userModel');
 
 // Encryption/Decryption for API keys
-const ENCRYPTION_KEY = process.env.SETTINGS_ENCRYPTION_KEY || 'default-key-change-in-production-must-be-32-chars!!';
+if (!process.env.SETTINGS_ENCRYPTION_KEY) {
+  throw new Error('SETTINGS_ENCRYPTION_KEY environment variable is required');
+}
+const ENCRYPTION_KEY = process.env.SETTINGS_ENCRYPTION_KEY;
 const ALGORITHM = 'aes-256-cbc';
 
 function decrypt(text) {
