@@ -1,74 +1,191 @@
-# 🇸🇬 SDC Group 3: Digital Audio Guide System
+# Digital Audio Guide
 
-[![CD Pipeline Status](https://github.com/SP-SOC-KH/cicdp-project-group-3-sdc/actions/workflows/development_sdcgroup3.yml/badge.svg)](https://github.com/SP-SOC-KH/cicdp-project-group-3-sdc/actions/workflows/development_sdcgroup3.yml)
-[![CI Build Status](https://github.com/SP-SOC-KH/cicdp-project-group-3-sdc/actions/workflows/ci.yml/badge.svg)](https://github.com/SP-SOC-KH/cicdp-project-group-3-sdc/actions/workflows/ci.yml)
+A QR-based digital audio guide web application that enables self-guided tours using visitors' personal devices. The system replaces traditional handheld audio devices with a mobile-friendly web experience accessible via QR codes placed at each exhibit.
 
-A modern, scalable digital audio guide system for the Singapore Discovery Centre, built using a full-stack Node.js architecture (API) and a React frontend.
+Originally built to help a museum phase out its legacy handheld audio devices, the system has since been designed to be scalable for any museum or exhibition — with a fully configurable admin dashboard that allows institutions to manage their own exhibits, tours, audio content, and visitor experience without code changes.
+
+Built as a full-stack web application with a Node.js/Express API backend, React/TypeScript frontend, and PostgreSQL database. Deployed on Azure App Service with automated CI/CD pipelines via GitHub Actions.
 
 ---
 
-## 🚀 1. Project Setup and Local Run
+## Features
+
+### Visitor Experience
+- **QR Code Scanning** — Visitors scan QR codes at exhibits to access audio guides and exhibit information directly on their personal devices
+- **Audio Guide Playback** — Text-to-speech audio guides with play/pause, rewind, and forward controls; supports multiple languages (English and Mandarin)
+- **Language Preference** — Persistent audio language preference retained across the entire visit
+- **Self-Guided Tours** — Sequential tour mode that guides visitors through exhibits in a defined order with a tour summary at the end
+- **AR Photobooth** — Augmented reality photobooth experience integrated via 8th Wall
+- **Exhibit Reviews** — Visitors can submit ratings and written reviews for individual exhibits
+- **Badge System** — Visitors earn achievement badges upon visiting exhibits or completing tours
+- **User Profiles** — Account registration with email verification, profile pictures, and username management
+
+### Admin Dashboard
+- **Exhibit and Exhibition Management** — Full CRUD for exhibits and exhibitions, including exhibit sequencing via drag-and-drop reordering
+- **Audio Management** — Upload and manage audio files per exhibit and language
+- **Badge Management** — Create and assign badges to exhibits with custom styles and images
+- **Clickable Elements** — Configure up to 3 floating interactive elements per exhibit that link visitors to external URLs
+- **Review Management** — View, filter, and moderate visitor reviews; toggle visibility of individual reviews
+- **User and Role Management** — Manage user accounts, assign roles, and configure permissions
+- **Audit Logs** — Track administrative actions across the system
+- **AI Assistant (Omnie)** — Gemini-powered AI assistant that answers queries about visitor statistics, audio analytics, exhibit data, and user demographics using real-time database context
+- **Analytics Dashboards**
+  - Exhibition visitor statistics with bar chart comparisons
+  - Audio playback analytics (play counts, completion rates, average listen duration per exhibit)
+  - Badge analytics
+  - Review analytics with export functionality
+- **Settings** — Configure AI model, Gemini API key, and application-level settings
+
+---
+
+## Tech Stack
+
+**Backend**
+- Node.js with Express 5
+- Prisma ORM with PostgreSQL (Neon)
+- JWT authentication (access + refresh tokens)
+- Google Cloud Text-to-Speech API
+- Google Gemini API (`@google/genai`)
+- Nodemailer for transactional email
+- Multer for file uploads
+- Winston for structured logging
+
+**Frontend**
+- React 18 with TypeScript
+- Vite
+- Tailwind CSS
+- Recharts for data visualisation
+- Framer Motion for animations
+- `@dnd-kit` for drag-and-drop sequencing
+- `html5-qrcode` for QR scanning
+- Playwright for end-to-end testing
+
+**Infrastructure**
+- Azure App Service (deployment)
+- Neon PostgreSQL (database)
+- GitHub Actions (CI/CD)
+
+---
+
+## Getting Started
 
 ### Prerequisites
-* **Node.js** (version 20 or higher)
+- Node.js 20 or higher
+- A PostgreSQL database (Neon or local)
+
+### Environment Variables
+
+Create `api/.env` with the following:
+
+```
+DATABASE_URL=your_postgresql_connection_string
+JWT_SECRET_KEY=your_jwt_secret
+JWT_REFRESH_SECRET=your_jwt_refresh_secret
+SETTINGS_ENCRYPTION_KEY=your_32_char_encryption_key
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_gmail_app_password
+FRONTEND_URL=http://localhost:5173
+```
+
+Create `web/.env.development` with:
+
+```
+VITE_API_TARGET=http://localhost:5175
+```
 
 ### Installation
 
-1.  **Clone the Repository:**
-    ```bash
-    git clone [https://github.com/SP-SOC-KH/cicdp-project-group-3-sdc.git](https://github.com/SP-SOC-KH/cicdp-project-group-3-sdc.git)
-    cd cicdp-project-group-3-sdc
-    ```
-2.  **Install Dependencies (API & Web):**
-    ```bash
-    npm install --prefix api
-    npm install --prefix web
-    ```
+```bash
+# Install API dependencies
+npm install --prefix api
 
+# Install frontend dependencies
+npm install --prefix web
+```
 
-### Running the Application
+### Database Setup
 
-1.  **Start API Server:**
-    ```bash
-    npm start --prefix api
-    ```
-2.  **Start Web Frontend:**
-    ```bash
-    npm run dev --prefix web
-    ```
-The application will be accessible at `http://localhost:5173`.
+```bash
+cd api
+npx prisma migrate deploy
+node prisma/seed.js
+```
+
+### Running Locally
+
+```bash
+# Start the API server (runs on port 5175)
+npm start --prefix api
+
+# Start the frontend dev server (runs on port 5173)
+npm run dev --prefix web
+```
+
+The application will be available at `http://localhost:5173`.
+
+The default seeded admin account is `admin@audiomuseum.com`. Change this password immediately after first login.
 
 ---
 
-## 🧪 2. Automated Testing
+## Testing
 
-This project utilizes a comprehensive automated testing suite integrated into our CI/CD pipeline, guaranteeing code quality and operability.
+End-to-end tests are written with Playwright and cover all major features.
 
-### Running E2E Tests Locally
+### Setup
 
-All End-to-End (E2E) tests are run using the **Playwright** framework.
+Ensure both the API server and frontend are running before executing tests.
 
-1.  **Ensure Services are Running:** The **API Server** and **Web Frontend** must be running simultaneously (see steps in Section 1).
-2.  **Install Playwright Browsers:** (Only needs to be run once)
-    ```bash
-    npm run install-playwright --prefix web
-    ```
-3.  **Execute the Full E2E Suite:**
-    ```bash
-    cd web
-    npx playwright test
-    # Or, run from the repository root:
-    # npm test --prefix web
-    ```
+```bash
+# Install Playwright browsers (first time only)
+cd web && npx playwright install --with-deps
+```
 
-### Available Tests and Functionality
+### Running Tests
 
-The E2E suite validates critical user journeys, API integration, and error handling across key application features.
+```bash
+cd web
+npx playwright test
+```
 
-| Test File | E2E Focus | Functionality Verified |
-| :--- | :--- | :--- |
-| **`homepage.spec.ts`** | **Core UI & Data Loading** | Verifies the Homepage (/) UI and ensures the successful loading and display of Exhibits data from the backend API. |
-| **`exhibitions.spec.ts`** | **Navigation & Error Handling** | Verifies the Exhibitions listing page, Exhibition details pages, and confirms graceful error handling for missing data (`/exhibitions/99999`) or API failure. |
-| **`scan-page.spec.ts`** | **QR Scanner & UX** | **QR/Camera Integration (LO 7):** Validates the structure, navigation, responsiveness, and error handling for the QR Code scanner interface (`/scan`). |
-| **`tts-audio.spec.ts`** | **Audio Playback (TTS)** | Verifies the presence and basic functionality of the audio guide player (Play/Pause, Rewind/Forward, language selection) and transcript features on the Exhibit details page. |
+Test suites are organised by feature under `web/tests/e2e/` and cover: QR scanning, audio playback, exhibit and exhibition management, badge assignment, AR photobooth, AI assistant, reviews, tour management, visitor statistics, user profiles, and clickable elements.
 
+---
+
+## CI/CD
+
+The project uses multiple GitHub Actions workflows:
+
+| Workflow | Trigger | Purpose |
+|----------|---------|---------|
+| `azure-deployment.yml` | Push to `main` | Build, test, and deploy to Azure App Service |
+| `ci.yml` | Push to `feature/**` branches | Run feature-specific Playwright E2E tests |
+| `development_sdcgroup3.yml` | Push to `development` | Full pipeline for the development branch |
+
+Secrets required in GitHub repository settings: `DATABASE_URL`, `JWT_SECRET_KEY`, `JWT_REFRESH_SECRET`, `AZUREAPPSERVICE_CLIENTID`, `AZUREAPPSERVICE_TENANTID`, `AZUREAPPSERVICE_SUBSCRIPTIONID`.
+
+---
+
+## Project Structure
+
+```
+.
+├── api/                    # Express backend
+│   ├── prisma/             # Schema, migrations, seed data
+│   ├── src/
+│   │   ├── controllers/    # Route handlers
+│   │   ├── middleware/     # Auth, file upload, permissions
+│   │   ├── models/         # Database query functions
+│   │   ├── routes/         # Express route definitions
+│   │   ├── services/       # AI service, email service
+│   │   └── utils/          # Helpers and utilities
+│   └── server.js
+├── web/                    # React frontend
+│   ├── src/
+│   │   ├── components/     # Page and UI components
+│   │   ├── contexts/       # React context (auth)
+│   │   ├── pages/          # Top-level page components
+│   │   ├── routes/         # Route definitions
+│   │   └── utils/          # API client, auth utilities
+│   └── tests/e2e/          # Playwright test suites
+└── .github/workflows/      # CI/CD pipeline definitions
+```
