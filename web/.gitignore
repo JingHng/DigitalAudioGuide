@@ -24,3 +24,11 @@ dist-ssr
 *.sw?
 
 playwright-report
+
+# Test results
+test-results/
+
+# Environment files
+.env.development
+.env.test
+.env.production

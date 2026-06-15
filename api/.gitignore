@@ -7,3 +7,8 @@ generated
 generated/
 generated/prisma/
 generated\prisma/
+
+# Logs
+logs/
+*.log
+api.log
