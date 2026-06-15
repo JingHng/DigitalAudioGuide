@@ -39,3 +39,15 @@
 {"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2026-02-09 21:06:36"}
 {"level":"info","message":"Default inactivity threshold setting initialized","service":"user-inactivity-service","timestamp":"2026-02-09 21:06:37"}
 {"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2026-02-09 21:06:37"}
+{"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2026-02-16 20:09:32"}
+{"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2026-02-16 20:09:32"}
+{"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2026-02-18 13:35:02"}
+{"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2026-02-18 13:35:02"}
+{"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2026-02-20 11:15:06"}
+{"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2026-02-20 11:15:06"}
+{"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2026-02-22 10:01:25"}
+{"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2026-02-22 10:01:25"}
+{"level":"info","message":"Settings table checked/created successfully","service":"user-inactivity-service","timestamp":"2026-02-24 13:50:24"}
+{"level":"info","message":"Settings module initialized successfully","service":"user-inactivity-service","timestamp":"2026-02-24 13:50:25"}
+{"level":"error","message":"Error ensuring settings table exists: \nInvalid `prisma.$queryRaw()` invocation:\n\n\nCan't reach database server at `ep-polished-mountain-adh5qv6r-pooler.c-2.us-east-1.aws.neon.tech:5432`\n\nPlease make sure your database server is running at `ep-polished-mountain-adh5qv6r-pooler.c-2.us-east-1.aws.neon.tech:5432`.","service":"user-inactivity-service","timestamp":"2026-06-15 19:34:45"}
+{"level":"error","message":"Failed to initialize settings module: \nInvalid `prisma.$queryRaw()` invocation:\n\n\nCan't reach database server at `ep-polished-mountain-adh5qv6r-pooler.c-2.us-east-1.aws.neon.tech:5432`\n\nPlease make sure your database server is running at `ep-polished-mountain-adh5qv6r-pooler.c-2.us-east-1.aws.neon.tech:5432`.","service":"user-inactivity-service","timestamp":"2026-06-15 19:34:45"}
