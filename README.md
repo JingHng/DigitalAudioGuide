@@ -8,6 +8,24 @@ Built as a full-stack web application with a Node.js/Express API backend, React/
 
 ---
 
+## Screenshots
+
+### Visitor Experience
+
+| Home Page | Exhibit Page | Tour Page |
+|:---------:|:-----------:|:---------:|
+| ![Home Page](screenshots/homePage.jpg) | ![Exhibit Page](screenshots/exhibitPage.jpg) | ![Tour Page](screenshots/tourPage.jpg) |
+| Smart navigation and QR-based exhibit access | Multi-language audio guide with playback controls | Browse and start self-guided or virtual tours |
+
+### Admin Dashboard
+
+| Overview | Tour Management | AI Assistant |
+|:--------:|:---------------:|:------------:|
+| ![Admin Dashboard](screenshots/adminDashboard.jpg) | ![Tour Management](screenshots/tourManagement.jpg) | ![AI Assistant](screenshots/aiAssistant.jpg) |
+| Key metrics and user registration trends | Sequence and reorder exhibits per tour | Gemini-powered chat for real-time data insights |
+
+---
+
 ## Features
 
 ### Visitor Experience
